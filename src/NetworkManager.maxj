@@ -1,0 +1,43 @@
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+
+class NetworkManager extends CustomManager {
+
+  private static int H = 4;
+  private static int W = 4;
+  private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
+
+  NetworkManager(EngineParameters params) {
+    super(params);
+
+    KernelBlock convLayerKernel = addKernel(
+      new ConvLayerKernel(makeKernelParameters(CONV_LAYER_KERNEL_NAME), H, W));
+
+    DFELink inp = addStreamFromCPU("input");
+    DFELink out = addStreamToCPU("output");
+
+    convLayerKernel.getInput("input") <== inp;
+    out <== convLayerKernel.getOutput("output");
+  }
+
+  private static EngineInterface interfaceDefault() {
+    EngineInterface ei = new EngineInterface();
+    
+    ei.setTicks(CONV_LAYER_KERNEL_NAME, H * W);
+    ei.setStream("input", CPUTypes.FLOAT, H * W * CPUTypes.FLOAT.sizeInBytes());
+    ei.setStream("output", CPUTypes.FLOAT, H * W * CPUTypes.FLOAT.sizeInBytes());
+    return ei;
+  }
+
+  public static void main(String [] args) {
+    EngineParameters params = new EngineParameters(args); 
+    NetworkManager manager = new NetworkManager(params);
+    manager.createSLiCinterface(interfaceDefault());
+    manager.build();
+  }
+}

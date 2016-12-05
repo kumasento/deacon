@@ -1,0 +1,48 @@
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFloat;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+
+class ConvLayerKernel extends Kernel {
+
+  private static final int KERNEL_SIZE = 3;
+  private static final int KERNEL_UPPER = 1;
+  private static final int KERNEL_LOWER = -1;
+
+  private static final DFEFloat DATA_TYPE = dfeFloat(8, 24);
+
+  ConvLayerKernel(KernelParameters params, int H, int W) {
+    super(params);
+
+    // counter
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar x = chain.addCounter(H, 1);
+    DFEVar y = chain.addCounter(W, 1);
+    x = x.cast(dfeInt(32));
+    y = y.cast(dfeInt(32));
+
+    // input feature map
+    DFEVar inp = io.input("input", DATA_TYPE);
+
+    // a window of kernel
+    DFEVar window [] = new DFEVar [KERNEL_SIZE * KERNEL_SIZE];
+    int i = 0;
+    for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++)
+      for (int dy = KERNEL_LOWER; dy <= KERNEL_UPPER; dy ++) {
+        DFEVar curr = stream.offset(inp, dx * W + dy);
+        // conditions
+        DFEVar aboveUpper = x + dx >= H | y + dy >= W;
+        DFEVar belowLower = x + dx <  0 | y + dy <  0;
+
+        window[i ++] = (aboveUpper | belowLower) ? 0 : curr;
+      }
+
+    // sum up all the kernel elements (assume weights are all 1)
+    DFEVar sum = constant.var(DATA_TYPE, 0);
+    for (DFEVar elem: window)
+      sum = sum + elem; // TODO: verify whether this will be optimised
+
+    io.output("output", sum, DATA_TYPE);
+  }
+}
