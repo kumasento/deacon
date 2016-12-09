@@ -1,7 +1,7 @@
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFloat;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
@@ -13,7 +13,7 @@ class ConvLayerKernel extends Kernel {
   private static final int KERNEL_UPPER = 1;
   private static final int KERNEL_LOWER = -1;
 
-  private static final DFEFloat DATA_TYPE = dfeFloat(8, 24);
+  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
   /**
    * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
@@ -23,77 +23,102 @@ class ConvLayerKernel extends Kernel {
 
     // Constants {{{
     // input buffer stores a feature map for a single channel
-    int INPUT_BUF_SIZE = H * W;
-    int INPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
+    int INPUT_BUF_SIZE       = H * W;
+    int OUTPUT_BUF_SIZE      = H * W * F;
+    int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
+    int OUTPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(OUTPUT_BUF_SIZE);
     // }}}
     // Counter {{{
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = chain.addCounter(C, 1);
-    DFEVar f = chain.addCounter(F, 1);
-    DFEVar x = chain.addCounter(H, 1);
-    DFEVar y = chain.addCounter(W, 1);
-    c = c.cast(dfeInt(32));
-    f = f.cast(dfeInt(32));
-    x = x.cast(dfeInt(32));
-    y = y.cast(dfeInt(32));
+    DFEVar c = chain.addCounter(C, 1).cast(dfeInt(32));
+    DFEVar f = chain.addCounter(F, 1).cast(dfeInt(32));
+    DFEVar x = chain.addCounter(H, 1).cast(dfeInt(32));
+    DFEVar y = chain.addCounter(W, 1).cast(dfeInt(32));
+    // }}}
+    // Input Stream {{{
+    DFEVar inpEnable = (f === 0).cast(dfeBool());
+    DFEVar inp = io.input("input", DATA_TYPE, inpEnable);
     // }}}
     // Input Buffer {{{
     Memory<DFEVar> inputBuf = mem.alloc(DATA_TYPE, INPUT_BUF_SIZE);
-    // }}}
-    // Input Stream {{{
-    DFEVar inpEnable = (f < 1).cast(dfeBool());
-    DFEVar inp = io.input("input", DATA_TYPE, inpEnable);
 
-    DFEVar writeBufAddr = (x * H + y);
-    writeBufAddr = writeBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
-    inputBuf.write(writeBufAddr, inp, inpEnable);
-
+    DFEVar writeInpBufAddr = (x * H + y);
+    writeInpBufAddr = writeInpBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
+    inputBuf.write(writeInpBufAddr, inp, inpEnable);
     // }}}
-    // Create Window {{{
+    // Output Buffer {{{
+    Memory<DFEVar> outputBuf = mem.alloc(DATA_TYPE, OUTPUT_BUF_SIZE);
+
+    DFEVar writeOutBufAddr = (f * H * W + x * H + y).cast(dfeUInt(OUTPUT_BUF_ADDR_BITS));
+    // }}}
+    // Create Convolution Window {{{
     // a window of kernel
     DFEVar window [] = new DFEVar [KERNEL_SIZE * KERNEL_SIZE]; 
 
     int i = 0;
     for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
       for (int dy = KERNEL_LOWER; dy <= KERNEL_UPPER; dy ++) {
-        // conditions
+        // conditions {{{
         DFEVar aboveUpper = x + dx >= H | y + dy >= W;
         DFEVar belowLower = x + dx <  0 | y + dy <  0;
+        DFEVar outOfBound = (aboveUpper | belowLower);
+        DFEVar readEnable = inpEnable;
+        // }}}
+        // address {{{
         // transform 2d coordinates to 1d vector indices
-        DFEVar readBufAddr  = (x + dx) * H + (y + dy);
-
-        readBufAddr = readBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
-
+        DFEVar readInpBufAddr  = (x + dx) * H + (y + dy);
+        readInpBufAddr = readInpBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
+        // }}}
+        // read {{{
         // read from stream only when f == 0
-        DFEVar curr = DATA_TYPE.newInstance(this);
-
-        DFEVar outOfBound  = (aboveUpper | belowLower);
-        DFEVar readEnable  = ~(f >= 1);
-
-        DFEVar readCurr = DATA_TYPE.newInstance(this);
-        readCurr <== inputBuf.read(readBufAddr);
-
-        curr <== (outOfBound)
+        DFEVar curr = (outOfBound)
           ? constant.var(0)
-          : ((readEnable) ? stream.offset(inp, dx * W + dy) : readCurr);
-
-        debug.simPrintf("x = %3d y = %3d c = %3d f = %3d dx = %3d dy = %3d curr = %f\n",
-            x, y, c, f, dx, dy, curr);
-        debug.simPrintf("input enable = %d\n", inpEnable);
-
-
-        window[i ++] = (aboveUpper | belowLower) ? 0 : curr;
+          : ((readEnable) 
+              ? stream.offset(inp, dx * W + dy)
+              : inputBuf.read(readInpBufAddr));
+        // }}}
+        // debug {{{
+        // curr.simWatch("curr_" + Integer.toString(dx+1) + "_" + Integer.toString(dy+1));
+        // debug.simPrintf("x = %3d y = %3d c = %3d f = %3d dx = %3d dy = %3d curr = %f\n",
+        //     x, y, c, f, dx, dy, curr);
+        // debug.simPrintf("input enable = %d\n", inpEnable);
+        // }}}
+        // output {{{
+        window[i ++] = curr;
+        // }}}
       }
     }
     // }}}
-    // Window Sum {{{
+    // Window Sum and the Feedback Loop {{{
     // sum up all the kernel elements (assume weights are all 1)
     DFEVar windowSum = constant.var(DATA_TYPE, 0);
     for (DFEVar windowElem: window)
-      windowSum = windowSum + windowElem; // TODO: verify whether this will be optimised
+      // TODO: check maxpower solution
+      windowSum = windowSum + windowElem;
+
+    // TODO: seek better solution
+    // this implements a output buffer that stores partial result
+    DFEVar result = DATA_TYPE.newInstance(this);
+    result <== outputBuf.port(
+        writeOutBufAddr, // read and write address
+        (windowSum +
+        ((c === 0) 
+         ? constant.var(0) 
+         : stream.offset(result, -OUTPUT_BUF_SIZE))), // dependency
+        c >= 0,
+        Mem.RamWriteMode.WRITE_FIRST);
+        
+    // debug {{{
+    // l.simWatch("l");
+    // f.simWatch("f");
+    // c.simWatch("c");
+    // result.simWatch("result");
+    // partialResult.simWatch("partialResult");
+    // windowSum.simWatch("sum");
+    // }}}
     // }}}
     // Output Stream {{{
-    io.output("output", windowSum, DATA_TYPE);
+    io.output("output", result, DATA_TYPE, c === C - 1);
     // }}}
   }
 }
