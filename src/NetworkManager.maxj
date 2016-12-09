@@ -12,12 +12,15 @@ class NetworkManager extends CustomManager {
 
   private static int H = 4;
   private static int W = 4;
-  private static int F = 2;
+  private static int F = 16;
   private static int C = 3;
+  private static int K = 3;
   private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
 
   NetworkManager(EngineParameters params) {
     super(params);
+
+    config.setAllowNonMultipleTransitions(true);
 
     KernelBlock convLayerKernel = addKernel(
       new ConvLayerKernel(
@@ -25,12 +28,15 @@ class NetworkManager extends CustomManager {
         H,
         W,
         F,
-        C));
+        C,
+        K));
 
     DFELink inp = addStreamFromCPU("input");
+    DFELink wgt = addStreamFromCPU("weight");
     DFELink out = addStreamToCPU("output");
 
     convLayerKernel.getInput("input") <== inp;
+    convLayerKernel.getInput("weight") <== wgt;
     out <== convLayerKernel.getOutput("output");
   }
 
@@ -39,6 +45,7 @@ class NetworkManager extends CustomManager {
     
     ei.setTicks(CONV_LAYER_KERNEL_NAME, C * F * H * W);
     ei.setStream("input",  CPUTypes.FLOAT, C * H * W * CPUTypes.FLOAT.sizeInBytes());
+    ei.setStream("weight", CPUTypes.FLOAT, K * K * F * CPUTypes.FLOAT.sizeInBytes());
     ei.setStream("output", CPUTypes.FLOAT, F * H * W * CPUTypes.FLOAT.sizeInBytes());
     return ei;
   }

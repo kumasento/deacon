@@ -5,28 +5,36 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 class ConvLayerKernel extends Kernel {
-
-  private static final int KERNEL_SIZE  = 3;
-  private static final int KERNEL_UPPER = 1;
-  private static final int KERNEL_LOWER = -1;
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
   /**
    * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
    */
-  ConvLayerKernel(KernelParameters params, int H, int W, int F, int C) {
+  ConvLayerKernel(KernelParameters params,
+      int H, /* height of the input feature map */
+      int W, /* width of the input feature map */
+      int F, /* number of output filters */
+      int C, /* number of input feature map channels */
+      int K  /* kernel size */
+      ) {
     super(params);
 
     // Constants {{{
     // input buffer stores a feature map for a single channel
+    int KERNEL_UPPER         =   K / 2;
+    int KERNEL_LOWER         = - K / 2;
     int INPUT_BUF_SIZE       = H * W;
     int OUTPUT_BUF_SIZE      = H * W * F;
+    int WEIGHT_BUF_SIZE      = F;
     int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
     int OUTPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(OUTPUT_BUF_SIZE);
+    int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
     // }}}
     // Counter {{{
     CounterChain chain = control.count.makeCounterChain();
@@ -38,6 +46,13 @@ class ConvLayerKernel extends Kernel {
     // Input Stream {{{
     DFEVar inpEnable = (f === 0).cast(dfeBool());
     DFEVar inp = io.input("input", DATA_TYPE, inpEnable);
+
+    // only read weight vector at the begining of the first channel's
+    // computation
+    DFEVar wgtEnable = (c === 0 & x === 0 & y === 0);
+    DFEVectorType<DFEVar> WEIGHT_TYPE = 
+      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
+    DFEVector<DFEVar> wgtInpVec = io.input("weight", WEIGHT_TYPE, wgtEnable); 
     // }}}
     // Input Buffer {{{
     Memory<DFEVar> inputBuf = mem.alloc(DATA_TYPE, INPUT_BUF_SIZE);
@@ -46,6 +61,12 @@ class ConvLayerKernel extends Kernel {
     writeInpBufAddr = writeInpBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
     inputBuf.write(writeInpBufAddr, inp, inpEnable);
     // }}}
+    // Weight buffer {{{
+    Memory<DFEVector<DFEVar>> wgtBuf = mem.alloc(WEIGHT_TYPE, WEIGHT_BUF_SIZE);
+    DFEVar wgtBufAddr = (f * K * K).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
+
+    wgtBuf.write(wgtBufAddr, wgtInpVec, wgtEnable);
+    // }}}
     // Output Buffer {{{
     Memory<DFEVar> outputBuf = mem.alloc(DATA_TYPE, OUTPUT_BUF_SIZE);
 
@@ -53,7 +74,12 @@ class ConvLayerKernel extends Kernel {
     // }}}
     // Create Convolution Window {{{
     // a window of kernel
-    DFEVar window [] = new DFEVar [KERNEL_SIZE * KERNEL_SIZE]; 
+    DFEVar window [] = new DFEVar [K * K]; 
+
+    DFEVector<DFEVar> wgtVec = WEIGHT_TYPE.newInstance(this);
+    wgtVec <== (c === 0)
+      ? wgtInpVec
+      : wgtBuf.read(wgtBufAddr);
 
     int i = 0;
     for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
@@ -77,6 +103,9 @@ class ConvLayerKernel extends Kernel {
               ? stream.offset(inp, dx * W + dy)
               : inputBuf.read(readInpBufAddr));
         // }}}
+        // weight {{{
+        DFEVar wgt = wgtVec[(dx + 1) * K + (dy + 1)];
+        // }}}
         // debug {{{
         // curr.simWatch("curr_" + Integer.toString(dx+1) + "_" + Integer.toString(dy+1));
         // debug.simPrintf("x = %3d y = %3d c = %3d f = %3d dx = %3d dy = %3d curr = %f\n",
@@ -84,7 +113,7 @@ class ConvLayerKernel extends Kernel {
         // debug.simPrintf("input enable = %d\n", inpEnable);
         // }}}
         // output {{{
-        window[i ++] = curr;
+        window[i ++] = curr * wgt;
         // }}}
       }
     }
