@@ -1,11 +1,11 @@
 #include <MaxSLiCInterface.h>
 #include "Maxfiles.h"
 
-#define H 4
-#define W 4
-#define F 16
-#define C 3
-#define K 3
+#define H 28
+#define W 28
+#define F 20
+#define C 1
+#define K 5
 
 #define INPUT_SIZE (H * W * C)
 #define OUTPUT_SIZE (H * W * F)

@@ -10,11 +10,14 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
  */
 class NetworkManager extends CustomManager {
 
-  private static int H = 4;
-  private static int W = 4;
-  private static int F = 16;
-  private static int C = 3;
-  private static int K = 3;
+  // Constants {{{
+  private static int H = 28;
+  private static int W = 28;
+  private static int F = 20;
+  private static int C = 1;
+  private static int K = 5;
+  // }}}
+
   private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
 
   NetworkManager(EngineParameters params) {

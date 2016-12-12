@@ -9,13 +9,14 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
+
+/**
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ */
 class ConvLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
-  /**
-   * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
-   */
   ConvLayerKernel(KernelParameters params,
       int H, /* height of the input feature map */
       int W, /* width of the input feature map */
@@ -38,7 +39,7 @@ class ConvLayerKernel extends Kernel {
     // }}}
     // Counter {{{
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = chain.addCounter(C, 1).cast(dfeInt(32));
+    DFEVar c = (C == 1) ? constant.var(0) : chain.addCounter(C, 1).cast(dfeInt(32));
     DFEVar f = chain.addCounter(F, 1).cast(dfeInt(32));
     DFEVar x = chain.addCounter(H, 1).cast(dfeInt(32));
     DFEVar y = chain.addCounter(W, 1).cast(dfeInt(32));
@@ -104,7 +105,7 @@ class ConvLayerKernel extends Kernel {
               : inputBuf.read(readInpBufAddr));
         // }}}
         // weight {{{
-        DFEVar wgt = wgtVec[(dx + 1) * K + (dy + 1)];
+        DFEVar wgt = wgtVec[(dx - KERNEL_LOWER) * K + (dy - KERNEL_LOWER)];
         // }}}
         // debug {{{
         // curr.simWatch("curr_" + Integer.toString(dx+1) + "_" + Integer.toString(dy+1));
