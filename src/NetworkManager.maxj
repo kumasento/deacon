@@ -4,6 +4,7 @@ import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 /**
  * @auther Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
@@ -11,14 +12,17 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 class NetworkManager extends CustomManager {
 
   // Constants {{{
-  private static int H = 28;
-  private static int W = 28;
-  private static int F = 20;
-  private static int C = 1;
-  private static int K = 5;
+  private static int H = 4;
+  private static int W = 4;
+  private static int F = 4;
+  private static int C = 2;
+  private static int K = 3;
+  private static int FC_LAYER_M = 8;
+  private static int FC_LAYER_N = H * W * F;
   // }}}
 
   private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
+  private static final String FC_LAYER_KERNEL_NAME = "FCLayerKernel";
 
   NetworkManager(EngineParameters params) {
     super(params);
@@ -34,13 +38,24 @@ class NetworkManager extends CustomManager {
         C,
         K));
 
-    DFELink inp = addStreamFromCPU("input");
-    DFELink wgt = addStreamFromCPU("weight");
-    DFELink out = addStreamToCPU("output");
+    KernelBlock fcLayerKernel = addKernel(
+        new FCLayerKernel(
+          makeKernelParameters(FC_LAYER_KERNEL_NAME),
+          FC_LAYER_M,
+          FC_LAYER_N));
 
-    convLayerKernel.getInput("input") <== inp;
-    convLayerKernel.getInput("weight") <== wgt;
-    out <== convLayerKernel.getOutput("output");
+    DFELink inp   = addStreamFromCPU("input");
+    DFELink wgt   = addStreamFromCPU("weight");
+    DFELink out   = addStreamToCPU("output");
+    DFELink fcWgt = addStreamFromCPU("fc_wgt");
+
+    // connect input and output
+    convLayerKernel.getInput("input")         <== inp;
+    convLayerKernel.getInput("weight")        <== wgt;
+    fcLayerKernel.getInput("fc_layer_input")  <== convLayerKernel.getOutput("output");
+    fcLayerKernel.getInput("fc_layer_weight") <== fcWgt;
+
+    out <== fcLayerKernel.getOutput("fc_layer_output");
   }
 
   private static EngineInterface interfaceDefault() {
@@ -49,7 +64,13 @@ class NetworkManager extends CustomManager {
     ei.setTicks(CONV_LAYER_KERNEL_NAME, C * F * H * W);
     ei.setStream("input",  CPUTypes.FLOAT, C * H * W * CPUTypes.FLOAT.sizeInBytes());
     ei.setStream("weight", CPUTypes.FLOAT, K * K * F * CPUTypes.FLOAT.sizeInBytes());
-    ei.setStream("output", CPUTypes.FLOAT, F * H * W * CPUTypes.FLOAT.sizeInBytes());
+
+    InterfaceParam fcLoopLength = ei.getAutoLoopOffset(FC_LAYER_KERNEL_NAME, "fcLoopLength");
+    ei.ignoreAutoLoopOffset(FC_LAYER_KERNEL_NAME, "fcLoopLength");
+
+    ei.setTicks(FC_LAYER_KERNEL_NAME, fcLoopLength * FC_LAYER_N * FC_LAYER_M);
+    ei.setStream("fc_wgt", CPUTypes.FLOAT, FC_LAYER_M * FC_LAYER_N * CPUTypes.FLOAT.sizeInBytes());
+    ei.setStream("output", CPUTypes.FLOAT, FC_LAYER_M * CPUTypes.FLOAT.sizeInBytes());
     return ei;
   }
 

@@ -8,14 +8,49 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 
 /**
+ * The fully connected layer for the CNN network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
 class FCLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
-  FCLayerKernel(KernelParameters params) {
+  FCLayerKernel(KernelParameters params,
+      int M, /* the height of the input matrix */
+      int N  /* the width of the input matrix */
+      )
+  {
+    super(params);
+
+    OffsetExpr loopLength = stream.makeOffsetAutoLoop("fcLoopLength");
+    DFEVar L = loopLength.getDFEVar(this, dfeUInt(8));
+
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar i = (M == 1) ? constant.var(0) : chain.addCounter(M, 1).cast(dfeInt(32));
+    DFEVar j = (N == 1) ? constant.var(0) : chain.addCounter(N, 1).cast(dfeInt(32));
+    DFEVar l = chain.addCounter(L, 1).cast(dfeUInt(8));
+
+    // only read from the input stream while computing the first row
+    DFEVar inpEnable = (i === 0) & (l === L - 1);
+    DFEVar inp = io.input("fc_layer_input", DATA_TYPE, inpEnable);
+    // weight input will always be enabled
+    DFEVar wgt = io.input("fc_layer_weight", DATA_TYPE, l === L - 1);
+
+    // input buffer
+    Memory<DFEVar> inpBuf = mem.alloc(DATA_TYPE, N);
+    DFEVar inpBufWriteAddr = j.cast(dfeUInt(MathUtils.bitsToAddress(N)));
+    DFEVar inpVal = inpBuf.port(inpBufWriteAddr, inp, inpEnable, Mem.RamWriteMode.WRITE_FIRST);
+
+    // computation 
+    DFEVar out = DATA_TYPE.newInstance(this);
+    DFEVar tmp = inpVal * wgt;
+    DFEVar val = tmp + out;
+    out <== (j === 0) ? tmp : stream.offset(val, -loopLength);
+
+    DFEVar outEnable = (j === N-1) & (l === L-1);
+    io.output("fc_layer_output", out, DATA_TYPE, outEnable);
   }
 }
