@@ -9,11 +9,15 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
-
 /**
+ * The convolution layer for the CNN network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
 class ConvLayerKernel extends Kernel {
+
+  public static final String CONV_INP_NAME = "conv_inp";
+  public static final String CONV_WGT_NAME = "conv_wgt";
+  public static final String CONV_OUT_NAME = "conv_out";
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
@@ -23,7 +27,8 @@ class ConvLayerKernel extends Kernel {
       int F, /* number of output filters */
       int C, /* number of input feature map channels */
       int K  /* kernel size */
-      ) {
+      )
+  {
     super(params);
 
     // Constants {{{
@@ -46,14 +51,14 @@ class ConvLayerKernel extends Kernel {
     // }}}
     // Input Stream {{{
     DFEVar inpEnable = (f === 0).cast(dfeBool());
-    DFEVar inp = io.input("input", DATA_TYPE, inpEnable);
+    DFEVar inp = io.input(CONV_INP_NAME, DATA_TYPE, inpEnable);
 
     // only read weight vector at the begining of the first channel's
     // computation
     DFEVar wgtEnable = (c === 0 & x === 0 & y === 0);
     DFEVectorType<DFEVar> WEIGHT_TYPE = 
       new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
-    DFEVector<DFEVar> wgtInpVec = io.input("weight", WEIGHT_TYPE, wgtEnable); 
+    DFEVector<DFEVar> wgtInpVec = io.input(CONV_WGT_NAME, WEIGHT_TYPE, wgtEnable); 
     // }}}
     // Input Buffer {{{
     Memory<DFEVar> inputBuf = mem.alloc(DATA_TYPE, INPUT_BUF_SIZE);
@@ -107,12 +112,6 @@ class ConvLayerKernel extends Kernel {
         // weight {{{
         DFEVar wgt = wgtVec[(dx - KERNEL_LOWER) * K + (dy - KERNEL_LOWER)];
         // }}}
-        // debug {{{
-        // curr.simWatch("curr_" + Integer.toString(dx+1) + "_" + Integer.toString(dy+1));
-        // debug.simPrintf("x = %3d y = %3d c = %3d f = %3d dx = %3d dy = %3d curr = %f\n",
-        //     x, y, c, f, dx, dy, curr);
-        // debug.simPrintf("input enable = %d\n", inpEnable);
-        // }}}
         // output {{{
         window[i ++] = curr * wgt;
         // }}}
@@ -138,17 +137,9 @@ class ConvLayerKernel extends Kernel {
         c >= 0,
         Mem.RamWriteMode.WRITE_FIRST);
         
-    // debug {{{
-    // l.simWatch("l");
-    // f.simWatch("f");
-    // c.simWatch("c");
-    // result.simWatch("result");
-    // partialResult.simWatch("partialResult");
-    // windowSum.simWatch("sum");
-    // }}}
     // }}}
     // Output Stream {{{
-    io.output("output", result, DATA_TYPE, c === C - 1);
+    io.output(CONV_OUT_NAME, result, DATA_TYPE, c === C - 1);
     // }}}
   }
 }

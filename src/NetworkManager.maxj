@@ -7,70 +7,92 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 /**
- * @auther Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ * The unique manager for all layers in the neural network
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
 class NetworkManager extends CustomManager {
 
   // Constants {{{
-  private static int H = 4;
-  private static int W = 4;
-  private static int F = 4;
-  private static int C = 2;
-  private static int K = 3;
-  private static int FC_LAYER_M = 8;
-  private static int FC_LAYER_N = H * W * F;
+  private static int CONV_LAYER_H = 4;
+  private static int CONV_LAYER_W = 4;
+  private static int CONV_LAYER_F = 4;
+  private static int CONV_LAYER_C = 2;
+  private static int CONV_LAYER_K = 3;
+  private static int FC_LAYER_M   = 8;
+  private static int FC_LAYER_N   = CONV_LAYER_H * CONV_LAYER_W * CONV_LAYER_F;
   // }}}
-
+  // Stream name  {{{
+  private static final String CPU_INP_NAME      = "cpu_inp";
+  private static final String CPU_OUT_NAME      = "cpu_out";
+  private static final String CPU_CONV_WGT_NAME = "cpu_conv_wgt";
+  private static final String CPU_FC_WGT_NAME   = "cpu_fc_wgt";
+  // }}}
+  // Kernel name {{{
   private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
-  private static final String FC_LAYER_KERNEL_NAME = "FCLayerKernel";
+  private static final String FC_LAYER_KERNEL_NAME   = "FCLayerKernel";
+  // }}}
 
   NetworkManager(EngineParameters params) {
     super(params);
-
+    // Configure {{{
     config.setAllowNonMultipleTransitions(true);
-
+    // }}}
+    // Kernel Blocks {{{
     KernelBlock convLayerKernel = addKernel(
-      new ConvLayerKernel(
-        makeKernelParameters(CONV_LAYER_KERNEL_NAME),
-        H,
-        W,
-        F,
-        C,
-        K));
+        new ConvLayerKernel(
+          makeKernelParameters(CONV_LAYER_KERNEL_NAME),
+          CONV_LAYER_H,
+          CONV_LAYER_W,
+          CONV_LAYER_F,
+          CONV_LAYER_C,
+          CONV_LAYER_K));
 
     KernelBlock fcLayerKernel = addKernel(
         new FCLayerKernel(
           makeKernelParameters(FC_LAYER_KERNEL_NAME),
           FC_LAYER_M,
           FC_LAYER_N));
-
-    DFELink inp   = addStreamFromCPU("input");
-    DFELink wgt   = addStreamFromCPU("weight");
-    DFELink out   = addStreamToCPU("output");
-    DFELink fcWgt = addStreamFromCPU("fc_wgt");
+    // }}}
+    // Streams {{{
+    DFELink inp   = addStreamFromCPU(CPU_INP_NAME);
+    DFELink wgt   = addStreamFromCPU(CPU_CONV_WGT_NAME);
+    DFELink out   = addStreamToCPU(CPU_OUT_NAME);
+    DFELink fcWgt = addStreamFromCPU(CPU_FC_WGT_NAME);
 
     // connect input and output
-    convLayerKernel.getInput("input")         <== inp;
-    convLayerKernel.getInput("weight")        <== wgt;
-    fcLayerKernel.getInput("fc_layer_input")  <== convLayerKernel.getOutput("output");
-    fcLayerKernel.getInput("fc_layer_weight") <== fcWgt;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_INP_NAME) <== inp;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_WGT_NAME) <== wgt;
+    fcLayerKernel.getInput(FCLayerKernel.FC_INP_NAME)       <== convLayerKernel.getOutput(ConvLayerKernel.CONV_OUT_NAME);
+    fcLayerKernel.getInput(FCLayerKernel.FC_WGT_NAME)       <== fcWgt;
 
-    out <== fcLayerKernel.getOutput("fc_layer_output");
+    out <== fcLayerKernel.getOutput(FCLayerKernel.FC_OUT_NAME);
+    // }}}
   }
 
   private static EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
-    
-    ei.setTicks(CONV_LAYER_KERNEL_NAME, C * F * H * W);
-    ei.setStream("input",  CPUTypes.FLOAT, C * H * W * CPUTypes.FLOAT.sizeInBytes());
-    ei.setStream("weight", CPUTypes.FLOAT, K * K * F * CPUTypes.FLOAT.sizeInBytes());
+    // CONV {{{
+    int CONV_LAYER_TICKS    = CONV_LAYER_C * CONV_LAYER_F * CONV_LAYER_H * CONV_LAYER_W;
+    int CONV_LAYER_INP_SIZE = CONV_LAYER_C * CONV_LAYER_H * CONV_LAYER_W;
+    int CONV_LAYER_WGT_SIZE = CONV_LAYER_K * CONV_LAYER_K * CONV_LAYER_W;
 
-    InterfaceParam fcLoopLength = ei.getAutoLoopOffset(FC_LAYER_KERNEL_NAME, "fcLoopLength");
+    ei.setTicks(CONV_LAYER_KERNEL_NAME, CONV_LAYER_TICKS);
+    ei.setStream(CPU_INP_NAME,      CPUTypes.FLOAT, CONV_LAYER_INP_SIZE * CPUTypes.FLOAT.sizeInBytes());
+    ei.setStream(CPU_CONV_WGT_NAME, CPUTypes.FLOAT, CONV_LAYER_WGT_SIZE * CPUTypes.FLOAT.sizeInBytes());
+    // }}}
+    // FC {{{
+    // auto loop offset
+    InterfaceParam FCLoopLength = ei.getAutoLoopOffset(FC_LAYER_KERNEL_NAME, "fcLoopLength");
     ei.ignoreAutoLoopOffset(FC_LAYER_KERNEL_NAME, "fcLoopLength");
 
-    ei.setTicks(FC_LAYER_KERNEL_NAME, fcLoopLength * FC_LAYER_N * FC_LAYER_M);
-    ei.setStream("fc_wgt", CPUTypes.FLOAT, FC_LAYER_M * FC_LAYER_N * CPUTypes.FLOAT.sizeInBytes());
-    ei.setStream("output", CPUTypes.FLOAT, FC_LAYER_M * CPUTypes.FLOAT.sizeInBytes());
+    InterfaceParam FC_LAYER_TICKS = FCLoopLength * FC_LAYER_N * FC_LAYER_M;
+    int FC_LAYER_WGT_SIZE         = FC_LAYER_M * FC_LAYER_N;
+    int FC_LAYER_OUT_SIZE         = FC_LAYER_M;
+
+    ei.setTicks(FC_LAYER_KERNEL_NAME, FC_LAYER_TICKS);
+    ei.setStream(CPU_FC_WGT_NAME, CPUTypes.FLOAT, FC_LAYER_WGT_SIZE  * CPUTypes.FLOAT.sizeInBytes());
+    ei.setStream(CPU_OUT_NAME,    CPUTypes.FLOAT, FC_LAYER_OUT_SIZE * CPUTypes.FLOAT.sizeInBytes());
+    // }}}
     return ei;
   }
 

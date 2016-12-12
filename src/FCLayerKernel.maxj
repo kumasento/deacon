@@ -18,6 +18,10 @@ class FCLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
+  public static final String FC_INP_NAME = "fc_inp";
+  public static final String FC_OUT_NAME = "fc_out";
+  public static final String FC_WGT_NAME = "fc_wgt";
+
   FCLayerKernel(KernelParameters params,
       int M, /* the height of the input matrix */
       int N  /* the width of the input matrix */
@@ -35,9 +39,9 @@ class FCLayerKernel extends Kernel {
 
     // only read from the input stream while computing the first row
     DFEVar inpEnable = (i === 0) & (l === L - 1);
-    DFEVar inp = io.input("fc_layer_input", DATA_TYPE, inpEnable);
+    DFEVar inp = io.input(FC_INP_NAME, DATA_TYPE, inpEnable);
     // weight input will always be enabled
-    DFEVar wgt = io.input("fc_layer_weight", DATA_TYPE, l === L - 1);
+    DFEVar wgt = io.input(FC_WGT_NAME, DATA_TYPE, l === L - 1);
 
     // input buffer
     Memory<DFEVar> inpBuf = mem.alloc(DATA_TYPE, N);
@@ -51,6 +55,6 @@ class FCLayerKernel extends Kernel {
     out <== (j === 0) ? tmp : stream.offset(val, -loopLength);
 
     DFEVar outEnable = (j === N-1) & (l === L-1);
-    io.output("fc_layer_output", out, DATA_TYPE, outEnable);
+    io.output(FC_OUT_NAME, out, DATA_TYPE, outEnable);
   }
 }
