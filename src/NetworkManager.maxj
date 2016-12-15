@@ -38,6 +38,7 @@ class NetworkManager extends CustomManager {
   private static final String CONV_LAYER_KERNEL_NAME    = "ConvLayerKernel";
   private static final String FC_LAYER_KERNEL_NAME      = "FCLayerKernel";
   private static final String POOLING_LAYER_KERNEL_NAME = "PoolingLayerKernel";
+  private static final String RELU_LAYER_KERNEL_NAME    = "ReLULayerKernel";
   // }}}
 
   NetworkManager(EngineParameters params) {
@@ -63,6 +64,9 @@ class NetworkManager extends CustomManager {
           POOLING_LAYER_C,
           POOLING_LAYER_K,
           POOLING_LAYER_S));
+    
+    KernelBlock reLULayerKernel = addKernel(
+        new ReLULayerKernel(makeKernelParameters(RELU_LAYER_KERNEL_NAME)));
 
     KernelBlock fcLayerKernel = addKernel(
         new FCLayerKernel(
@@ -77,11 +81,18 @@ class NetworkManager extends CustomManager {
     DFELink fcWgt   = addStreamFromCPU(CPU_FC_WGT_NAME);
 
     // connect input and output
-    convLayerKernel.getInput(ConvLayerKernel.CONV_INP_NAME)          <== inp;
-    convLayerKernel.getInput(ConvLayerKernel.CONV_WGT_NAME)          <== convWgt;
-    poolingLayerKernel.getInput(PoolingLayerKernel.POOLING_INP_NAME) <== convLayerKernel.getOutput(ConvLayerKernel.CONV_OUT_NAME);
-    fcLayerKernel.getInput(FCLayerKernel.FC_INP_NAME)                <== poolingLayerKernel.getOutput(PoolingLayerKernel.POOLING_OUT_NAME);
-    fcLayerKernel.getInput(FCLayerKernel.FC_WGT_NAME)                <== fcWgt;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_INP_NAME)
+      <== inp;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_WGT_NAME)
+      <== convWgt;
+    poolingLayerKernel.getInput(PoolingLayerKernel.POOLING_INP_NAME)
+      <== convLayerKernel.getOutput(ConvLayerKernel.CONV_OUT_NAME);
+    reLULayerKernel.getInput(ReLULayerKernel.INP_NAME)
+      <== poolingLayerKernel.getOutput(PoolingLayerKernel.POOLING_OUT_NAME);
+    fcLayerKernel.getInput(FCLayerKernel.FC_INP_NAME)
+      <== reLULayerKernel.getOutput(ReLULayerKernel.OUT_NAME);
+    fcLayerKernel.getInput(FCLayerKernel.FC_WGT_NAME)
+      <== fcWgt;
 
     out <== fcLayerKernel.getOutput(FCLayerKernel.FC_OUT_NAME);
     // }}}
@@ -112,10 +123,14 @@ class NetworkManager extends CustomManager {
     ei.setStream(CPU_OUT_NAME,    CPUTypes.FLOAT, FC_LAYER_OUT_SIZE * CPUTypes.FLOAT.sizeInBytes());
     // }}}
     // POOLING {{{
-    int POOLING_LAYER_TICKS    = POOLING_LAYER_C * POOLING_LAYER_H * POOLING_LAYER_W;
-    int POOLING_LAYER_INP_SIZE = POOLING_LAYER_C * POOLING_LAYER_H * POOLING_LAYER_W;
+    int POOLING_LAYER_TICKS = POOLING_LAYER_C * POOLING_LAYER_H * POOLING_LAYER_W;
 
     ei.setTicks(POOLING_LAYER_KERNEL_NAME, POOLING_LAYER_TICKS);
+    // }}}
+    // POOLING {{{
+    int RELU_LAYER_TICKS = FC_LAYER_N;
+
+    ei.setTicks(RELU_LAYER_KERNEL_NAME, RELU_LAYER_TICKS);
     // }}}
     return ei;
   }

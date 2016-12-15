@@ -1,0 +1,31 @@
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+/**
+ * The relu layer for the CNN network
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ */
+class ReLULayerKernel extends Kernel {
+  
+  public static final String INP_NAME = "relu_inp";
+  public static final String OUT_NAME = "relu_out";
+
+  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
+
+  ReLULayerKernel(KernelParameters params) {
+    super(params);
+
+    DFEVar inp = io.input(INP_NAME, DATA_TYPE);
+    DFEVar out = DATA_TYPE.newInstance(this);
+    out <== (inp > 0) ? inp : constant.var(0);
+    io.output(OUT_NAME, out, DATA_TYPE);
+  }
+}
