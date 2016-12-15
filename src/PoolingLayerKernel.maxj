@@ -15,8 +15,8 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  */
 class PoolingLayerKernel extends Kernel {
 
-  private static final String POOLING_INP_NAME = "pooling_inp";
-  private static final String POOLING_OUT_NAME = "pooling_out";
+  public static final String POOLING_INP_NAME = "pooling_inp";
+  public static final String POOLING_OUT_NAME = "pooling_out";
 
   private static final DFEType COUNTER_TYPE = dfeInt(32);
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
@@ -48,7 +48,6 @@ class PoolingLayerKernel extends Kernel {
     // }}}
     // Window {{{
     DFEVar maxVal = inp;
-    int i = 0;
     for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
       for (int dy = KERNEL_LOWER; dy <= KERNEL_UPPER; dy ++) {
         DFEVar aboveUpper = x + dx >= H | y + dy >= W;

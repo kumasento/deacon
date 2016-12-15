@@ -13,13 +13,20 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 class NetworkManager extends CustomManager {
 
   // Constants {{{
-  private static int CONV_LAYER_H = 4;
-  private static int CONV_LAYER_W = 4;
-  private static int CONV_LAYER_F = 4;
-  private static int CONV_LAYER_C = 2;
-  private static int CONV_LAYER_K = 3;
-  private static int FC_LAYER_M   = 8;
-  private static int FC_LAYER_N   = CONV_LAYER_H * CONV_LAYER_W * CONV_LAYER_F;
+  private static int CONV_LAYER_H    = 4;
+  private static int CONV_LAYER_W    = 4;
+  private static int CONV_LAYER_F    = 4;
+  private static int CONV_LAYER_C    = 2;
+  private static int CONV_LAYER_K    = 3;
+
+  private static int POOLING_LAYER_H = 4;
+  private static int POOLING_LAYER_W = 4;
+  private static int POOLING_LAYER_C = 4;
+  private static int POOLING_LAYER_K = 2;
+  private static int POOLING_LAYER_S = 2;
+
+  private static int FC_LAYER_M      = 8;
+  private static int FC_LAYER_N      = 4 * 2 * 2;
   // }}}
   // Stream name  {{{
   private static final String CPU_INP_NAME      = "cpu_inp";
@@ -28,8 +35,9 @@ class NetworkManager extends CustomManager {
   private static final String CPU_FC_WGT_NAME   = "cpu_fc_wgt";
   // }}}
   // Kernel name {{{
-  private static final String CONV_LAYER_KERNEL_NAME = "ConvLayerKernel";
-  private static final String FC_LAYER_KERNEL_NAME   = "FCLayerKernel";
+  private static final String CONV_LAYER_KERNEL_NAME    = "ConvLayerKernel";
+  private static final String FC_LAYER_KERNEL_NAME      = "FCLayerKernel";
+  private static final String POOLING_LAYER_KERNEL_NAME = "PoolingLayerKernel";
   // }}}
 
   NetworkManager(EngineParameters params) {
@@ -46,6 +54,15 @@ class NetworkManager extends CustomManager {
           CONV_LAYER_F,
           CONV_LAYER_C,
           CONV_LAYER_K));
+    
+    KernelBlock poolingLayerKernel = addKernel(
+        new PoolingLayerKernel(
+          makeKernelParameters(POOLING_LAYER_KERNEL_NAME),
+          POOLING_LAYER_H,
+          POOLING_LAYER_W,
+          POOLING_LAYER_C,
+          POOLING_LAYER_K,
+          POOLING_LAYER_S));
 
     KernelBlock fcLayerKernel = addKernel(
         new FCLayerKernel(
@@ -54,16 +71,17 @@ class NetworkManager extends CustomManager {
           FC_LAYER_N));
     // }}}
     // Streams {{{
-    DFELink inp   = addStreamFromCPU(CPU_INP_NAME);
-    DFELink wgt   = addStreamFromCPU(CPU_CONV_WGT_NAME);
-    DFELink out   = addStreamToCPU(CPU_OUT_NAME);
-    DFELink fcWgt = addStreamFromCPU(CPU_FC_WGT_NAME);
+    DFELink inp     = addStreamFromCPU(CPU_INP_NAME);
+    DFELink convWgt = addStreamFromCPU(CPU_CONV_WGT_NAME);
+    DFELink out     = addStreamToCPU(CPU_OUT_NAME);
+    DFELink fcWgt   = addStreamFromCPU(CPU_FC_WGT_NAME);
 
     // connect input and output
-    convLayerKernel.getInput(ConvLayerKernel.CONV_INP_NAME) <== inp;
-    convLayerKernel.getInput(ConvLayerKernel.CONV_WGT_NAME) <== wgt;
-    fcLayerKernel.getInput(FCLayerKernel.FC_INP_NAME)       <== convLayerKernel.getOutput(ConvLayerKernel.CONV_OUT_NAME);
-    fcLayerKernel.getInput(FCLayerKernel.FC_WGT_NAME)       <== fcWgt;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_INP_NAME)          <== inp;
+    convLayerKernel.getInput(ConvLayerKernel.CONV_WGT_NAME)          <== convWgt;
+    poolingLayerKernel.getInput(PoolingLayerKernel.POOLING_INP_NAME) <== convLayerKernel.getOutput(ConvLayerKernel.CONV_OUT_NAME);
+    fcLayerKernel.getInput(FCLayerKernel.FC_INP_NAME)                <== poolingLayerKernel.getOutput(PoolingLayerKernel.POOLING_OUT_NAME);
+    fcLayerKernel.getInput(FCLayerKernel.FC_WGT_NAME)                <== fcWgt;
 
     out <== fcLayerKernel.getOutput(FCLayerKernel.FC_OUT_NAME);
     // }}}
@@ -92,6 +110,12 @@ class NetworkManager extends CustomManager {
     ei.setTicks(FC_LAYER_KERNEL_NAME, FC_LAYER_TICKS);
     ei.setStream(CPU_FC_WGT_NAME, CPUTypes.FLOAT, FC_LAYER_WGT_SIZE  * CPUTypes.FLOAT.sizeInBytes());
     ei.setStream(CPU_OUT_NAME,    CPUTypes.FLOAT, FC_LAYER_OUT_SIZE * CPUTypes.FLOAT.sizeInBytes());
+    // }}}
+    // POOLING {{{
+    int POOLING_LAYER_TICKS    = POOLING_LAYER_C * POOLING_LAYER_H * POOLING_LAYER_W;
+    int POOLING_LAYER_INP_SIZE = POOLING_LAYER_C * POOLING_LAYER_H * POOLING_LAYER_W;
+
+    ei.setTicks(POOLING_LAYER_KERNEL_NAME, POOLING_LAYER_TICKS);
     // }}}
     return ei;
   }
