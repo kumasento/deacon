@@ -1,0 +1,67 @@
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+/**
+ * The pooling layer for the CNN network
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ */
+class PoolingLayerKernel extends Kernel {
+
+  private static final String POOLING_INP_NAME = "pooling_inp";
+  private static final String POOLING_OUT_NAME = "pooling_out";
+
+  private static final DFEType COUNTER_TYPE = dfeInt(32);
+  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
+
+  PoolingLayerKernel(
+      KernelParameters params,
+      int H,
+      int W,
+      int C,
+      int K,
+      int S /* stride */
+  ) {
+    super(params);
+    // Constants {{{
+    int KERNEL_UPPER =   K / 2;
+    int KERNEL_LOWER = - K / 2;
+    // }}}
+    // Counters {{{
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar c  = (C == 1) ? constant.var(0) : chain.addCounter(C, 1).cast(COUNTER_TYPE);
+    DFEVar x  = chain.addCounter(H, S).cast(COUNTER_TYPE);
+    DFEVar sx = chain.addCounter(S, 1).cast(COUNTER_TYPE);
+    DFEVar y  = chain.addCounter(W, S).cast(COUNTER_TYPE);
+    DFEVar sy = chain.addCounter(S, 1).cast(COUNTER_TYPE);
+
+    // }}}
+    // Input Stream {{{
+    DFEVar inp = io.input(POOLING_INP_NAME, DATA_TYPE);
+    // }}}
+    // Window {{{
+    DFEVar maxVal = inp;
+    int i = 0;
+    for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
+      for (int dy = KERNEL_LOWER; dy <= KERNEL_UPPER; dy ++) {
+        DFEVar aboveUpper = x + dx >= H | y + dy >= W;
+        DFEVar belowLower = x + dx <  0 | y + dy <  0;
+        DFEVar outOfBound = (aboveUpper | belowLower);
+        DFEVar curr = stream.offset(inp, dx * W + dy);
+        
+        maxVal = (maxVal < curr & ~outOfBound) ? curr : maxVal;
+      }
+    }
+    // }}}
+    // Output {{{
+    io.output(POOLING_OUT_NAME, maxVal, DATA_TYPE, (sx === 0) & (sy === 0));
+    // }}}
+  }
+}
