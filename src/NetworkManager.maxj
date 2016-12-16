@@ -127,12 +127,16 @@ class NetworkManager extends CustomManager {
 
     ei.setTicks(POOLING_LAYER_KERNEL_NAME, POOLING_LAYER_TICKS);
     // }}}
-    // POOLING {{{
+    // RELU {{{
     int RELU_LAYER_TICKS = FC_LAYER_N;
 
     ei.setTicks(RELU_LAYER_KERNEL_NAME, RELU_LAYER_TICKS);
     // }}}
     return ei;
+  }
+  
+  private KernelBlock createNetworkLayerKernel() {
+    
   }
 
   public static void main(String [] args) {
