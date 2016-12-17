@@ -1,3 +1,5 @@
+package maxdeep.managers;
+
 import com.maxeler.maxcompiler.v2.build.EngineParameters;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
@@ -6,11 +8,13 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
+import maxdeep.kernels.*;
+
 /**
  * The unique manager for all layers in the neural network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
-class NetworkManager extends CustomManager {
+public class NetworkManager extends CustomManager {
 
   // Constants {{{
   private static int CONV_LAYER_H    = 4;
@@ -133,10 +137,6 @@ class NetworkManager extends CustomManager {
     ei.setTicks(RELU_LAYER_KERNEL_NAME, RELU_LAYER_TICKS);
     // }}}
     return ei;
-  }
-  
-  private KernelBlock createNetworkLayerKernel() {
-    
   }
 
   public static void main(String [] args) {

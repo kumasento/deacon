@@ -1,3 +1,5 @@
+package maxdeep.kernels;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -5,8 +7,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 
@@ -14,7 +14,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
  * The fully connected layer for the CNN network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
-class FCLayerKernel extends Kernel {
+public class FCLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
@@ -22,7 +22,7 @@ class FCLayerKernel extends Kernel {
   public static final String FC_OUT_NAME = "fc_out";
   public static final String FC_WGT_NAME = "fc_wgt";
 
-  FCLayerKernel(KernelParameters params,
+  public FCLayerKernel(KernelParameters params,
       int M, /* the height of the input matrix */
       int N  /* the width of the input matrix */
       )

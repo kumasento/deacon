@@ -1,19 +1,16 @@
+package maxdeep.kernels;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
-import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 /**
  * The pooling layer for the CNN network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
-class PoolingLayerKernel extends Kernel {
+public class PoolingLayerKernel extends Kernel {
 
   public static final String POOLING_INP_NAME = "pooling_inp";
   public static final String POOLING_OUT_NAME = "pooling_out";
@@ -21,7 +18,7 @@ class PoolingLayerKernel extends Kernel {
   private static final DFEType COUNTER_TYPE = dfeInt(32);
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
-  PoolingLayerKernel(
+  public PoolingLayerKernel(
       KernelParameters params,
       int H,
       int W,
@@ -36,7 +33,8 @@ class PoolingLayerKernel extends Kernel {
     // }}}
     // Counters {{{
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c  = (C == 1) ? constant.var(0) : chain.addCounter(C, 1).cast(COUNTER_TYPE);
+    if (C != 1)
+      chain.addCounter(C, 1).cast(COUNTER_TYPE);
     DFEVar x  = chain.addCounter(H, S).cast(COUNTER_TYPE);
     DFEVar sx = chain.addCounter(S, 1).cast(COUNTER_TYPE);
     DFEVar y  = chain.addCounter(W, S).cast(COUNTER_TYPE);

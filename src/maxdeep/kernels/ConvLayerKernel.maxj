@@ -1,3 +1,5 @@
+package maxdeep.kernels;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -13,7 +15,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  * The convolution layer for the CNN network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
  */
-class ConvLayerKernel extends Kernel {
+public class ConvLayerKernel extends Kernel {
 
   public static final String CONV_INP_NAME = "conv_inp";
   public static final String CONV_WGT_NAME = "conv_wgt";
@@ -21,7 +23,7 @@ class ConvLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
-  ConvLayerKernel(KernelParameters params,
+  public ConvLayerKernel(KernelParameters params,
       int H, /* height of the input feature map */
       int W, /* width of the input feature map */
       int F, /* number of output filters */

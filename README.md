@@ -15,3 +15,7 @@ The workflow of maxdeep is like this:
 - [ ] Construct a LeNet for the MNIST dataset, and a VGGNet. At this stage, just be sure that the network can be compiled on the hardware or not.
 - [ ] Check the correctness by extracting data from the forward pass in Caffe.
 - [ ] Explore other optimisation techniques, first by using fixed point, then by using LMem.
+
+## Reminders
+
+1. Occam' razor 

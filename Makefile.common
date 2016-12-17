@@ -30,7 +30,7 @@ DFEMAXDIR=$(MAXCOMPILER_BUILD_DIR)/$(DFEMAXNAME)/results
 MAXELEROSDIR_SIM:=$(MAXCOMPILERDIR)/lib/maxeleros-sim
 # }}}
 # Source files {{{
-ENGINEFILES=$(wildcard ../src/*.maxj)
+ENGINEFILES=$(wildcard ../src/*.maxj ../src/*/*.maxj ../src/*/*/*.maxj)
 CPUFILES=$(wildcard ../src/*.c ../src/*.cpp)
 # }}}
 # Compiler settings {{{
@@ -97,7 +97,7 @@ DFEID=/dev/maxeler0
 
 # Files to remove on clean
 TRASH=*~ ../src/*~ *.o
-DIST_TRASH=Maxfiles.h *.class *.o debug* *.dot *.png
+DIST_TRASH=Maxfiles.h *.class *.o debug* *.dot *.png $(PKG)
 # }}}
 # Main tasks {{{
 help:
@@ -129,7 +129,7 @@ $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	@ echo "MAXJC $(ENGINEFILES)"
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	@ echo "MAXJAVARUN $(MANAGER)" 
-	@ MAXAPPJCP=. MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel)\
+	@ MAXAPPJCP=. MAXAPPPKG=$(PKG).managers MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel)\
 						maxFileName=$(PRJ)\
 						target='DFE_SIM'  \
 						enableMPCX=$(MPCX)\
