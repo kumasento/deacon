@@ -5,7 +5,31 @@ package maxdeep.proto;
 option java_package = "maxdeep.proto";
 option java_outer_classname = "MaxDeepProtos";
 
-message NetParameter {
+message BlobShape {/*{{{*/
+  repeated int64 dim = 1 [ packed = true ];
+}/*}}}*/
+message NetParameter {/*{{{*/
   // name of the network
   optional string name = 1;
-}
+
+  repeated LayerParameter layer = 100;
+}/*}}}*/
+message LayerParameter {/*{{{*/
+  optional string name = 1;
+  optional string type = 2;
+  repeated string bottom = 3; // Name of the bottom blob
+  repeated string top = 4; // Name of the top blob
+
+  optional InputParameter input_param = 143;
+  optional ConvolutionParameter convolution_param = 106;
+}/*}}}*/
+// Layer parameters {{{
+message InputParameter {/*{{{*/
+  repeated BlobShape shape = 1;
+}/*}}}*/
+message ConvolutionParameter {/*{{{*/
+  optional uint32 num_output = 1;
+  repeated uint32 kernel_size = 4;
+  repeated uint32 stride = 6;
+}/*}}}*/
+// }}}

@@ -12,6 +12,12 @@ import maxdeep.kernels.*;
 import maxdeep.proto.MaxDeepProtos.NetParameter;
 import maxdeep.graph.NeuralNetworkGraph;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import com.google.protobuf.TextFormat;
+
 /**
  * The unique manager for all layers in the neural network
  * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
@@ -142,9 +148,19 @@ public class NetworkManager extends CustomManager {
   }
 
   public static void main(String [] args) {
-    NetParameter.Builder netParameter = NetParameter.newBuilder();
-    NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter.build());
-    
+    NetParameter netParameter = null;
+
+    try {
+      FileInputStream fis = new FileInputStream("../models/lenet.prototxt"); 
+      InputStreamReader reader = new InputStreamReader(fis, "ASCII");
+      NetParameter.Builder builder = NetParameter.newBuilder();
+      TextFormat.merge(reader, builder);
+      netParameter = builder.build();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter);
     EngineParameters params = new EngineParameters(args); 
     NetworkManager manager = new NetworkManager(params);
     manager.createSLiCinterface(interfaceDefault());

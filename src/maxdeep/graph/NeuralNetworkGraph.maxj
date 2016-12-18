@@ -1,6 +1,7 @@
 package maxdeep.graph;
 
 import maxdeep.proto.MaxDeepProtos.NetParameter;
+import maxdeep.proto.MaxDeepProtos.LayerParameter;
 
 /**
  * A basic implementation of a neural network graph.
@@ -14,6 +15,12 @@ import maxdeep.proto.MaxDeepProtos.NetParameter;
 public class NeuralNetworkGraph {
 
   public NeuralNetworkGraph(NetParameter param) {
+    System.out.println("Constructing the neural network ...");
+    for (LayerParameter layer: param.getLayerList()) {
+      System.out.println("Layer name:   " + layer.getName());
+      System.out.println("Layer top:    " + layer.getTopList());
+      System.out.println("Layer bottom: " + layer.getBottomList()); 
+    }
   }
 
 }
