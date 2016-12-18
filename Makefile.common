@@ -18,6 +18,8 @@ BUILD_DATE?=$(shell date +"%d-%m-%y")
 # }}}
 # Paths {{{
 MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/vzhao/builds/$(BUILD_DATE)
+PROTOSRCDIR=../src/proto
+PROTODISTDIR=./gen
 
 ifndef MAXCOMPILER_BUILD_DIR
 	MAXCOMPILER_BUILD_DIR=.
@@ -30,7 +32,12 @@ DFEMAXDIR=$(MAXCOMPILER_BUILD_DIR)/$(DFEMAXNAME)/results
 MAXELEROSDIR_SIM:=$(MAXCOMPILERDIR)/lib/maxeleros-sim
 # }}}
 # Source files {{{
-ENGINEFILES=$(wildcard ../src/*.maxj ../src/*/*.maxj ../src/*/*/*.maxj)
+PROTOFILES=$(wildcard $(PROTOSRCDIR)/*.proto)
+GENFILES=\
+	$(PROTODISTDIR)/maxdeep/proto/MaxDeepProtos.java
+ENGINEFILES=\
+	$(wildcard ../src/*.maxj ../src/*/*.maxj ../src/*/*/*.maxj)\
+	$(wildcard ../src/*.java ../src/*/*.java ../src/*/*/*.java)
 CPUFILES=$(wildcard ../src/*.c ../src/*.cpp)
 # }}}
 # Compiler settings {{{
@@ -63,6 +70,7 @@ else
     endif
 endif
 
+PROTOBUFJAR=protobuf-java-3.1.0.jar
 PRJBUILDNAME:=$(PRJ)$(BUILD_NAME_OPTION)
 # }}}
 # Command alias {{{
@@ -79,7 +87,7 @@ MAXCOMPILERSIM=maxcompilersim
 MAXOS_HW=/opt/maxeler/maxeleros/lib/libmaxeleros.so
 MAXOS_SIM=$(MAXELEROSDIR_SIM)/lib/libmaxeleros.so
 
-JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar -1.6 -d .
+JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(PROTOBUFJAR) -1.6 -d .
 CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I../src -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -D_XOPEN_SOURCE=600
 LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lslic -lm -lpthread
 
@@ -97,7 +105,7 @@ DFEID=/dev/maxeler0
 
 # Files to remove on clean
 TRASH=*~ ../src/*~ *.o
-DIST_TRASH=Maxfiles.h *.class *.o debug* *.dot *.png $(PKG)
+DIST_TRASH=Maxfiles.h *.class *.o debug* *.dot *.png $(PKG) $(PROTODISTDIR)
 # }}}
 # Main tasks {{{
 help:
@@ -125,15 +133,20 @@ all: runsim build
 
 # Simulation {{{
 
-$(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
-	@ echo "MAXJC $(ENGINEFILES)"
-	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
+$(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES) $(PROTOFILES)
+	@ echo "PROTOC $(PROTOFILES)"
+	@ mkdir -p $(PROTODISTDIR)
+	@ protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
+	@ echo "MAXJC $(ENGINEFILES) $(GENFILES)"
+	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
 	@ echo "MAXJAVARUN $(MANAGER)" 
-	@ MAXAPPJCP=. MAXAPPPKG=$(PKG).managers MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel)\
-						maxFileName=$(PRJ)\
-						target='DFE_SIM'  \
-						enableMPCX=$(MPCX)\
-						$(BUILD_PARAMS)
+	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG).managers MAXSOURCEDIRS='../src'\
+		$(MAXJAVARUN) -v -m 8192 $(MANAGER)\
+		DFEModel=$(DFEModel)\
+		maxFileName=$(PRJ)\
+		target='DFE_SIM'  \
+		enableMPCX=$(MPCX)\
+		$(BUILD_PARAMS)
 	@ echo "CP $(SIMMAXDIR)/$(PRJ).h" 
 	@ cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 

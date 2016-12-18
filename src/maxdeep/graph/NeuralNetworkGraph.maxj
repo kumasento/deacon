@@ -1,0 +1,19 @@
+package maxdeep.graph;
+
+import maxdeep.proto.MaxDeepProtos.NetParameter;
+
+/**
+ * A basic implementation of a neural network graph.
+ *
+ * This class stores an abstract of all layers within the neural network
+ * and how they connect to each other. 
+ *
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ * @since  2016-12-17
+ */
+public class NeuralNetworkGraph {
+
+  public NeuralNetworkGraph(NetParameter param) {
+  }
+
+}

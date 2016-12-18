@@ -9,6 +9,8 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 import maxdeep.kernels.*;
+import maxdeep.proto.MaxDeepProtos.NetParameter;
+import maxdeep.graph.NeuralNetworkGraph;
 
 /**
  * The unique manager for all layers in the neural network
@@ -140,6 +142,9 @@ public class NetworkManager extends CustomManager {
   }
 
   public static void main(String [] args) {
+    NetParameter.Builder netParameter = NetParameter.newBuilder();
+    NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter.build());
+    
     EngineParameters params = new EngineParameters(args); 
     NetworkManager manager = new NetworkManager(params);
     manager.createSLiCinterface(interfaceDefault());

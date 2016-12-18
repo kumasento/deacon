@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package maxdeep.proto;
+
+option java_package = "maxdeep.proto";
+option java_outer_classname = "MaxDeepProtos";
+
+message NetParameter {
+  // name of the network
+  optional string name = 1;
+}
