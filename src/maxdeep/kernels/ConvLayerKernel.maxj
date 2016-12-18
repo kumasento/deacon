@@ -17,9 +17,9 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  */
 public class ConvLayerKernel extends Kernel {
 
-  public static final String CONV_INP_NAME = "conv_inp";
-  public static final String CONV_WGT_NAME = "conv_wgt";
-  public static final String CONV_OUT_NAME = "conv_out";
+  public static final String CONV_INP_NAME = "inp";
+  public static final String CONV_WGT_NAME = "wgt";
+  public static final String CONV_OUT_NAME = "opt";
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 

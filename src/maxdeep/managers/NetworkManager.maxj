@@ -9,14 +9,6 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 import maxdeep.kernels.*;
-import maxdeep.proto.MaxDeepProtos.NetParameter;
-import maxdeep.graph.NeuralNetworkGraph;
-
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-
-import com.google.protobuf.TextFormat;
 
 /**
  * The unique manager for all layers in the neural network
@@ -24,6 +16,7 @@ import com.google.protobuf.TextFormat;
  */
 public class NetworkManager extends CustomManager {
 
+  /*
   // Constants {{{
   private static int CONV_LAYER_H    = 4;
   private static int CONV_LAYER_W    = 4;
@@ -52,12 +45,15 @@ public class NetworkManager extends CustomManager {
   private static final String POOLING_LAYER_KERNEL_NAME = "PoolingLayerKernel";
   private static final String RELU_LAYER_KERNEL_NAME    = "ReLULayerKernel";
   // }}}
+  */
 
-  NetworkManager(EngineParameters params) {
+  public NetworkManager(EngineParameters params) {
     super(params);
     // Configure {{{
+    // By default, allow multiple transitions
     config.setAllowNonMultipleTransitions(true);
     // }}}
+    /*
     // Kernel Blocks {{{
     KernelBlock convLayerKernel = addKernel(
         new ConvLayerKernel(
@@ -108,10 +104,12 @@ public class NetworkManager extends CustomManager {
 
     out <== fcLayerKernel.getOutput(FCLayerKernel.FC_OUT_NAME);
     // }}}
+    */
   }
 
-  private static EngineInterface interfaceDefault() {
+  public static EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
+    /*
     // CONV {{{
     int CONV_LAYER_TICKS    = CONV_LAYER_C * CONV_LAYER_F * CONV_LAYER_H * CONV_LAYER_W;
     int CONV_LAYER_INP_SIZE = CONV_LAYER_C * CONV_LAYER_H * CONV_LAYER_W;
@@ -144,26 +142,7 @@ public class NetworkManager extends CustomManager {
 
     ei.setTicks(RELU_LAYER_KERNEL_NAME, RELU_LAYER_TICKS);
     // }}}
+    */
     return ei;
-  }
-
-  public static void main(String [] args) {
-    NetParameter netParameter = null;
-
-    try {
-      FileInputStream fis = new FileInputStream("../models/lenet.prototxt"); 
-      InputStreamReader reader = new InputStreamReader(fis, "ASCII");
-      NetParameter.Builder builder = NetParameter.newBuilder();
-      TextFormat.merge(reader, builder);
-      netParameter = builder.build();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter);
-    EngineParameters params = new EngineParameters(args); 
-    NetworkManager manager = new NetworkManager(params);
-    manager.createSLiCinterface(interfaceDefault());
-    manager.build();
   }
 }

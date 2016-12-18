@@ -140,8 +140,8 @@ $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES) $(PROTOFILES)
 	@ echo "MAXJC $(ENGINEFILES) $(GENFILES)"
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
 	@ echo "MAXJAVARUN $(MANAGER)" 
-	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG).managers MAXSOURCEDIRS='../src'\
-		$(MAXJAVARUN) -v -m 8192 $(MANAGER)\
+	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src'\
+		$(MAXJAVARUN) -v -m 8192 $(MAXAPP)\
 		DFEModel=$(DFEModel)\
 		maxFileName=$(PRJ)\
 		target='DFE_SIM'  \
@@ -161,6 +161,8 @@ $(PRJBUILDNAME)_simc.o: $(CPUFILES)
 $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
 	@ echo "CPUCOMPILER $@"
 	@ $(CPUCOMPILER) $(ALL_FLAGS) -o $@ $^ $(LFLAGS)
+
+buildsim:$(PRJBUILDNAME)_sim 
 
 runsim: $(PRJBUILDNAME)_sim
 	@ echo "START sim"

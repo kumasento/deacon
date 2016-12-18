@@ -1,0 +1,42 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+
+import maxdeep.kernels.*;
+import maxdeep.managers.NetworkManager;
+import maxdeep.proto.MaxDeepProtos.NetParameter;
+import maxdeep.graph.NeuralNetworkGraph;
+import maxdeep.optimiser.NetworkOptimiser;
+
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import com.google.protobuf.TextFormat;
+
+public class MaxDeep {
+
+  public static void main(String [] args) {
+    NetParameter netParameter = null;
+
+    try {
+      FileInputStream fis = new FileInputStream("../models/lenet.prototxt"); 
+      InputStreamReader reader = new InputStreamReader(fis, "ASCII");
+      NetParameter.Builder builder = NetParameter.newBuilder();
+      TextFormat.merge(reader, builder);
+      netParameter = builder.build();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter);
+    EngineParameters params = new EngineParameters(args); 
+    NetworkManager manager = new NetworkManager(params);
+    NetworkOptimiser optimiser = new NetworkOptimiser();
+
+    optimiser.optimise(manager, graph);
+    // manager.createSLiCinterface(manager.interfaceDefault());
+    manager.build();
+  }
+
+}

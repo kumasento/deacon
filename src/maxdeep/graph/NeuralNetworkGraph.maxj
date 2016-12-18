@@ -1,7 +1,8 @@
 package maxdeep.graph;
 
-import maxdeep.proto.MaxDeepProtos.NetParameter;
-import maxdeep.proto.MaxDeepProtos.LayerParameter;
+import maxdeep.proto.MaxDeepProtos.*;
+
+import java.util.*;
 
 /**
  * A basic implementation of a neural network graph.
@@ -14,13 +15,154 @@ import maxdeep.proto.MaxDeepProtos.LayerParameter;
  */
 public class NeuralNetworkGraph {
 
+  private LayerParameter inputLayer;
+  private List<LayerParameter> layers;
+  private Map<String, BlobShape> blobs;
+  private Map<String, Integer> blobTopOfLayer;
+  private Map<String, Integer> blobBtmOfLayer;
+
+  public enum LayerType {
+    INPUT,
+    CONV,
+    POOL,
+    RELU,
+    FC
+  };
+
   public NeuralNetworkGraph(NetParameter param) {
     System.out.println("Constructing the neural network ...");
-    for (LayerParameter layer: param.getLayerList()) {
-      System.out.println("Layer name:   " + layer.getName());
+
+    this.layers         = param.getLayerList();
+    this.blobs          = new HashMap<String, BlobShape>();
+    this.blobTopOfLayer = new HashMap<String, Integer>();
+    this.blobBtmOfLayer = new HashMap<String, Integer>();
+
+    int idx = 0;
+    for (LayerParameter layer: layers) {
+      String name = layer.getName();
+      String top  = layer.getTop(0);    // assume only one top blob
+      String type = layer.getType();
+
+      System.out.println("Layer name:   " + name);
       System.out.println("Layer top:    " + layer.getTopList());
       System.out.println("Layer bottom: " + layer.getBottomList()); 
+      System.out.println("Layer type:   " + type);
+      System.out.println("");
+      
+      switch (getCanonicalLayerType(idx)) {
+        case INPUT:
+          this.inputLayer = layer;
+          // store its top blob into the hash
+          blobs.put(top, layer.getInputParam().getShape(0));
+          blobTopOfLayer.put(top, idx);
+          break;
+        case CONV:
+          String bottom = layer.getBottom(0);
+          blobBtmOfLayer.put(bottom, idx);
+          blobTopOfLayer.put(top, idx);
+
+          BlobShape bottomShape = blobs.get(bottom);
+          BlobShape.Builder topShapeBuilder = BlobShape.newBuilder();
+
+          ConvolutionParameter convolutionParameter =
+            layer.getConvolutionParam();
+          int kernelSize = (int) convolutionParameter.getKernelSize(0);
+          int stride = (int) convolutionParameter.getStride(0);
+
+          topShapeBuilder.addDim(bottomShape.getDim(0));
+          topShapeBuilder.addDim(convolutionParameter.getNumOutput());
+          topShapeBuilder.addDim(bottomShape.getDim(2) / stride);
+          topShapeBuilder.addDim(bottomShape.getDim(3) / stride);
+
+          blobs.put(top, topShapeBuilder.build());
+          break;
+        default:
+          break;
+      }
+
+      idx += 1;
     }
+
+    System.out.println(blobs);
   }
+  // Boolean checkers {{{
+  public Boolean isInputLayer(int idx) {
+    return getLayerType(idx).equals("Input");
+  }
+
+  public Boolean isConvolutionLayer(int idx) {
+    return getLayerType(idx).equals("Convolution");
+  }
+  // }}}
+  // Getters {{{
+  public LayerType getCanonicalLayerType(int idx) {
+    if (layers[idx].getType().equals("Input"))
+      return LayerType.INPUT;
+    if (layers[idx].getType().equals("Convolution"))
+      return LayerType.CONV;
+    return null;
+  }
+  public int getNumOfLayers() {
+    return layers.size();
+  }
+  public String getLayerType(int idx) {
+    return layers[idx].getType();
+  }
+  public String getLayerName(int idx) {
+    return layers[idx].getName();
+  }
+  public String getLayerBtmName(int idx) {
+    return layers[idx].getBottom(0);
+  }
+  public String getLayerTopName(int idx) {
+    return layers[idx].getTop(0);
+  }
+  public int getBlobTopOfLayer(String blobName) {
+    return blobTopOfLayer.get(blobName);
+  }
+  public int getBlobBtmOfLayer(String blobName) {
+    return blobBtmOfLayer.get(blobName);
+  }
+  public int getLayerOutputSize(int idx) {
+    String blobName = getLayerTopName(idx);
+    BlobShape shape = blobs.get(blobName);
+    if (isConvolutionLayer(idx)) {
+      return (
+          (int) shape.getDim(0) *
+          (int) shape.getDim(1) *
+          (int) shape.getDim(2) *
+          (int) shape.getDim(3));
+    }
+    return 0;
+  }
+  public int getInputLayerSize() {
+    InputParameter inputParam = inputLayer.getInputParam();
+    BlobShape shape = inputParam.getShape(0);
+    int inputLayerSize = 1;
+    for (Long dim : shape.getDimList())
+      inputLayerSize *= dim;
+    return inputLayerSize;
+  }
+  // Convolution {{{
+  public int getConvolutionInputHeight(int idx) {
+    return (int) blobs.get(layers[idx].getBottom(0)).getDim(2);
+  }
+  public int getConvolutionInputWidth(int idx) {
+    return (int) blobs.get(layers[idx].getBottom(0)).getDim(3);
+  }
+  public int getConvolutionInputChannel(int idx) {
+    return (int) blobs.get(layers[idx].getBottom(0)).getDim(1);
+  }
+  public int getConvolutionOutputChannel(int idx) {
+    return (int) blobs.get(layers[idx].getTop(0)).getDim(1);
+  }
+  public int getConvolutionKernelSize(int idx) {
+    return layers[idx].getConvolutionParam().getKernelSize(0);
+  }
+  public int getConvolutionKernelStride(int idx) {
+    return layers[idx].getConvolutionParam().getStride(0);
+  }
+  // }}}
+  // }}}
 
 }

@@ -1,0 +1,94 @@
+package maxdeep.optimiser;
+
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+
+import maxdeep.kernels.*;
+import maxdeep.managers.NetworkManager;
+import maxdeep.graph.NeuralNetworkGraph;
+
+import java.util.*;
+
+public class NetworkOptimiser {
+
+  private static final CPUTypes DEFAULT_CPU_INP_TYPE = CPUTypes.FLOAT;
+  private static final CPUTypes DEFAULT_CPU_OUT_TYPE = CPUTypes.FLOAT;
+  private static final String DEFAULT_CPU_INP_NAME = "cpu_inp";
+  private static final String DEFAULT_CPU_OUT_NAME = "cpu_out";
+
+  private Map<String, KernelBlock> kernelBlocks;
+
+  public NetworkOptimiser() {
+  }
+
+  public void optimise(NetworkManager manager, NeuralNetworkGraph graph) {
+    kernelBlocks = new HashMap<String, KernelBlock>();
+    EngineInterface ei = new EngineInterface();
+
+    // setup input stream from CPU
+    int inputStreamSize = graph.getInputLayerSize();
+    System.out.println("Input stream size: " + inputStreamSize);
+
+    DFELink CPUInp = manager.addStreamFromCPU(DEFAULT_CPU_INP_NAME);
+    ei.setStream(DEFAULT_CPU_INP_NAME, DEFAULT_CPU_INP_TYPE,
+        inputStreamSize * DEFAULT_CPU_INP_TYPE.sizeInBytes());
+    
+    // create kernel in sequence
+    int idx;
+    int numOfLayers = graph.getNumOfLayers();
+    for (idx = 1; idx < numOfLayers; idx ++) {
+      // skip the first index, which is the input layer
+      if (graph.isConvolutionLayer(idx)) {
+        int H = graph.getConvolutionInputHeight(idx);
+        int W = graph.getConvolutionInputWidth(idx);
+        int C = graph.getConvolutionInputChannel(idx);
+        int F = graph.getConvolutionOutputChannel(idx);
+        int K = graph.getConvolutionKernelSize(idx);
+
+        String name = graph.getLayerName(idx);
+        KernelBlock knl = manager.addKernel(
+            new ConvLayerKernel(
+              manager.makeKernelParameters(graph.getLayerName(idx)),
+              H, W, F, C, K));
+
+        // add a stream for the weight input
+        String wgtName = name + "_wgt";
+        DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
+        knl.getInput("wgt") <== wgtFromCPU;
+
+        kernelBlocks.put(name, knl);
+      }
+    }
+    
+    // connect kernels to each other by using top and bottom
+    for (idx = 1; idx < numOfLayers; idx ++) {
+      // connect its top to the bottom layer it belongs to
+      String btm = graph.getLayerBtmName(idx);
+      KernelBlock btmKnl = kernelBlocks.get(graph.getLayerName(idx));
+      int topIdx = graph.getBlobTopOfLayer(btm);
+      if (graph.isInputLayer(topIdx)) {
+        btmKnl.getInput("inp") <== CPUInp;
+      }
+      else {
+        KernelBlock topKnl = kernelBlocks.get(graph.getLayerName(topIdx)); 
+        btmKnl.getInput("inp") <== topKnl.getOutput("opt");
+      }
+
+      if (idx == numOfLayers - 1) {
+        String top = graph.getLayerTopName(idx); 
+        DFELink CPUOut = manager.addStreamToCPU(DEFAULT_CPU_OUT_NAME);
+
+        CPUOut <== btmKnl.getOutput("opt");
+        ei.setStream(DEFAULT_CPU_OUT_NAME, DEFAULT_CPU_OUT_TYPE,
+          graph.getLayerOutputSize(idx) * DEFAULT_CPU_OUT_TYPE.sizeInBytes());
+      }
+    }
+    
+    
+    manager.createSLiCinterface(ei);
+  }
+}

@@ -15,10 +15,10 @@ message NetParameter {/*{{{*/
   repeated LayerParameter layer = 100;
 }/*}}}*/
 message LayerParameter {/*{{{*/
-  optional string name = 1;
-  optional string type = 2;
+  optional string name   = 1;
+  optional string type   = 2;
   repeated string bottom = 3; // Name of the bottom blob
-  repeated string top = 4; // Name of the top blob
+  repeated string top    = 4; // Name of the top blob
 
   optional InputParameter input_param = 143;
   optional ConvolutionParameter convolution_param = 106;
