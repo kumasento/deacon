@@ -16,3 +16,12 @@ layer {
     stride: 1
   }
 }
+layer {
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "conv1"
+  top: "ip1"
+  inner_product_param {
+    num_output: 20
+  }
+}

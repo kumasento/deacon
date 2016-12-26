@@ -182,14 +182,25 @@ gdbsim:
 # DFE {{{
 
 $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
-	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=. MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
-	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
-	rm $(DFEMAXDIR)/$(PRJ).h
-	rm $(DFEMAXDIR)/$(PRJ).max
-	cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
-	cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
-	rm -rf $(DFEMAXDIR)/../scratch
+	@ echo "PROTOC $(PROTOFILES)"
+	@ mkdir -p $(PROTODISTDIR)
+	@ protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
+	@ echo "MAXJC $(ENGINEFILES) $(GENFILES)"
+	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
+	@ echo "MAXJAVARUN $(MANAGER)" 
+	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src'\
+		$(MAXJAVARUN) -v -m 8192 $(MAXAPP)\
+		DFEModel=$(DFEModel)\
+		maxFileName=$(PRJ)\
+		target='DFE'  \
+		enableMPCX=$(MPCX)\
+		$(BUILD_PARAMS)
+	@ cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
+	@ rm $(DFEMAXDIR)/$(PRJ).h
+	@ rm $(DFEMAXDIR)/$(PRJ).max
+	@ cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
+	@ cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
+	@ rm -rf $(DFEMAXDIR)/../scratch
 
 $(PRJBUILDNAME)_dfe.o: $(DFEMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@

@@ -17,6 +17,9 @@ import com.google.protobuf.TextFormat;
 public class MaxDeep {
 
   public static void main(String [] args) {
+    System.setProperty("java.util.logging.SimpleFormatter.format",
+        "%1$ta %1$tH:%1$tM: [%3$s] %5$s%6$s%n");
+
     NetParameter netParameter = null;
 
     try {

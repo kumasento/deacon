@@ -18,9 +18,9 @@ public class FCLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
-  public static final String FC_INP_NAME = "fc_inp";
-  public static final String FC_OUT_NAME = "fc_out";
-  public static final String FC_WGT_NAME = "fc_wgt";
+  public static final String FC_INP_NAME = "inp";
+  public static final String FC_OUT_NAME = "opt";
+  public static final String FC_WGT_NAME = "wgt";
 
   public FCLayerKernel(KernelParameters params,
       int M, /* the height of the input matrix */

@@ -22,6 +22,7 @@ message LayerParameter {/*{{{*/
 
   optional InputParameter input_param = 143;
   optional ConvolutionParameter convolution_param = 106;
+  optional InnerProductParameter inner_product_param = 117;
 }/*}}}*/
 // Layer parameters {{{
 message InputParameter {/*{{{*/
@@ -31,5 +32,8 @@ message ConvolutionParameter {/*{{{*/
   optional uint32 num_output = 1;
   repeated uint32 kernel_size = 4;
   repeated uint32 stride = 6;
+}/*}}}*/
+message InnerProductParameter {/*{{{*/
+  optional uint32 num_output = 1;
 }/*}}}*/
 // }}}
