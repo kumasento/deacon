@@ -134,46 +134,36 @@ all: runsim build
 # Simulation {{{
 
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES) $(PROTOFILES)
-	@ echo "PROTOC $(PROTOFILES)"
-	@ mkdir -p $(PROTODISTDIR)
-	@ protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
-	@ echo "MAXJC $(ENGINEFILES) $(GENFILES)"
-	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
-	@ echo "MAXJAVARUN $(MANAGER)" 
-	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src'\
-		$(MAXJAVARUN) -v -m 8192 $(MAXAPP)\
+	mkdir -p $(PROTODISTDIR)
+	protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
+	$(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
+	MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src'\
+		$(MAXJAVARUN) -m 8192 $(MAXAPP)\
 		DFEModel=$(DFEModel)\
 		maxFileName=$(PRJ)\
 		target='DFE_SIM'  \
 		enableMPCX=$(MPCX)\
 		$(BUILD_PARAMS)
-	@ echo "CP $(SIMMAXDIR)/$(PRJ).h" 
-	@ cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
+	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
 $(PRJBUILDNAME)_sim.o: $(SIMMAXDIR)/$(PRJ).max
-	@ echo "SLICCOMPILE $@"
-	@ $(SLICCOMPILE) $< $@
+	$(SLICCOMPILE) $< $@
 
 $(PRJBUILDNAME)_simc.o: $(CPUFILES)
-	@ echo "CPUCOMPILER $@"
-	@ $(CPUCOMPILER) $< $(ALL_FLAGS) -I$(SIMMAXDIR) -D__SIM__ -DDESIGN_NAME=$(PRJ) -c -o $@
+	$(CPUCOMPILER) $< $(ALL_FLAGS) -I$(SIMMAXDIR) -D__SIM__ -DDESIGN_NAME=$(PRJ) -c -o $@
 
 $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
-	@ echo "CPUCOMPILER $@"
-	@ $(CPUCOMPILER) $(ALL_FLAGS) -o $@ $^ $(LFLAGS)
+	$(CPUCOMPILER) $(ALL_FLAGS) -o $@ $^ $(LFLAGS)
 
 buildsim:$(PRJBUILDNAME)_sim 
 
 runsim: $(PRJBUILDNAME)_sim
-	@ echo "START sim"
-	@ $(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
-	@ echo -e "RUN sim\n"
-	@ SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(USER)a0:$(USER)a
-	@ echo -e "STOP sim\n"
-	@ make stopsim
+	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
+	SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(USER)a0:$(USER)a
+	make stopsim
 
 stopsim:
-	@ $(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) stop
+	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) stop
 
 gdbsim:
 	DEBUG_FLAGS="-O0 -g" make $(PRJBUILDNAME)_sim
@@ -182,25 +172,22 @@ gdbsim:
 # DFE {{{
 
 $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
-	@ echo "PROTOC $(PROTOFILES)"
-	@ mkdir -p $(PROTODISTDIR)
-	@ protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
-	@ echo "MAXJC $(ENGINEFILES) $(GENFILES)"
-	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
-	@ echo "MAXJAVARUN $(MANAGER)" 
-	@ MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src'\
-		$(MAXJAVARUN) -v -m 8192 $(MAXAPP)\
-		DFEModel=$(DFEModel)\
-		maxFileName=$(PRJ)\
-		target='DFE'  \
-		enableMPCX=$(MPCX)\
+	mkdir -p $(PROTODISTDIR)
+	protoc -I=$(PROTOSRCDIR) --java_out=$(PROTODISTDIR) $(PROTOFILES)
+	$(MAXJC) $(JFLAGS) $(ENGINEFILES) $(GENFILES)
+	MAXAPPJCP=$(PROTOBUFJAR):. MAXAPPPKG=$(PKG) MAXSOURCEDIRS='../src' \
+		$(MAXJAVARUN) -m 8192 $(MAXAPP) \
+		DFEModel=$(DFEModel) \
+		maxFileName=$(PRJ) \
+		target='DFE' \
+		enableMPCX=$(MPCX) \
 		$(BUILD_PARAMS)
-	@ cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
-	@ rm $(DFEMAXDIR)/$(PRJ).h
-	@ rm $(DFEMAXDIR)/$(PRJ).max
-	@ cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
-	@ cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
-	@ rm -rf $(DFEMAXDIR)/../scratch
+	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
+	rm $(DFEMAXDIR)/$(PRJ).h
+	rm $(DFEMAXDIR)/$(PRJ).max
+	cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
+	cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
+	rm -rf $(DFEMAXDIR)/../scratch
 
 $(PRJBUILDNAME)_dfe.o: $(DFEMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@

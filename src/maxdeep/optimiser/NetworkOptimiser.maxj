@@ -99,6 +99,32 @@ public class NetworkOptimiser {
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
         knl.getInput("wgt") <== wgtFromCPU;
 
+      } else if (graph.isPoolingLayer(idx)) {
+        int H = graph.getInputHeight(idx);
+        int W = graph.getInputWidth(idx);
+        int C = graph.getInputChannel(idx);
+        int S = graph.getStride(idx);
+        int K = graph.getKernelSize(idx);
+
+        name = graph.getLayerName(idx);
+
+        LOGGER.info("Creating Pooling layer: " + name);
+        LOGGER.info("H = " + Integer.toString(H));
+        LOGGER.info("W = " + Integer.toString(W));
+        LOGGER.info("C = " + Integer.toString(C));
+        LOGGER.info("K = " + Integer.toString(K));
+        LOGGER.info("S = " + Integer.toString(S));
+
+        knl = manager.addKernel(
+            new PoolingLayerKernel(
+              manager.makeKernelParameters(name),
+              H, W, C, K, S));
+
+      } else if (graph.isReLULayer(idx)) {
+        name = graph.getLayerName(idx);
+        LOGGER.info("Creating ReLU layer: " + name);
+        knl = manager.addKernel(
+            new ReLULayerKernel(manager.makeKernelParameters(name)));
       } else {
         throw new UnsupportedOperationException("Layer type not supported");
       }
@@ -111,8 +137,11 @@ public class NetworkOptimiser {
     for (idx = 1; idx < numOfLayers; idx ++) {
       // connect its top to the bottom blobs it belongs to
       String btm = graph.getLayerBtmName(idx);
+      String top = graph.getLayerTopName(idx);
       KernelBlock btmKnl = kernelBlocks.get(graph.getLayerName(idx));
       int topIdx = graph.getBlobTopOfLayer(btm);
+
+      LOGGER.info("[" + btm + "] -> [" + top + "]");
       
       if (graph.isInputLayer(topIdx)) {
         btmKnl.getInput("inp") <== CPUInp;
@@ -123,7 +152,6 @@ public class NetworkOptimiser {
       }
 
       if (idx == numOfLayers - 1) {
-        String top = graph.getLayerTopName(idx); 
         DFELink CPUOut = manager.addStreamToCPU(DEFAULT_CPU_OUT_NAME);
 
         CPUOut <== btmKnl.getOutput("opt");

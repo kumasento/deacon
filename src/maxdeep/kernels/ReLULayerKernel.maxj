@@ -11,8 +11,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
  */
 public class ReLULayerKernel extends Kernel {
   
-  public static final String INP_NAME = "relu_inp";
-  public static final String OUT_NAME = "relu_out";
+  public static final String INP_NAME = "inp";
+  public static final String OUT_NAME = "opt";
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 

@@ -64,6 +64,9 @@ public class NeuralNetworkGraph {
       BlobShape btmShape = null;
       BlobShape.Builder topShapeBuilder = null;
 
+      String btm;
+      int kernelSize, stride;
+
       // store essential information for each layer
       switch (getCanonicalLayerType(idx)) {
         case INPUT:
@@ -73,15 +76,15 @@ public class NeuralNetworkGraph {
           blobTopOfLayer.put(top, idx);
           break;
         case CONV:
-          String bottom = layer.getBottom(0);
-          blobBtmOfLayer.put(bottom, idx);
+          btm = layer.getBottom(0);
+          blobBtmOfLayer.put(btm, idx);
           blobTopOfLayer.put(top, idx);
 
           ConvolutionParameter convParam = layer.getConvolutionParam();
-          int kernelSize                 = (int) convParam.getKernelSize(0);
-          int stride                     = (int) convParam.getStride(0);
+          kernelSize                     = (int) convParam.getKernelSize(0);
+          stride                         = (int) convParam.getStride(0);
           topShapeBuilder                = BlobShape.newBuilder();
-          btmShape                       = blobs.get(bottom);
+          btmShape                       = blobs.get(btm);
 
           // create blob shape object for the top blob of the convolution layer.
           topShapeBuilder.addDim(btmShape.getDim(0));
@@ -92,10 +95,8 @@ public class NeuralNetworkGraph {
           blobs.put(top, topShapeBuilder.build());
           break;
         case FC:
-          System.out.println("Found FC layer");
-
           // still suppose there is only one bottom
-          String btm = layer.getBottom(0);
+          btm = layer.getBottom(0);
           blobBtmOfLayer.put(btm, idx);
           blobTopOfLayer.put(top, idx);
 
@@ -113,6 +114,43 @@ public class NeuralNetworkGraph {
 
           blobs.put(top, topShapeBuilder.build());
 
+          break;
+        case POOL:
+          // still suppose there is only one bottom
+          btm = layer.getBottom(0);
+          blobBtmOfLayer.put(btm, idx);
+          blobTopOfLayer.put(top, idx);
+
+          // calculate the blob shape for the top
+          PoolingParameter poolParam = layer.getPoolingParam();
+          topShapeBuilder            = BlobShape.newBuilder();
+          btmShape                   = blobs.get(btm);
+          kernelSize                 = (int) poolParam.getKernelSize();
+          stride                     = (int) poolParam.getStride();
+          
+          // build the top blob shape
+          topShapeBuilder.addDim(btmShape.getDim(0));
+          topShapeBuilder.addDim(btmShape.getDim(1));
+          topShapeBuilder.addDim((btmShape.getDim(2) - kernelSize) / stride + 1);
+          topShapeBuilder.addDim((btmShape.getDim(3) - kernelSize) / stride + 1);
+
+          blobs.put(top, topShapeBuilder.build());
+
+          break;
+        case RELU:
+          btm = layer.getBottom(0);
+          blobBtmOfLayer.put(btm, idx);
+          blobTopOfLayer.put(top, idx);
+
+          topShapeBuilder = BlobShape.newBuilder();
+          btmShape        = blobs.get(btm);
+          // build the top blob shape
+          topShapeBuilder.addDim(btmShape.getDim(0));
+          topShapeBuilder.addDim(btmShape.getDim(1));
+          topShapeBuilder.addDim(btmShape.getDim(2));
+          topShapeBuilder.addDim(btmShape.getDim(3));
+
+          blobs.put(top, topShapeBuilder.build());
           break;
         default:
           break;
@@ -145,6 +183,14 @@ public class NeuralNetworkGraph {
   public Boolean isFCLayer(int idx) {
     return getLayerType(idx).equals("InnerProduct");
   }
+  
+  public Boolean isPoolingLayer(int idx) {
+    return getLayerType(idx).equals("Pooling");
+  }
+
+  public Boolean isReLULayer(int idx) {
+    return getLayerType(idx).equals("ReLU");
+  }
   // }}}
   // Getters {{{
   /**
@@ -160,6 +206,10 @@ public class NeuralNetworkGraph {
       return LayerType.CONV;
     if (layers[idx].getType().equals("InnerProduct"))
       return LayerType.FC;
+    if (layers[idx].getType().equals("Pooling"))
+      return LayerType.POOL;
+    if (layers[idx].getType().equals("ReLU"))
+      return LayerType.RELU;
     return null;
   }
 
@@ -207,31 +257,43 @@ public class NeuralNetworkGraph {
       inputLayerSize *= dim;
     return inputLayerSize;
   }
-  // Convolution {{{
+  //  {{{
   public int getInputHeight(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV || type == LayerType.FC)
+    if (type == LayerType.CONV ||
+        type == LayerType.FC   ||
+        type == LayerType.POOL ||
+        type == LayerType.RELU)
       return (int) blobs.get(layers[idx].getBottom(0)).getDim(2);
 
     throw new IllegalArgumentException("Layer don't have input height");
   }
   public int getInputWidth(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV || type == LayerType.FC)
+    if (type == LayerType.CONV ||
+        type == LayerType.FC   ||
+        type == LayerType.POOL ||
+        type == LayerType.RELU)
       return (int) blobs.get(layers[idx].getBottom(0)).getDim(3);
     
     throw new IllegalArgumentException("Layer don't have input width");
   }
   public int getInputChannel(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV || type == LayerType.FC)
+    if (type == LayerType.CONV ||
+        type == LayerType.FC   ||
+        type == LayerType.POOL ||
+        type == LayerType.RELU)
       return (int) blobs.get(layers[idx].getBottom(0)).getDim(1);
 
     throw new IllegalArgumentException("Layer don't have input channel");
   }
   public int getOutputChannel(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV || type == LayerType.FC)
+    if (type == LayerType.CONV ||
+        type == LayerType.FC   ||
+        type == LayerType.POOL ||
+        type == LayerType.RELU)
       return (int) blobs.get(layers[idx].getTop(0)).getDim(1);
 
     throw new IllegalArgumentException("Layer don't have output channel");
@@ -240,6 +302,8 @@ public class NeuralNetworkGraph {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV)
       return layers[idx].getConvolutionParam().getKernelSize(0);
+    if (type == LayerType.POOL)
+      return layers[idx].getPoolingParam().getKernelSize();
     
     throw new IllegalArgumentException("Layer don't have kernel size");
   }
@@ -247,6 +311,8 @@ public class NeuralNetworkGraph {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV)
       return layers[idx].getConvolutionParam().getStride(0);
+    if (type == LayerType.POOL)
+      return layers[idx].getPoolingParam().getStride();
 
     throw new IllegalArgumentException("Layer don't have kernel size");
   }

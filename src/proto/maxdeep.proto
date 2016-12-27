@@ -23,6 +23,8 @@ message LayerParameter {/*{{{*/
   optional InputParameter input_param = 143;
   optional ConvolutionParameter convolution_param = 106;
   optional InnerProductParameter inner_product_param = 117;
+  optional PoolingParameter pooling_param = 121;
+  optional ReLUParameter relu_param = 123;
 }/*}}}*/
 // Layer parameters {{{
 message InputParameter {/*{{{*/
@@ -35,5 +37,11 @@ message ConvolutionParameter {/*{{{*/
 }/*}}}*/
 message InnerProductParameter {/*{{{*/
   optional uint32 num_output = 1;
+}/*}}}*/
+message PoolingParameter {/*{{{*/
+  optional uint32 kernel_size = 2;
+  optional uint32 stride = 3;
+}/*}}}*/
+message ReLUParameter {/*{{{*/
 }/*}}}*/
 // }}}

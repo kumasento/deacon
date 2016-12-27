@@ -12,8 +12,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
  */
 public class PoolingLayerKernel extends Kernel {
 
-  public static final String POOLING_INP_NAME = "pooling_inp";
-  public static final String POOLING_OUT_NAME = "pooling_out";
+  public static final String POOLING_INP_NAME = "inp";
+  public static final String POOLING_OUT_NAME = "opt";
 
   private static final DFEType COUNTER_TYPE = dfeInt(32);
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
