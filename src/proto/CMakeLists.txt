@@ -2,7 +2,6 @@
 # note that this requires the CMake and the Protobuf are installed under 
 # a same path prefix.
 find_package (Protobuf REQUIRED)
-
 # Generate protobuf code for Java and C++
 include_directories (${PROTOBUF_INCLUDE_DIR})
 
@@ -19,6 +18,8 @@ endif ()
 # PROTO_CPP_FILE_NAME: The name of the generated C++ file
 set (PROTO_PATH "${PROJECT_SOURCE_DIR}/src/proto")
 set (PROTO_FILE "maxdeep.proto")
+
+# Generate CPP interface {{{
 set (PROTO_CPP_GEN_DIR "${PROJECT_BINARY_DIR}/cpp_gen")
 set (PROTO_CPP_SRC_NAME "maxdeep.pb.cc")
 set (PROTO_CPP_HDR_NAME "maxdeep.pb.h")
@@ -44,12 +45,11 @@ add_custom_command (
     -I${PROTO_PATH}
     ${PROTO_PATH}/${PROTO_FILE}
   DEPENDS ${PROTO_FILE}
-  COMMENT "Running protoc on ${PROTO_FILE}" VERBATIM
+  COMMENT "Running protoc on ${PROTO_FILE} to generate CPP code" VERBATIM
 )
 
 # Let CMake know that these files will be generated
-set_source_files_properties(${PROTO_CPP_GEN_FILES}
-  PROPERTIES GENERATED TRUE)
+set_source_files_properties(${PROTO_CPP_GEN_FILES} PROPERTIES GENERATED TRUE)
 add_library(protocpp STATIC ${PROTO_CPP_GEN_FILES})
 
 # link the include directories into the protocpp target
@@ -57,3 +57,36 @@ add_library(protocpp STATIC ${PROTO_CPP_GEN_FILES})
 # directories
 target_include_directories (protocpp PUBLIC ${PROTO_CPP_GEN_DIR})
 target_include_directories (protocpp PUBLIC ${PROTOBUF_INCLUDE_DIR})
+# }}}
+# Generate Java Interface {{{
+# protojava will be used to generate the target .max file
+find_package (Java REQUIRED)
+include (UseJava)
+
+set (PROTO_JAVA_GEN_DIR ${PROJECT_BINARY_DIR}/java_gen)
+set (PROTO_JAVA_SRC_DIR ${PROTO_JAVA_GEN_DIR}/maxdeep/proto)
+set (PROTO_JAVA_SRC_NAME "MaxDeepProtos.java")
+set (PROTO_JAVA_SRC_FILE ${PROTO_JAVA_SRC_DIR}/${PROTO_JAVA_SRC_NAME})
+
+add_custom_command (
+  OUTPUT ${PROTO_JAVA_SRC_DIR}/${PROTO_JAVA_SRC_NAME}
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${PROTO_JAVA_GEN_DIR}
+  COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+    --java_out=${PROTO_JAVA_GEN_DIR}
+    -I${PROTO_PATH}
+    ${PROTO_PATH}/${PROTO_FILE}
+  DEPENDS ${PROTO_FILE}
+  COMMENT "Running protoc on ${PROTO_FILE} to generate Java code" VERBATIM
+)
+
+set (PROTO_JAVA_JAR ${PROJECT_SOURCE_DIR}/third_party/protobuf-java-3.1.0.jar)
+set_source_files_properties(${PROTO_JAVA_SRC_FILE} PROPERTIES GENERATED TRUE)
+add_custom_command(
+  OUTPUT ${PROTO_JAVA_GEN_DIR}/maxdeep.pb.jar
+  COMMAND javac -d ${PROTO_JAVA_GEN_DIR} ${PROTO_JAVA_SRC_FILE} -cp ${PROTO_JAVA_JAR}
+  COMMAND jar cf ${PROTO_JAVA_GEN_DIR}/maxdeep.pb.jar -C ${PROTO_JAVA_GEN_DIR} .
+  DEPENDS ${PROTO_JAVA_SRC_FILE}
+  COMMENT "Generating maxdeep.pb.jar"
+)
+add_custom_target(protojava DEPENDS ${PROTO_JAVA_GEN_DIR}/maxdeep.pb.jar)
+# }}}
