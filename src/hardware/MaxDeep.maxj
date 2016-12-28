@@ -2,7 +2,6 @@ package maxdeep;
 
 import com.maxeler.maxcompiler.v2.build.EngineParameters;
 
-import maxdeep.kernels.*;
 import maxdeep.managers.NetworkManager;
 import maxdeep.proto.MaxDeepProtos.NetParameter;
 import maxdeep.graph.NeuralNetworkGraph;
@@ -21,9 +20,8 @@ public class MaxDeep {
         "%1$ta %1$tH:%1$tM: [%3$s] %5$s%6$s%n");
 
     NetParameter netParameter = null;
-
     try {
-      FileInputStream fis = new FileInputStream("../models/lenet.prototxt"); 
+      FileInputStream fis = new FileInputStream("/home/vzhao/projects/maxdeep/models/lenet.prototxt"); 
       InputStreamReader reader = new InputStreamReader(fis, "ASCII");
       NetParameter.Builder builder = NetParameter.newBuilder();
       TextFormat.merge(reader, builder);

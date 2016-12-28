@@ -15,5 +15,6 @@ message (STATUS "Binary directory: ${PROJECT_BINARY_DIR}")
 message (STATUS "Source directory: ${PROJECT_SOURCE_DIR}")
 
 include (cmake/Dependencies.cmake)
+include (cmake/Maxeler.cmake)
 
 add_subdirectory(src/)
