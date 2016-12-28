@@ -1,4 +1,6 @@
-# Protobuf
+# Protobuf: find the environment variables at first
+# note that this requires the CMake and the Protobuf are installed under 
+# a same path prefix.
 find_package (Protobuf REQUIRED)
 
 # Generate protobuf code for Java and C++
@@ -25,8 +27,7 @@ set (PROTO_CPP_GEN_FILES
   ${PROTO_CPP_GEN_DIR}/${PROTO_CPP_HDR_NAME})
 
 # Include the generated directory
-include_directories (SYSTEM ${PROTO_CPP_GEN_DIR})
-include_directories (SYSTEM ${PROTOBUF_INCLUDE_DIR})
+include_directories (${PROTO_CPP_GEN_DIR})
 
 # The following command will generate the source files from protoc
 # which is listed in the official CMake tutorial (they suggest to 
@@ -34,7 +35,10 @@ include_directories (SYSTEM ${PROTOBUF_INCLUDE_DIR})
 add_custom_command (
   OUTPUT "${PROTO_CPP_GEN_DIR}/${PROTO_CPP_SRC_NAME}"
          "${PROTO_CPP_GEN_DIR}/${PROTO_CPP_HDR_NAME}"
+  # create the generate directory at first, it will not be generated 
+  # automatically by protoc
   COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTO_CPP_GEN_DIR}"
+  # the protoc command, which follows the standard usage
   COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
     --cpp_out=${PROTO_CPP_GEN_DIR}
     -I${PROTO_PATH}
