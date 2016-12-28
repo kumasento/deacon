@@ -15,19 +15,41 @@ endif ()
 # PROTO_FILE: The path to the **single** source .proto file
 # PROTO_CPP_GEN_DIR: The generate directory of the C++ file
 # PROTO_CPP_FILE_NAME: The name of the generated C++ file
-set (PROTO_FILE "${PROJECT_SOURCE_DIR}/src/proto/maxdeep.proto")
-set (PROTO_CPP_GEN_DIR "${PROJECT_BINARY_DIR}/include/maxdeep/proto")
-set (PROTO_CPP_FILE_NAME "maxdeep")
+set (PROTO_PATH "${PROJECT_SOURCE_DIR}/src/proto")
+set (PROTO_FILE "maxdeep.proto")
+set (PROTO_CPP_GEN_DIR "${PROJECT_BINARY_DIR}/cpp_gen")
+set (PROTO_CPP_SRC_NAME "maxdeep.pb.cc")
+set (PROTO_CPP_HDR_NAME "maxdeep.pb.h")
+set (PROTO_CPP_GEN_FILES 
+  ${PROTO_CPP_GEN_DIR}/${PROTO_CPP_SRC_NAME}
+  ${PROTO_CPP_GEN_DIR}/${PROTO_CPP_HDR_NAME})
 
 # Include the generated directory
-include_directories ("${PROJECT_BINARY_DIR}/include")
+include_directories (SYSTEM ${PROTO_CPP_GEN_DIR})
+include_directories (SYSTEM ${PROTOBUF_INCLUDE_DIR})
 
-# Set generate target
+# The following command will generate the source files from protoc
+# which is listed in the official CMake tutorial (they suggest to 
+# add the code generation target as a custom command).
 add_custom_command (
-  OUTPUT "${PROTO_CPP_GEN_DIR}/${PROTO_CPP_FILE_NAME}"
+  OUTPUT "${PROTO_CPP_GEN_DIR}/${PROTO_CPP_SRC_NAME}"
+         "${PROTO_CPP_GEN_DIR}/${PROTO_CPP_HDR_NAME}"
   COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTO_CPP_GEN_DIR}"
-  COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --cpp_out ${PROTO_CPP_GEN_DIR}
-    ${PROTO_CPP_FILE_NAME}
+  COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+    --cpp_out=${PROTO_CPP_GEN_DIR}
+    -I${PROTO_PATH}
+    ${PROTO_PATH}/${PROTO_FILE}
   DEPENDS ${PROTO_FILE}
   COMMENT "Running protoc on ${PROTO_FILE}" VERBATIM
 )
+
+# Let CMake know that these files will be generated
+set_source_files_properties(${PROTO_CPP_GEN_FILES}
+  PROPERTIES GENERATED TRUE)
+add_library(protocpp STATIC ${PROTO_CPP_GEN_FILES})
+
+# link the include directories into the protocpp target
+# which will allow those targets linked to protocpp to include these 
+# directories
+target_include_directories (protocpp PUBLIC ${PROTO_CPP_GEN_DIR})
+target_include_directories (protocpp PUBLIC ${PROTOBUF_INCLUDE_DIR})
