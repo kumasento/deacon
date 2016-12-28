@@ -3,9 +3,13 @@
 // #include "Maxfiles.h"
 
 #include "maxdeep.pb.h"
+#include "glog/logging.h"
 
 int main(int argc, char *argv[]) {
-  std::cout << "Running Simulation ..." << std::endl;
+  ::google::InitGoogleLogging(argv[0]);
+  FLAGS_logtostderr = 1;
+
+  LOG(INFO) << "Running MaxDeep Simulation ...";
 
   return 0;
 }
