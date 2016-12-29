@@ -5,7 +5,7 @@ import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
-// import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 import maxdeep.kernels.*;
 import maxdeep.managers.NetworkManager;
@@ -75,6 +75,8 @@ public class NetworkOptimiser {
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
         knl.getInput("wgt") <== wgtFromCPU;
 
+        ei.setStream(wgtName, CPUTypes.FLOAT, K * K * C * F);
+        ei.setTicks(name, H * W * C * F);
       } else if (graph.isFCLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
@@ -99,6 +101,10 @@ public class NetworkOptimiser {
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
         knl.getInput("wgt") <== wgtFromCPU;
 
+        InterfaceParam FCLoopLength = ei.getAutoLoopOffset(name, "fcLoopLength");
+        ei.ignoreAutoLoopOffset(name, "fcLoopLength");
+        ei.setStream(wgtName, CPUTypes.FLOAT, H * W * C * numOutput);
+        ei.setTicks(name, FCLoopLength * H * W * C * numOutput);
       } else if (graph.isPoolingLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
@@ -120,11 +126,17 @@ public class NetworkOptimiser {
               manager.makeKernelParameters(name),
               H, W, C, K, S));
 
+        ei.setTicks(name, C * H * W);
       } else if (graph.isReLULayer(idx)) {
+        int H = graph.getInputHeight(idx);
+        int W = graph.getInputWidth(idx);
+        int C = graph.getInputChannel(idx);
+
         name = graph.getLayerName(idx);
         LOGGER.info("Creating ReLU layer: " + name);
         knl = manager.addKernel(
             new ReLULayerKernel(manager.makeKernelParameters(name)));
+        ei.setTicks(name, C * H * W);
       } else {
         throw new UnsupportedOperationException("Layer type not supported");
       }

@@ -7,6 +7,13 @@ set (MAXJ_DEPEND_JARS
 # Only depends on both the jar file (trigger update) and the target protojava
 # (let CMake find the build command) will make it work correctly
 set (MAXJ_DEPEND_TARGETS protojava ${PROJECT_BINARY_DIR}/java_gen/maxdeep.pb.jar)
+set (MAXJ_BUILD_PARAMS
+  "protoFile=/home/vzhao/projects/maxdeep/models/lenet.prototxt")
 
-add_max(${MAXJ_PROJECT_NAME} ${MAXJ_DFE_MODEL} "${ENGINEFILES}"
-  ${MAXJ_DEPEND_JARS} "${MAXJ_DEPEND_TARGETS}")
+add_max(main
+  ${MAXJ_PROJECT_NAME}
+  ${MAXJ_DFE_MODEL}
+  ${MAXJ_BUILD_PARAMS}
+  "${ENGINEFILES}"
+  ${MAXJ_DEPEND_JARS}
+  "${MAXJ_DEPEND_TARGETS}")

@@ -17,4 +17,7 @@ message (STATUS "Source directory: ${PROJECT_SOURCE_DIR}")
 include (cmake/Dependencies.cmake)
 include (cmake/Maxeler.cmake)
 
+# This instruction must be placed in the root directory
+enable_testing ()
+
 add_subdirectory(src/)

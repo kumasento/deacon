@@ -1,6 +1,7 @@
 # external projects for gflags and glog
 include (ExternalProject)
 # pthread {{{
+# http://stackoverflow.com/questions/5395309/cmake-and-threads
 find_package (Threads REQUIRED)
 add_library(pthread INTERFACE)
 target_link_libraries(pthread INTERFACE ${CMAKE_THREAD_LIBS_INIT})
@@ -43,3 +44,24 @@ add_dependencies(libglog glog)
 set_target_properties(libglog PROPERTIES "IMPORTED_LOCATION" "${GLOG_LIBRARIES}")
 include_directories(${GLOG_INCLUDE_DIRS})
 # }}}
+# gtest {{{
+# External Project for Google Test
+# http://www.kaizou.org/2014/11/gtest-cmake/
+set(GTEST_INSTALL "${CMAKE_BINARY_DIR}/external/gtest-install")
+set(GTEST_PREFIX "${CMAKE_BINARY_DIR}/external/gtest-prefix")
+ExternalProject_Add(
+  gtest
+  URL https://github.com/google/googletest/archive/release-1.8.0.zip
+  PREFIX ${GTEST_PREFIX}
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${GTEST_INSTALL}
+)
+# set include and libraries for google test
+# create a new libgtest library based on GoogleTest
+add_library(libgtest IMPORTED GLOBAL STATIC)
+add_dependencies(libgtest gtest)
+set_target_properties(libgtest PROPERTIES 
+"IMPORTED_LOCATION" "${GTEST_INSTALL}/lib/libgtest.a"
+"IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}")
+include_directories("${GTEST_INSTALL}/include")
+# target_include_directories(libgtest PUBLIC "${GTEST_INSTALL}/include")
+

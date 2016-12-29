@@ -27,9 +27,11 @@ if (DEFINED ENV{MAXCOMPILERDIR} AND DEFINED ENV{MAXELEROSDIR})
 endif ()
 
 # Add a .max file target
-function (add_max prj dfemodel enginefiles jars deps)
-  set (SIMMAXNAME ${prj}_${dfemodel}_DFE_SIM) 
-  set (DFEMAXNAME ${prj}_${dfemodel}_DFE) 
+function (add_max target prj dfemodel params enginefiles jars deps)
+  set (MAXJAVACLASS ${prj})
+  set (MAXAPPNAME ${target}_${prj})
+  set (SIMMAXNAME ${MAXAPPNAME}_${dfemodel}_DFE_SIM) 
+  set (DFEMAXNAME ${MAXAPPNAME}_${dfemodel}_DFE) 
   set (SIMMAXDIR ${MAXCOMPILER_BUILD_DIR}/${SIMMAXNAME}/results)
   set (DFEMAXDIR ${MAXCOMPILER_BUILD_DIR}/${DFEMAXNAME}/results)
 
@@ -39,12 +41,10 @@ function (add_max prj dfemodel enginefiles jars deps)
   set (JFLAGS -cp ${MAXCOMPILERDIR}/lib/MaxCompiler.jar:${EXTRA_JARS} -1.6 -d .)
 
   set (ENGINEFILES ${enginefiles})
-  set (MAXAPPNAME ${prj})
   set (MAXFILENAME ${MAXAPPNAME}.max)
   set (MAXFILE ${SIMMAXDIR}/${MAXFILENAME})
 
   message (STATUS "MAXFILE: ${MAXFILE}")
-  message (STATUS "depends: ${deps}")
 
   string (TOLOWER ${prj} MAXPKG)
   set (MAXJAVARUN maxJavaRun)
@@ -57,15 +57,17 @@ function (add_max prj dfemodel enginefiles jars deps)
     # Generate MaxFile
     COMMAND MAXAPPJCP=${EXTRA_JARS}:.
       MAXAPPPKG=${MAXPKG}
-      ${MAXJAVARUN} -m ${MAXJAVARUNMEMSIZE} ${MAXAPPNAME}
+      ${MAXJAVARUN} -m ${MAXJAVARUNMEMSIZE} ${MAXJAVACLASS}
       DFEModel=${dfemodel}
       maxFileName=${MAXAPPNAME}
       target='DFE_SIM'
       enableMPCX=${MAXMPCX}
-    COMMAND 
+      ${params}
     DEPENDS ${deps} ${ENGINEFILES}
   )
-  add_custom_target (maxfile DEPENDS ${MAXFILE})
+  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target})
+  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target} PARENT_SCOPE)
+  add_custom_target (${MAXFILE_TARGET_NAME} DEPENDS ${MAXFILE})
 
   set (SLICCOMPILE sliccompile)
   add_custom_command (
@@ -78,9 +80,9 @@ function (add_max prj dfemodel enginefiles jars deps)
     PROPERTIES EXTERNAL_OBJECT TRUE
     GENERATED TRUE
   )
-  add_library (maxfile_sim ${MAXAPPNAME}_sim.o)
-  set_target_properties (maxfile_sim PROPERTIES LINKER_LANGUAGE CXX)
-  target_include_directories (maxfile_sim PUBLIC
+  add_library (${MAXFILE_TARGET_NAME}_sim ${MAXAPPNAME}_sim.o)
+  set_target_properties (${MAXFILE_TARGET_NAME}_sim PROPERTIES LINKER_LANGUAGE CXX)
+  target_include_directories (${MAXFILE_TARGET_NAME}_sim PUBLIC
     ${SIMMAXDIR})
 endfunction ()
 
@@ -97,9 +99,11 @@ function (add_runsim exe dfemodel)
   set (MAXJ_SLIC_CONF "use_simulation=${MAXJ_SIM_SYSTEM_NAME}")
   set (MAXJ_SIM_EXECUTABLE ${exe})
 
+  set (RUNSIM_TARGET_NAME runsim_${exe})
+  set (RUNSIM_TARGET_NAME runsim_${exe} PARENT_SCOPE)
   # Run simulation, no file generated
   add_custom_target(
-    runsim
+    ${RUNSIM_TARGET_NAME}
     # Restart the simulation system
     COMMAND ${MAXCOMPILERSIM}
       -n ${MAXJ_SIM_SYSTEM_NAME}

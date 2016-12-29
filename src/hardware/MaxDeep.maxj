@@ -1,8 +1,7 @@
 package maxdeep;
 
-import com.maxeler.maxcompiler.v2.build.EngineParameters;
-
 import maxdeep.managers.NetworkManager;
+import maxdeep.managers.MaxDeepEngineParameters;
 import maxdeep.proto.MaxDeepProtos.NetParameter;
 import maxdeep.graph.NeuralNetworkGraph;
 import maxdeep.optimiser.NetworkOptimiser;
@@ -19,9 +18,12 @@ public class MaxDeep {
     System.setProperty("java.util.logging.SimpleFormatter.format",
         "%1$ta %1$tH:%1$tM: [%3$s] %5$s%6$s%n");
 
+    MaxDeepEngineParameters params = new MaxDeepEngineParameters(args); 
+
     NetParameter netParameter = null;
     try {
-      FileInputStream fis = new FileInputStream("/home/vzhao/projects/maxdeep/models/lenet.prototxt"); 
+      FileInputStream fis = new FileInputStream(
+          (String) params.getParam(MaxDeepEngineParameters.PROTO_FILE)); 
       InputStreamReader reader = new InputStreamReader(fis, "ASCII");
       NetParameter.Builder builder = NetParameter.newBuilder();
       TextFormat.merge(reader, builder);
@@ -31,7 +33,6 @@ public class MaxDeep {
     }
 
     NeuralNetworkGraph graph = new NeuralNetworkGraph(netParameter);
-    EngineParameters params = new EngineParameters(args); 
     NetworkManager manager = new NetworkManager(params);
     NetworkOptimiser optimiser = new NetworkOptimiser();
 
