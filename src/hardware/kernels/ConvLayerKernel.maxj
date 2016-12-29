@@ -29,8 +29,7 @@ public class ConvLayerKernel extends Kernel {
       int F, /* number of output filters */
       int C, /* number of input feature map channels */
       int K  /* kernel size */
-      )
-  {
+  ) {
     super(params);
 
     // Constants {{{

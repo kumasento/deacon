@@ -81,6 +81,22 @@ function (add_max target prj dfemodel params enginefiles jars deps)
     GENERATED TRUE
   )
   add_library (${MAXFILE_TARGET_NAME}_sim ${MAXAPPNAME}_sim.o)
+  target_include_directories (
+    ${MAXFILE_TARGET_NAME}_sim
+    PUBLIC
+    ${MAXCOMPILERDIR}/include
+    ${MAXCOMPILERDIR}/include/slic
+    ${MAXELEROSDIR}/include
+    )
+  link_directories (${MAXCOMPILERDIR}/lib ${MAXELEROSDIR}/lib)
+  target_link_libraries (
+    ${MAXFILE_TARGET_NAME}_sim
+    maxeleros
+    slic
+    m
+    pthread
+    )
+
   set_target_properties (${MAXFILE_TARGET_NAME}_sim PROPERTIES LINKER_LANGUAGE CXX)
   target_include_directories (${MAXFILE_TARGET_NAME}_sim PUBLIC
     ${SIMMAXDIR})
@@ -115,6 +131,7 @@ function (add_runsim exe dfemodel)
       ${PROJECT_BINARY_DIR}/${MAXJ_SIM_EXECUTABLE}
       ${MAXJ_SIM_SYSTEM_ID}:${MAXJ_SIM_SYSTEM_NAME}
     DEPENDS ${MAXJ_SIM_EXECUTABLE}
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 
 endfunction ()

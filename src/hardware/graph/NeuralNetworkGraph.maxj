@@ -89,8 +89,8 @@ public class NeuralNetworkGraph {
           // create blob shape object for the top blob of the convolution layer.
           topShapeBuilder.addDim(btmShape.getDim(0));
           topShapeBuilder.addDim(convParam.getNumOutput());
-          topShapeBuilder.addDim((btmShape.getDim(2) - kernelSize) / stride + 1);
-          topShapeBuilder.addDim((btmShape.getDim(3) - kernelSize) / stride + 1);
+          topShapeBuilder.addDim((btmShape.getDim(2) + 2 - kernelSize) / stride + 1);
+          topShapeBuilder.addDim((btmShape.getDim(3) + 2 - kernelSize) / stride + 1);
 
           blobs.put(top, topShapeBuilder.build());
           break;

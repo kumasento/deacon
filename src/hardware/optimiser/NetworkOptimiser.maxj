@@ -75,8 +75,10 @@ public class NetworkOptimiser {
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
         knl.getInput("wgt") <== wgtFromCPU;
 
-        ei.setStream(wgtName, CPUTypes.FLOAT, K * K * C * F);
+        ei.setStream(wgtName, CPUTypes.FLOAT, K * K * C * F * CPUTypes.FLOAT.sizeInBytes());
         ei.setTicks(name, H * W * C * F);
+        LOGGER.info("ticks = " + Integer.toString(H * W * C));
+        LOGGER.info("size of weights = " + Integer.toString(K * K * C * F * CPUTypes.FLOAT.sizeInBytes()));
       } else if (graph.isFCLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);

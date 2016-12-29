@@ -19,10 +19,15 @@ function (add_runsim_test test_name)
   set (MAXJ_DFE_MODEL "MAX3424A")
   set (MAXJ_DEPEND_JARS
     ${PROJECT_BINARY_DIR}/java_gen/maxdeep.pb.jar:${PROJECT_SOURCE_DIR}/third_party/protobuf-java-3.1.0.jar)
-  set (MAXJ_DEPEND_TARGETS protojava ${PROJECT_BINARY_DIR}/java_gen/maxdeep.pb.jar)
+  set (MAXJ_DEPEND_TARGETS
+    protojava
+    ${PROJECT_BINARY_DIR}/java_gen/maxdeep.pb.jar
+    ${TEST_SRC_DIR}/${TEST_NAME}.prototxt)
   set (MAXJ_BUILD_PARAMS
     "protoFile=${TEST_SRC_DIR}/${TEST_NAME}.prototxt")
-  # after this function has been applied, a 
+
+  # after this function has been applied, a MAXFILE_TARGET_NAME based 
+  # targets will be generated and can be referenced in the current scope
   add_max(${TEST_NAME}
     ${MAXJ_PROJECT_NAME}
     ${MAXJ_DFE_MODEL}
@@ -33,8 +38,11 @@ function (add_runsim_test test_name)
 
   message (STATUS "Test target: ${MAXFILE_TARGET_NAME}")
 
+  # create interface target, which includes the third party libraries
+  # and other custom libraries
   set (INTERFACE_TARGET_NAME interface_${TEST_NAME})
   add_library (${INTERFACE_TARGET_NAME} ${INTERFACEFILES})
+  include_directories (${INTERFACE_TARGET_NAME} ${PROJECT_SOURCE_DIR}/include)
   add_dependencies (${INTERFACE_TARGET_NAME}
     ${MAXFILE_TARGET_NAME}_sim
     libglog
@@ -55,7 +63,11 @@ function (add_runsim_test test_name)
 
   message (STATUS "runsim target: ${RUNSIM_TARGET_NAME}")
 
-  add_test (NAME ${TEST_NAME} COMMAND make ${RUNSIM_TARGET_NAME})
+  # finally create the test
+  add_test (
+    NAME ${TEST_NAME}
+    COMMAND make ${RUNSIM_TARGET_NAME}
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endfunction ()
 
 add_runsim_test (test_conv_layer)
