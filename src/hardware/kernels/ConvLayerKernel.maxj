@@ -30,7 +30,8 @@ public class ConvLayerKernel extends Kernel {
       int F, /* number of output filters */
       int C, /* number of input feature map channels */
       int K, /* kernel size */
-      int P  /* padding size */
+      int P, /* padding size */
+      int S  /* stride size */
   ) {
     super(params);
 
@@ -44,14 +45,25 @@ public class ConvLayerKernel extends Kernel {
     int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
     int OUTPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(OUTPUT_BUF_SIZE);
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
+    int OUTPUT_SX            = (- KERNEL_LOWER - P) % S;
+    int OUTPUT_SY            = (- KERNEL_LOWER - P) % S;
     // }}}
     // Counter {{{
     
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = (C == 1) ? constant.var(0) : chain.addCounter(C, 1).cast(dfeInt(32));
-    DFEVar f = chain.addCounter(F, 1).cast(dfeInt(32));
-    DFEVar x = chain.addCounter(H, 1).cast(dfeInt(32));
-    DFEVar y = chain.addCounter(W, 1).cast(dfeInt(32));
+    DFEVar c  = (C == 1)
+      ? constant.var(0)
+      : chain.addCounter(C, 1).cast(dfeInt(32));
+    DFEVar f  = chain.addCounter(F, 1).cast(dfeInt(32));
+    DFEVar x  = chain.addCounter(H, S).cast(dfeInt(32));
+    DFEVar sx = (S == 1)
+      ? constant.var(0) : chain.addCounter(S, 1).cast(dfeInt(32));
+    DFEVar y  = chain.addCounter(W, S).cast(dfeInt(32));
+    DFEVar sy = (S == 1)
+      ? constant.var(0) : chain.addCounter(S, 1).cast(dfeInt(32));
+
+    DFEVar rx = x + sx;
+    DFEVar ry = y + sy;
 
     // }}}
     // Input Stream {{{
@@ -64,17 +76,18 @@ public class ConvLayerKernel extends Kernel {
     // only read weight vector at the begining of the first channel's
     // computation
    
-    DFEVar wgtEnable = (c === 0 & x === 0 & y === 0);
+    DFEVar wgtEnable = (c === 0 & rx === 0 & ry === 0);
     DFEVectorType<DFEVar> WEIGHT_TYPE = 
       new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
-    DFEVector<DFEVar> wgtInpVec = io.input(CONV_WGT_NAME, WEIGHT_TYPE, wgtEnable); 
+    DFEVector<DFEVar> wgtInpVec = io.input(CONV_WGT_NAME, WEIGHT_TYPE,
+        wgtEnable); 
 
     // }}}
     // Bias Stream {{{
     
     // bias will be loaded when computing the first channel's first element.
     // each filter will have a new bias loaded while computing the first channel
-    DFEVar biasEnable = (c === 0 & x === 0 & y === 0);
+    DFEVar biasEnable = (c === 0 & rx === 0 & ry === 0);
 
     // the bias term
     DFEVar bias = io.input(BIAS_NAME, DATA_TYPE, biasEnable);
@@ -83,20 +96,25 @@ public class ConvLayerKernel extends Kernel {
     // Input Buffer {{{
     Memory<DFEVar> inputBuf = mem.alloc(DATA_TYPE, INPUT_BUF_SIZE);
 
-    DFEVar writeInpBufAddr = (x * H + y);
+    DFEVar writeInpBufAddr = (rx * H + ry);
     writeInpBufAddr = writeInpBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
     inputBuf.write(writeInpBufAddr, inp, inpEnable);
+
     // }}}
     // Weight buffer {{{
+
     Memory<DFEVector<DFEVar>> wgtBuf = mem.alloc(WEIGHT_TYPE, WEIGHT_BUF_SIZE);
     DFEVar wgtBufAddr = (f * K * K).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
 
     wgtBuf.write(wgtBufAddr, wgtInpVec, wgtEnable);
+
     // }}}
     // Output Buffer {{{
+
     Memory<DFEVar> outputBuf = mem.alloc(DATA_TYPE, OUTPUT_BUF_SIZE);
 
-    DFEVar writeOutBufAddr = (f * H * W + x * H + y).cast(dfeUInt(OUTPUT_BUF_ADDR_BITS));
+    DFEVar writeOutBufAddr = (f * H * W + rx * H + ry).cast(dfeUInt(OUTPUT_BUF_ADDR_BITS));
+
     // }}}
     // Create Convolution Window {{{
 
@@ -112,29 +130,39 @@ public class ConvLayerKernel extends Kernel {
     for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
       for (int dy = KERNEL_LOWER; dy <= KERNEL_UPPER; dy ++) {
         // conditions {{{
-        DFEVar aboveUpper = x + dx >= H | y + dy >= W;
-        DFEVar belowLower = x + dx <  0 | y + dy <  0;
+
+        DFEVar aboveUpper = rx + dx >= H | ry + dy >= W;
+        DFEVar belowLower = rx + dx <  0 | ry + dy <  0;
         DFEVar outOfBound = (aboveUpper | belowLower);
         DFEVar readEnable = inpEnable;
+
         // }}}
         // address {{{
+
         // transform 2d coordinates to 1d vector indices
-        DFEVar readInpBufAddr  = (x + dx) * H + (y + dy);
+        DFEVar readInpBufAddr  = (rx + dx) * H + (ry + dy);
         readInpBufAddr = readInpBufAddr.cast(dfeUInt(INPUT_BUF_ADDR_BITS));
+
         // }}}
         // read {{{
+
         // read from stream only when f == 0
         DFEVar curr = (outOfBound)
           ? constant.var(0)
           : ((readEnable) 
               ? stream.offset(inp, dx * W + dy)
               : inputBuf.read(readInpBufAddr));
+
         // }}}
         // weight {{{
+
         DFEVar wgt = wgtVec[(dx - KERNEL_LOWER) * K + (dy - KERNEL_LOWER)];
+
         // }}}
         // output {{{
+       
         window[i ++] = curr * wgt;
+
         // }}}
       }
     }
@@ -163,11 +191,14 @@ public class ConvLayerKernel extends Kernel {
         
     // }}}
     // Output Stream {{{
+
     DFEVar optEnable = (
         (c === C - 1) &
-        (x + KERNEL_LOWER >= -P & x + KERNEL_UPPER <= H + P - 1) &
-        (y + KERNEL_LOWER >= -P & y + KERNEL_UPPER <= W + P - 1));
+        (sx === OUTPUT_SX & sy === OUTPUT_SY) &
+        (rx + KERNEL_LOWER >= -P & rx + KERNEL_UPPER <= H + P - 1) &
+        (ry + KERNEL_LOWER >= -P & ry + KERNEL_UPPER <= W + P - 1));
     io.output(CONV_OUT_NAME, result, DATA_TYPE, optEnable);
+    
     // }}}
   }
 }

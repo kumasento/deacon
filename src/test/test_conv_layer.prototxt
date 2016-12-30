@@ -14,6 +14,6 @@ layer {
     num_output: 256
     kernel_size: 3
     pad: 0
-    stride: 1
+    stride: 2
   }
 }

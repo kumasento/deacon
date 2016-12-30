@@ -57,6 +57,7 @@ public class NetworkOptimiser {
         int F = graph.getOutputChannel(idx);
         int K = graph.getKernelSize(idx);
         int P = graph.getPadding(idx);
+        int S = graph.getStride(idx);
 
         name = graph.getLayerName(idx);
         LOGGER.info("Creating CONV layer: " + name);
@@ -66,11 +67,12 @@ public class NetworkOptimiser {
         LOGGER.info("F = " + Integer.toString(F));
         LOGGER.info("K = " + Integer.toString(K));
         LOGGER.info("P = " + Integer.toString(P));
+        LOGGER.info("S = " + Integer.toString(S));
 
         knl = manager.addKernel(
             new ConvLayerKernel(
               manager.makeKernelParameters(graph.getLayerName(idx)),
-              H, W, F, C, K, P));
+              H, W, F, C, K, P, S));
 
         // add a stream for the weight input
         String wgtName = name + "_wgt";
@@ -183,6 +185,8 @@ public class NetworkOptimiser {
         CPUOut <== btmKnl.getOutput("opt");
         ei.setStream(DEFAULT_CPU_OUT_NAME, DEFAULT_CPU_OUT_TYPE,
           graph.getLayerOutputSize(idx) * DEFAULT_CPU_OUT_TYPE.sizeInBytes());
+        LOGGER.info("output size: " + Integer.toString(
+              graph.getLayerOutputSize(idx)));
       }
     }
     
