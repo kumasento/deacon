@@ -82,8 +82,8 @@ public class NeuralNetworkGraph {
         int padding                    = (int) convParam.getPad(0);
         topShapeBuilder                = BlobShape.newBuilder();
         btmShape                       = blobs.get(btm);
-        int topHeight                  = (btmShape.getDim(2) + 2 * padding - kernelSize) / stride + 1;
-        int topWidth                   = (btmShape.getDim(3) + 2 * padding - kernelSize) / stride + 1;
+        int topHeight                  = (int) (btmShape.getDim(2) + 2 * padding - kernelSize) / stride + 1;
+        int topWidth                   = (int) (btmShape.getDim(3) + 2 * padding - kernelSize) / stride + 1;
 
         // create blob shape object for the top blob of the convolution layer.
         topShapeBuilder.addDim(btmShape.getDim(0));
@@ -208,24 +208,31 @@ public class NeuralNetworkGraph {
   public int getNumOfLayers() {
     return layers.size();
   }
+
   public String getLayerType(int idx) {
     return layers[idx].getType();
   }
+
   public String getLayerName(int idx) {
     return layers[idx].getName();
   }
+
   public String getLayerBtmName(int idx) {
     return layers[idx].getBottom(0);
   }
+
   public String getLayerTopName(int idx) {
     return layers[idx].getTop(0);
   }
+
   public int getBlobTopOfLayer(String blobName) {
     return blobTopOfLayer.get(blobName);
   }
+
   public int getBlobBtmOfLayer(String blobName) {
     return blobBtmOfLayer.get(blobName);
   }
+
   public int getLayerOutputSize(int idx) {
     String blobName = getLayerTopName(idx);
     BlobShape shape = blobs.get(blobName);
@@ -239,8 +246,9 @@ public class NeuralNetworkGraph {
     if (isFCLayer(idx)) {
       return (int) shape.getDim(0) * (int) shape.getDim(1);
     }
-    return 0;
+    throw new IllegalArgumentException("Layer's output size is not implemented");
   }
+
   public int getInputLayerSize() {
     InputParameter inputParam = inputLayer.getInputParam();
     BlobShape shape = inputParam.getShape(0);
@@ -249,7 +257,7 @@ public class NeuralNetworkGraph {
       inputLayerSize *= dim;
     return inputLayerSize;
   }
-  //  {{{
+
   public int getInputHeight(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV ||
@@ -260,6 +268,7 @@ public class NeuralNetworkGraph {
 
     throw new IllegalArgumentException("Layer don't have input height");
   }
+
   public int getInputWidth(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV ||
@@ -270,6 +279,7 @@ public class NeuralNetworkGraph {
     
     throw new IllegalArgumentException("Layer don't have input width");
   }
+
   public int getInputChannel(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV ||
@@ -280,6 +290,7 @@ public class NeuralNetworkGraph {
 
     throw new IllegalArgumentException("Layer don't have input channel");
   }
+
   public int getOutputChannel(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV ||
@@ -290,6 +301,7 @@ public class NeuralNetworkGraph {
 
     throw new IllegalArgumentException("Layer don't have output channel");
   }
+
   public int getKernelSize(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV)
@@ -299,6 +311,7 @@ public class NeuralNetworkGraph {
     
     throw new IllegalArgumentException("Layer don't have kernel size");
   }
+
   public int getStride(int idx) {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV)
@@ -308,7 +321,12 @@ public class NeuralNetworkGraph {
 
     throw new IllegalArgumentException("Layer don't have kernel size");
   }
+  
+  public int getPadding(int idx) {
+    LayerType type = getCanonicalLayerType(idx);
+    if (type == LayerType.CONV)
+      return layers[idx].getConvolutionParam().getPad(0);
+    throw new IllegalArgumentException("Layer don't have padding");
+  }
   // }}}
-  // }}}
-
 }

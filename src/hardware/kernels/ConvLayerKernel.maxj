@@ -163,7 +163,11 @@ public class ConvLayerKernel extends Kernel {
         
     // }}}
     // Output Stream {{{
-    io.output(CONV_OUT_NAME, result, DATA_TYPE, c === C - 1);
+    DFEVar optEnable = (
+        (c === C - 1) &
+        (x + KERNEL_LOWER >= -P & x + KERNEL_UPPER <= H + P - 1) &
+        (y + KERNEL_LOWER >= -P & y + KERNEL_UPPER <= W + P - 1));
+    io.output(CONV_OUT_NAME, result, DATA_TYPE, optEnable);
     // }}}
   }
 }
