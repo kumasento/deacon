@@ -28,15 +28,19 @@ TEST(SingleConvLayer, MainTest) {
   test_conv_layer_MaxDeep_actions_t actions;
   actions.instream_conv_wgt = wgts_data.data();
   actions.instream_cpu_inp = inp_data.data();
+  actions.instream_conv_bias = bias_data.data();
   actions.outstream_cpu_out = opt;
 
   max_file_t *max_file = test_conv_layer_MaxDeep_init();
   max_engine_t *engine = max_load(max_file, "local:*");
 
+  LOG(INFO) << "Running test";
   test_conv_layer_MaxDeep_run(engine, &actions);
+  LOG(INFO) << "Done!";
 
   for (int i = 0; i < opt_data.size(); i ++)
     ASSERT_FLOAT_EQ(opt_data[i], opt[i]);
+  LOG(INFO) << "Passed";
 
   max_unload(engine);
 }

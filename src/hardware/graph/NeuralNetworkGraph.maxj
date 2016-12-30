@@ -65,95 +65,87 @@ public class NeuralNetworkGraph {
       BlobShape.Builder topShapeBuilder = null;
 
       String btm;
-      int kernelSize, stride;
-
       // store essential information for each layer
-      switch (getCanonicalLayerType(idx)) {
-        case INPUT:
-          this.inputLayer = layer;
-          // store its top blob into the hash
-          blobs.put(top, layer.getInputParam().getShape(0));
-          blobTopOfLayer.put(top, idx);
-          break;
-        case CONV:
-          btm = layer.getBottom(0);
-          blobBtmOfLayer.put(btm, idx);
-          blobTopOfLayer.put(top, idx);
+      if (getCanonicalLayerType(idx) == LayerType.INPUT) {
+        this.inputLayer = layer;
+        // store its top blob into the hash
+        blobs.put(top, layer.getInputParam().getShape(0));
+        blobTopOfLayer.put(top, idx);
+      } else if (getCanonicalLayerType(idx) == LayerType.CONV) {
+        btm = layer.getBottom(0);
+        blobBtmOfLayer.put(btm, idx);
+        blobTopOfLayer.put(top, idx);
 
-          ConvolutionParameter convParam = layer.getConvolutionParam();
-          kernelSize                     = (int) convParam.getKernelSize(0);
-          stride                         = (int) convParam.getStride(0);
-          topShapeBuilder                = BlobShape.newBuilder();
-          btmShape                       = blobs.get(btm);
+        ConvolutionParameter convParam = layer.getConvolutionParam();
+        int kernelSize                 = (int) convParam.getKernelSize(0);
+        int stride                     = (int) convParam.getStride(0);
+        int padding                    = (int) convParam.getPad(0);
+        topShapeBuilder                = BlobShape.newBuilder();
+        btmShape                       = blobs.get(btm);
+        int topHeight                  = (btmShape.getDim(2) + 2 * padding - kernelSize) / stride + 1;
+        int topWidth                   = (btmShape.getDim(3) + 2 * padding - kernelSize) / stride + 1;
 
-          // create blob shape object for the top blob of the convolution layer.
-          topShapeBuilder.addDim(btmShape.getDim(0));
-          topShapeBuilder.addDim(convParam.getNumOutput());
-          topShapeBuilder.addDim((btmShape.getDim(2) + 2 - kernelSize) / stride + 1);
-          topShapeBuilder.addDim((btmShape.getDim(3) + 2 - kernelSize) / stride + 1);
+        // create blob shape object for the top blob of the convolution layer.
+        topShapeBuilder.addDim(btmShape.getDim(0));
+        topShapeBuilder.addDim(convParam.getNumOutput());
+        topShapeBuilder.addDim(topHeight);
+        topShapeBuilder.addDim(topWidth);
 
-          blobs.put(top, topShapeBuilder.build());
-          break;
-        case FC:
-          // still suppose there is only one bottom
-          btm = layer.getBottom(0);
-          blobBtmOfLayer.put(btm, idx);
-          blobTopOfLayer.put(top, idx);
+        blobs.put(top, topShapeBuilder.build());
+      } else if (getCanonicalLayerType(idx) == LayerType.FC) {
+        // still suppose there is only one bottom
+        btm = layer.getBottom(0);
+        blobBtmOfLayer.put(btm, idx);
+        blobTopOfLayer.put(top, idx);
 
-          // calculate the blob shape for the top
-          InnerProductParameter ipParam = layer.getInnerProductParam();
-          int num_output                = ipParam.getNumOutput();
-          topShapeBuilder               = BlobShape.newBuilder();
-          btmShape                      = blobs.get(btm);
-          
-          // build the top blob shape
-          topShapeBuilder.addDim(btmShape.getDim(0));
-          topShapeBuilder.addDim(num_output);
-          topShapeBuilder.addDim(1);
-          topShapeBuilder.addDim(1);
+        // calculate the blob shape for the top
+        InnerProductParameter ipParam = layer.getInnerProductParam();
+        int num_output                = ipParam.getNumOutput();
+        topShapeBuilder               = BlobShape.newBuilder();
+        btmShape                      = blobs.get(btm);
+        
+        // build the top blob shape
+        topShapeBuilder.addDim(btmShape.getDim(0));
+        topShapeBuilder.addDim(num_output);
+        topShapeBuilder.addDim(1);
+        topShapeBuilder.addDim(1);
 
-          blobs.put(top, topShapeBuilder.build());
+        blobs.put(top, topShapeBuilder.build());
+      } else if (getCanonicalLayerType(idx) == LayerType.POOL) {
+        // still suppose there is only one bottom
+        btm = layer.getBottom(0);
+        blobBtmOfLayer.put(btm, idx);
+        blobTopOfLayer.put(top, idx);
 
-          break;
-        case POOL:
-          // still suppose there is only one bottom
-          btm = layer.getBottom(0);
-          blobBtmOfLayer.put(btm, idx);
-          blobTopOfLayer.put(top, idx);
+        // calculate the blob shape for the top
+        PoolingParameter poolParam = layer.getPoolingParam();
+        topShapeBuilder            = BlobShape.newBuilder();
+        btmShape                   = blobs.get(btm);
+        int kernelSize             = (int) poolParam.getKernelSize();
+        int stride                 = (int) poolParam.getStride();
+        
+        // build the top blob shape
+        topShapeBuilder.addDim(btmShape.getDim(0));
+        topShapeBuilder.addDim(btmShape.getDim(1));
+        topShapeBuilder.addDim((btmShape.getDim(2) - kernelSize) / stride + 1);
+        topShapeBuilder.addDim((btmShape.getDim(3) - kernelSize) / stride + 1);
 
-          // calculate the blob shape for the top
-          PoolingParameter poolParam = layer.getPoolingParam();
-          topShapeBuilder            = BlobShape.newBuilder();
-          btmShape                   = blobs.get(btm);
-          kernelSize                 = (int) poolParam.getKernelSize();
-          stride                     = (int) poolParam.getStride();
-          
-          // build the top blob shape
-          topShapeBuilder.addDim(btmShape.getDim(0));
-          topShapeBuilder.addDim(btmShape.getDim(1));
-          topShapeBuilder.addDim((btmShape.getDim(2) - kernelSize) / stride + 1);
-          topShapeBuilder.addDim((btmShape.getDim(3) - kernelSize) / stride + 1);
+        blobs.put(top, topShapeBuilder.build());
 
-          blobs.put(top, topShapeBuilder.build());
+      } else if (getCanonicalLayerType(idx) == LayerType.RELU) {
+        btm = layer.getBottom(0);
+        blobBtmOfLayer.put(btm, idx);
+        blobTopOfLayer.put(top, idx);
 
-          break;
-        case RELU:
-          btm = layer.getBottom(0);
-          blobBtmOfLayer.put(btm, idx);
-          blobTopOfLayer.put(top, idx);
+        topShapeBuilder = BlobShape.newBuilder();
+        btmShape        = blobs.get(btm);
+        // build the top blob shape
+        topShapeBuilder.addDim(btmShape.getDim(0));
+        topShapeBuilder.addDim(btmShape.getDim(1));
+        topShapeBuilder.addDim(btmShape.getDim(2));
+        topShapeBuilder.addDim(btmShape.getDim(3));
 
-          topShapeBuilder = BlobShape.newBuilder();
-          btmShape        = blobs.get(btm);
-          // build the top blob shape
-          topShapeBuilder.addDim(btmShape.getDim(0));
-          topShapeBuilder.addDim(btmShape.getDim(1));
-          topShapeBuilder.addDim(btmShape.getDim(2));
-          topShapeBuilder.addDim(btmShape.getDim(3));
-
-          blobs.put(top, topShapeBuilder.build());
-          break;
-        default:
-          break;
+        blobs.put(top, topShapeBuilder.build());
       }
 
       idx += 1;

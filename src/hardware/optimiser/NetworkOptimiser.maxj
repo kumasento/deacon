@@ -74,11 +74,21 @@ public class NetworkOptimiser {
         String wgtName = name + "_wgt";
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
         knl.getInput("wgt") <== wgtFromCPU;
+        ei.setStream(wgtName, CPUTypes.FLOAT,
+            K * K * C * F * CPUTypes.FLOAT.sizeInBytes());
 
-        ei.setStream(wgtName, CPUTypes.FLOAT, K * K * C * F * CPUTypes.FLOAT.sizeInBytes());
+        // add a stream for the bias input
+        String biasName = name + "_bias";
+        DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
+        knl.getInput(ConvLayerKernel.BIAS_NAME) <== biasFromCPU;
+        ei.setStream(biasName, CPUTypes.FLOAT,
+            F * CPUTypes.FLOAT.sizeInBytes());
+
+        // setup ticks
         ei.setTicks(name, H * W * C * F);
         LOGGER.info("ticks = " + Integer.toString(H * W * C));
-        LOGGER.info("size of weights = " + Integer.toString(K * K * C * F * CPUTypes.FLOAT.sizeInBytes()));
+        LOGGER.info("size of weights = " +
+            Integer.toString(K * K * C * F * CPUTypes.FLOAT.sizeInBytes()));
       } else if (graph.isFCLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);

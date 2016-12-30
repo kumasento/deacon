@@ -20,6 +20,7 @@ public class ConvLayerKernel extends Kernel {
   public static final String CONV_INP_NAME = "inp";
   public static final String CONV_WGT_NAME = "wgt";
   public static final String CONV_OUT_NAME = "opt";
+  public static final String BIAS_NAME = "bias";
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
@@ -28,7 +29,8 @@ public class ConvLayerKernel extends Kernel {
       int W, /* width of the input feature map */
       int F, /* number of output filters */
       int C, /* number of input feature map channels */
-      int K  /* kernel size */
+      int K, /* kernel size */
+      int P  /* padding size */
   ) {
     super(params);
 
@@ -44,22 +46,39 @@ public class ConvLayerKernel extends Kernel {
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
     // }}}
     // Counter {{{
+    
     CounterChain chain = control.count.makeCounterChain();
     DFEVar c = (C == 1) ? constant.var(0) : chain.addCounter(C, 1).cast(dfeInt(32));
     DFEVar f = chain.addCounter(F, 1).cast(dfeInt(32));
     DFEVar x = chain.addCounter(H, 1).cast(dfeInt(32));
     DFEVar y = chain.addCounter(W, 1).cast(dfeInt(32));
+
     // }}}
     // Input Stream {{{
+    
     DFEVar inpEnable = (f === 0).cast(dfeBool());
     DFEVar inp = io.input(CONV_INP_NAME, DATA_TYPE, inpEnable);
 
+    // }}}
+    // Weight Stream {{{
     // only read weight vector at the begining of the first channel's
     // computation
+   
     DFEVar wgtEnable = (c === 0 & x === 0 & y === 0);
     DFEVectorType<DFEVar> WEIGHT_TYPE = 
       new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
     DFEVector<DFEVar> wgtInpVec = io.input(CONV_WGT_NAME, WEIGHT_TYPE, wgtEnable); 
+
+    // }}}
+    // Bias Stream {{{
+    
+    // bias will be loaded when computing the first channel's first element.
+    // each filter will have a new bias loaded while computing the first channel
+    DFEVar biasEnable = (c === 0 & x === 0 & y === 0);
+
+    // the bias term
+    DFEVar bias = io.input(BIAS_NAME, DATA_TYPE, biasEnable);
+    
     // }}}
     // Input Buffer {{{
     Memory<DFEVar> inputBuf = mem.alloc(DATA_TYPE, INPUT_BUF_SIZE);
@@ -80,6 +99,7 @@ public class ConvLayerKernel extends Kernel {
     DFEVar writeOutBufAddr = (f * H * W + x * H + y).cast(dfeUInt(OUTPUT_BUF_ADDR_BITS));
     // }}}
     // Create Convolution Window {{{
+
     // a window of kernel
     DFEVar window [] = new DFEVar [K * K]; 
 
@@ -118,10 +138,13 @@ public class ConvLayerKernel extends Kernel {
         // }}}
       }
     }
+
     // }}}
     // Window Sum and the Feedback Loop {{{
-    // sum up all the kernel elements (assume weights are all 1)
-    DFEVar windowSum = constant.var(DATA_TYPE, 0);
+
+    // initialise with bias
+    DFEVar windowSum = bias;
+    
     for (DFEVar windowElem: window)
       // TODO: check maxpower solution
       windowSum = windowSum + windowElem;
