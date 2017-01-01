@@ -34,7 +34,8 @@ public class NetworkOptimiser {
     kernelBlocks = new HashMap<String, KernelBlock>();
     EngineInterface ei = new EngineInterface();
 
-    // setup input stream from CPU
+    // Setup input stream from CPU {{{
+    
     int inputStreamSize = graph.getInputLayerSize();
     LOGGER.info("Input stream size: " + inputStreamSize);
 
@@ -42,7 +43,9 @@ public class NetworkOptimiser {
     ei.setStream(DEFAULT_CPU_INP_NAME, DEFAULT_CPU_INP_TYPE,
         inputStreamSize * DEFAULT_CPU_INP_TYPE.sizeInBytes());
     
-    // create kernel in sequence
+    // }}}
+    // Create kernels {{{
+
     int idx;
     int numOfLayers = graph.getNumOfLayers();
     for (idx = 1; idx < numOfLayers; idx ++) {
@@ -50,6 +53,7 @@ public class NetworkOptimiser {
       String name = null;
       KernelBlock knl = null;
 
+      // Conv Layer {{{
       if (graph.isConvLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
@@ -93,11 +97,17 @@ public class NetworkOptimiser {
         LOGGER.info("ticks = " + Integer.toString(H * W * C));
         LOGGER.info("size of weights = " +
             Integer.toString(K * K * C * F * CPUTypes.FLOAT.sizeInBytes()));
-      } else if (graph.isFCLayer(idx)) {
+      } 
+      // }}}
+      // FC Layer {{{
+      else if (graph.isFCLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
         int C = graph.getInputChannel(idx);
         int numOutput = graph.getOutputChannel(idx);
+
+        int N = H * W * C;
+        int M = numOutput;
 
         name = graph.getLayerName(idx);
 
@@ -105,23 +115,38 @@ public class NetworkOptimiser {
         LOGGER.info("H = " + Integer.toString(H));
         LOGGER.info("W = " + Integer.toString(W));
         LOGGER.info("C = " + Integer.toString(C));
-        LOGGER.info("M = " + Integer.toString(H * W * C));
+        LOGGER.info("M = " + Integer.toString(M));
         LOGGER.info("numOutput = " + Integer.toString(numOutput));
 
+        // create kernel block
         knl = manager.addKernel(
             new FCLayerKernel(
-              manager.makeKernelParameters(name),
-              H * W * C, numOutput));
+              manager.makeKernelParameters(name), M, N));
 
+        // weight
         String wgtName = name + "_wgt";
         DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
-        knl.getInput("wgt") <== wgtFromCPU;
+        knl.getInput(FCLayerKernel.WGT_NAME) <== wgtFromCPU;
+        ei.setStream(wgtName, CPUTypes.FLOAT,
+            M * N * CPUTypes.FLOAT.sizeInBytes());
 
-        InterfaceParam FCLoopLength = ei.getAutoLoopOffset(name, "fcLoopLength");
+        // bias
+        String biasName = name + "_bias";
+        DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
+        knl.getInput(FCLayerKernel.BIAS_NAME) <== biasFromCPU;
+        ei.setStream(biasName, CPUTypes.FLOAT,
+            M * CPUTypes.FLOAT.sizeInBytes());
+
+        // loop offset
+        InterfaceParam L = ei.getAutoLoopOffset(name, "fcLoopLength");
         ei.ignoreAutoLoopOffset(name, "fcLoopLength");
-        ei.setStream(wgtName, CPUTypes.FLOAT, H * W * C * numOutput);
-        ei.setTicks(name, FCLoopLength * H * W * C * numOutput);
-      } else if (graph.isPoolingLayer(idx)) {
+
+        // ticks
+        ei.setTicks(name, L * N * M);
+      }
+      // }}}
+      // Pooling Layer {{{
+      else if (graph.isPoolingLayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
         int C = graph.getInputChannel(idx);
@@ -143,7 +168,10 @@ public class NetworkOptimiser {
               H, W, C, K, S));
 
         ei.setTicks(name, C * H * W);
-      } else if (graph.isReLULayer(idx)) {
+      }
+      // }}}
+      // ReLU Layer {{{
+      else if (graph.isReLULayer(idx)) {
         int H = graph.getInputHeight(idx);
         int W = graph.getInputWidth(idx);
         int C = graph.getInputChannel(idx);
@@ -153,13 +181,18 @@ public class NetworkOptimiser {
         knl = manager.addKernel(
             new ReLULayerKernel(manager.makeKernelParameters(name)));
         ei.setTicks(name, C * H * W);
-      } else {
+      }
+      // }}}
+      else {
         throw new UnsupportedOperationException("Layer type not supported");
       }
 
       kernelBlocks.put(name, knl);
     }
-    
+
+    // }}}
+    // Connect KernelBlocks {{{
+
     // connect kernels to each other by using top and bottom
     // the connection is established through blob
     for (idx = 1; idx < numOfLayers; idx ++) {
@@ -189,6 +222,7 @@ public class NetworkOptimiser {
               graph.getLayerOutputSize(idx)));
       }
     }
+    // }}}
     
     manager.createSLiCinterface(ei);
   }

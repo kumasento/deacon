@@ -36,7 +36,8 @@ if __name__ == '__main__':
     print 'The network definition must contain the \'data\' blob'
     exit(1)
 
-  data_blob.data[...] = np.random.random_sample(data_blob.data.shape)
+  data_blob.data[...] = np.asarray(
+      np.random.random_sample(data_blob.data.shape), dtype=np.float32)
 
   data_dir = os.path.join(test_data_path, test_name)
   if not os.path.isdir(data_dir):
@@ -45,7 +46,8 @@ if __name__ == '__main__':
   for layer_name, param in net.params.iteritems():
     for idx in range(len(param)):
       # fulfill each param in the layer
-      param[idx].data[...] = np.random.random_sample(param[idx].data.shape)
+      param[idx].data[...] = np.asarray(
+          np.random.random_sample(param[idx].data.shape), dtype=np.float32)
       print param[idx].data.shape
 
       file_path = os.path.join(data_dir, layer_name + '_param_' + str(idx) + '.bin')

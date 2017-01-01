@@ -41,7 +41,7 @@ public class ConvLayerKernel extends Kernel {
     int KERNEL_LOWER         = - K / 2;
     int INPUT_BUF_SIZE       = H * W;
     int OUTPUT_BUF_SIZE      = H * W * F;
-    int WEIGHT_BUF_SIZE      = F;
+    int WEIGHT_BUF_SIZE      = C * F;
     int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
     int OUTPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(OUTPUT_BUF_SIZE);
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
@@ -76,7 +76,7 @@ public class ConvLayerKernel extends Kernel {
     // only read weight vector at the begining of the first channel's
     // computation
    
-    DFEVar wgtEnable = (c === 0 & rx === 0 & ry === 0);
+    DFEVar wgtEnable = (rx === 0 & ry === 0);
     DFEVectorType<DFEVar> WEIGHT_TYPE = 
       new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
     DFEVector<DFEVar> wgtInpVec = io.input(CONV_WGT_NAME, WEIGHT_TYPE,
@@ -104,7 +104,7 @@ public class ConvLayerKernel extends Kernel {
     // Weight buffer {{{
 
     Memory<DFEVector<DFEVar>> wgtBuf = mem.alloc(WEIGHT_TYPE, WEIGHT_BUF_SIZE);
-    DFEVar wgtBufAddr = (f * K * K).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
+    DFEVar wgtBufAddr = (c * F + f).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
 
     wgtBuf.write(wgtBufAddr, wgtInpVec, wgtEnable);
 
@@ -171,7 +171,7 @@ public class ConvLayerKernel extends Kernel {
     // Window Sum and the Feedback Loop {{{
 
     // initialise with bias
-    DFEVar windowSum = bias;
+    DFEVar windowSum = (c === 0) ? bias : constant.var(0);
     
     for (DFEVar windowElem: window)
       // TODO: check maxpower solution

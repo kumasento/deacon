@@ -5,6 +5,7 @@ file (GLOB TEST_SRCS ${PROJECT_SOURCE_DIR}/src/test/*.cpp)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (TEST_SRC_DIR ${PROJECT_SOURCE_DIR}/src/test)
 
+# add_runsim_test {{{
 function (add_runsim_test test_name)
   set (TEST_NAME ${test_name})
   set (TEST_SRC ${TEST_SRC_DIR}/${TEST_NAME}.cpp)
@@ -69,5 +70,7 @@ function (add_runsim_test test_name)
     COMMAND make ${RUNSIM_TARGET_NAME}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endfunction ()
+# }}}
 
 add_runsim_test (test_conv_layer)
+add_runsim_test (test_fc_layer)
