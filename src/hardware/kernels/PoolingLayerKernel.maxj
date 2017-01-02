@@ -72,9 +72,6 @@ public class PoolingLayerKernel extends Kernel {
         maxVal = (maxVal < curr & ~outOfBound) ? curr : maxVal;
       }
     }
-    rx.simWatch("rx");
-    ry.simWatch("ry");
-
     // }}}
     // Output {{{
 
@@ -86,7 +83,6 @@ public class PoolingLayerKernel extends Kernel {
         (ry + KERNEL_LOWER >= -P) &
         (ry + KERNEL_UPPER <= W + P));
 
-    optEnable.simWatch("optEnable");
     io.output(OUT_NAME, maxVal, DATA_TYPE, optEnable);
 
     // }}}
