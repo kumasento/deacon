@@ -239,7 +239,7 @@ public class NeuralNetworkGraph {
   public int getLayerOutputSize(int idx) {
     String blobName = getLayerTopName(idx);
     BlobShape shape = blobs.get(blobName);
-    if (isConvLayer(idx) || isPoolingLayer(idx)) {
+    if (isConvLayer(idx) || isPoolingLayer(idx) || isReLULayer(idx)) {
       return (
           (int) shape.getDim(0) *
           (int) shape.getDim(1) *
