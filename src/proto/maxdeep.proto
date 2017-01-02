@@ -41,6 +41,7 @@ message InnerProductParameter {/*{{{*/
 message PoolingParameter {/*{{{*/
   optional uint32 kernel_size = 2;
   optional uint32 stride = 3;
+  repeated uint32 pad = 4;
 }/*}}}*/
 message ReLUParameter {/*{{{*/
 }/*}}}*/

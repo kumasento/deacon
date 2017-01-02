@@ -151,6 +151,7 @@ public class NetworkOptimiser {
         int W = graph.getInputWidth(idx);
         int C = graph.getInputChannel(idx);
         int S = graph.getStride(idx);
+        int P = graph.getPadding(idx);
         int K = graph.getKernelSize(idx);
 
         name = graph.getLayerName(idx);
@@ -165,7 +166,7 @@ public class NetworkOptimiser {
         knl = manager.addKernel(
             new PoolingLayerKernel(
               manager.makeKernelParameters(name),
-              H, W, C, K, S));
+              H, W, C, K, P, S));
 
         ei.setTicks(name, C * H * W);
       }

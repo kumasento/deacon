@@ -13,6 +13,7 @@ test_data_path = os.path.join(dir_path, '..', 'test')
 def parse_args():
   parser = argparse.ArgumentParser(description='Generate data file')
   parser.add_argument('test_name', help='Name of the test')
+  parser.add_argument('-v', '--verbose', action='store_true', help='output infomation')
   return parser.parse_args()
 
 if __name__ == '__main__':
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     exit(1)
 
   data_blob.data[...] = np.asarray(
-      np.random.random_sample(data_blob.data.shape), dtype=np.float32)
+      np.random.random_sample(data_blob.data.shape) - .5, dtype=np.float32)
 
   data_dir = os.path.join(test_data_path, test_name)
   if not os.path.isdir(data_dir):
@@ -49,6 +50,8 @@ if __name__ == '__main__':
       param[idx].data[...] = np.asarray(
           np.random.random_sample(param[idx].data.shape), dtype=np.float32)
       print param[idx].data.shape
+      if args.verbose:
+        print param[idx].data
 
       file_path = os.path.join(data_dir, layer_name + '_param_' + str(idx) + '.bin')
       param[idx].data.tofile(file_path, format='%.10f')
@@ -60,3 +63,5 @@ if __name__ == '__main__':
     file_path = os.path.join(data_dir, blob_name + '.bin')
     blob.data.tofile(file_path, format='%.10f')
     print blob.data.shape
+    if args.verbose:
+      print blob.data

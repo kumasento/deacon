@@ -1,0 +1,17 @@
+name: "test_pooling_layer"
+layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  input_param { shape: { dim: 1 dim: 3 dim: 16 dim: 16 } }
+}
+layer {
+  name: "pool"
+  type: "Pooling"
+  top: "pool"
+  bottom: "data"
+  pooling_param {
+    kernel_size: 2
+    stride: 2
+  }
+}

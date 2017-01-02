@@ -121,14 +121,17 @@ public class NeuralNetworkGraph {
         PoolingParameter poolParam = layer.getPoolingParam();
         topShapeBuilder            = BlobShape.newBuilder();
         btmShape                   = blobs.get(btm);
+        int pad                    = (int) getPadding(idx);
         int kernelSize             = (int) poolParam.getKernelSize();
         int stride                 = (int) poolParam.getStride();
+        int topHeight              = (int) Math.ceil((double) (btmShape.getDim(2) + 2 * pad - kernelSize) / stride + 1);
+        int topWidth               = (int) Math.ceil((double) (btmShape.getDim(3) + 2 * pad - kernelSize) / stride + 1);
         
         // build the top blob shape
         topShapeBuilder.addDim(btmShape.getDim(0));
         topShapeBuilder.addDim(btmShape.getDim(1));
-        topShapeBuilder.addDim((btmShape.getDim(2) - kernelSize) / stride + 1);
-        topShapeBuilder.addDim((btmShape.getDim(3) - kernelSize) / stride + 1);
+        topShapeBuilder.addDim(topHeight);
+        topShapeBuilder.addDim(topWidth);
 
         blobs.put(top, topShapeBuilder.build());
 
@@ -236,7 +239,7 @@ public class NeuralNetworkGraph {
   public int getLayerOutputSize(int idx) {
     String blobName = getLayerTopName(idx);
     BlobShape shape = blobs.get(blobName);
-    if (isConvLayer(idx)) {
+    if (isConvLayer(idx) || isPoolingLayer(idx)) {
       return (
           (int) shape.getDim(0) *
           (int) shape.getDim(1) *
@@ -326,6 +329,10 @@ public class NeuralNetworkGraph {
     LayerType type = getCanonicalLayerType(idx);
     if (type == LayerType.CONV)
       return layers[idx].getConvolutionParam().getPad(0);
+    if (type == LayerType.POOL) {
+      PoolingParameter param = layers[idx].getPoolingParam();
+      return (param.getPadCount() == 0) ? 0 : param.getPad(0);
+    }
     throw new IllegalArgumentException("Layer don't have padding");
   }
   // }}}

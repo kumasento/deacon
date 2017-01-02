@@ -74,3 +74,4 @@ endfunction ()
 
 add_runsim_test (test_conv_layer)
 add_runsim_test (test_fc_layer)
+add_runsim_test (test_pooling_layer)

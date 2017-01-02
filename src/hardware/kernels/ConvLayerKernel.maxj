@@ -36,6 +36,7 @@ public class ConvLayerKernel extends Kernel {
     super(params);
 
     // Constants {{{
+
     // input buffer stores a feature map for a single channel
     int KERNEL_UPPER         =   K / 2;
     int KERNEL_LOWER         = - K / 2;
@@ -47,6 +48,9 @@ public class ConvLayerKernel extends Kernel {
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
     int OUTPUT_SX            = (- KERNEL_LOWER - P) % S;
     int OUTPUT_SY            = (- KERNEL_LOWER - P) % S;
+
+    if (K % 2 == 0)
+      KERNEL_UPPER --;
     // }}}
     // Counter {{{
     
