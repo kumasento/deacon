@@ -48,14 +48,14 @@ if __name__ == '__main__':
     for idx in range(len(param)):
       # fulfill each param in the layer
       param[idx].data[...] = np.asarray(
-          np.random.randint(10, size=param[idx].data.shape), dtype=np.float32)
+          np.ones(param[idx].data.shape), dtype=np.float32)
       print param[idx].data.shape
       if args.verbose:
         print param[idx].data
 
       file_path = os.path.join(data_dir, layer_name + '_param_' + str(idx) + '.bin')
       out_data = np.array(param[idx].data, copy=True)
-      if idx == 0:
+      if idx == 0 and len(out_data.shape) > 2:
         out_data = np.swapaxes(out_data, 0, 1)
       out_data.tofile(file_path, format='%.10f')
 

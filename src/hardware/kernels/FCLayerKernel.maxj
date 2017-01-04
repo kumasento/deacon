@@ -7,6 +7,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 
@@ -24,11 +26,18 @@ public class FCLayerKernel extends Kernel {
   public static final String BIAS_NAME = "bias";
 
   public FCLayerKernel(KernelParameters params,
-    int M, /* the height of the input matrix */
-    int N  /* the width of the input matrix */
+    int M,  /* the height of the input matrix */
+    int N,  /* the width of the input matrix */
+    int P_V /* number of parallelised dot production */
   ) {
     super(params);
 
+    // Vector Type {{{
+
+    DFEVectorType<DFEVar> VEC_TYPE =
+      new DFEVectorType<DFEVar>(DATA_TYPE, P_V);
+     
+    // }}}
     // Auto loop offset {{{
 
     OffsetExpr loopLength = stream.makeOffsetAutoLoop("fcLoopLength");
@@ -42,7 +51,7 @@ public class FCLayerKernel extends Kernel {
     // row index
     DFEVar i = (M == 1) 
       ? constant.var(0)
-      : chain.addCounter(M, 1).cast(dfeInt(32));
+      : chain.addCounter(M, P_V).cast(dfeInt(32));
 
     // col index
     DFEVar j = (N == 1)
@@ -52,6 +61,9 @@ public class FCLayerKernel extends Kernel {
     // loop index 
     DFEVar l = chain.addCounter(L, 1).cast(dfeUInt(8));
 
+    i.simWatch("i");
+    j.simWatch("j");
+
     // }}}
     // Streams {{{
 
@@ -60,12 +72,12 @@ public class FCLayerKernel extends Kernel {
     DFEVar inp = io.input(INP_NAME, DATA_TYPE, inpEnable);
 
     // weight input will always be enabled
-    DFEVar wgt = io.input(WGT_NAME, DATA_TYPE, l === 0);
+    DFEVector<DFEVar> wgt = io.input(WGT_NAME, VEC_TYPE, l === 0);
 
     // bias
     // read bias when computing the first column for each row
     DFEVar biasEnable = (j === 0) & (l === 0);
-    DFEVar bias = io.input(BIAS_NAME, DATA_TYPE, biasEnable);
+    DFEVector<DFEVar> bias = io.input(BIAS_NAME, VEC_TYPE, biasEnable);
 
     // }}}
     // Input buffer {{{
@@ -74,21 +86,29 @@ public class FCLayerKernel extends Kernel {
     DFEVar inpBufWriteAddr = j.cast(dfeUInt(MathUtils.bitsToAddress(N)));
     DFEVar inpVal = inpBuf.port(inpBufWriteAddr, inp, inpEnable,
         Mem.RamWriteMode.WRITE_FIRST);
+    inpVal.simWatch("inpVal");
 
     // }}}
     // Computation  {{{
 
-    DFEVar val = DATA_TYPE.newInstance(this);
-    DFEVar sum = (j === 0) ? bias : val;
-    DFEVar tmp = inpVal * wgt + sum;
+    DFEVector<DFEVar> out = VEC_TYPE.newInstance(this);
 
-    val <== stream.offset(tmp, -loopLength);
+    wgt.simWatch("wgt");
+    for (int idx = 0; idx < P_V; idx ++) {
+      DFEVar val = DATA_TYPE.newInstance(this);
+      DFEVar sum = (j === 0) ? bias[idx] : val;
+      DFEVar tmp = inpVal * wgt[idx] + sum;
+      tmp.simWatch("tmp_" + Integer.toString(idx));
+
+      out[idx] <== tmp;
+      val      <== stream.offset(tmp, -loopLength);
+    }
 
     // }}}
     // Output stream {{{
 
     DFEVar outEnable = (j === N-1) & (l === L-1);
-    io.output(OUT_NAME, tmp, DATA_TYPE, outEnable);
+    io.output(OUT_NAME, out, VEC_TYPE, outEnable);
 
     // }}}
   }

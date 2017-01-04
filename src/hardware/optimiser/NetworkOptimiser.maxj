@@ -158,6 +158,7 @@ public class NetworkOptimiser {
 
         int N = H * W * C;
         int M = numOutput;
+        int P_V = 4;
 
         name = graph.getLayerName(idx);
 
@@ -166,12 +167,13 @@ public class NetworkOptimiser {
         LOGGER.info("W = " + Integer.toString(W));
         LOGGER.info("C = " + Integer.toString(C));
         LOGGER.info("M = " + Integer.toString(M));
+        LOGGER.info("P_V = " + Integer.toString(P_V));
         LOGGER.info("numOutput = " + Integer.toString(numOutput));
 
         // create kernel block
         knl = manager.addKernel(
             new FCLayerKernel(
-              manager.makeKernelParameters(name), M, N));
+              manager.makeKernelParameters(name), M, N, P_V));
 
         // weight
         String wgtName = name + "_wgt";
@@ -192,7 +194,7 @@ public class NetworkOptimiser {
         ei.ignoreAutoLoopOffset(name, "fcLoopLength");
 
         // ticks
-        ei.setTicks(name, L * N * M);
+        ei.setTicks(name, L * N * M / P_V);
       }
       // }}}
       // Pooling Layer {{{

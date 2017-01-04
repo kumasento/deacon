@@ -38,7 +38,6 @@ TEST(SingleFCLayer, MainTest) {
   test_fc_layer_MaxDeep_run(engine, &actions);
   LOG(INFO) << "Done!";
 
-  // There might be some error from single-precision floating-point arithmetic
   for (int i = 0; i < opt_data.size(); i ++)
     ASSERT_NEAR(opt_data[i], opt[i], 1e-2);
 
