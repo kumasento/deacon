@@ -63,6 +63,8 @@ public class NetworkOptimiser {
         int P = graph.getPadding(idx);
         int S = graph.getStride(idx);
 
+        int P_F = 4;
+
         name = graph.getLayerName(idx);
         LOGGER.info("Creating CONV layer: " + name);
         LOGGER.info("H = " + Integer.toString(H));
@@ -72,11 +74,21 @@ public class NetworkOptimiser {
         LOGGER.info("K = " + Integer.toString(K));
         LOGGER.info("P = " + Integer.toString(P));
         LOGGER.info("S = " + Integer.toString(S));
+        LOGGER.info("P_F = " + Integer.toString(P_F));
+
+        if (F < P_F || F % P_F != 0)
+          throw new IllegalArgumentException("S * P_F should be divided by W");
 
         knl = manager.addKernel(
             new ConvLayerKernel(
               manager.makeKernelParameters(graph.getLayerName(idx)),
-              H, W, F, C, K, P, S));
+              H, W, F, C, K, P, S, P_F));
+
+        String acc_knl_name = name + "_acc_knl";
+        KernelBlock acc_knl = manager.addKernel(
+            new ConvAccumKernel(
+              manager.makeKernelParameters(acc_knl_name),
+              H, W, F, C, K, P, S, P_F));
 
         // add a stream for the weight input
         String wgtName = name + "_wgt";
@@ -88,15 +100,53 @@ public class NetworkOptimiser {
         // add a stream for the bias input
         String biasName = name + "_bias";
         DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
-        knl.getInput(ConvLayerKernel.BIAS_NAME) <== biasFromCPU;
+        acc_knl.getInput(ConvAccumKernel.BIAS_NAME) <== biasFromCPU;
         ei.setStream(biasName, CPUTypes.FLOAT,
             F * CPUTypes.FLOAT.sizeInBytes());
 
+        int ticks = H * W * F * C / P_F;
+
+        // setup conv kernel
+        for (int f = 0; f < P_F; f ++) {
+          String conv_knl_name = name + "_conv_knl_" + Integer.toString(f);
+
+          KernelBlock conv_knl = manager.addKernel(
+              new ConvolveKernel(
+                manager.makeKernelParameters(conv_knl_name), K));
+
+          String suffix = "_" + Integer.toString(f);
+
+          conv_knl.getInput(ConvolveKernel.INP_NAME)
+            <== knl.getOutput(ConvLayerKernel.CONV_KNL_INP_NAME + suffix);
+          conv_knl.getInput(ConvolveKernel.WGT_NAME)
+            <== knl.getOutput(ConvLayerKernel.CONV_KNL_WGT_NAME + suffix);
+          acc_knl.getInput(ConvAccumKernel.CONV_KNL_OUT_NAME + suffix)
+            <== conv_knl.getOutput(ConvolveKernel.OUT_NAME);
+
+          ei.setTicks(conv_knl_name, ticks);
+        }
+
+        int oH = (H + 2 * P - K) / S + 1;
+        int oW = (W + 2 * P - K) / S + 1;
+
+        String conv_out_knl_name = name + "_out";
+        KernelBlock conv_out_knl = manager.addKernel(
+            new ConvOutputKernel(
+              manager.makeKernelParameters(conv_out_knl_name),
+              oH * oW, F, P_F));
+        ei.setTicks(conv_out_knl_name, oH * oW * F);
+        conv_out_knl.getInput(ConvOutputKernel.INP_NAME)
+          <== acc_knl.getOutput(ConvAccumKernel.OUT_NAME);
+
         // setup ticks
-        ei.setTicks(name, H * W * C * F);
+        ei.setTicks(name,         ticks);
+        ei.setTicks(acc_knl_name, ticks);
         LOGGER.info("ticks = " + Integer.toString(H * W * C));
         LOGGER.info("size of weights = " +
             Integer.toString(K * K * C * F * CPUTypes.FLOAT.sizeInBytes()));
+
+        kernelBlocks.put(acc_knl_name, acc_knl);
+        kernelBlocks.put(conv_out_knl_name, conv_out_knl);
       } 
       // }}}
       // FC Layer {{{
@@ -200,23 +250,29 @@ public class NetworkOptimiser {
       // connect its top to the bottom blobs it belongs to
       String btm = graph.getLayerBtmName(idx);
       String top = graph.getLayerTopName(idx);
-      KernelBlock btmKnl = kernelBlocks.get(graph.getLayerName(idx));
+      KernelBlock btmInpKnl, btmOutKnl;
+      btmInpKnl = kernelBlocks.get(graph.getLayerName(idx));
+      if (graph.isConvLayer(idx))
+        btmOutKnl = kernelBlocks.get(graph.getLayerName(idx) + "_out");
+      else
+        btmOutKnl = kernelBlocks.get(graph.getLayerName(idx));
+
       int topIdx = graph.getBlobTopOfLayer(btm);
 
       LOGGER.info("[" + btm + "] -> [" + top + "]");
       
       if (graph.isInputLayer(topIdx)) {
-        btmKnl.getInput("inp") <== CPUInp;
+        btmInpKnl.getInput("inp") <== CPUInp;
       }
       else {
         KernelBlock topKnl = kernelBlocks.get(graph.getLayerName(topIdx)); 
-        btmKnl.getInput("inp") <== topKnl.getOutput("opt");
+        btmInpKnl.getInput("inp") <== topKnl.getOutput("opt");
       }
 
       if (idx == numOfLayers - 1) {
         DFELink CPUOut = manager.addStreamToCPU(DEFAULT_CPU_OUT_NAME);
 
-        CPUOut <== btmKnl.getOutput("opt");
+        CPUOut <== btmOutKnl.getOutput("opt");
         ei.setStream(DEFAULT_CPU_OUT_NAME, DEFAULT_CPU_OUT_TYPE,
           graph.getLayerOutputSize(idx) * DEFAULT_CPU_OUT_TYPE.sizeInBytes());
         LOGGER.info("output size: " + Integer.toString(

@@ -39,7 +39,7 @@ TEST(SingleConvLayer, MainTest) {
   LOG(INFO) << "Done!";
 
   for (int i = 0; i < opt_data.size(); i ++) {
-    ASSERT_FLOAT_EQ(opt_data[i], opt[i]);
+    ASSERT_NEAR(opt_data[i], opt[i], 1e-5);
   }
   LOG(INFO) << "Passed";
 

@@ -38,7 +38,7 @@ if __name__ == '__main__':
     exit(1)
 
   data_blob.data[...] = np.asarray(
-      np.random.random_sample(data_blob.data.shape) - .5, dtype=np.float32)
+      np.random.randint(10, size=data_blob.data.shape), dtype=np.float32)
 
   data_dir = os.path.join(test_data_path, test_name)
   if not os.path.isdir(data_dir):
@@ -48,13 +48,16 @@ if __name__ == '__main__':
     for idx in range(len(param)):
       # fulfill each param in the layer
       param[idx].data[...] = np.asarray(
-          np.random.random_sample(param[idx].data.shape), dtype=np.float32)
+          np.random.randint(10, size=param[idx].data.shape), dtype=np.float32)
       print param[idx].data.shape
       if args.verbose:
         print param[idx].data
 
       file_path = os.path.join(data_dir, layer_name + '_param_' + str(idx) + '.bin')
-      param[idx].data.tofile(file_path, format='%.10f')
+      out_data = np.array(param[idx].data, copy=True)
+      if idx == 0:
+        out_data = np.swapaxes(out_data, 0, 1)
+      out_data.tofile(file_path, format='%.10f')
 
   net.forward()
 
