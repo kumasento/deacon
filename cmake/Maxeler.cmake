@@ -27,7 +27,7 @@ if (DEFINED ENV{MAXCOMPILERDIR} AND DEFINED ENV{MAXELEROSDIR})
 endif ()
 
 # Add a .max file target
-function (add_max target prj dfemodel params enginefiles jars deps)
+function (add_max target prj dfemodel params enginefiles jars deps maxtarget)
   set (MAXJAVACLASS ${prj})
   set (MAXAPPNAME ${target}_${prj})
   set (SIMMAXNAME ${MAXAPPNAME}_${dfemodel}_DFE_SIM) 
@@ -42,9 +42,21 @@ function (add_max target prj dfemodel params enginefiles jars deps)
 
   set (ENGINEFILES ${enginefiles})
   set (MAXFILENAME ${MAXAPPNAME}.max)
-  set (MAXFILE ${SIMMAXDIR}/${MAXFILENAME})
+  if (${maxtarget} STREQUAL "SIM")
+    set (MAXFILE ${SIMMAXDIR}/${MAXFILENAME})
+    set (MAXTARGET "DFE_SIM")
+  else ()
+    set (MAXFILE ${DFEMAXDIR}/${MAXFILENAME})
+    set (MAXTARGET "DFE")
+  endif ()
 
   message (STATUS "MAXFILE: ${MAXFILE}")
+
+  if (${maxtarget} STREQUAL "SIM")
+    set (SLICSUFFIX "_sim")
+  else ()
+    set (SLICSUFFIX "_dfe")
+  endif ()
 
   string (TOLOWER ${prj} MAXPKG)
   set (MAXJAVARUN maxJavaRun)
@@ -61,47 +73,56 @@ function (add_max target prj dfemodel params enginefiles jars deps)
       ${MAXJAVARUN} -m ${MAXJAVARUNMEMSIZE} ${MAXJAVACLASS}
       DFEModel=${dfemodel}
       maxFileName=${MAXAPPNAME}
-      target='DFE_SIM'
+      target=${MAXTARGET}
       enableMPCX=${MAXMPCX}
       ${params}
     DEPENDS ${deps} ${ENGINEFILES}
   )
-  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target})
-  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target} PARENT_SCOPE)
+  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target}${SLICSUFFIX})
+  set (MAXFILE_TARGET_NAME maxfile_${prj}_${dfemodel}_${target}${SLICSUFFIX} PARENT_SCOPE)
   add_custom_target (${MAXFILE_TARGET_NAME} DEPENDS ${MAXFILE})
 
   set (SLICCOMPILE sliccompile)
+
+  message (STATUS "SLIC SUFFIX: ${SLICSUFFIX}")
+
   add_custom_command (
-    OUTPUT ${MAXAPPNAME}_sim.o
-    COMMAND ${SLICCOMPILE} ${MAXFILE} ${MAXAPPNAME}_sim.o
+    OUTPUT ${MAXAPPNAME}${SLICSUFFIX}.o
+    COMMAND ${SLICCOMPILE} ${MAXFILE} ${MAXAPPNAME}${SLICSUFFIX}.o
     DEPENDS ${MAXFILE}
   )
   set_source_files_properties (
-    ${MAXAPPNAME}_sim.o
+    ${MAXAPPNAME}${SLICSUFFIX}.o
     PROPERTIES EXTERNAL_OBJECT TRUE
     GENERATED TRUE
   )
-  add_library (${MAXFILE_TARGET_NAME}_sim ${MAXAPPNAME}_sim.o)
+  add_library (${MAXFILE_TARGET_NAME}${SLICSUFFIX} ${MAXAPPNAME}${SLICSUFFIX}.o)
   target_include_directories (
-    ${MAXFILE_TARGET_NAME}_sim
+    ${MAXFILE_TARGET_NAME}${SLICSUFFIX}
     PUBLIC
     ${MAXCOMPILERDIR}/include
     ${MAXCOMPILERDIR}/include/slic
     ${MAXELEROSDIR}/include
     )
+
   link_directories (${MAXCOMPILERDIR}/lib ${MAXELEROSDIR}/lib)
   target_link_libraries (
-    ${MAXFILE_TARGET_NAME}_sim
+    ${MAXFILE_TARGET_NAME}${SLICSUFFIX}
     maxeleros
     slic
     m
     pthread
     )
 
-  set_target_properties (${MAXFILE_TARGET_NAME}_sim PROPERTIES LINKER_LANGUAGE CXX)
-  target_include_directories (${MAXFILE_TARGET_NAME}_sim PUBLIC
-    ${SIMMAXDIR})
-endfunction ()
+  set_target_properties (${MAXFILE_TARGET_NAME}${SLICSUFFIX} PROPERTIES LINKER_LANGUAGE CXX)
+  if (${maxtarget} STREQUAL "SIM")
+    target_include_directories (${MAXFILE_TARGET_NAME}${SLICSUFFIX} PUBLIC
+      ${SIMMAXDIR})
+  else ()
+    target_include_directories (${MAXFILE_TARGET_NAME}${SLICSUFFIX} PUBLIC
+      ${DFEMAXDIR})
+  endif ()
+endfunction (add_max)
 
 # add a PHONY runsim target, exe should be specified and has its own 
 # generate command

@@ -35,7 +35,8 @@ function (add_runsim_test test_name)
     ${MAXJ_BUILD_PARAMS}
     "${ENGINEFILES}"
     ${MAXJ_DEPEND_JARS}
-    "${MAXJ_DEPEND_TARGETS}")
+    "${MAXJ_DEPEND_TARGETS}"
+    "SIM")
 
   message (STATUS "Test target: ${MAXFILE_TARGET_NAME}")
 
@@ -69,6 +70,15 @@ function (add_runsim_test test_name)
     NAME ${TEST_NAME}
     COMMAND make ${RUNSIM_TARGET_NAME}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+
+  add_max(${TEST_NAME}
+    ${MAXJ_PROJECT_NAME}
+    ${MAXJ_DFE_MODEL}
+    ${MAXJ_BUILD_PARAMS}
+    "${ENGINEFILES}"
+    ${MAXJ_DEPEND_JARS}
+    "${MAXJ_DEPEND_TARGETS}"
+    "DFE")
 endfunction ()
 # }}}
 
