@@ -92,13 +92,16 @@ public class ConvAccumKernel extends Kernel {
     DFEVector<DFEVar> bias = io.input(BIAS_NAME, VEC_TYPE, biasEnable);
     
     // }}}
-    // Window Sum and the Feedback Loop {{{
+    // Output Buffer {{{
 
-    DFEVector<DFEVar> output = VEC_TYPE.newInstance(this);
-    // Output Buffer
     ArrayList<Memory<DFEVar>> optBufList = new ArrayList<Memory<DFEVar>>();
     for (int i = 0; i < P_F; i ++)
       optBufList.add(mem.alloc(DATA_TYPE, OUTPUT_BUF_SIZE));
+
+    // }}}
+    // Window Sum and the Feedback Loop {{{
+
+    DFEVector<DFEVar> output = VEC_TYPE.newInstance(this);
     
     for (int idx = 0; idx < P_F; idx ++) {
 
