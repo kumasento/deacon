@@ -52,6 +52,8 @@ TEST(SingleConvLayer, MainTest) {
   LOG(INFO) << "Passed";
 
   max_unload(engine);
+  free(bias_rom);
+  free(wgts_rom);
 }
 
 int main(int argc, char *argv[]) {

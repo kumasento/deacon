@@ -42,8 +42,9 @@ public class PoolingLayerKernel extends Kernel {
     // Counters {{{
 
     CounterChain chain = control.count.makeCounterChain();
-    if (C != 1)
-      chain.addCounter(C, 1).cast(COUNTER_TYPE);
+    DFEVar c = (C == 1)
+      ? constant.var(0)
+      : chain.addCounter(C, 1).cast(COUNTER_TYPE);
     DFEVar x  = chain.addCounter(H, S).cast(dfeInt(32));
     DFEVar sx = (S == 1)
       ? constant.var(0) : chain.addCounter(S, 1).cast(dfeInt(32));
@@ -52,6 +53,10 @@ public class PoolingLayerKernel extends Kernel {
       ? constant.var(0) : chain.addCounter(S, 1).cast(dfeInt(32));
     DFEVar rx = x + sx;
     DFEVar ry = y + sy;
+
+    c.simWatch("c");
+    rx.simWatch("rx");
+    ry.simWatch("ry");
 
     // }}}
     // Input Stream {{{
@@ -72,6 +77,7 @@ public class PoolingLayerKernel extends Kernel {
         maxVal = (maxVal < curr & ~outOfBound) ? curr : maxVal;
       }
     }
+
     // }}}
     // Output {{{
 

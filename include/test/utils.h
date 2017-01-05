@@ -13,7 +13,7 @@
 #define TEST_DATA_DIR "../data/test"
 
 template <typename T>
-std::vector<T> read_test_data(std::string test_name, std::string data_name) {
+std::vector<T> read_test_data(std::string test_name, std::string data_name, bool aligned=false) {
   std::string file_name = std::string(TEST_DATA_DIR);
   file_name.append("/");
   file_name.append(test_name);
@@ -28,7 +28,8 @@ std::vector<T> read_test_data(std::string test_name, std::string data_name) {
   if (data_file.is_open()) {
     int size = data_file.tellg();
     int orig = size;
-    if (size % 16 != 0)
+    
+    if (size % 16 != 0 && aligned)
       size = (orig / 16 + 1) * 16;
 
     char buf[sizeof(T)];
@@ -50,6 +51,13 @@ std::vector<T> read_test_data(std::string test_name, std::string data_name) {
     LOG(FATAL) << file_name << " cannot be opened";
   }
 
+  return data;
+}
+
+double * convert_to_double(std::vector<float> orig_data) {
+  double *data = (double *) malloc(sizeof(double) * orig_data.size());
+  for (int i = 0; i < orig_data.size(); i ++)
+    data[i] = (double) orig_data[i];
   return data;
 }
 

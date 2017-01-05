@@ -53,7 +53,7 @@ layer {
   bottom: "pool2"
   top: "ip1"
   inner_product_param {
-    num_output: 500
+    num_output: 50
   }
 }
 layer {

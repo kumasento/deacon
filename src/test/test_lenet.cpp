@@ -17,7 +17,7 @@
 
 TEST(LeNetTest, MainTest) {
   std::vector<float> inp_data  =
-    read_test_data<float>(std::string(TEST_NAME), std::string("data"));
+    read_test_data<float>(std::string(TEST_NAME), std::string("data"), true);
   std::vector<float> conv1_bias = 
     read_test_data<float>(std::string(TEST_NAME), std::string("conv1_param_1"));
   std::vector<float> conv1_wgt = 
@@ -35,21 +35,21 @@ TEST(LeNetTest, MainTest) {
   std::vector<float> ip2_wgt = 
     read_test_data<float>(std::string(TEST_NAME), std::string("ip2_param_0"));
   std::vector<float> opt_data
-    = read_test_data<float>(std::string(TEST_NAME), std::string("ip2"));
+    = read_test_data<float>(std::string(TEST_NAME), std::string("ip2"), true);
 
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 
   test_lenet_MaxDeep_actions_t actions;
-  actions.instream_conv1_bias = conv1_bias.data();
-  actions.instream_conv1_wgt  = conv1_wgt.data();
-  actions.instream_conv2_bias = conv2_bias.data();
-  actions.instream_conv2_wgt  = conv2_wgt.data();
-  actions.instream_ip1_bias   = ip1_bias.data();
-  actions.instream_ip1_wgt    = ip1_wgt.data();
-  actions.instream_ip2_bias   = ip2_bias.data();
-  actions.instream_ip2_wgt    = ip2_wgt.data();
-  actions.instream_cpu_inp    = inp_data.data();
-  actions.outstream_cpu_out   = opt;
+  actions.inmem_conv1_acc_bias = convert_to_double(conv1_bias);
+  actions.inmem_conv2_acc_bias = convert_to_double(conv2_bias);
+  actions.inmem_conv1_inp_wgts = convert_to_double(conv1_wgt);
+  actions.inmem_conv2_inp_wgts = convert_to_double(conv2_wgt);
+  actions.inmem_ip1_inp_bias   = convert_to_double(ip1_bias);
+  actions.inmem_ip2_inp_bias   = convert_to_double(ip2_bias);
+  actions.inmem_ip1_inp_wgts   = convert_to_double(ip1_wgt);
+  actions.inmem_ip2_inp_wgts   = convert_to_double(ip2_wgt);
+  actions.instream_cpu_inp     = inp_data.data();
+  actions.outstream_cpu_out    = opt;
 
   max_file_t *max_file = test_lenet_MaxDeep_init();
   max_engine_t *engine = max_load(max_file, "local:*");

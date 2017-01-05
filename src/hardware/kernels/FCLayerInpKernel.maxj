@@ -7,8 +7,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 /**
@@ -74,9 +72,12 @@ public class FCLayerInpKernel extends Kernel {
 
     Memory<DFEVar> inpBuf = mem.alloc(DATA_TYPE, N);
     DFEVar inpBufWriteAddr = j.cast(dfeUInt(MathUtils.bitsToAddress(N)));
-    DFEVar inpVal = inpBuf.port(inpBufWriteAddr, inp, inpEnable,
+    DFEVar inpVal = inpBuf.port(
+        inpBufWriteAddr,
+        inp,
+        inpEnable,
         Mem.RamWriteMode.WRITE_FIRST);
-    // inpVal.simWatch("inpVal");
+    inpVal.simWatch("inpVal");
 
     // }}}
     // Output stream {{{

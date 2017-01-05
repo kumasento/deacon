@@ -137,8 +137,8 @@ public class ConvLayerKernel extends Kernel {
 
       for (int k = 0; k < K * K; k ++) {
         DFEVar wgtReadAddr = (
-            c * (F * K * K) +
-            (f + idx) * (K * K) +
+            (c * (F * K * K)) +
+            ((f + idx) * (K * K)) +
             k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
         wgtVec[k] <== wgtMem.read(wgtReadAddr);
       }

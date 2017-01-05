@@ -335,21 +335,6 @@ public class NetworkOptimiser {
           manager.makeKernelParameters(out_name), P_V));
 
     // }}}
-    // weight
-    // String wgtName = name + "_wgt";
-    // DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
-    // inp_knl.getInput(FCLayerInpKernel.WGT_NAME) <== wgtFromCPU;
-    // ei.setStream(wgtName, CPUTypes.FLOAT,
-    //     M * N * CPUTypes.FLOAT.sizeInBytes());
-
-    // bias
-    // String biasName = name + "_bias";
-    // DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
-    // inp_knl.getInput(FCLayerInpKernel.BIAS_NAME) <== biasFromCPU;
-    // int biasSize = M * CPUTypes.FLOAT.sizeInBytes();
-    // biasSize = (biasSize % 16 != 0) ? (biasSize/16+1)*16: biasSize;
-    // ei.setStream(biasName, CPUTypes.FLOAT, biasSize);
-    
     // Dot product kernels {{{
     for (int p = 0; p < P_V; p ++) {
       String suffix = "_" + Integer.toString(p);
