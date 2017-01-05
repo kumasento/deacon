@@ -20,14 +20,21 @@ TEST(SingleFCLayer, MainTest) {
 
   std::vector<float> inp_data  = read_test_data<float>(std::string(TEST_NAME), std::string("data"));
   std::vector<float> opt_data  = read_test_data<float>(std::string(TEST_NAME), std::string("ip"));
-  std::vector<float> wgt_data  = read_test_data<float>(std::string(TEST_NAME), std::string("ip_param_0"));
+  std::vector<float> wgts_data = read_test_data<float>(std::string(TEST_NAME), std::string("ip_param_0"));
   std::vector<float> bias_data = read_test_data<float>(std::string(TEST_NAME), std::string("ip_param_1"));
 
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 
+  double *wgts_rom = (double *) malloc(sizeof(double) * wgts_data.size());
+  double *bias_rom = (double *) malloc(sizeof(double) * bias_data.size());
+  for (int i = 0; i < bias_data.size(); i ++)
+    bias_rom[i] = (double) bias_data[i];
+  for (int i = 0; i < wgts_data.size(); i ++)
+    wgts_rom[i] = (double) wgts_data[i];
+
   test_fc_layer_MaxDeep_actions_t actions;
-  actions.instream_ip_wgt   = wgt_data.data();
-  actions.instream_ip_bias  = bias_data.data();
+  actions.inmem_ip_inp_wgts = wgts_rom;
+  actions.inmem_ip_inp_bias = bias_rom;
   actions.instream_cpu_inp  = inp_data.data();
   actions.outstream_cpu_out = opt;
 

@@ -17,7 +17,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 public class ConvLayerKernel extends Kernel {
 
   public static final String INP_NAME  = "inp";
-  public static final String WGT_NAME  = "wgt";
+  public static final String WGT_NAME  = "wgts";
   public static final String OUT_NAME  = "opt";
   public static final String BIAS_NAME = "bias";
 
@@ -45,7 +45,7 @@ public class ConvLayerKernel extends Kernel {
     int KERNEL_UPPER         =   K / 2;
     int KERNEL_LOWER         = - K / 2;
     int INPUT_BUF_SIZE       = H * W;
-    int WEIGHT_BUF_SIZE      = C * F / P_F;
+    int WEIGHT_BUF_SIZE      = C * F * K * K;
     int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
 
@@ -71,10 +71,13 @@ public class ConvLayerKernel extends Kernel {
     DFEVar rx = x + sx;
     DFEVar ry = y + sy;
 
-    // c.simWatch("c");
-    // f.simWatch("f");
-    // rx.simWatch("rx");
-    // ry.simWatch("ry");
+    c.simWatch("c");
+    f.simWatch("f");
+    rx.simWatch("rx");
+    ry.simWatch("ry");
+
+    DFEVectorType<DFEVar> VEC_TYPE = 
+      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
 
     // }}}
     // Input Stream {{{
@@ -83,20 +86,10 @@ public class ConvLayerKernel extends Kernel {
     DFEVar inp = io.input(INP_NAME, DATA_TYPE, inpEnable);
 
     // }}}
-    // Weight Stream {{{
-    // only read weight vector at the begining of the first channel's
-    // computation
+    // Weight Buffer {{{
    
-    DFEVar wgtEnable = (rx === 0 & ry === 0);
-
-    DFEVectorType<DFEVar> WGT_INP_VEC_TYPE = 
-      new DFEVectorType<DFEVar>(DATA_TYPE, K * K * P_F);
-
-    DFEVectorType<DFEVar> VEC_TYPE = 
-      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
-
-    DFEVector<DFEVar> wgtInpVec = io.input(WGT_NAME, WGT_INP_VEC_TYPE,
-        wgtEnable); 
+    Memory<DFEVar> wgtMem = mem.alloc(DATA_TYPE, K * K * C * F);
+    wgtMem.mapToCPU(WGT_NAME);
 
     // }}}
     // Input Buffer {{{
@@ -108,19 +101,9 @@ public class ConvLayerKernel extends Kernel {
     inputBuf.write(writeInpBufAddr, inp, inpEnable);
 
     // }}}
-    // Weight buffer {{{
-
-    Memory<DFEVector<DFEVar>> wgtBuf =
-      mem.alloc(WGT_INP_VEC_TYPE, WEIGHT_BUF_SIZE);
-
-    DFEVar wgtBufAddr = ((c * F + f) / P_F)
-      .cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
-
-    wgtBuf.write(wgtBufAddr, wgtInpVec, wgtEnable);
-
-    // }}}
     // Generate inp and wgt vectors {{{
 
+    // Input vector {{{
     DFEVector<DFEVar> inpVec = VEC_TYPE.newInstance(this);
     int i = 0;
     for (int dx = KERNEL_LOWER; dx <= KERNEL_UPPER; dx ++) {
@@ -147,22 +130,24 @@ public class ConvLayerKernel extends Kernel {
         inpVec[i ++] <== curr;
       }
     }
-
-    // wgtBufAddr.simWatch("addr");
-    DFEVector<DFEVar> wgtBufVec = wgtBuf.read(wgtBufAddr);
-
+    // }}}
+    // Weight {{{
     for (int idx = 0; idx < P_F; idx ++) {
       DFEVector<DFEVar> wgtVec = VEC_TYPE.newInstance(this);
 
-      for (int k = 0; k < K * K; k ++)
-        wgtVec[k] <== (wgtEnable)
-          ? wgtInpVec[ k + idx * K * K ]
-          : wgtBufVec[ k + idx * K * K ];
+      for (int k = 0; k < K * K; k ++) {
+        DFEVar wgtReadAddr = (
+            c * (F * K * K) +
+            (f + idx) * (K * K) +
+            k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
+        wgtVec[k] <== wgtMem.read(wgtReadAddr);
+      }
 
       String suffix = "_" + Integer.toString(idx);
       io.output(CONV_KNL_INP_NAME + suffix, inpVec, VEC_TYPE);
       io.output(CONV_KNL_WGT_NAME + suffix, wgtVec, VEC_TYPE);
     }
+    // }}}
 
     // }}}
   }

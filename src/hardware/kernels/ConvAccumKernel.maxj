@@ -43,6 +43,8 @@ public class ConvAccumKernel extends Kernel {
     // input buffer stores a feature map for a single channel
     int KERNEL_UPPER         =   K / 2;
     int KERNEL_LOWER         = - K / 2;
+    int BIAS_BUF_SIZE        = F;
+    int BIAS_BUF_ADDR_BITS   = MathUtils.bitsToAddress(BIAS_BUF_SIZE);
     int OUTPUT_BUF_SIZE      = H * W * F / P_F;
     int OUTPUT_BUF_ADDR_BITS = MathUtils.bitsToAddress(OUTPUT_BUF_SIZE);
     int OUTPUT_SX            = (- KERNEL_LOWER - P) % S;
@@ -82,14 +84,10 @@ public class ConvAccumKernel extends Kernel {
     ry.simWatch("ry");
 
     // }}}
-    // Bias Stream {{{
-    
-    // bias will be loaded when computing the first channel's first element.
-    // each filter will have a new bias loaded while computing the first channel
-    DFEVar biasEnable = (c === 0 & rx === 0 & ry === 0);
+    // Bias buffer {{{
 
-    // the bias term
-    DFEVector<DFEVar> bias = io.input(BIAS_NAME, VEC_TYPE, biasEnable);
+    Memory<DFEVar> bias = mem.alloc(DATA_TYPE, BIAS_BUF_SIZE);
+    bias.mapToCPU(BIAS_NAME);
     
     // }}}
     // Output Buffer {{{
@@ -105,16 +103,18 @@ public class ConvAccumKernel extends Kernel {
     
     for (int idx = 0; idx < P_F; idx ++) {
 
+      DFEVar biasReadAddr = (f + idx).cast(dfeUInt(BIAS_BUF_ADDR_BITS));
+
       DFEVar writeOutBufAddr = ((f / P_F) * H * W + rx * H + ry)
         .cast(dfeUInt(OUTPUT_BUF_ADDR_BITS));
 
       DFEVar tmp = io.input(
           CONV_KNL_OUT_NAME + "_" + Integer.toString(idx),
           DATA_TYPE);
-      // tmp.simWatch("tmp");
+      tmp.simWatch("tmp");
 
       // initialise with bias
-      DFEVar sum = (c === 0) ? bias[idx] + tmp : tmp;
+      DFEVar sum = (c === 0) ? bias.read(biasReadAddr) + tmp : tmp;
       
       // TODO: seek better solution
       // this implements a output buffer that stores partial result

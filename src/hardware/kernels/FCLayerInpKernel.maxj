@@ -23,6 +23,7 @@ public class FCLayerInpKernel extends Kernel {
   public static final String INP_NAME  = "inp";
   public static final String OUT_NAME  = "opt";
   public static final String WGT_NAME  = "wgt";
+  public static final String WGTS_NAME = "wgts";
   public static final String BIAS_NAME = "bias";
 
   public FCLayerInpKernel(KernelParameters params,
@@ -32,12 +33,11 @@ public class FCLayerInpKernel extends Kernel {
   ) {
     super(params);
 
-    // Vector Type {{{
+    int WGTS_MEM_SIZE = M * N;
+    int WGTS_MEM_ADDR_BITS = MathUtils.bitsToAddress(WGTS_MEM_SIZE);
+    int BIAS_MEM_SIZE = M;
+    int BIAS_MEM_ADDR_BITS = MathUtils.bitsToAddress(BIAS_MEM_SIZE);
 
-    DFEVectorType<DFEVar> VEC_TYPE =
-      new DFEVectorType<DFEVar>(DATA_TYPE, P_V);
-     
-    // }}}
     // Counters {{{
 
     CounterChain chain = control.count.makeCounterChain();
@@ -62,10 +62,13 @@ public class FCLayerInpKernel extends Kernel {
     DFEVar inpEnable = i === 0;
     DFEVar inp = io.input(INP_NAME, DATA_TYPE, inpEnable);
 
+    // }}}
+    // Memory {{{
     // weight input will always be enabled
-    DFEVector<DFEVar> wgt = io.input(WGT_NAME, VEC_TYPE);
-
-    DFEVector<DFEVar> bias = io.input(BIAS_NAME, VEC_TYPE, j === 0);
+    Memory<DFEVar> wgtsMem = mem.alloc(DATA_TYPE, WGTS_MEM_SIZE);
+    Memory<DFEVar> biasMem = mem.alloc(DATA_TYPE, BIAS_MEM_SIZE);
+    wgtsMem.mapToCPU(WGTS_NAME);
+    biasMem.mapToCPU(BIAS_NAME);
     // }}}
     // Input buffer {{{
 
@@ -80,9 +83,13 @@ public class FCLayerInpKernel extends Kernel {
 
     for (int idx = 0; idx < P_V; idx ++) {
       String suffix = "_" + Integer.toString(idx);
-      io.output(INP_NAME + suffix, inpVal, DATA_TYPE);
-      io.output(WGT_NAME + suffix, wgt[idx], DATA_TYPE); 
-      io.output(BIAS_NAME + suffix, bias[idx], DATA_TYPE);
+
+      DFEVar wgtsReadAddr = ((i + idx) * N + j).cast(dfeUInt(WGTS_MEM_ADDR_BITS));
+      DFEVar biasReadAddr = (i + idx).cast(dfeUInt(BIAS_MEM_ADDR_BITS));
+      
+      io.output(INP_NAME  + suffix, inpVal, DATA_TYPE);
+      io.output(WGT_NAME  + suffix, wgtsMem.read(wgtsReadAddr), DATA_TYPE);
+      io.output(BIAS_NAME + suffix, biasMem.read(biasReadAddr), DATA_TYPE);
     }
 
     // }}}

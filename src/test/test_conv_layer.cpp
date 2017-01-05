@@ -25,11 +25,19 @@ TEST(SingleConvLayer, MainTest) {
 
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 
+  double *wgts_rom = (double *) malloc(sizeof(double) * wgts_data.size());
+  double *bias_rom = (double *) malloc(sizeof(double) * bias_data.size());
+
+  for (int i = 0; i < bias_data.size(); i ++)
+    bias_rom[i] = (double) bias_data[i];
+  for (int i = 0; i < wgts_data.size(); i ++)
+    wgts_rom[i] = (double) wgts_data[i];
+
   test_conv_layer_MaxDeep_actions_t actions;
-  actions.instream_conv_wgt  = wgts_data.data();
-  actions.instream_cpu_inp   = inp_data.data();
-  actions.instream_conv_bias = bias_data.data();
-  actions.outstream_cpu_out  = opt;
+  actions.instream_cpu_inp    = inp_data.data();
+  actions.inmem_conv_acc_bias = bias_rom;
+  actions.inmem_conv_inp_wgts = wgts_rom;
+  actions.outstream_cpu_out   = opt;
 
   max_file_t *max_file = test_conv_layer_MaxDeep_init();
   max_engine_t *engine = max_load(max_file, "local:*");

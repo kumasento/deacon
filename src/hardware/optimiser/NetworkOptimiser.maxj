@@ -64,116 +64,12 @@ public class NetworkOptimiser {
       KernelBlock knl = null;
 
       // Conv Layer {{{
-      if (graph.isConvLayer(idx)) {
+      if (graph.isConvLayer(idx))
         createConvLayerKernels(idx, manager, graph);
-      } 
       // }}}
       // FC Layer {{{
-      else if (graph.isFCLayer(idx)) {
-        int H = graph.getInputHeight(idx);
-        int W = graph.getInputWidth(idx);
-        int C = graph.getInputChannel(idx);
-        int numOutput = graph.getOutputChannel(idx);
-
-        int N = H * W * C;
-        int M = numOutput;
-        int P_V = 1;
-
-        name = graph.getLayerName(idx);
-
-        LOGGER.info("Creating FC layer: " + name);
-        LOGGER.info("H = " + Integer.toString(H));
-        LOGGER.info("W = " + Integer.toString(W));
-        LOGGER.info("C = " + Integer.toString(C));
-        LOGGER.info("M = " + Integer.toString(M));
-        LOGGER.info("P_V = " + Integer.toString(P_V));
-        LOGGER.info("numOutput = " + Integer.toString(numOutput));
-
-        // inp kernel
-        String inp_name = name + "_inp";
-        KernelBlock inp_knl = manager.addKernel(
-            new FCLayerInpKernel(
-              manager.makeKernelParameters(inp_name), M, N, P_V));
-        kernelBlocks.put(inp_name, inp_knl);
-        ei.setTicks(inp_name, M * N / P_V);
-
-        // out kernel
-        String out_name = name + "_out";
-        KernelBlock out_knl = manager.addKernel(
-            new FCLayerOutKernel(
-              manager.makeKernelParameters(out_name), P_V));
-        kernelBlocks.put(out_name, out_knl);
-        ei.setTicks(out_name, M / P_V);
-
-        // weight
-        String wgtName = name + "_wgt";
-        DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
-        inp_knl.getInput(FCLayerInpKernel.WGT_NAME) <== wgtFromCPU;
-        ei.setStream(wgtName, CPUTypes.FLOAT,
-            M * N * CPUTypes.FLOAT.sizeInBytes());
-
-        // bias
-        String biasName = name + "_bias";
-        DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
-        inp_knl.getInput(FCLayerInpKernel.BIAS_NAME) <== biasFromCPU;
-        int biasSize = M * CPUTypes.FLOAT.sizeInBytes();
-        biasSize = (biasSize % 16 != 0) ? (biasSize/16+1)*16: biasSize;
-        ei.setStream(biasName, CPUTypes.FLOAT, biasSize);
-        
-        // dot product kernels
-        for (int p = 0; p < P_V; p ++) {
-          String dot_name = name + "_dot_" + Integer.toString(p);
-          String suffix = "_" + Integer.toString(p);
-
-          KernelBlock dot_knl = manager.addKernel(
-              new FCLayerDotProductKernel(
-                manager.makeKernelParameters(dot_name), M / P_V, N));
-          kernelBlocks.put(dot_name, dot_knl);
-
-          // loop offset
-          InterfaceParam L = ei.getAutoLoopOffset(dot_name, "fcLoopLength");
-          ei.ignoreAutoLoopOffset(dot_name, "fcLoopLength");
-          ei.setTicks(dot_name, M / P_V * N * L);
-
-          dot_knl.getInput(FCLayerDotProductKernel.INP_NAME)
-            <== inp_knl.getOutput(FCLayerInpKernel.INP_NAME + suffix);
-          dot_knl.getInput(FCLayerDotProductKernel.WGT_NAME)
-            <== inp_knl.getOutput(FCLayerInpKernel.WGT_NAME + suffix);
-          dot_knl.getInput(FCLayerDotProductKernel.BIAS_NAME)
-            <== inp_knl.getOutput(FCLayerInpKernel.BIAS_NAME + suffix);
-          out_knl.getInput(FCLayerOutKernel.INP_NAME + suffix)
-            <== dot_knl.getOutput(FCLayerDotProductKernel.OUT_NAME);
-        }
-
-
-        /* old version
-        // create kernel block
-        knl = manager.addKernel(
-            new FCLayerKernel(
-              manager.makeKernelParameters(name), M, N, P_V));
-
-        // weight
-        String wgtName = name + "_wgt";
-        DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
-        knl.getInput(FCLayerKernel.WGT_NAME) <== wgtFromCPU;
-        ei.setStream(wgtName, CPUTypes.FLOAT,
-            M * N * CPUTypes.FLOAT.sizeInBytes());
-
-        // bias
-        String biasName = name + "_bias";
-        DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
-        knl.getInput(FCLayerKernel.BIAS_NAME) <== biasFromCPU;
-        ei.setStream(biasName, CPUTypes.FLOAT,
-            M * CPUTypes.FLOAT.sizeInBytes());
-
-        // loop offset
-        InterfaceParam L = ei.getAutoLoopOffset(name, "fcLoopLength");
-        ei.ignoreAutoLoopOffset(name, "fcLoopLength");
-
-        // ticks
-        ei.setTicks(name, L * N * M / P_V);
-        */ 
-      }
+      else if (graph.isFCLayer(idx))
+        createFCLayerKernels(idx, manager, graph);
       // }}}
       // Pooling Layer {{{
       else if (graph.isPoolingLayer(idx)) {
@@ -319,14 +215,6 @@ public class NetworkOptimiser {
     if (F < P_F || F % P_F != 0)
       throw new IllegalArgumentException("S * P_F should be divided by W");
     // }}}
-    // Streams from CPU {{{
-    
-    DFELink wgtFromCPU  = createDFELinkFromCPU(
-        name + "_wgt", K * K * C * F * DEFAULT_CPU_TYPE.sizeInBytes(), manager);
-    DFELink biasFromCPU = createDFELinkFromCPU(
-        name + "_bias", F * DEFAULT_CPU_TYPE.sizeInBytes(), manager);
-
-    // }}}
     // Input kernel block {{{
 
     String inp_name = name + DEFAULT_LAYER_INP_SUFFIX;
@@ -383,10 +271,6 @@ public class NetworkOptimiser {
     // }}}
     // Connections {{{
 
-    inp_knl.getInput(ConvLayerKernel.WGT_NAME)
-      <== wgtFromCPU;
-    acc_knl.getInput(ConvAccumKernel.BIAS_NAME)
-      <== biasFromCPU;
     out_knl.getInput(ConvOutputKernel.INP_NAME)
       <== acc_knl.getOutput(ConvAccumKernel.OUT_NAME);
 
@@ -404,6 +288,101 @@ public class NetworkOptimiser {
     kernelBlocks.put(acc_name, acc_knl);
     kernelBlocks.put(out_name, out_knl);
 
+    // }}}
+  }
+
+  /**
+   * Create kernels for a given FC layer.
+   *
+   * @param layerIdx the index for this FC layer
+   * @param manager the DFE manager to attach the FC layer kernels
+   * @param graph the high level description of the neural network
+   */
+  private void createFCLayerKernels(int layerIdx, NetworkManager manager, NeuralNetworkGraph graph) {
+    // Fetch layer parameters {{{
+  
+    int H   = graph.getInputHeight(layerIdx);
+    int W   = graph.getInputWidth(layerIdx);
+    int C   = graph.getInputChannel(layerIdx);
+    int N   = H * W * C;
+    int M   = graph.getOutputChannel(layerIdx);
+    int P_V = 1;
+
+    String name = graph.getLayerName(layerIdx);
+
+    LOGGER.info("Creating FC layer: " + name);
+    LOGGER.info("H = " + Integer.toString(H));
+    LOGGER.info("W = " + Integer.toString(W));
+    LOGGER.info("C = " + Integer.toString(C));
+    LOGGER.info("M = " + Integer.toString(M));
+    LOGGER.info("N = " + Integer.toString(N));
+    LOGGER.info("P_V = " + Integer.toString(P_V));
+
+    // }}}
+    // Input kernel block {{{
+
+    String inp_name = name + "_inp";
+    KernelBlock inp_knl = manager.addKernel(
+        new FCLayerInpKernel(
+          manager.makeKernelParameters(inp_name), M, N, P_V));
+
+    // }}}
+    // Output kernel block {{{
+
+    String out_name = name + "_out";
+    KernelBlock out_knl = manager.addKernel(
+        new FCLayerOutKernel(
+          manager.makeKernelParameters(out_name), P_V));
+
+    // }}}
+    // weight
+    // String wgtName = name + "_wgt";
+    // DFELink wgtFromCPU = manager.addStreamFromCPU(wgtName);
+    // inp_knl.getInput(FCLayerInpKernel.WGT_NAME) <== wgtFromCPU;
+    // ei.setStream(wgtName, CPUTypes.FLOAT,
+    //     M * N * CPUTypes.FLOAT.sizeInBytes());
+
+    // bias
+    // String biasName = name + "_bias";
+    // DFELink biasFromCPU = manager.addStreamFromCPU(biasName);
+    // inp_knl.getInput(FCLayerInpKernel.BIAS_NAME) <== biasFromCPU;
+    // int biasSize = M * CPUTypes.FLOAT.sizeInBytes();
+    // biasSize = (biasSize % 16 != 0) ? (biasSize/16+1)*16: biasSize;
+    // ei.setStream(biasName, CPUTypes.FLOAT, biasSize);
+    
+    // Dot product kernels {{{
+    for (int p = 0; p < P_V; p ++) {
+      String suffix = "_" + Integer.toString(p);
+      String dot_name = name + "_dot" + suffix;
+
+      KernelBlock dot_knl = manager.addKernel(
+          new FCLayerDotProductKernel(
+            manager.makeKernelParameters(dot_name), M / P_V, N));
+
+      // loop offset
+      InterfaceParam L = ei.getAutoLoopOffset(dot_name, "fcLoopLength");
+      ei.ignoreAutoLoopOffset(dot_name, "fcLoopLength");
+
+      dot_knl.getInput(FCLayerDotProductKernel.INP_NAME)
+        <== inp_knl.getOutput(FCLayerInpKernel.INP_NAME + suffix);
+      dot_knl.getInput(FCLayerDotProductKernel.WGT_NAME)
+        <== inp_knl.getOutput(FCLayerInpKernel.WGT_NAME + suffix);
+      dot_knl.getInput(FCLayerDotProductKernel.BIAS_NAME)
+        <== inp_knl.getOutput(FCLayerInpKernel.BIAS_NAME + suffix);
+      out_knl.getInput(FCLayerOutKernel.INP_NAME + suffix)
+        <== dot_knl.getOutput(FCLayerDotProductKernel.OUT_NAME);
+
+      kernelBlocks.put(dot_name, dot_knl);
+      ei.setTicks(dot_name, M / P_V * N * L);
+    }
+    // }}}
+    // Update kernelBlocks {{{
+    kernelBlocks.put(inp_name, inp_knl);
+    kernelBlocks.put(out_name, out_knl);
+    // }}}
+    // Ticks {{{
+    ei.setTicks(inp_name, M * N / P_V);
+    ei.setTicks(out_name, M / P_V);
     // }}}
   }
 
