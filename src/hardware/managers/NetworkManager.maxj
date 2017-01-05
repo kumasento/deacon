@@ -46,6 +46,7 @@ public class NetworkManager extends CustomManager {
     // Configure {{{
     // By default, allow multiple transitions
     config.setAllowNonMultipleTransitions(true);
+    config.setStreamFromCPUMaxNumber(16);
     // }}}
     /*
     // Kernel Blocks {{{

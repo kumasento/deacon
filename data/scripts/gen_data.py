@@ -38,7 +38,7 @@ if __name__ == '__main__':
     exit(1)
 
   data_blob.data[...] = np.asarray(
-      np.random.randint(10, size=data_blob.data.shape), dtype=np.float32)
+      np.random.random_sample(data_blob.data.shape), dtype=np.float32)
 
   data_dir = os.path.join(test_data_path, test_name)
   if not os.path.isdir(data_dir):
@@ -47,8 +47,8 @@ if __name__ == '__main__':
   for layer_name, param in net.params.iteritems():
     for idx in range(len(param)):
       # fulfill each param in the layer
-      param[idx].data[...] = np.asarray(
-          np.ones(param[idx].data.shape), dtype=np.float32)
+      param[idx].data[...] = 1e-2 * np.asarray(
+          np.random.random_sample(param[idx].data.shape), dtype=np.float32)
       print param[idx].data.shape
       if args.verbose:
         print param[idx].data

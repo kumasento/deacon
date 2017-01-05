@@ -79,7 +79,7 @@ public class NeuralNetworkGraph {
         ConvolutionParameter convParam = layer.getConvolutionParam();
         int kernelSize                 = (int) convParam.getKernelSize(0);
         int stride                     = (int) convParam.getStride(0);
-        int padding                    = (int) convParam.getPad(0);
+        int padding                    = getPadding(idx);
         topShapeBuilder                = BlobShape.newBuilder();
         btmShape                       = blobs.get(btm);
         int topHeight                  = (int) (btmShape.getDim(2) + 2 * padding - kernelSize) / stride + 1;
@@ -121,7 +121,7 @@ public class NeuralNetworkGraph {
         PoolingParameter poolParam = layer.getPoolingParam();
         topShapeBuilder            = BlobShape.newBuilder();
         btmShape                   = blobs.get(btm);
-        int pad                    = (int) getPadding(idx);
+        int pad                    = getPadding(idx);
         int kernelSize             = (int) poolParam.getKernelSize();
         int stride                 = (int) poolParam.getStride();
         int topHeight              = (int) Math.ceil((double) (btmShape.getDim(2) + 2 * pad - kernelSize) / stride + 1);
@@ -327,8 +327,10 @@ public class NeuralNetworkGraph {
   
   public int getPadding(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV)
-      return layers[idx].getConvolutionParam().getPad(0);
+    if (type == LayerType.CONV) {
+      ConvolutionParameter param = layers[idx].getConvolutionParam();
+      return (param.getPadCount() == 0) ? 0 : param.getPad(0);
+    }
     if (type == LayerType.POOL) {
       PoolingParameter param = layers[idx].getPoolingParam();
       return (param.getPadCount() == 0) ? 0 : param.getPad(0);

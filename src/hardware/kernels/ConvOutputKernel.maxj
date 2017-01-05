@@ -94,7 +94,12 @@ public class ConvOutputKernel extends Kernel {
     DFEVar [ ] bufVecList = new DFEVar [ P_F ];
     for (int i = 0; i < P_F; i ++)
       bufVecList[ i ] = bufVec[i];
-    DFEVar bufRead = control.mux(p.cast(dfeUInt(MUX_BITS)), bufVecList);
+
+    DFEVar bufRead = DATA_TYPE.newInstance(this);
+    if (P_F != 1) 
+      bufRead <== control.mux(p.cast(dfeUInt(MUX_BITS)), bufVecList);
+    else
+      bufRead <== bufVecList[0]; 
     bufRead.simWatch("bufRead");
     
     DFEVar output = (cf === 0 | P_F == 1) ? inp[0] : bufRead;

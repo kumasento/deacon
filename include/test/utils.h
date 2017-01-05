@@ -27,6 +27,10 @@ std::vector<T> read_test_data(std::string test_name, std::string data_name) {
   std::ifstream data_file(file_name, std::ios::binary | std::ios::ate);
   if (data_file.is_open()) {
     int size = data_file.tellg();
+    int orig = size;
+    if (size % 16 != 0)
+      size = (orig / 16 + 1) * 16;
+
     char buf[sizeof(T)];
     int N = size / sizeof(T);
 
@@ -36,7 +40,7 @@ std::vector<T> read_test_data(std::string test_name, std::string data_name) {
     // read
     data.resize(N);
     data_file.seekg(std::ios::beg);
-    for (int i = 0; i < N; i ++) {
+    for (int i = 0; i < orig/sizeof(T); i ++) {
       T val;
       data_file.read(buf, sizeof(T));
       memcpy(&val, buf, sizeof(T));

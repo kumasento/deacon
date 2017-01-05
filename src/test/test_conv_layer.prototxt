@@ -3,7 +3,7 @@ layer {
   name: "data"
   type: "Input"
   top: "data"
-  input_param { shape: { dim: 1 dim: 16 dim: 4 dim: 4 } }
+  input_param { shape: { dim: 1 dim: 2 dim: 4 dim: 4 } }
 }
 layer {
   name: "conv"
@@ -11,7 +11,7 @@ layer {
   bottom: "data"
   top: "conv"
   convolution_param {
-    num_output: 32
+    num_output: 3 
     kernel_size: 3
     pad: 1
     stride: 1
