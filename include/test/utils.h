@@ -6,6 +6,7 @@
 #include <vector>
 #include <unistd.h>
 #include <cstdio>
+#include <algorithm>
 #include "glog/logging.h"
 
 // The test data dir is a relative data path that assumes all the 
@@ -58,6 +59,21 @@ double * convert_to_double(std::vector<float> orig_data) {
   double *data = (double *) malloc(sizeof(double) * orig_data.size());
   for (int i = 0; i < orig_data.size(); i ++)
     data[i] = (double) orig_data[i];
+  return data;
+}
+
+std::vector<float> get_split_chunk(std::vector<float> orig_data, int idx, int size) {
+  int orig_size = orig_data.size();
+  std::vector<float>::iterator orig_begin = orig_data.begin();
+  std::vector<float>::iterator new_begin = orig_begin + idx * size;
+  std::vector<float>::iterator new_end = 
+    ((idx + 1) * size < orig_size)
+    ? (new_begin + size)
+    : orig_data.end();
+
+  std::vector<float> data;
+  data.resize(size);
+  std::copy(new_begin, new_end, data.begin());
   return data;
 }
 

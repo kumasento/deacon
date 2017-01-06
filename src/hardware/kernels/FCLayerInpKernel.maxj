@@ -8,6 +8,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import java.util.*;
 
 /**
  * The fully connected layer for the CNN network
@@ -24,6 +26,8 @@ public class FCLayerInpKernel extends Kernel {
   public static final String WGTS_NAME = "wgts";
   public static final String BIAS_NAME = "bias";
 
+  private static final int MAX_MEM_SIZE = 32768;
+
   public FCLayerInpKernel(KernelParameters params,
     int M,  /* the height of the input matrix */
     int N,  /* the width of the input matrix */
@@ -31,10 +35,16 @@ public class FCLayerInpKernel extends Kernel {
   ) {
     super(params);
 
-    int WGTS_MEM_SIZE = M * N;
-    int WGTS_MEM_ADDR_BITS = MathUtils.bitsToAddress(WGTS_MEM_SIZE);
-    int BIAS_MEM_SIZE = M;
-    int BIAS_MEM_ADDR_BITS = MathUtils.bitsToAddress(BIAS_MEM_SIZE);
+    int WGTS_MEM_SIZE_TOTAL = M * N;
+    int WGTS_MEM_NUM        = (int) Math.ceil((double) WGTS_MEM_SIZE_TOTAL / MAX_MEM_SIZE);
+    int WGTS_MEM_NUM_ROWS   = (int) Math.ceil((double) M / WGTS_MEM_NUM);
+    int WGTS_MEM_SIZE       = WGTS_MEM_NUM_ROWS * N;
+    System.out.println("WGTS_MEM_NUM: " + Integer.toString(WGTS_MEM_NUM));
+    System.out.println("WGTS_MEM_SIZE: " + Integer.toString(WGTS_MEM_SIZE));
+    int WGTS_MEM_IDX_BITS   = MathUtils.bitsToAddress(WGTS_MEM_NUM);
+    int WGTS_MEM_ADDR_BITS  = MathUtils.bitsToAddress(WGTS_MEM_SIZE);
+    int BIAS_MEM_SIZE       = M;
+    int BIAS_MEM_ADDR_BITS  = MathUtils.bitsToAddress(BIAS_MEM_SIZE);
 
     // Counters {{{
 
@@ -62,10 +72,18 @@ public class FCLayerInpKernel extends Kernel {
 
     // }}}
     // Memory {{{
+
     // weight input will always be enabled
-    Memory<DFEVar> wgtsMem = mem.alloc(DATA_TYPE, WGTS_MEM_SIZE);
+    ArrayList<Memory<DFEVar>> wgtsMemList =
+      new ArrayList<Memory<DFEVar>>();
+    
+    for (int memIdx = 0; memIdx < WGTS_MEM_NUM; memIdx ++) {
+      Memory<DFEVar> wgtsMem = mem.alloc(DATA_TYPE, WGTS_MEM_SIZE);
+      wgtsMem.mapToCPU(WGTS_NAME + "_" + Integer.toString(memIdx));
+      wgtsMemList.add(wgtsMem);
+    }
+
     Memory<DFEVar> biasMem = mem.alloc(DATA_TYPE, BIAS_MEM_SIZE);
-    wgtsMem.mapToCPU(WGTS_NAME);
     biasMem.mapToCPU(BIAS_NAME);
     // }}}
     // Input buffer {{{
@@ -85,11 +103,35 @@ public class FCLayerInpKernel extends Kernel {
     for (int idx = 0; idx < P_V; idx ++) {
       String suffix = "_" + Integer.toString(idx);
 
-      DFEVar wgtsReadAddr = ((i + idx) * N + j).cast(dfeUInt(WGTS_MEM_ADDR_BITS));
+      DFEVar wgtsReadRowIdx = (i + idx);
+      DFEVar wgtsMemIdx =
+        wgtsReadRowIdx.cast(dfeFloat(8, 24)) /
+        WGTS_MEM_NUM_ROWS;
+      if (WGTS_MEM_NUM > 1) {
+        wgtsMemIdx = KernelMath.floor(wgtsMemIdx, dfeInt(32)); 
+        wgtsMemIdx = wgtsMemIdx.cast(dfeUInt(WGTS_MEM_IDX_BITS));
+      } else {
+        wgtsMemIdx = constant.var(0);
+      }
+      wgtsMemIdx.simWatch("wgtsMemIdx" + suffix);
+      
+      DFEVar wgtsReadAddr = (
+          (wgtsReadRowIdx - wgtsMemIdx.cast(dfeInt(32)) *
+           WGTS_MEM_NUM_ROWS) * N + j).cast(dfeUInt(WGTS_MEM_ADDR_BITS));
+      wgtsReadAddr.simWatch("wgtsReadAddr" + suffix);
+
+      DFEVar [ ] wgtsReadList = new DFEVar [WGTS_MEM_NUM];
+      for (int memIdx = 0; memIdx < WGTS_MEM_NUM; memIdx ++)
+        wgtsReadList[memIdx] = wgtsMemList[memIdx].read(wgtsReadAddr);
+
+      DFEVar wgtsRead = (WGTS_MEM_NUM == 1)
+        ? wgtsReadList[0]
+        : control.mux(wgtsMemIdx, wgtsReadList);
+
       DFEVar biasReadAddr = (i + idx).cast(dfeUInt(BIAS_MEM_ADDR_BITS));
       
       io.output(INP_NAME  + suffix, inpVal, DATA_TYPE);
-      io.output(WGT_NAME  + suffix, wgtsMem.read(wgtsReadAddr), DATA_TYPE);
+      io.output(WGT_NAME  + suffix, wgtsRead, DATA_TYPE);
       io.output(BIAS_NAME + suffix, biasMem.read(biasReadAddr), DATA_TYPE, j === 0);
     }
 

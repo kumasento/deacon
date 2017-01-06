@@ -29,6 +29,8 @@ public class NetworkOptimiser {
   private static final String DEFAULT_LAYER_OUT_SUFFIX = "_out";
   private static final String DEFAULT_LAYER_INP_SUFFIX = "_inp";
 
+  private static final int MAX_MEM_SIZE = 32768;
+
   private Map<String, KernelBlock> kernelBlocks;
   
   private EngineInterface ei;
@@ -212,6 +214,7 @@ public class NetworkOptimiser {
     LOGGER.info("S = " + Integer.toString(S));
     LOGGER.info("P_F = " + Integer.toString(P_F));
 
+    // validators
     if (F < P_F || F % P_F != 0)
       throw new IllegalArgumentException("S * P_F should be divided by W");
     // }}}
@@ -317,6 +320,12 @@ public class NetworkOptimiser {
     LOGGER.info("M = " + Integer.toString(M));
     LOGGER.info("N = " + Integer.toString(N));
     LOGGER.info("P_V = " + Integer.toString(P_V));
+
+    if (N >= MAX_MEM_SIZE) 
+      throw new IllegalArgumentException(
+          "number of columns (" + Integer.toString(N) + ") " +
+          "should not be larger than " +
+          "MAX_MEM_SIZE (" + Integer.toString(MAX_MEM_SIZE) + ")");
 
     // }}}
     // Input kernel block {{{
