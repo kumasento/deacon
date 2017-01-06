@@ -68,6 +68,6 @@ layer {
   bottom: "relu1"
   top: "ip2"
   inner_product_param {
-    num_output: 10
+    num_output: 16
   }
 }

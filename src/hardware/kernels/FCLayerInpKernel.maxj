@@ -90,7 +90,7 @@ public class FCLayerInpKernel extends Kernel {
       
       io.output(INP_NAME  + suffix, inpVal, DATA_TYPE);
       io.output(WGT_NAME  + suffix, wgtsMem.read(wgtsReadAddr), DATA_TYPE);
-      io.output(BIAS_NAME + suffix, biasMem.read(biasReadAddr), DATA_TYPE);
+      io.output(BIAS_NAME + suffix, biasMem.read(biasReadAddr), DATA_TYPE, j === 0);
     }
 
     // }}}
