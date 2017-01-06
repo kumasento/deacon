@@ -157,3 +157,16 @@ function (add_runsim exe dfemodel)
   )
 
 endfunction ()
+
+function (add_rundfe exe dfemodel)
+  set (MAXJ_DFE_SYSTEM_LD_PRELOAD "/opt/maxeler/maxeleros/lib/libmaxeleros.so")
+  set (RUNDFE_TARGET_NAME rundfe_${exe})
+  set (RUNDFE_TARGET_NAME rundfe_${exe} PARENT_SCOPE)
+  add_custom_target(
+    ${RUNDFE_TARGET_NAME}
+    COMMAND LD_PRELOAD=${MAXJ_DFE_SYSTEM_LD_PRELOAD}
+      ${PROJECT_BINARY_DIR}/${exe}
+    DEPENDS ${exe}
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+  )
+endfunction ()

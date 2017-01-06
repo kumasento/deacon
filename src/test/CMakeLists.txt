@@ -14,6 +14,7 @@ function (add_runsim_test test_name)
 
   # create executable target for the test
   add_executable (${TEST_NAME} ${TEST_SRC})
+  add_executable (${TEST_NAME}_dfe ${TEST_SRC})
   
   # add dependency maxfile
   set (MAXJ_PROJECT_NAME "MaxDeep")
@@ -60,6 +61,30 @@ function (add_runsim_test test_name)
   # link to the executable file for this test
   target_link_libraries (${TEST_NAME} ${INTERFACE_TARGET_NAME})
 
+  add_max(${TEST_NAME}
+    ${MAXJ_PROJECT_NAME}
+    ${MAXJ_DFE_MODEL}
+    ${MAXJ_BUILD_PARAMS}
+    "${ENGINEFILES}"
+    ${MAXJ_DEPEND_JARS}
+    "${MAXJ_DEPEND_TARGETS}"
+    "DFE")
+  add_library (${INTERFACE_TARGET_NAME}_dfe ${INTERFACEFILES})
+  include_directories (${INTERFACE_TARGET_NAME}_dfe ${PROJECT_SOURCE_DIR}/include)
+  add_dependencies (${INTERFACE_TARGET_NAME}_dfe
+    ${MAXFILE_TARGET_NAME}_dfe
+    libglog
+    libgflags
+    libgtest)
+  target_link_libraries (${INTERFACE_TARGET_NAME}_dfe
+    ${MAXFILE_TARGET_NAME}_dfe
+    protocpp
+    pthread
+    libglog
+    libgflags
+    libgtest)
+  target_link_libraries (${TEST_NAME}_dfe ${INTERFACE_TARGET_NAME}_dfe)
+
   # create runsim command for this test
   add_runsim (${TEST_NAME} ${MAXJ_DFE_MODEL})
 
@@ -71,14 +96,7 @@ function (add_runsim_test test_name)
     COMMAND make ${RUNSIM_TARGET_NAME}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
-  add_max(${TEST_NAME}
-    ${MAXJ_PROJECT_NAME}
-    ${MAXJ_DFE_MODEL}
-    ${MAXJ_BUILD_PARAMS}
-    "${ENGINEFILES}"
-    ${MAXJ_DEPEND_JARS}
-    "${MAXJ_DEPEND_TARGETS}"
-    "DFE")
+  add_rundfe(${TEST_NAME}_dfe ${MAXJ_DFE_MODEL})
 endfunction ()
 # }}}
 
