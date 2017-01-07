@@ -78,7 +78,7 @@ public class NeuralNetworkGraph {
 
         ConvolutionParameter convParam = layer.getConvolutionParam();
         int kernelSize                 = (int) convParam.getKernelSize(0);
-        int stride                     = (int) convParam.getStride(0);
+        int stride                     = getStride(idx);
         int padding                    = getPadding(idx);
         topShapeBuilder                = BlobShape.newBuilder();
         btmShape                       = blobs.get(btm);
@@ -123,7 +123,7 @@ public class NeuralNetworkGraph {
         btmShape                   = blobs.get(btm);
         int pad                    = getPadding(idx);
         int kernelSize             = (int) poolParam.getKernelSize();
-        int stride                 = (int) poolParam.getStride();
+        int stride                 = getStride(idx);
         int topHeight              = (int) Math.ceil((double) (btmShape.getDim(2) + 2 * pad - kernelSize) / stride + 1);
         int topWidth               = (int) Math.ceil((double) (btmShape.getDim(3) + 2 * pad - kernelSize) / stride + 1);
         
@@ -317,10 +317,14 @@ public class NeuralNetworkGraph {
 
   public int getStride(int idx) {
     LayerType type = getCanonicalLayerType(idx);
-    if (type == LayerType.CONV)
-      return layers[idx].getConvolutionParam().getStride(0);
-    if (type == LayerType.POOL)
-      return layers[idx].getPoolingParam().getStride();
+    if (type == LayerType.CONV) {
+      ConvolutionParameter param = layers[idx].getConvolutionParam();
+      return (!param.hasStride()) ? 1 : param.getStride();
+    }
+    if (type == LayerType.POOL) {
+      PoolingParameter param = layers[idx].getPoolingParam();
+      return (!param.hasStride()) ? 1 : param.getStride();
+    }
 
     throw new IllegalArgumentException("Layer don't have kernel size");
   }

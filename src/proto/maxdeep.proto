@@ -33,7 +33,7 @@ message ConvolutionParameter {/*{{{*/
   optional uint32 num_output = 1;
   repeated uint32 pad = 3;
   repeated uint32 kernel_size = 4;
-  repeated uint32 stride = 6;
+  optional uint32 stride = 6;
 }/*}}}*/
 message InnerProductParameter {/*{{{*/
   optional uint32 num_output = 1;

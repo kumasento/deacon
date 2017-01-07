@@ -69,7 +69,7 @@ function (add_max target prj dfemodel params enginefiles jars deps maxtarget)
     # Generate MaxFile
     COMMAND MAXAPPJCP=${EXTRA_JARS}:.
       MAXAPPPKG=${MAXPKG}
-      MAXSOURCEDIRS=${PROJECT_SOURCE_DIR}/src/hardware
+      MAXSOURCEDIRS=${PROJECT_SOURCE_DIR}/src/hardware/kernels
       ${MAXJAVARUN} -m ${MAXJAVARUNMEMSIZE} ${MAXJAVACLASS}
       DFEModel=${dfemodel}
       maxFileName=${MAXAPPNAME}
