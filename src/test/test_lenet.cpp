@@ -43,8 +43,8 @@ TEST(LeNetTest, MainTest) {
   test_lenet_MaxDeep_actions_t actions;
   actions.inmem_conv1_acc_bias = convert_to_double(conv1_bias);
   actions.inmem_conv2_acc_bias = convert_to_double(conv2_bias);
-  actions.inmem_conv1_inp_wgts = convert_to_double(conv1_wgt);
-  actions.inmem_conv2_inp_wgts = convert_to_double(conv2_wgt);
+  actions.instream_conv1_wgts  = conv1_wgt.data();
+  actions.instream_conv2_wgts  = conv2_wgt.data();
   actions.instream_ip1_bias    = ip1_bias.data();
   actions.instream_ip2_bias    = ip2_bias.data();
   actions.instream_ip1_wgts    = ip1_wgt.data();

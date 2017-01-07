@@ -11,7 +11,7 @@ layer {
   bottom: "data"
   top: "conv"
   convolution_param {
-    num_output: 3 
+    num_output: 4 
     kernel_size: 3
     pad: 1
     stride: 1

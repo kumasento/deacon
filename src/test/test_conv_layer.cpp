@@ -35,8 +35,8 @@ TEST(SingleConvLayer, MainTest) {
 
   test_conv_layer_MaxDeep_actions_t actions;
   actions.instream_cpu_inp    = inp_data.data();
+  actions.instream_conv_wgts  = wgts_data.data();
   actions.inmem_conv_acc_bias = bias_rom;
-  actions.inmem_conv_inp_wgts = wgts_rom;
   actions.outstream_cpu_out   = opt;
 
   max_file_t *max_file = test_conv_layer_MaxDeep_init();

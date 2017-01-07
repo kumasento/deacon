@@ -221,13 +221,17 @@ public class NetworkOptimiser {
       throw new IllegalArgumentException("Weight FMem size (" + Integer.toString(K * K * C * F) + ") should not be larger than "
           + Integer.toString(MAX_MEM_SIZE));
     // }}}
+    // Streams {{{
+    DFELink wgts = createDFELinkFromCPU(name + "_wgts", K * K * C * F,
+        manager);
+    // }}}
     // Input kernel block {{{
 
     String inp_name = name + DEFAULT_LAYER_INP_SUFFIX;
     KernelBlock inp_knl = manager.addKernel(
         new ConvLayerKernel(
           manager.makeKernelParameters(inp_name),
-          H, W, F, C, K, P, S, P_F));
+          H, W, F, C, K, P, S, P_F, false));
 
     // }}}
     // Accumulate kernel block {{{
@@ -277,6 +281,8 @@ public class NetworkOptimiser {
     // }}}
     // Connections {{{
 
+    inp_knl.getInput(ConvLayerKernel.WGTS_NAME)
+      <== wgts;
     out_knl.getInput(ConvOutputKernel.INP_NAME)
       <== acc_knl.getOutput(ConvAccumKernel.OUT_NAME);
 

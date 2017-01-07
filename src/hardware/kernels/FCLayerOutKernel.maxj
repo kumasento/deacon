@@ -40,10 +40,10 @@ public class FCLayerOutKernel extends Kernel {
     for (int idx = 0; idx < P_V; idx ++) {
       String suffix = "_" + Integer.toString(idx);
       DFEVar inp = io.input(INP_NAME + suffix, DATA_TYPE);
-      inp.simWatch("inp" + suffix);
+      // inp.simWatch("inp" + suffix);
       inpVec[idx] <== inp;
     }
-    inpVec.simWatch("inpVec");
+    // inpVec.simWatch("inpVec");
 
     // }}}
     // Output stream {{{

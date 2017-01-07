@@ -49,8 +49,8 @@ public class FCLayerInpKernel extends Kernel {
       ? constant.var(0)
       : chain.addCounter(N, 1).cast(dfeInt(32));
 
-    i.simWatch("i");
-    j.simWatch("j");
+    // i.simWatch("i");
+    // j.simWatch("j");
 
     // }}}
     // Streams {{{
@@ -74,7 +74,7 @@ public class FCLayerInpKernel extends Kernel {
         inp,
         inpEnable,
         Mem.RamWriteMode.WRITE_FIRST);
-    inpVal.simWatch("inpVal");
+    // inpVal.simWatch("inpVal");
 
     // }}}
     // Output stream {{{

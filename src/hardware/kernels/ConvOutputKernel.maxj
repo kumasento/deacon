@@ -44,9 +44,9 @@ public class ConvOutputKernel extends Kernel {
       ? constant.var(0) : chain.addCounter(P_F, 1).cast(dfeInt(32));
     DFEVar l = chain.addCounter(L, 1).cast(dfeInt(32));
 
-    f.simWatch("f");
-    p.simWatch("p");
-    l.simWatch("l");
+    // f.simWatch("f");
+    // p.simWatch("p");
+    // l.simWatch("l");
 
     // }}}
     // Vector type {{{
@@ -100,7 +100,7 @@ public class ConvOutputKernel extends Kernel {
       bufRead <== control.mux(p.cast(dfeUInt(MUX_BITS)), bufVecList);
     else
       bufRead <== bufVecList[0]; 
-    bufRead.simWatch("bufRead");
+    // bufRead.simWatch("bufRead");
     
     DFEVar output = (cf === 0 | P_F == 1) ? inp[0] : bufRead;
     io.output(OUT_NAME, output, DATA_TYPE);

@@ -32,7 +32,7 @@ public class FCLayerDotProductKernel extends Kernel {
 
     OffsetExpr loopLength = stream.makeOffsetAutoLoop("fcLoopLength");
     DFEVar L = loopLength.getDFEVar(this, dfeUInt(8));
-    L.simWatch("L");
+    // L.simWatch("L");
 
     // }}}
     // Counters {{{
@@ -51,9 +51,9 @@ public class FCLayerDotProductKernel extends Kernel {
     // loop index 
     DFEVar l = chain.addCounter(L, 1).cast(dfeUInt(8));
 
-    i.simWatch("i");
-    j.simWatch("j");
-    l.simWatch("l");
+    // i.simWatch("i");
+    // j.simWatch("j");
+    // l.simWatch("l");
 
     // }}}
     // Streams {{{
@@ -62,9 +62,9 @@ public class FCLayerDotProductKernel extends Kernel {
     DFEVar wgt  = io.input(WGT_NAME,  DATA_TYPE, l === 0);
     DFEVar bias = io.input(BIAS_NAME, DATA_TYPE, l === 0 & j === 0);
 
-    inp.simWatch("inp");
-    wgt.simWatch("wgt");
-    bias.simWatch("bias");
+    // inp.simWatch("inp");
+    // wgt.simWatch("wgt");
+    // bias.simWatch("bias");
 
     // }}}
     // Compute {{{
@@ -73,13 +73,13 @@ public class FCLayerDotProductKernel extends Kernel {
     DFEVar sum = (j === 0) ? bias : val;
     DFEVar tmp = inp * wgt + sum;
     val <== stream.offset(tmp, -loopLength);
-    val.simWatch("val");
+    // val.simWatch("val");
 
     // }}}
     // Output stream {{{
 
     DFEVar optEnable = (j === N-1) & (l === L-1);
-    optEnable.simWatch("optEnable");
+    // optEnable.simWatch("optEnable");
     io.output(OUT_NAME, tmp, DATA_TYPE, optEnable);
 
     // }}}

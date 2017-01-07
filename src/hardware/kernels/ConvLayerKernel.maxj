@@ -17,7 +17,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 public class ConvLayerKernel extends Kernel {
 
   public static final String INP_NAME  = "inp";
-  public static final String WGT_NAME  = "wgts";
+  public static final String WGTS_NAME = "wgts";
   public static final String OUT_NAME  = "opt";
   public static final String BIAS_NAME = "bias";
 
@@ -27,20 +27,42 @@ public class ConvLayerKernel extends Kernel {
 
   private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
+  // if set USE_FMEM_FOR_WGTS, read from wgtsMem, or read from wgtsInpVec
+  private Memory<DFEVar> wgtsMem;
+
+  private DFEVector<DFEVar> wgtsInpVec;
+
+  private boolean useFMemForWgts = false;
+
+  /**
+   * Create the input component of the ConvLayer
+   *
+   * @param H height of the input feature map
+   * @param W width of the input feature map
+   * @param F number of output filters
+   * @param C number of input feature map channels
+   * @param K kernel size
+   * @param P padding size
+   * @param S stride size
+   * @param P_F parallel in filter
+   * @param USE_FMEM_FOR_WGTS flag to set this kernel to use FMem for weights
+   */
   public ConvLayerKernel(KernelParameters params,
-      int H,  /* height of the input feature map */
-      int W,  /* width of the input feature map */
-      int F,  /* number of output filters */
-      int C,  /* number of input feature map channels */
-      int K,  /* kernel size */
-      int P,  /* padding size */
-      int S,  /* stride size */
-      int P_F /* parallel in filter */
+    int     H,
+    int     W,
+    int     F,
+    int     C,
+    int     K,
+    int     P,
+    int     S,
+    int     P_F,
+    boolean USE_FMEM_FOR_WGTS
   ) {
     super(params);
 
     // Constants {{{
 
+    this.useFMemForWgts   = USE_FMEM_FOR_WGTS;
     // input buffer stores a feature map for a single channel
     int KERNEL_UPPER         =   K / 2;
     int KERNEL_LOWER         = - K / 2;
@@ -48,6 +70,13 @@ public class ConvLayerKernel extends Kernel {
     int WEIGHT_BUF_SIZE      = C * F * K * K;
     int INPUT_BUF_ADDR_BITS  = MathUtils.bitsToAddress(INPUT_BUF_SIZE);
     int WEIGHT_BUF_ADDR_BITS = MathUtils.bitsToAddress(WEIGHT_BUF_SIZE);
+
+    int WGTS_VECT_SIZE = K * K * P_F;
+    DFEVectorType<DFEVar> WGTS_VECT_TYPE =
+      new DFEVectorType<DFEVar>(DATA_TYPE, WGTS_VECT_SIZE);
+
+    DFEVectorType<DFEVar> VEC_TYPE = 
+      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
 
     if (K % 2 == 0)
       KERNEL_UPPER --;
@@ -71,13 +100,10 @@ public class ConvLayerKernel extends Kernel {
     DFEVar rx = x + sx;
     DFEVar ry = y + sy;
 
-    c.simWatch("c");
-    f.simWatch("f");
-    rx.simWatch("rx");
-    ry.simWatch("ry");
-
-    DFEVectorType<DFEVar> VEC_TYPE = 
-      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
+    // c.simWatch("c");
+    // f.simWatch("f");
+    // rx.simWatch("rx");
+    // ry.simWatch("ry");
 
     // }}}
     // Input Stream {{{
@@ -88,8 +114,12 @@ public class ConvLayerKernel extends Kernel {
     // }}}
     // Weight Buffer {{{
    
-    Memory<DFEVar> wgtMem = mem.alloc(DATA_TYPE, K * K * C * F);
-    wgtMem.mapToCPU(WGT_NAME);
+    if (useFMemForWgts) {
+      wgtsMem = mem.alloc(DATA_TYPE, K * K * C * F);
+      wgtsMem.mapToCPU(WGTS_NAME);
+    } else {
+      wgtsInpVec = io.input(WGTS_NAME, WGTS_VECT_TYPE, rx === 0 & ry === 0);
+    }
 
     // }}}
     // Input Buffer {{{
@@ -133,19 +163,25 @@ public class ConvLayerKernel extends Kernel {
     // }}}
     // Weight {{{
     for (int idx = 0; idx < P_F; idx ++) {
-      DFEVector<DFEVar> wgtVec = VEC_TYPE.newInstance(this);
+      DFEVector<DFEVar> wgtsVec = VEC_TYPE.newInstance(this);
 
-      for (int k = 0; k < K * K; k ++) {
-        DFEVar wgtReadAddr = (
-            (c * (F * K * K)) +
-            ((f + idx) * (K * K)) +
-            k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
-        wgtVec[k] <== wgtMem.read(wgtReadAddr);
+      if (useFMemForWgts) {
+        for (int k = 0; k < K * K; k ++) {
+          DFEVar wgtReadAddr = (
+              (c * (F * K * K)) +
+              ((f + idx) * (K * K)) +
+              k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
+          wgtsVec[k] <== wgtsMem.read(wgtReadAddr);
+        }
+      } else {
+        for (int k = 0; k < K * K; k ++) {
+          wgtsVec[k] <== wgtsInpVec[k];
+        }
       }
 
       String suffix = "_" + Integer.toString(idx);
       io.output(CONV_KNL_INP_NAME + suffix, inpVec, VEC_TYPE);
-      io.output(CONV_KNL_WGT_NAME + suffix, wgtVec, VEC_TYPE);
+      io.output(CONV_KNL_WGT_NAME + suffix, wgtsVec, VEC_TYPE);
     }
     // }}}
 
