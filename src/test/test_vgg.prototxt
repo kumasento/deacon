@@ -13,7 +13,7 @@ layer {
   bottom: "data"
   top: "conv1_1"
   convolution_param {
-    num_output: 64
+    num_output: 8
     pad: 1
     kernel_size: 3
   }
@@ -30,7 +30,7 @@ layer {
   bottom: "relu1_1"
   top: "conv1_2"
   convolution_param {
-    num_output: 64
+    num_output: 8
     pad: 1
     kernel_size: 3
   }
@@ -57,7 +57,7 @@ layer {
   bottom: "pool1"
   top: "conv2_1"
   convolution_param {
-    num_output: 128
+    num_output: 16
     pad: 1
     kernel_size: 3
   }
@@ -74,7 +74,7 @@ layer {
   bottom: "relu2_1"
   top: "conv2_2"
   convolution_param {
-    num_output: 128
+    num_output: 16
     pad: 1
     kernel_size: 3
   }
@@ -101,7 +101,7 @@ layer {
   bottom: "pool2"
   top: "conv3_1"
   convolution_param {
-    num_output: 256
+    num_output: 32
     pad: 1
     kernel_size: 3
   }
@@ -118,7 +118,7 @@ layer {
   bottom: "relu3_1"
   top: "conv3_2"
   convolution_param {
-    num_output: 256
+    num_output: 32
     pad: 1
     kernel_size: 3
   }
@@ -135,7 +135,7 @@ layer {
   bottom: "relu3_2"
   top: "conv3_3"
   convolution_param {
-    num_output: 256
+    num_output: 32
     pad: 1
     kernel_size: 3
   }
@@ -162,7 +162,7 @@ layer {
   bottom: "pool3"
   top: "conv4_1"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
@@ -179,7 +179,7 @@ layer {
   bottom: "relu4_1"
   top: "conv4_2"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
@@ -196,7 +196,7 @@ layer {
   bottom: "relu4_2"
   top: "conv4_3"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
@@ -223,7 +223,7 @@ layer {
   name: "conv5_1"
   type: "Convolution"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
@@ -240,7 +240,7 @@ layer {
   bottom: "relu5_1"
   top: "conv5_2"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
@@ -257,7 +257,7 @@ layer {
   bottom: "relu5_2"
   top: "conv5_3"
   convolution_param {
-    num_output: 512
+    num_output: 48
     pad: 1
     kernel_size: 3
   }
