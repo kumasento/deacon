@@ -25,16 +25,12 @@ TEST(SingleFCLayer, MainTest) {
 
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 
-  double *bias_rom = (double *) malloc(sizeof(double) * bias_data.size());
-  for (int i = 0; i < bias_data.size(); i ++)
-    bias_rom[i] = (double) bias_data[i];
-
   test_fc_layer_MaxDeep_actions_t actions;
   
-  actions.inmem_ip_inp_wgts_0 = convert_to_double(wgts_data);
-  actions.inmem_ip_inp_bias   = bias_rom;
-  actions.instream_cpu_inp    = inp_data.data();
-  actions.outstream_cpu_out   = opt;
+  actions.instream_ip_wgts  = wgts_data.data();
+  actions.instream_ip_bias  = bias_data.data();
+  actions.instream_cpu_inp  = inp_data.data();
+  actions.outstream_cpu_out = opt;
 
   max_file_t *max_file = test_fc_layer_MaxDeep_init();
   max_engine_t *engine = max_load(max_file, "local:*");

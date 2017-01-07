@@ -328,6 +328,12 @@ public class NetworkOptimiser {
           "MAX_MEM_SIZE (" + Integer.toString(MAX_MEM_SIZE) + ")");
 
     // }}}
+    // Streams {{{
+
+    DFELink wgts = createDFELinkFromCPU(name + "_wgts", M * N, manager);
+    DFELink bias = createDFELinkFromCPU(name + "_bias", M, manager);
+
+    // }}}
     // Input kernel block {{{
 
     String inp_name = name + "_inp";
@@ -370,6 +376,10 @@ public class NetworkOptimiser {
       ei.setTicks(dot_name, M / P_V * N * L);
     }
     // }}}
+    // Connect Kernels {{{
+    inp_knl.getInput(FCLayerInpKernel.WGT_NAME) <== wgts;
+    inp_knl.getInput(FCLayerInpKernel.BIAS_NAME) <== bias;
+    // }}}
     // Update kernelBlocks {{{
     kernelBlocks.put(inp_name, inp_knl);
     kernelBlocks.put(out_name, out_knl);
@@ -402,12 +412,13 @@ public class NetworkOptimiser {
    * Create a DFELink from CPU with stream name and size.
    *
    * @param name name of the DFELink
-   * @param sizeInBytes the size of the stream
+   * @param size the size of the stream
    * @param manager the DFE manager
    * @return the generated DFELink
    */
-  private DFELink createDFELinkFromCPU(String name, int sizeInBytes, NetworkManager manager) {
+  private DFELink createDFELinkFromCPU(String name, int size, NetworkManager manager) {
     DFELink link = manager.addStreamFromCPU(name);
+    int sizeInBytes = size * DEFAULT_CPU_TYPE.sizeInBytes();
     ei.setStream(name, DEFAULT_CPU_TYPE, alignStreamSize(sizeInBytes));
     return link;
   }

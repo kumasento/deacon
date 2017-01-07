@@ -41,28 +41,16 @@ TEST(LeNetTest, MainTest) {
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 
   test_lenet_MaxDeep_actions_t actions;
-  actions.inmem_conv1_acc_bias  = convert_to_double(conv1_bias);
-  actions.inmem_conv2_acc_bias  = convert_to_double(conv2_bias);
-  actions.inmem_conv1_inp_wgts  = convert_to_double(conv1_wgt);
-  actions.inmem_conv2_inp_wgts  = convert_to_double(conv2_wgt);
-  actions.inmem_ip1_inp_bias    = convert_to_double(ip1_bias);
-  actions.inmem_ip2_inp_bias    = convert_to_double(ip2_bias);
-  actions.inmem_ip1_inp_wgts_0  = convert_to_double(get_split_chunk(ip1_wgt, 0 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_1  = convert_to_double(get_split_chunk(ip1_wgt, 1 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_2  = convert_to_double(get_split_chunk(ip1_wgt, 2 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_3  = convert_to_double(get_split_chunk(ip1_wgt, 3 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_4  = convert_to_double(get_split_chunk(ip1_wgt, 4 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_5  = convert_to_double(get_split_chunk(ip1_wgt, 5 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_6  = convert_to_double(get_split_chunk(ip1_wgt, 6 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_7  = convert_to_double(get_split_chunk(ip1_wgt, 7 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_8  = convert_to_double(get_split_chunk(ip1_wgt, 8 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_9  = convert_to_double(get_split_chunk(ip1_wgt, 9 , MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_10 = convert_to_double(get_split_chunk(ip1_wgt, 10, MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_11 = convert_to_double(get_split_chunk(ip1_wgt, 11, MAX_MEM_SIZE));
-  actions.inmem_ip1_inp_wgts_12 = convert_to_double(get_split_chunk(ip1_wgt, 12, MAX_MEM_SIZE));
-  actions.inmem_ip2_inp_wgts_0  = convert_to_double(ip2_wgt);
-  actions.instream_cpu_inp      = inp_data.data();
-  actions.outstream_cpu_out     = opt;
+  actions.inmem_conv1_acc_bias = convert_to_double(conv1_bias);
+  actions.inmem_conv2_acc_bias = convert_to_double(conv2_bias);
+  actions.inmem_conv1_inp_wgts = convert_to_double(conv1_wgt);
+  actions.inmem_conv2_inp_wgts = convert_to_double(conv2_wgt);
+  actions.instream_ip1_bias    = ip1_bias.data();
+  actions.instream_ip2_bias    = ip2_bias.data();
+  actions.instream_ip1_wgts    = ip1_wgt.data();
+  actions.instream_ip2_wgts    = ip2_wgt.data();
+  actions.instream_cpu_inp     = inp_data.data();
+  actions.outstream_cpu_out    = opt;
 
   max_file_t *max_file = test_lenet_MaxDeep_init();
   max_engine_t *engine = max_load(max_file, "local:*");
