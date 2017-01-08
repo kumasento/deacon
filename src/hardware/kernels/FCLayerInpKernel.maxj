@@ -18,8 +18,6 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  */
 public class FCLayerInpKernel extends Kernel {
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public static final String INP_NAME  = "inp";
   public static final String OUT_NAME  = "opt";
   public static final String WGT_NAME  = "wgt";
@@ -28,7 +26,8 @@ public class FCLayerInpKernel extends Kernel {
   public FCLayerInpKernel(KernelParameters params,
     int M,  /* the height of the input matrix */
     int N,  /* the width of the input matrix */
-    int P_V /* number of parallelised dot production */
+    int P_V, /* number of parallelised dot production */
+    DFEType DATA_TYPE
   ) {
     super(params);
 

@@ -14,8 +14,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public class FCLayerOutKernel extends Kernel {
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public static final String INP_NAME  = "inp";
   public static final String OUT_NAME  = "opt";
   public static final String WGT_NAME  = "wgt";
@@ -23,7 +21,8 @@ public class FCLayerOutKernel extends Kernel {
 
   public FCLayerOutKernel(
       KernelParameters params,
-      int P_V /* number of parallelised dot production */
+      int P_V, /* number of parallelised dot production */
+      DFEType DATA_TYPE
   ) {
     super(params);
 

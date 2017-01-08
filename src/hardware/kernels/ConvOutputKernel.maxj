@@ -25,12 +25,11 @@ public class ConvOutputKernel extends Kernel {
   public static final String INP_NAME  = "inp";
   public static final String OUT_NAME  = "opt";
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public ConvOutputKernel(KernelParameters params,
-      int L,  /* length of the buffer */
-      int F,  /* number of filters */
-      int P_F /* parallel in filter */
+      int L,   /* length of the buffer */
+      int F,   /* number of filters */
+      int P_F, /* parallel in filter */
+      DFEType DATA_TYPE
   ) {
     super(params);
 

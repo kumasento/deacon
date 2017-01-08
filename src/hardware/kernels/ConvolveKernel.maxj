@@ -23,10 +23,9 @@ public class ConvolveKernel extends Kernel {
   public static final String WGT_NAME = "wgt";
   public static final String OUT_NAME = "opt";
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public ConvolveKernel(KernelParameters params,
-    int K /* kernel size */
+    int K, /* kernel size */
+    DFEType DATA_TYPE
   ) {
     super(params);
 

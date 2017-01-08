@@ -6,6 +6,8 @@ import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
 
 import maxdeep.kernels.*;
 import maxdeep.managers.NetworkManager;
@@ -19,9 +21,10 @@ public class NetworkOptimiser {
   private final static Logger LOGGER =
     Logger.getLogger(NetworkOptimiser.class.getName());
 
-  private static final CPUTypes DEFAULT_CPU_TYPE = CPUTypes.FLOAT;
-  private static final CPUTypes DEFAULT_CPU_INP_TYPE = CPUTypes.FLOAT;
-  private static final CPUTypes DEFAULT_CPU_OUT_TYPE = CPUTypes.FLOAT;
+  private CPUTypes defaultCPUType = CPUTypes.FLOAT;
+  private CPUTypes defaultCPUInpType = CPUTypes.FLOAT;
+  private CPUTypes defaultCPUOutType = CPUTypes.FLOAT;
+  private DFEType defaultDFEDataType = DFETypeFactory.dfeFloat(8, 24);
 
   private static final String DEFAULT_CPU_INP_NAME = "cpu_inp";
   private static final String DEFAULT_CPU_OUT_NAME = "cpu_out";
@@ -52,8 +55,8 @@ public class NetworkOptimiser {
     LOGGER.info("Input stream size: " + inputStreamSize);
 
     DFELink CPUInp = manager.addStreamFromCPU(DEFAULT_CPU_INP_NAME);
-    ei.setStream(DEFAULT_CPU_INP_NAME, DEFAULT_CPU_INP_TYPE,
-        inputStreamSize * DEFAULT_CPU_INP_TYPE.sizeInBytes());
+    ei.setStream(DEFAULT_CPU_INP_NAME, defaultCPUInpType,
+        inputStreamSize * defaultCPUInpType.sizeInBytes());
     
     // }}}
     // Create kernels {{{
@@ -94,7 +97,7 @@ public class NetworkOptimiser {
         knl = manager.addKernel(
             new PoolingLayerKernel(
               manager.makeKernelParameters(name),
-              H, W, C, K, P, S));
+              H, W, C, K, P, S, defaultDFEDataType));
 
         ei.setTicks(name, C * H * W);
       }
@@ -108,7 +111,8 @@ public class NetworkOptimiser {
         name = graph.getLayerName(idx);
         LOGGER.info("Creating ReLU layer: " + name);
         knl = manager.addKernel(
-            new ReLULayerKernel(manager.makeKernelParameters(name)));
+            new ReLULayerKernel(manager.makeKernelParameters(name),
+              defaultDFEDataType));
         ei.setTicks(name, C * H * W);
       }
       // }}}
@@ -152,8 +156,8 @@ public class NetworkOptimiser {
         DFELink CPUOut = manager.addStreamToCPU(DEFAULT_CPU_OUT_NAME);
 
         CPUOut <== btmOutKnl.getOutput("opt");
-        int outputSize = graph.getLayerOutputSize(idx) * DEFAULT_CPU_OUT_TYPE.sizeInBytes();
-        ei.setStream(DEFAULT_CPU_OUT_NAME, DEFAULT_CPU_OUT_TYPE, alignStreamSize(outputSize));
+        int outputSize = graph.getLayerOutputSize(idx) * defaultCPUOutType.sizeInBytes();
+        ei.setStream(DEFAULT_CPU_OUT_NAME, defaultCPUOutType, alignStreamSize(outputSize));
         LOGGER.info("output size: " + Integer.toString(outputSize));
       }
     }
@@ -231,7 +235,8 @@ public class NetworkOptimiser {
     KernelBlock inp_knl = manager.addKernel(
         new ConvLayerKernel(
           manager.makeKernelParameters(inp_name),
-          H, W, F, C, K, P, S, P_F, false));
+          H, W, F, C, K, P, S, P_F, false,
+          defaultDFEDataType));
 
     // }}}
     // Accumulate kernel block {{{
@@ -240,7 +245,8 @@ public class NetworkOptimiser {
     KernelBlock acc_knl = manager.addKernel(
         new ConvAccumKernel(
           manager.makeKernelParameters(acc_name),
-          H, W, F, C, K, P, S, P_F));
+          H, W, F, C, K, P, S, P_F,
+          defaultDFEDataType));
 
     // }}}
     // Convolve kernel block {{{
@@ -251,7 +257,8 @@ public class NetworkOptimiser {
 
       KernelBlock conv_knl = manager.addKernel(
           new ConvolveKernel(
-            manager.makeKernelParameters(conv_name), K));
+            manager.makeKernelParameters(conv_name), K,
+            defaultDFEDataType));
 
       // update kernelBlocks
       kernelBlocks.put(conv_name, conv_knl);
@@ -276,7 +283,7 @@ public class NetworkOptimiser {
     KernelBlock out_knl = manager.addKernel(
         new ConvOutputKernel(
           manager.makeKernelParameters(out_name),
-          oH * oW, F, P_F));
+          oH * oW, F, P_F, defaultDFEDataType));
 
     // }}}
     // Connections {{{
@@ -348,7 +355,8 @@ public class NetworkOptimiser {
     String inp_name = name + "_inp";
     KernelBlock inp_knl = manager.addKernel(
         new FCLayerInpKernel(
-          manager.makeKernelParameters(inp_name), M, N, P_V));
+          manager.makeKernelParameters(inp_name), M, N, P_V,
+          defaultDFEDataType));
 
     // }}}
     // Output kernel block {{{
@@ -356,7 +364,8 @@ public class NetworkOptimiser {
     String out_name = name + "_out";
     KernelBlock out_knl = manager.addKernel(
         new FCLayerOutKernel(
-          manager.makeKernelParameters(out_name), P_V));
+          manager.makeKernelParameters(out_name), P_V,
+          defaultDFEDataType));
 
     // }}}
     // Dot product kernels {{{
@@ -366,7 +375,8 @@ public class NetworkOptimiser {
 
       KernelBlock dot_knl = manager.addKernel(
           new FCLayerDotProductKernel(
-            manager.makeKernelParameters(dot_name), M / P_V, N));
+            manager.makeKernelParameters(dot_name), M / P_V, N,
+            defaultDFEDataType));
 
       // loop offset
       InterfaceParam L = ei.getAutoLoopOffset(dot_name, "fcLoopLength");
@@ -427,8 +437,8 @@ public class NetworkOptimiser {
    */
   private DFELink createDFELinkFromCPU(String name, int size, NetworkManager manager) {
     DFELink link = manager.addStreamFromCPU(name);
-    int sizeInBytes = size * DEFAULT_CPU_TYPE.sizeInBytes();
-    ei.setStream(name, DEFAULT_CPU_TYPE, alignStreamSize(sizeInBytes));
+    int sizeInBytes = size * defaultCPUType.sizeInBytes();
+    ei.setStream(name, defaultCPUType, alignStreamSize(sizeInBytes));
     return link;
   }
 }

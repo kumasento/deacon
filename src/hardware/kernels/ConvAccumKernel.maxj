@@ -24,17 +24,16 @@ public class ConvAccumKernel extends Kernel {
 
   public static final String CONV_KNL_OUT_NAME = "conv_knl_opt";
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public ConvAccumKernel(KernelParameters params,
-      int H,  /* height of the input feature map */
-      int W,  /* width of the input feature map */
-      int F,  /* number of output filters */
-      int C,  /* number of input feature map channels */
-      int K,  /* kernel size */
-      int P,  /* padding size */
-      int S,  /* stride size */
-      int P_F /* parallel in filter */
+      int H,   /* height of the input feature map */
+      int W,   /* width of the input feature map */
+      int F,   /* number of output filters */
+      int C,   /* number of input feature map channels */
+      int K,   /* kernel size */
+      int P,   /* padding size */
+      int S,   /* stride size */
+      int P_F, /* parallel in filter */
+      DFEType DATA_TYPE
   ) {
     super(params);
 

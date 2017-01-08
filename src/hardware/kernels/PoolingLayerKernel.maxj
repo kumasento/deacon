@@ -16,7 +16,6 @@ public class PoolingLayerKernel extends Kernel {
   public static final String OUT_NAME = "opt";
 
   private static final DFEType COUNTER_TYPE = dfeInt(32);
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
 
   public PoolingLayerKernel(
       KernelParameters params,
@@ -25,7 +24,8 @@ public class PoolingLayerKernel extends Kernel {
       int C,
       int K,
       int P,
-      int S /* stride */
+      int S, /* stride */
+      DFEType DATA_TYPE
   ) {
     super(params);
     // Constants {{{

@@ -14,8 +14,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
  */
 public class FCLayerDotProductKernel extends Kernel {
 
-  private static final DFEType DATA_TYPE = dfeFloat(8, 24);
-
   public static final String INP_NAME  = "inp";
   public static final String OUT_NAME  = "opt";
   public static final String WGT_NAME  = "wgt";
@@ -24,7 +22,8 @@ public class FCLayerDotProductKernel extends Kernel {
   public FCLayerDotProductKernel(
       KernelParameters params,
       int M,
-      int N
+      int N,
+      DFEType DATA_TYPE
   ) {
     super(params);
 
