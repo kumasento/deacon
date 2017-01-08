@@ -1,0 +1,31 @@
+package maxdeep.optimiser;
+
+import maxdeep.graph.NeuralNetworkGraph;
+
+import com.maxeler.maxcompiler.v2.managers.DFEManager;
+
+import java.util.*;
+import java.util.logging.*;
+
+/**
+ * Validate whether a neural network graph is able to be placed on
+ * a given hardware model.
+ *
+ * @author Ruizhe Zhao <ruizhe.zhao15@imperial.ac.uk>
+ * @since  2017-01-08
+ */
+public class NeuralNetworkValidator {
+  
+  private final static Logger LOGGER =
+    Logger.getLogger(NetworkOptimiser.class.getName());
+  
+  private NeuralNetworkGraph graph;
+  private DFEManager manager;
+
+  public NeuralNetworkValidator(NeuralNetworkGraph g, DFEManager m) {
+    LOGGER.setLevel(Level.INFO);
+
+    graph = g;
+    manager = m;
+  }
+}
