@@ -18,6 +18,7 @@ public class MaxDeep {
     System.setProperty("java.util.logging.SimpleFormatter.format",
         "%1$ta %1$tH:%1$tM: [%3$s] %5$s%6$s%n");
 
+    System.out.println(args[0]);
     MaxDeepEngineParameters params = new MaxDeepEngineParameters(args); 
 
     NetParameter netParameter = null;
@@ -37,8 +38,8 @@ public class MaxDeep {
     NetworkOptimiser optimiser = new NetworkOptimiser();
 
     optimiser.optimise(manager, graph);
-    // manager.createSLiCinterface(manager.interfaceDefault());
     manager.build();
+    // manager.createSLiCinterface(manager.interfaceDefault());
   }
 
 }

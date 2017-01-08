@@ -18,7 +18,7 @@
 
 TEST(LeNetTest, MainTest) {
   std::vector<float> inp_data  =
-    read_test_data<float>(std::string(TEST_NAME), std::string("data"), true);
+    read_test_data<float>(std::string(TEST_NAME), std::string("data"));
   std::vector<float> conv1_bias = 
     read_test_data<float>(std::string(TEST_NAME), std::string("conv1_param_1"));
   std::vector<float> conv1_wgt = 
@@ -36,7 +36,7 @@ TEST(LeNetTest, MainTest) {
   std::vector<float> ip2_wgt = 
     read_test_data<float>(std::string(TEST_NAME), std::string("ip2_param_0"));
   std::vector<float> opt_data
-    = read_test_data<float>(std::string(TEST_NAME), std::string("ip2"), true);
+    = read_test_data<float>(std::string(TEST_NAME), std::string("ip2"));
 
   float *opt = (float *) malloc(sizeof(float) * opt_data.size());
 

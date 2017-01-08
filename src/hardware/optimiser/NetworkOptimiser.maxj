@@ -217,9 +217,9 @@ public class NetworkOptimiser {
     // validators
     if (F < P_F || F % P_F != 0)
       throw new IllegalArgumentException("S * P_F should be divided by W");
-    if (K * K * C * F >= MAX_MEM_SIZE) 
-      throw new IllegalArgumentException("Weight FMem size (" + Integer.toString(K * K * C * F) + ") should not be larger than "
-          + Integer.toString(MAX_MEM_SIZE));
+    // if (K * K * C * F >= MAX_MEM_SIZE) 
+    //   throw new IllegalArgumentException("Weight FMem size (" + Integer.toString(K * K * C * F) + ") should not be larger than "
+    //       + Integer.toString(MAX_MEM_SIZE));
     // }}}
     // Streams {{{
     DFELink wgts = createDFELinkFromCPU(name + "_wgts", K * K * C * F,
