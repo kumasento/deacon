@@ -2,10 +2,14 @@ package maxdeep.kernels;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+import java.util.*;
 
 /**
  * The computation kernel that focuses on computing convolution.
@@ -25,21 +29,39 @@ public class ConvolveKernel extends Kernel {
 
   public ConvolveKernel(KernelParameters params,
     int K, /* kernel size */
+    int P_F_MP,
     DFEType DATA_TYPE
   ) {
     super(params);
+    
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar c = (P_F_MP == 1)
+      ? constant.var(0)
+      : chain.addCounter(P_F_MP, 1).cast(dfeInt(32));
+    int CLK_BITS = MathUtils.bitsToAddress(P_F_MP);
 
     // vector type for inp and wgt
     DFEVectorType<DFEVar> VEC_TYPE =
       new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
     
-    // input stream
-    DFEVector<DFEVar> inp = io.input(INP_NAME, VEC_TYPE);
+    ArrayList<DFEVector<DFEVar>> inpList =
+      new ArrayList<DFEVector<DFEVar>>();
+    ArrayList<DFEVector<DFEVar>> wgtList =
+      new ArrayList<DFEVector<DFEVar>>();
 
-    // weight stream
-    DFEVector<DFEVar> wgt = io.input(WGT_NAME, VEC_TYPE);
-    // inp.simWatch("inp");
-    // wgt.simWatch("wgt");
+    for (int i = 0; i < P_F_MP; i ++) {
+      String suf = "_" + Integer.toString(i);
+      inpList.add(io.input(INP_NAME + suf, VEC_TYPE, c === i));
+      wgtList.add(io.input(WGT_NAME + suf, VEC_TYPE, c === i));
+    }
+    
+    DFEVector<DFEVar> inp = (P_F_MP == 1)
+      ? inpList[0]
+      : control.mux(c.cast(dfeUInt(CLK_BITS)), inpList);
+
+    DFEVector<DFEVar> wgt = (P_F_MP == 1)
+      ? wgtList[0]
+      : control.mux(c.cast(dfeUInt(CLK_BITS)), wgtList);
 
     // window to store temporary result
     DFEVar window [] = new DFEVar [ K * K ];
@@ -55,6 +77,9 @@ public class ConvolveKernel extends Kernel {
       sum = sum + tmp;
 
     // sum.simWatch("sum");
-    io.output(OUT_NAME, sum, DATA_TYPE);
+    for (int i = 0; i < P_F_MP; i ++) {
+      String suf = "_" + Integer.toString(i);
+      io.output(OUT_NAME + suf, sum, DATA_TYPE, c === i);
+    }
   }
 }

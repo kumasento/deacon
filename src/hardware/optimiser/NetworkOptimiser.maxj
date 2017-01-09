@@ -4,6 +4,7 @@ package maxdeep.optimiser;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -21,6 +22,10 @@ public class NetworkOptimiser {
 
   private final static Logger LOGGER =
     Logger.getLogger(NetworkOptimiser.class.getName());
+
+  private static final int DEFAULT_FREQ = 100;
+
+  private ManagerClock defaultClockSource;
 
   private CPUTypes defaultCPUType    = CPUTypes.FLOAT;
   private CPUTypes defaultCPUInpType = CPUTypes.FLOAT;
@@ -50,7 +55,10 @@ public class NetworkOptimiser {
   public void optimise(NetworkManager manager, NeuralNetworkGraph graph) {
     kernelBlocks = new HashMap<String, KernelBlock>();
     ei = new EngineInterface();
-    useFixedDataType(8, 8);
+
+    manager.config.setDefaultStreamClockFrequency(DEFAULT_FREQ);
+    defaultClockSource = manager.generateStreamClock("default_clock",
+        DEFAULT_FREQ);
 
     // Setup input stream from CPU {{{
     
@@ -229,7 +237,8 @@ public class NetworkOptimiser {
     int S   = graph.getStride(layerIdx);
     int oH  = (H + 2 * P - K) / S + 1;
     int oW  = (W + 2 * P - K) / S + 1;
-    int P_F = 1;
+    int P_F = 2;
+    int P_F_MP = 2;
 
     String name = graph.getLayerName(layerIdx);
     DFEType dfeType = getDFEType(graph.getDataType(layerIdx));
@@ -286,29 +295,38 @@ public class NetworkOptimiser {
     // }}}
     // Convolve kernel block {{{
 
-    for (int f = 0; f < P_F; f ++) {
-      String suffix = "_" + Integer.toString(f);
+    ManagerClock convKnlClk = manager.generateStreamClock(
+        name + "_clk", DEFAULT_FREQ * P_F_MP);
+    for (int f = 0; f < P_F; f += P_F_MP) {
+      int fIdx = f / P_F_MP;
+      String suffix = "_" + Integer.toString(fIdx);
       String conv_name = name + "_conv" + suffix;
 
       KernelBlock conv_knl = manager.addKernel(
           new ConvolveKernel(
-            manager.makeKernelParameters(conv_name), K,
+            manager.makeKernelParameters(conv_name), K, P_F_MP,
             dfeType));
+      conv_knl.setClock(convKnlClk);
 
       // update kernelBlocks
       kernelBlocks.put(conv_name, conv_knl);
 
-      // receive input feature map and weights from the input kernel
-      conv_knl.getInput(ConvolveKernel.INP_NAME)
-        <== inp_knl.getOutput(ConvLayerKernel.CONV_KNL_INP_NAME + suffix);
-      conv_knl.getInput(ConvolveKernel.WGT_NAME)
-        <== inp_knl.getOutput(ConvLayerKernel.CONV_KNL_WGT_NAME + suffix);
+      for (int m = 0; m < P_F_MP; m ++) {
+        int sIdx = f + m;
+        String streamSuffix = "_" + Integer.toString(sIdx);
+        String mSuffix = "_" + Integer.toString(m);
+        // receive input feature map and weights from the input kernel
+        conv_knl.getInput(ConvolveKernel.INP_NAME + mSuffix)
+          <== inp_knl.getOutput(ConvLayerKernel.CONV_KNL_INP_NAME + streamSuffix);
+        conv_knl.getInput(ConvolveKernel.WGT_NAME + mSuffix)
+          <== inp_knl.getOutput(ConvLayerKernel.CONV_KNL_WGT_NAME + streamSuffix);
 
-      // send convolved result to the accumulate kernel
-      acc_knl.getInput(ConvAccumKernel.CONV_KNL_OUT_NAME + suffix)
-        <== conv_knl.getOutput(ConvolveKernel.OUT_NAME);
+        // send convolved result to the accumulate kernel
+        acc_knl.getInput(ConvAccumKernel.CONV_KNL_OUT_NAME + streamSuffix)
+          <== conv_knl.getOutput(ConvolveKernel.OUT_NAME + mSuffix);
+      }
 
-      ei.setTicks(conv_name, H * W * F * C / P_F);
+      ei.setTicks(conv_name, H * W * F * C / P_F * P_F_MP);
     }
 
     // }}}
@@ -494,11 +512,6 @@ public class NetworkOptimiser {
     int sizeInBytes = size * defaultCPUType.sizeInBytes();
     ei.setStream(name, defaultCPUType, sizeInBytes);
     return link;
-  }
-
-  private void useFixedDataType(int integer_bits, int fraction_bits) {
-    defaultDFEDataType = DFETypeFactory.dfeFix(
-        integer_bits, fraction_bits, SignMode.TWOSCOMPLEMENT);
   }
   
   private KernelBlock createTypeCastKernel(

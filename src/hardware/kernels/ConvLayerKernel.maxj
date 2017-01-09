@@ -44,6 +44,7 @@ public class ConvLayerKernel extends Kernel {
    * @param S stride size
    * @param P_F parallel in filter
    * @param USE_FMEM_FOR_WGTS flag to set this kernel to use FMem for weights
+   * @param DATA_TYPE default data type for this kernel
    */
   public ConvLayerKernel(KernelParameters params,
     int     H,

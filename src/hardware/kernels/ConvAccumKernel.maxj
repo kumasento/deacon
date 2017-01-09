@@ -77,10 +77,10 @@ public class ConvAccumKernel extends Kernel {
     DFEVar rx = x + sx;
     DFEVar ry = y + sy;
 
-    c.simWatch("c");
-    f.simWatch("f");
-    rx.simWatch("rx");
-    ry.simWatch("ry");
+    // c.simWatch("c");
+    // f.simWatch("f");
+    // rx.simWatch("rx");
+    // ry.simWatch("ry");
 
     // }}}
     // Bias buffer {{{
@@ -110,7 +110,7 @@ public class ConvAccumKernel extends Kernel {
       DFEVar tmp = io.input(
           CONV_KNL_OUT_NAME + "_" + Integer.toString(idx),
           DATA_TYPE);
-      tmp.simWatch("tmp");
+      // tmp.simWatch("tmp");
 
       // initialise with bias
       DFEVar sum = (c === 0) ? bias.read(biasReadAddr) + tmp : tmp;
@@ -126,7 +126,7 @@ public class ConvAccumKernel extends Kernel {
            : stream.offset(result, -OUTPUT_BUF_SIZE))), // dependency
           c >= 0,
           Mem.RamWriteMode.WRITE_FIRST);
-      result.simWatch("result_" + Integer.toString(idx));
+      // result.simWatch("result_" + Integer.toString(idx));
           
       // connect to the output vector
       output[idx] <== result;
