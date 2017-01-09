@@ -8,6 +8,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 
 import maxdeep.kernels.*;
 import maxdeep.managers.NetworkManager;
@@ -21,10 +22,11 @@ public class NetworkOptimiser {
   private final static Logger LOGGER =
     Logger.getLogger(NetworkOptimiser.class.getName());
 
-  private CPUTypes defaultCPUType = CPUTypes.FLOAT;
+  private CPUTypes defaultCPUType    = CPUTypes.FLOAT;
   private CPUTypes defaultCPUInpType = CPUTypes.FLOAT;
   private CPUTypes defaultCPUOutType = CPUTypes.FLOAT;
   private DFEType defaultDFEDataType = DFETypeFactory.dfeFloat(8, 24);
+  private DFEType defaultCPUDFEType  = DFETypeFactory.dfeFloat(8, 24);
 
   private static final String DEFAULT_CPU_INP_NAME = "cpu_inp";
   private static final String DEFAULT_CPU_OUT_NAME = "cpu_out";
@@ -48,6 +50,7 @@ public class NetworkOptimiser {
   public void optimise(NetworkManager manager, NeuralNetworkGraph graph) {
     kernelBlocks = new HashMap<String, KernelBlock>();
     ei = new EngineInterface();
+    useFixedDataType(8, 8);
 
     // Setup input stream from CPU {{{
     
@@ -145,7 +148,16 @@ public class NetworkOptimiser {
       
       // the bottom of this layer will take input from 
       if (graph.isInputLayer(topIdx)) {
-        btmInpKnl.getInput("inp") <== CPUInp;
+        KernelBlock castKnl = createTypeCastKernel(
+            "cpu_inp_cast",
+            defaultCPUDFEType,
+            defaultDFEDataType,
+            inputStreamSize,
+            manager);
+        castKnl.getInput(TypeCastKernel.INP_NAME) 
+          <== CPUInp;
+        btmInpKnl.getInput("inp")
+          <== castKnl.getOutput(TypeCastKernel.OUT_NAME);
       }
       else {
         KernelBlock topKnl = getLayerOutKernel(topIdx, graph);
@@ -154,10 +166,21 @@ public class NetworkOptimiser {
 
       if (idx == numOfLayers - 1) {
         DFELink CPUOut = manager.addStreamToCPU(DEFAULT_CPU_OUT_NAME);
-
-        CPUOut <== btmOutKnl.getOutput("opt");
         int outputSize = graph.getLayerOutputSize(idx) * defaultCPUOutType.sizeInBytes();
         ei.setStream(DEFAULT_CPU_OUT_NAME, defaultCPUOutType, alignStreamSize(outputSize));
+
+        KernelBlock castKnl = createTypeCastKernel(
+            "cpu_out_cast",
+            defaultDFEDataType,
+            defaultCPUDFEType,
+            graph.getLayerOutputSize(idx),
+            manager);
+
+        castKnl.getInput(TypeCastKernel.INP_NAME)
+          <== btmOutKnl.getOutput("opt");
+        CPUOut <== 
+          castKnl.getOutput(TypeCastKernel.OUT_NAME);
+
         LOGGER.info("output size: " + Integer.toString(outputSize));
       }
     }
@@ -226,8 +249,17 @@ public class NetworkOptimiser {
     //       + Integer.toString(MAX_MEM_SIZE));
     // }}}
     // Streams {{{
-    DFELink wgts = createDFELinkFromCPU(name + "_wgts", K * K * C * F,
+    DFELink wgtsCPU = createDFELinkFromCPU(name + "_wgts", K * K * C * F,
         manager);
+    KernelBlock castKnl = createTypeCastKernel(
+        name + "_wgts_cast",
+        defaultCPUDFEType,
+        defaultDFEDataType,
+        K * K * C * F,
+        manager);
+    castKnl.getInput(TypeCastKernel.INP_NAME)
+      <== wgtsCPU;
+    DFELink wgts = castKnl.getOutput(TypeCastKernel.OUT_NAME);
     // }}}
     // Input kernel block {{{
 
@@ -346,9 +378,28 @@ public class NetworkOptimiser {
     // }}}
     // Streams {{{
 
-    DFELink wgts = createDFELinkFromCPU(name + "_wgts", M * N, manager);
-    DFELink bias = createDFELinkFromCPU(name + "_bias", M, manager);
+    DFELink wgtsCPU = createDFELinkFromCPU(name + "_wgts", M * N, manager);
+    DFELink biasCPU = createDFELinkFromCPU(name + "_bias", M, manager);
 
+    KernelBlock castWgtsKnl = createTypeCastKernel(
+        name + "_wgts_cast",
+        defaultCPUDFEType,
+        defaultDFEDataType,
+        M * N,
+        manager);
+    castWgtsKnl.getInput(TypeCastKernel.INP_NAME)
+      <== wgtsCPU;
+    DFELink wgts = castWgtsKnl.getOutput(TypeCastKernel.OUT_NAME);
+
+    KernelBlock castBiasKnl = createTypeCastKernel(
+        name + "_bias_cast",
+        defaultCPUDFEType,
+        defaultDFEDataType,
+        M,
+        manager);
+    castBiasKnl.getInput(TypeCastKernel.INP_NAME)
+      <== biasCPU;
+    DFELink bias = castBiasKnl.getOutput(TypeCastKernel.OUT_NAME);
     // }}}
     // Input kernel block {{{
 
@@ -438,7 +489,27 @@ public class NetworkOptimiser {
   private DFELink createDFELinkFromCPU(String name, int size, NetworkManager manager) {
     DFELink link = manager.addStreamFromCPU(name);
     int sizeInBytes = size * defaultCPUType.sizeInBytes();
-    ei.setStream(name, defaultCPUType, alignStreamSize(sizeInBytes));
+    ei.setStream(name, defaultCPUType, sizeInBytes);
     return link;
+  }
+
+  private void useFixedDataType(int integer_bits, int fraction_bits) {
+    defaultDFEDataType = DFETypeFactory.dfeFix(
+        integer_bits, fraction_bits, SignMode.TWOSCOMPLEMENT);
+  }
+  
+  private KernelBlock createTypeCastKernel(
+      String name, 
+      DFEType inpType,
+      DFEType outType,
+      long ticks,
+      NetworkManager manager
+  ) {
+    KernelBlock knl = manager.addKernel(
+        new TypeCastKernel(
+          manager.makeKernelParameters(name),
+          inpType, outType));
+    ei.setTicks(name, ticks);
+    return knl;
   }
 }

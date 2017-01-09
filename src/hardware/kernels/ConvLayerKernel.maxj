@@ -99,10 +99,10 @@ public class ConvLayerKernel extends Kernel {
     DFEVar rx = x + sx;
     DFEVar ry = y + sy;
 
-    // c.simWatch("c");
-    // f.simWatch("f");
-    // rx.simWatch("rx");
-    // ry.simWatch("ry");
+    c.simWatch("c");
+    f.simWatch("f");
+    rx.simWatch("rx");
+    ry.simWatch("ry");
 
     // }}}
     // Input Stream {{{
@@ -113,12 +113,12 @@ public class ConvLayerKernel extends Kernel {
     // }}}
     // Weight Buffer {{{
    
-    if (useFMemForWgts) {
-      wgtsMem = mem.alloc(DATA_TYPE, K * K * C * F);
-      wgtsMem.mapToCPU(WGTS_NAME);
-    } else {
+    // if (useFMemForWgts) {
+    //   wgtsMem = mem.alloc(DATA_TYPE, K * K * C * F);
+    //   wgtsMem.mapToCPU(WGTS_NAME);
+    // } else {
       wgtsInpVec = io.input(WGTS_NAME, WGTS_VECT_TYPE, rx === 0 & ry === 0);
-    }
+    //}
 
     // }}}
     // Input Buffer {{{
@@ -164,19 +164,19 @@ public class ConvLayerKernel extends Kernel {
     for (int idx = 0; idx < P_F; idx ++) {
       DFEVector<DFEVar> wgtsVec = VEC_TYPE.newInstance(this);
 
-      if (useFMemForWgts) {
-        for (int k = 0; k < K * K; k ++) {
-          DFEVar wgtReadAddr = (
-              (c * (F * K * K)) +
-              ((f + idx) * (K * K)) +
-              k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
-          wgtsVec[k] <== wgtsMem.read(wgtReadAddr);
-        }
-      } else {
+      // if (useFMemForWgts) {
+      //   for (int k = 0; k < K * K; k ++) {
+      //     DFEVar wgtReadAddr = (
+      //         (c * (F * K * K)) +
+      //         ((f + idx) * (K * K)) +
+      //         k).cast(dfeUInt(WEIGHT_BUF_ADDR_BITS));
+      //     wgtsVec[k] <== wgtsMem.read(wgtReadAddr);
+      //   }
+      // } else {
         for (int k = 0; k < K * K; k ++) {
           wgtsVec[k] <== wgtsInpVec[k];
         }
-      }
+      // }
 
       String suffix = "_" + Integer.toString(idx);
       io.output(CONV_KNL_INP_NAME + suffix, inpVec, VEC_TYPE);

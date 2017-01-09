@@ -1,0 +1,28 @@
+package maxdeep.kernels;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+
+public class TypeCastKernel extends Kernel {
+
+  public static final String INP_NAME = "inp";
+  public static final String OUT_NAME = "opt";
+
+  public TypeCastKernel(
+    KernelParameters params,
+    DFEType inpType,
+    DFEType outType
+  ) {
+    super(params);
+
+    DFEVar inp = io.input(INP_NAME, inpType);
+    DFEVar out = inp.cast(outType);
+
+    inp.simWatch("inp");
+    out.simWatch("opt");
+
+    io.output(OUT_NAME, out, outType);
+  }
+}
