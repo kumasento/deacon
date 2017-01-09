@@ -89,6 +89,7 @@ public class NetworkOptimiser {
         int K = graph.getKernelSize(idx);
 
         name = graph.getLayerName(idx);
+        DFEType dfeType = getDFEType(graph.getDataType(idx));
 
         LOGGER.info("Creating Pooling layer: " + name);
         LOGGER.info("H = " + Integer.toString(H));
@@ -100,7 +101,7 @@ public class NetworkOptimiser {
         knl = manager.addKernel(
             new PoolingLayerKernel(
               manager.makeKernelParameters(name),
-              H, W, C, K, P, S, defaultDFEDataType));
+              H, W, C, K, P, S, dfeType));
 
         ei.setTicks(name, C * H * W);
       }
@@ -112,10 +113,11 @@ public class NetworkOptimiser {
         int C = graph.getInputChannel(idx);
 
         name = graph.getLayerName(idx);
+        DFEType dfeType = getDFEType(graph.getDataType(idx));
         LOGGER.info("Creating ReLU layer: " + name);
         knl = manager.addKernel(
             new ReLULayerKernel(manager.makeKernelParameters(name),
-              defaultDFEDataType));
+              dfeType));
         ei.setTicks(name, C * H * W);
       }
       // }}}
@@ -151,7 +153,7 @@ public class NetworkOptimiser {
         KernelBlock castKnl = createTypeCastKernel(
             "cpu_inp_cast",
             defaultCPUDFEType,
-            defaultDFEDataType,
+            getDFEType(graph.getDataType(idx)),
             inputStreamSize,
             manager);
         castKnl.getInput(TypeCastKernel.INP_NAME) 
@@ -171,7 +173,7 @@ public class NetworkOptimiser {
 
         KernelBlock castKnl = createTypeCastKernel(
             "cpu_out_cast",
-            defaultDFEDataType,
+            getDFEType(graph.getDataType(idx)),
             defaultCPUDFEType,
             graph.getLayerOutputSize(idx),
             manager);
@@ -230,6 +232,7 @@ public class NetworkOptimiser {
     int P_F = 1;
 
     String name = graph.getLayerName(layerIdx);
+    DFEType dfeType = getDFEType(graph.getDataType(layerIdx));
 
     LOGGER.info("Creating CONV layer: " + name);
     LOGGER.info("H = " + Integer.toString(H));
@@ -254,7 +257,7 @@ public class NetworkOptimiser {
     KernelBlock castKnl = createTypeCastKernel(
         name + "_wgts_cast",
         defaultCPUDFEType,
-        defaultDFEDataType,
+        dfeType,
         K * K * C * F,
         manager);
     castKnl.getInput(TypeCastKernel.INP_NAME)
@@ -268,7 +271,7 @@ public class NetworkOptimiser {
         new ConvLayerKernel(
           manager.makeKernelParameters(inp_name),
           H, W, F, C, K, P, S, P_F, false,
-          defaultDFEDataType));
+          dfeType));
 
     // }}}
     // Accumulate kernel block {{{
@@ -278,7 +281,7 @@ public class NetworkOptimiser {
         new ConvAccumKernel(
           manager.makeKernelParameters(acc_name),
           H, W, F, C, K, P, S, P_F,
-          defaultDFEDataType));
+          dfeType));
 
     // }}}
     // Convolve kernel block {{{
@@ -290,7 +293,7 @@ public class NetworkOptimiser {
       KernelBlock conv_knl = manager.addKernel(
           new ConvolveKernel(
             manager.makeKernelParameters(conv_name), K,
-            defaultDFEDataType));
+            dfeType));
 
       // update kernelBlocks
       kernelBlocks.put(conv_name, conv_knl);
@@ -315,7 +318,7 @@ public class NetworkOptimiser {
     KernelBlock out_knl = manager.addKernel(
         new ConvOutputKernel(
           manager.makeKernelParameters(out_name),
-          oH * oW, F, P_F, defaultDFEDataType));
+          oH * oW, F, P_F, dfeType));
 
     // }}}
     // Connections {{{
@@ -351,7 +354,6 @@ public class NetworkOptimiser {
    */
   private void createFCLayerKernels(int layerIdx, NetworkManager manager, NeuralNetworkGraph graph) {
     // Fetch layer parameters {{{
-  
     int H   = graph.getInputHeight(layerIdx);
     int W   = graph.getInputWidth(layerIdx);
     int C   = graph.getInputChannel(layerIdx);
@@ -360,6 +362,7 @@ public class NetworkOptimiser {
     int P_V = 1;
 
     String name = graph.getLayerName(layerIdx);
+    DFEType dfeType = getDFEType(graph.getDataType(layerIdx));
 
     LOGGER.info("Creating FC layer: " + name);
     LOGGER.info("H = " + Integer.toString(H));
@@ -384,7 +387,7 @@ public class NetworkOptimiser {
     KernelBlock castWgtsKnl = createTypeCastKernel(
         name + "_wgts_cast",
         defaultCPUDFEType,
-        defaultDFEDataType,
+        dfeType,
         M * N,
         manager);
     castWgtsKnl.getInput(TypeCastKernel.INP_NAME)
@@ -394,7 +397,7 @@ public class NetworkOptimiser {
     KernelBlock castBiasKnl = createTypeCastKernel(
         name + "_bias_cast",
         defaultCPUDFEType,
-        defaultDFEDataType,
+        dfeType,
         M,
         manager);
     castBiasKnl.getInput(TypeCastKernel.INP_NAME)
@@ -407,7 +410,7 @@ public class NetworkOptimiser {
     KernelBlock inp_knl = manager.addKernel(
         new FCLayerInpKernel(
           manager.makeKernelParameters(inp_name), M, N, P_V,
-          defaultDFEDataType));
+          dfeType));
 
     // }}}
     // Output kernel block {{{
@@ -416,7 +419,7 @@ public class NetworkOptimiser {
     KernelBlock out_knl = manager.addKernel(
         new FCLayerOutKernel(
           manager.makeKernelParameters(out_name), P_V,
-          defaultDFEDataType));
+          dfeType));
 
     // }}}
     // Dot product kernels {{{
@@ -427,7 +430,7 @@ public class NetworkOptimiser {
       KernelBlock dot_knl = manager.addKernel(
           new FCLayerDotProductKernel(
             manager.makeKernelParameters(dot_name), M / P_V, N,
-            defaultDFEDataType));
+            dfeType));
 
       // loop offset
       InterfaceParam L = ei.getAutoLoopOffset(dot_name, "fcLoopLength");
@@ -511,5 +514,17 @@ public class NetworkOptimiser {
           inpType, outType));
     ei.setTicks(name, ticks);
     return knl;
+  }
+
+  private DFEType getDFEType(NeuralNetworkGraph.DataType type) {
+    switch(type) {
+      case FLOAT32:
+        return DFETypeFactory.dfeFloat(8, 24);
+      case FIXED16:
+        return DFETypeFactory.dfeFix(8, 8, SignMode.TWOSCOMPLEMENT);
+      default:
+        throw new IllegalArgumentException("Conversion from DataType" +
+            " to DFEType has not been implemented yet");
+    }
   }
 }

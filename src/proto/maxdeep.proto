@@ -5,44 +5,61 @@ package maxdeep.proto;
 option java_package = "maxdeep.proto";
 option java_outer_classname = "MaxDeepProtos";
 
-message BlobShape {/*{{{*/
+message BlobShape {
   repeated int64 dim = 1 [ packed = true ];
-}/*}}}*/
-message NetParameter {/*{{{*/
+}
+
+message NetParameter {
   // name of the network
   optional string name = 1;
+  optional DataTypeParameter data_type_param = 2;
   repeated LayerParameter layer = 100;
-}/*}}}*/
-message LayerParameter {/*{{{*/
+}
+
+message DataTypeParameter {
+  enum DataType {
+    FLOAT32 = 0;
+    FIXED16 = 1;
+  }
+
+  optional DataType type = 1 [ default = FLOAT32 ];
+}
+
+message LayerParameter {
   optional string name   = 1;
   optional string type   = 2;
   repeated string bottom = 3; // Name of the bottom blob
   repeated string top    = 4; // Name of the top blob
 
+  optional DataTypeParameter type_param = 100;
   optional InputParameter input_param = 143;
   optional ConvolutionParameter convolution_param = 106;
   optional InnerProductParameter inner_product_param = 117;
   optional PoolingParameter pooling_param = 121;
   optional ReLUParameter relu_param = 123;
-}/*}}}*/
+}
+
 // Layer parameters {{{
-message InputParameter {/*{{{*/
+message InputParameter {
   repeated BlobShape shape = 1;
-}/*}}}*/
-message ConvolutionParameter {/*{{{*/
+}
+
+message ConvolutionParameter {
   optional uint32 num_output = 1;
   repeated uint32 pad = 3;
   repeated uint32 kernel_size = 4;
   optional uint32 stride = 6;
-}/*}}}*/
-message InnerProductParameter {/*{{{*/
+}
+
+message InnerProductParameter {
   optional uint32 num_output = 1;
-}/*}}}*/
-message PoolingParameter {/*{{{*/
+}
+
+message PoolingParameter {
   optional uint32 kernel_size = 2;
   optional uint32 stride = 3;
   repeated uint32 pad = 4;
-}/*}}}*/
-message ReLUParameter {/*{{{*/
-}/*}}}*/
-// }}}
+}
+
+message ReLUParameter {
+}

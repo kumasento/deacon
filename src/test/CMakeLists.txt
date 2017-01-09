@@ -101,6 +101,7 @@ endfunction ()
 # }}}
 
 add_runsim_test (test_conv_layer)
+add_runsim_test (test_conv_layer_fixed16)
 add_runsim_test (test_fc_layer)
 add_runsim_test (test_pooling_layer)
 add_runsim_test (test_relu_layer)

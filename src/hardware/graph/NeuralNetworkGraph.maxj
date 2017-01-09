@@ -36,6 +36,13 @@ public class NeuralNetworkGraph {
     FC
   };
 
+  public enum DataType {
+    FLOAT32,
+    FIXED16
+  };
+
+  private DataType defaultDataType = DataType.FLOAT32;
+
   /**
    * A constructor that receives a param from the protobuf parser
    *
@@ -47,6 +54,8 @@ public class NeuralNetworkGraph {
     this.blobs          = new HashMap<String, BlobShape>();
     this.blobTopOfLayer = new HashMap<String, Integer>();
     this.blobBtmOfLayer = new HashMap<String, Integer>();
+
+    setDefaultDataType(param);
 
     // walk through all the layers in this neural network
     int idx = 0;
@@ -166,6 +175,19 @@ public class NeuralNetworkGraph {
           + shape.getDim(3) + "]");
     }
   }
+  // Helpers {{{
+  public DataType parseDataTypeParameter(DataTypeParameter param) {
+    switch(param.getType()) {
+      case FLOAT32:
+        return DataType.FLOAT32;
+      case FIXED16:
+        return DataType.FIXED16;
+      default:
+        throw new IllegalArgumentException("Data type not implemented");
+    }
+
+  }
+  // }}}
   // Boolean checkers {{{
   public Boolean isInputLayer(int idx) {
     return getLayerType(idx).equals("Input");
@@ -340,6 +362,19 @@ public class NeuralNetworkGraph {
       return (param.getPadCount() == 0) ? 0 : param.getPad(0);
     }
     throw new IllegalArgumentException("Layer don't have padding");
+  }
+
+  public DataType getDataType(int idx) {
+    LayerParameter param = layers[idx];
+    if (param.hasTypeParam())       
+      return parseDataTypeParameter(param.getTypeParam());
+    return defaultDataType;
+  }
+  // }}}
+  // Setters {{{
+
+  public void setDefaultDataType(NetParameter param) {
+    defaultDataType = parseDataTypeParameter(param.getDataTypeParam());
   }
   // }}}
 }
