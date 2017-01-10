@@ -49,6 +49,8 @@ message ConvolutionParameter {
   repeated uint32 pad = 3;
   repeated uint32 kernel_size = 4;
   optional uint32 stride = 6;
+  optional uint32 num_para_filter = 5 [ default = 1];
+  optional uint32 num_para_filter_mp = 7 [ default = 1 ];
 }
 
 message InnerProductParameter {

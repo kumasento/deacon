@@ -1,5 +1,7 @@
 #include <vector>
 #include <string>
+#include <chrono>
+#include <ctime>
 // google
 #include "gtest/gtest.h"
 #include "glog/logging.h"
@@ -56,8 +58,16 @@ TEST(LeNetTest, MainTest) {
   max_engine_t *engine = max_load(max_file, "local:*");
 
   LOG(INFO) << "Running test";
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
   test_lenet_MaxDeep_run(engine, &actions);
+  end = std::chrono::system_clock::now();
   LOG(INFO) << "Done!";
+
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+  LOG(INFO) << "finished computation at " << std::ctime(&end_time)
+    << "elapsed time: " << elapsed_seconds.count() << "s\n";
 
   for (int i = 0; i < opt_data.size(); i ++)
     ASSERT_NEAR(opt_data[i], opt[i], 1e-2);
