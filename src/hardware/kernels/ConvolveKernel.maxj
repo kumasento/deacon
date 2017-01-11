@@ -64,22 +64,50 @@ public class ConvolveKernel extends Kernel {
       : control.mux(c.cast(dfeUInt(CLK_BITS)), wgtList);
 
     // window to store temporary result
-    DFEVar window [] = new DFEVar [ K * K ];
+    ArrayList<DFEVar> window = new ArrayList<DFEVar>();
 
     // window index
     for (int x = 0; x < K; x ++)
       for (int y = 0; y < K; y ++) 
-        window[ x * K + y ] = wgt[ x * K + y ] * inp[ x * K + y ] ;
+        window.add(wgt[x * K + y] * inp[x * K + y]);
 
-    // sum up
-    DFEVar sum = constant.var(0);
-    for (DFEVar tmp: window)
-      sum = sum + tmp;
+    DFEVar sum = windowSum(window);
 
     // sum.simWatch("sum");
     for (int i = 0; i < P_F_MP; i ++) {
       String suf = "_" + Integer.toString(i);
       io.output(OUT_NAME + suf, sum, DATA_TYPE, c === i);
     }
+  }
+
+  private DFEVar windowSum(List<DFEVar> window) {
+    // sum up
+    int layerIdx = 0; // layer
+    int startIdx = 0;
+    int length = window.size();
+    while (length > 1) {
+      int i;
+      int newLength = (int) Math.floor((double) length/2);
+      for (i = 0; i < newLength; i ++)
+      {
+        DFEVar fst = window[startIdx + i * 2];
+        DFEVar snd = window[startIdx + i * 2 + 1];
+        DFEVar res = fst + snd;
+        window.add(res);
+      }
+      if (i * 2 == length - 1) {
+        newLength += 1;
+        window.add(window[startIdx + i * 2]);
+      }
+      System.out.println("Current layer idx is: " + Integer.toString(layerIdx));
+      System.out.println("length is:            " + Integer.toString(length));
+      System.out.println("new length is:        " + Integer.toString(newLength));
+
+      startIdx += length;
+      layerIdx += 1;
+      length = newLength;
+    }
+
+    return window[window.size()-1];
   }
 }
