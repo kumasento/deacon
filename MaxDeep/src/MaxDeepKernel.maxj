@@ -1,0 +1,69 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+import com.custom_computing_ic.dfe_snippets.utils.Reductions;
+
+import java.util.*;
+
+class MaxDeepKernel extends Kernel {
+
+
+  public MaxDeepKernel(KernelParameters params, int K) {
+    super(params);
+
+    DFEType baseType = dfeUInt(32);
+
+    DFEVectorType<DFEVar> inputVectorType  = new DFEVectorType<DFEVar>(baseType, K * K);
+    DFEVectorType<DFEVar> weightVectorType = new DFEVectorType<DFEVar>(baseType, K * K);
+    DFEVectorType<DFEVar> outputVectorType = new DFEVectorType<DFEVar>(baseType, 1);
+
+    DFEVector<DFEVar> inputVector  = io.input("inputVector", inputVectorType);
+    DFEVector<DFEVar> weightVector = io.input("weightVector", weightVectorType);
+    DFEVector<DFEVar> outputVector = outputVectorType.newInstance(this);
+
+    SystolicConvolveKernel systolicConvolveKernel = 
+      new SystolicConvolveKernel(this, inputVector, weightVector, outputVector, K);
+
+    io.output("outputVector", outputVector, outputVectorType);
+  }
+
+}
+
+class SystolicConvolveKernel extends KernelLib {
+  
+  /**
+   * Constructor for the SystolicConvolveKernel
+   *   
+   * @param owner the owner of this KernelLib
+   * @param inputVector the vector of input values
+   * @param weightVector the vector of weight values
+   * @param outputVector the vector of output values
+   * @param kernelSize the shape of the convolve kernel
+   */
+  public SystolicConvolveKernel(KernelLib owner,
+      DFEVector<DFEVar> inputVector,
+      DFEVector<DFEVar> weightVector,
+      DFEVector<DFEVar> outputVector,
+      int kernelSize)
+  {
+    super(owner);
+
+    DFEType baseType = dfeUInt(32);
+
+    DFEVectorType<DFEVar> windowType =
+      new DFEVectorType<DFEVar>(baseType, kernelSize * kernelSize);
+    DFEVector<DFEVar> window = windowType.newInstance(this);
+    
+    for (int i = 0; i < kernelSize * kernelSize; i ++)
+      window[i] <== inputVector[i] * weightVector[i];
+
+    outputVector[0] <== Reductions.reduce(window); 
+  }
+}
