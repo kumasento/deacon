@@ -237,8 +237,8 @@ public class NetworkOptimiser {
     int S   = graph.getStride(layerIdx);
     int oH  = (H + 2 * P - K) / S + 1;
     int oW  = (W + 2 * P - K) / S + 1;
-    int P_F = 2;
-    int P_F_MP = 2;
+    int P_F = 5;
+    int P_F_MP = 1;
 
     String name = graph.getLayerName(layerIdx);
     DFEType dfeType = getDFEType(graph.getDataType(layerIdx));
