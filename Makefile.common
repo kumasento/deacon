@@ -81,7 +81,7 @@ MAXCOMPILERSIM=maxcompilersim
 MAXOS_HW=/opt/maxeler/maxeleros/lib/libmaxeleros.so
 MAXOS_SIM=$(MAXELEROSDIR_SIM)/lib/libmaxeleros.so
 
-JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar -1.6 -d .
+JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(WHEREISROOT)/lib/dfe-snippets/src -1.6 -d .
 CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I../src -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -D_XOPEN_SOURCE=600
 LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lslic -lm -lpthread
 
@@ -127,7 +127,7 @@ all: runsim build
 
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=. MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
+	MAXAPPJCP=. MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
 $(PRJBUILDNAME)_sim.o: $(SIMMAXDIR)/$(PRJ).max
