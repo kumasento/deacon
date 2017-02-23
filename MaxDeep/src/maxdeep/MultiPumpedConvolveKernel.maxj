@@ -1,0 +1,47 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+import com.custom_computing_ic.dfe_snippets.utils.Reductions;
+
+class MultiPumpedConvolveKernel extends KernelLib {
+
+  /**
+   * Constructor for the SystolicConvolveKernel
+   *   
+   * @param owner the owner of this KernelLib
+   * @param baseType the base data type, will compose the DFEVector
+   * @param inpVec the vector of input values
+   * @param wgtVec the vector of weight values
+   * @param outVec the vector of output values
+   * @param N the number of parallelised convolvers
+   * @param K the shape of the convolve kernel
+   */
+  public MultiPumpedConvolveKernel(
+      KernelLib owner,
+      DFEType baseType,
+      DFEVector<DFEVar> inpVec,
+      DFEVector<DFEVar> wgtVec,
+      DFEVector<DFEVar> outVec,
+      int N,
+      int K)
+  {
+    super(owner);
+
+    DFEVectorType<DFEVar> windowType =
+      new DFEVectorType<DFEVar>(baseType, K * K);
+
+    for (int idx = 0; idx < N; idx ++) {
+      DFEVector<DFEVar> window = windowType.newInstance(this);
+
+      for (int i = 0; i < K * K; i ++)
+        window[i] <== inpVec[i + idx * K * K] * wgtVec[i + idx * K * K];
+
+      outVec[idx] <== Reductions.reduce(window); 
+    }
+  }
+}
