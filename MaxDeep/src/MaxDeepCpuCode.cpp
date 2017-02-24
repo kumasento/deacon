@@ -7,22 +7,36 @@
 #include "Maxfiles.h"
 
 int main(int argc, char *argv[]) {
-  const int N = 1024;
-  const int K = 4;
+  const int K = 2;
+  const int N = 2;
+  const int data_size = 384 * K * K * N;
 
-  uint32_t *data_inp = (uint32_t *) malloc(sizeof(uint32_t) * N);
-  uint32_t *data_wgt = (uint32_t *) malloc(sizeof(uint32_t) * N);
-  uint32_t *data_out = (uint32_t *) malloc(sizeof(uint32_t) * N / (K * K));
+  uint8_t *data_inp = (uint8_t *) malloc(sizeof(uint32_t) * data_size);
+  uint8_t *data_wgt = (uint8_t *) malloc(sizeof(uint32_t) * data_size);
+  uint8_t *data_out = (uint8_t *) malloc(sizeof(uint32_t) * data_size / (K * K));
 
-  for (int i = 0; i < N; i ++) {
-    data_inp[i] = i + 1;
-    data_wgt[i] = i + 1;
+  // TODO: write stream encoder and decoder methods to transform the
+  // data type
+  // (2017-02-24) Ruizhe Zhao
+  for (int i = 0; i < data_size * 4; i += 4) {
+    uint32_t val = i / 4 + 1;
+    for (int j = 0; j < 4; j ++) {
+      data_inp[i + j] = (val >> (j * 8));
+      data_wgt[i + j] = (val >> (j * 8));
+    }
   }
 
-  MaxDeep(N, data_inp, data_wgt, data_out);
+  MaxDeep_dramWrite(data_size * sizeof(uint32_t), 0, data_inp);
+  MaxDeep_dramWrite(data_size * sizeof(uint32_t), data_size * sizeof(uint32_t), data_wgt);
+  MaxDeep(data_size);
+  MaxDeep_dramRead(data_size / (K * K) * sizeof(uint32_t), data_size * 2 * sizeof(uint32_t), data_out);
 
-  for (int i = 0; i < N / (K * K); i ++)
-    printf("out[%4d] = %4d (%4d)\n", i, data_out[i], data_inp[i]);
+  for (int i = 0; i < 16; i += 4) {
+    uint32_t val = 0;
+    for (int j = 0; j < 4; j ++)
+      val += (data_out[i + j] << (j * 8));
+    printf("out[%4d] = %u\n", i / 4, val);
+  }
 
   return 0;
 }

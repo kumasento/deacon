@@ -4,14 +4,23 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 class MaxDeepKernel extends Kernel {
 
+  public static final String INP_NAME = "inputVector";
+  public static final String WGT_NAME = "weightVector";
+  public static final String OUT_NAME = "outputVector";
+
   public MaxDeepKernel(KernelParameters params, int N, int K) {
     super(params);
 
+    optimization.pushPipeliningFactor(1.0);
+    optimization.pushDSPFactor(1);
+
+    // DFEType baseType = dfeFix(8, 24, DFEFix.SignMode.TWOSCOMPLEMENT);
     DFEType baseType = dfeUInt(32);
 
     DFEVectorType<DFEVar> inpVecType =
@@ -21,15 +30,15 @@ class MaxDeepKernel extends Kernel {
     DFEVectorType<DFEVar> outVecType =
       new DFEVectorType<DFEVar>(baseType, N);
 
-    DFEVector<DFEVar> inpVec = io.input("inputVector", inpVecType);
-    DFEVector<DFEVar> wgtVec = io.input("weightVector", wgtVecType);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
+    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
     MultiPumpedConvolveKernel k = 
       new MultiPumpedConvolveKernel(
           this, baseType, inpVec, wgtVec, outVec, N, K);
 
-    io.output("outputVector", outVec, outVecType);
+    io.output(OUT_NAME, outVec, outVecType);
   }
 
 }
