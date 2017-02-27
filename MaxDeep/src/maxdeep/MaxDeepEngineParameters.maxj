@@ -1,0 +1,52 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+
+public class MaxDeepEngineParameters extends EngineParameters {
+
+  private static final int kernelSize = 4;
+  private static final int numPipes = 2;
+  private static final int freq = 100;
+  private static final int multiPumpingFactor = 2;
+
+  MaxDeepEngineParameters(String ...args) {
+    super(args);
+  }
+
+  @Override
+  protected void declarations() {
+    declareParam("kernelSize", DataType.INT, kernelSize);
+    declareParam("numPipes", DataType.INT, numPipes);
+    declareParam("freq", DataType.INT, freq);
+    declareParam("multiPumpingFactor", DataType.INT, multiPumpingFactor);
+  }
+
+  public int getKernelSize() {
+    return getParam("kernelSize");
+  }
+
+  public int getNumPipes() {
+    return getParam("numPipes");
+  }
+
+  public int getFreq() {
+    return getParam("freq");
+  }
+
+  public int getMultiPumpingFactor() {
+    return getParam("multiPumpingFactor");
+  }
+
+  @Override
+  public String getBuildName() {
+    return String.format(
+        "%s_%s_%s_N_%d_K_%d_C_%d_F_%03dMHz",
+        getMaxFileName(),
+        getDFEModel(),
+        getTarget(),
+        getNumPipes(),
+        getKernelSize(),
+        getMultiPumpingFactor(),
+        getFreq());
+  }
+}

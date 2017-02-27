@@ -1,7 +1,8 @@
 package maxdeep;
 
-import com.maxeler.maxcompiler.v2.build.EngineParameters;
+// import com.maxeler.maxcompiler.v2.build.EngineParameters;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 // import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
@@ -13,47 +14,77 @@ import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 
 class MaxDeepManager extends CustomManager {
 
-  private static final String MAXDEEP_KERNEL_NAME = "MaxDeepKernel";
-  private static final int K = 2;
-  private static final int N = 2;
+  private static final String MAXDEEP_KERNEL_NAME
+    = "MaxDeepKernel";
+  private static final String MULTI_PUMPED_CONVOLVE_KERNEL_NAME
+    = "MultiPumpedConvolveKernel";
+  
+  private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
+  private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
+
+  private final int K;
+  private final int N;
+  private final int C;
+  private final int freq;
   protected LMemInterface iface;
 
-  public MaxDeepManager(EngineParameters params) {
+  public MaxDeepManager(MaxDeepEngineParameters params) {
     super(params);
 
+    K = params.getKernelSize();
+    N = params.getNumPipes();
+    C = params.getMultiPumpingFactor();
+    freq = params.getFreq();
+
+    addMaxFileConstant("kernelSize", K);
+    addMaxFileConstant("numPipes", N);
+    addMaxFileConstant("freq", freq);
+    addMaxFileConstant("multiPumpingFactor", C);
+
     KernelBlock k = addKernel(
-        new MaxDeepKernel(makeKernelParameters(MAXDEEP_KERNEL_NAME), N, K));
+        new MultiPumpedConvolveKernel(
+          makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
+          N, K, C));
 
     iface = addLMemInterface();
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MaxDeepKernel.INP_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MaxDeepKernel.WGT_NAME);
-    ManagerUtils.addLinearStreamFromKernelToLMem(iface, k, MaxDeepKernel.OUT_NAME);
+
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MultiPumpedConvolveKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MultiPumpedConvolveKernel.WGT_NAME);
+    ManagerUtils.addLinearStreamFromKernelToLMem(iface, k, MultiPumpedConvolveKernel.OUT_NAME);
+
+    config.setDefaultStreamClockFrequency(freq);
+    ManagerClock clock =
+      generateStreamClock(DEFAULT_KERNEL_CLK, freq);
+    ManagerClock clockForMPC =
+      generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
+    k.setClock(clockForMPC);
   }
 
-  private static EngineInterface interfaceDefault() {
+  private EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
     InterfaceParam size = ei.addParam("dataSize", CPUTypes.INT32);
-    ei.setTicks(MAXDEEP_KERNEL_NAME, size / (K * K * N));
+    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME, size / (K * K * N / C));
 
     InterfaceParam zero = ei.addConstant(0);
     InterfaceParam inpSize = size * CPUTypes.UINT32.sizeInBytes();
     InterfaceParam wgtSize = size * CPUTypes.UINT32.sizeInBytes();
     InterfaceParam outSize = size / (K * K) * CPUTypes.UINT32.sizeInBytes();
-    ei.setLMemLinear(MaxDeepKernel.INP_NAME, zero, inpSize);
-    ei.setLMemLinear(MaxDeepKernel.WGT_NAME, inpSize, wgtSize);
-    ei.setLMemLinear(MaxDeepKernel.OUT_NAME, inpSize + wgtSize, outSize);
+
+    ei.setLMemLinear(MultiPumpedConvolveKernel.INP_NAME, zero, inpSize);
+    ei.setLMemLinear(MultiPumpedConvolveKernel.WGT_NAME, inpSize, wgtSize);
+    ei.setLMemLinear(MultiPumpedConvolveKernel.OUT_NAME, inpSize + wgtSize, outSize);
 
     ManagerUtils.ignoreLMemStreams(ei);
     return ei;
   }
 
   public static void main(String [] args) {
-    EngineParameters params = new EngineParameters(args);
+    MaxDeepEngineParameters params = new MaxDeepEngineParameters(args);
     MaxDeepManager manager = new MaxDeepManager(params);
 
     manager.createSLiCinterface(ManagerUtils.dramWrite(manager, manager.iface));
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
-    manager.createSLiCinterface(interfaceDefault());
+    manager.createSLiCinterface(manager.interfaceDefault());
     manager.build();
   }
 }
