@@ -42,7 +42,19 @@ if __name__ == '__main__':
         mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 125, 1), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 125, 2), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 150, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 150, 2), ))
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 150, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 175, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 175, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 200, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 200, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 225, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 225, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 250, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 250, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 275, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 275, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 300, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(4, 6, 300, 2), ))
     ]
 
     for p in processes:
