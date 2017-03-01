@@ -9,6 +9,7 @@ import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 
@@ -18,6 +19,8 @@ class MaxDeepManager extends CustomManager {
     = "MaxDeepKernel";
   private static final String MULTI_PUMPED_CONVOLVE_KERNEL_NAME
     = "MultiPumpedConvolveKernel";
+  private static final String CONV_CACHE_KERNEL_NAME
+    = "ConvolutionLayerCacheKernel";
   
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
   private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
@@ -41,16 +44,29 @@ class MaxDeepManager extends CustomManager {
     addMaxFileConstant("freq", freq);
     addMaxFileConstant("multiPumpingFactor", C);
 
+    ConvolutionLayerParameter convParams =
+      new ConvolutionLayerParameter(
+          8, 8, 3, 96, 4, 0, 0);
+
     KernelBlock k = addKernel(
         new MultiPumpedConvolveKernel(
           makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
           N, K, C));
+    KernelBlock cache = addKernel(
+        new ConvolutionLayerCacheKernel(
+          makeKernelParameters(CONV_CACHE_KERNEL_NAME),
+          convParams));
 
     iface = addLMemInterface();
 
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MultiPumpedConvolveKernel.INP_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, k, MultiPumpedConvolveKernel.WGT_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.WGT_NAME);
     ManagerUtils.addLinearStreamFromKernelToLMem(iface, k, MultiPumpedConvolveKernel.OUT_NAME);
+
+    k.getInput(MultiPumpedConvolveKernel.INP_NAME)
+      <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
+    k.getInput(MultiPumpedConvolveKernel.WGT_NAME)
+      <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
 
     config.setDefaultStreamClockFrequency(freq);
     ManagerClock clock =
@@ -58,20 +74,33 @@ class MaxDeepManager extends CustomManager {
     ManagerClock clockForMPC =
       generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
     k.setClock(clockForMPC);
+
+    config.setOnCardMemoryFrequency(LMemFrequency.MAX4MAIA_533);
   }
 
   private EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
-    InterfaceParam size = ei.addParam("dataSize", CPUTypes.INT32);
-    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME, size / (K * K * N / C));
 
-    InterfaceParam zero = ei.addConstant(0);
-    InterfaceParam inpSize = size * CPUTypes.UINT32.sizeInBytes();
-    InterfaceParam wgtSize = size * CPUTypes.UINT32.sizeInBytes();
-    InterfaceParam outSize = size / (K * K) * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam zero        = ei.addConstant(0);
+    InterfaceParam kernelSize  = ei.addConstant(4);
+    InterfaceParam height      = ei.addConstant(8);
+    InterfaceParam width       = ei.addConstant(8);
+    InterfaceParam numChannels = ei.addConstant(3);
+    InterfaceParam numFilters  = ei.addConstant(96);
+    InterfaceParam numOutput   = (height - kernelSize + 1) * (width - kernelSize + 1) * numFilters;
 
-    ei.setLMemLinear(MultiPumpedConvolveKernel.INP_NAME, zero, inpSize);
-    ei.setLMemLinear(MultiPumpedConvolveKernel.WGT_NAME, inpSize, wgtSize);
+    ei.setTicks(CONV_CACHE_KERNEL_NAME, height * width * numChannels * numFilters);
+    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME, numOutput * numChannels);
+
+    InterfaceParam inpSize
+      = height * width * numChannels * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam wgtSize
+      = kernelSize * kernelSize * numChannels * numFilters * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam outSize
+      = numOutput * CPUTypes.UINT32.sizeInBytes();
+
+    ei.setLMemLinear(ConvolutionLayerCacheKernel.INP_NAME, zero, inpSize);
+    ei.setLMemLinear(ConvolutionLayerCacheKernel.WGT_NAME, inpSize, wgtSize);
     ei.setLMemLinear(MultiPumpedConvolveKernel.OUT_NAME, inpSize + wgtSize, outSize);
 
     ManagerUtils.ignoreLMemStreams(ei);

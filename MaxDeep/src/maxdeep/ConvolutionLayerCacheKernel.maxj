@@ -1,0 +1,151 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+import java.util.*;
+
+public class ConvolutionLayerCacheKernel extends Kernel {
+
+  public static final String INP_NAME = "CONV_CACHE_INP";
+  public static final String WGT_NAME = "CONV_CACHE_WGT";
+  public static final String OUT_INP_NAME = "CONV_CACHE_OUT_INP";
+  public static final String OUT_WGT_NAME = "CONV_CACHE_OUT_WGT";
+
+  public static final DFEType DEFAULT_TYPE = dfeUInt(32);
+  public int bitOfInteger = 8;
+  public int bitOfFraction = 24;
+
+  /**
+   * This is the kernel for caching the input data for the convolution
+   * layer. There are mainly two kinds of buffers: input buffer and 
+   * weights buffer. The input buffer will be organised as line buffers,
+   * and the weights buffer is simply a DFEVector.
+   */
+  public ConvolutionLayerCacheKernel(
+    KernelParameters params,
+    ConvolutionLayerParameter convParams
+  ) {
+    super(params);
+
+    DFEType type = dfeUInt(32);
+
+    CounterChain chain = control.count.makeCounterChain();
+    // DFEVar c = (convParams.numChannels == 1)
+    //   ? constant.var(0) : chain.addCounter(convParams.numChannels, 1);
+    
+    if (convParams.numChannels == 1)
+      chain.addCounter(convParams.numChannels, 1);
+    DFEVar f = (convParams.numFilters == 1)
+      ? constant.var(0) : chain.addCounter(convParams.numFilters, 1);
+    DFEVar h = chain.addCounter(convParams.height, 1);
+    DFEVar w = chain.addCounter(convParams.width, 1);
+
+    int wgtVecSize = convParams.kernelSize * convParams.kernelSize;
+    DFEVar wgtEnable = (h === 0) & (w === 0);
+    DFEVectorType<DFEVar> wgtVecDefaultType =
+      new DFEVectorType<DFEVar>(DEFAULT_TYPE, wgtVecSize);
+    DFEVectorType<DFEVar> wgtVecType =
+      new DFEVectorType<DFEVar>(type, wgtVecSize);
+    DFEVector<DFEVar> wgtVec =
+      io.input(WGT_NAME, wgtVecDefaultType, wgtEnable).cast(wgtVecType);
+    
+    int outVecSize = convParams.kernelSize;
+    DFEVectorType<DFEVar> outVecType = 
+      new DFEVectorType<DFEVar>(type, outVecSize);
+    DFEVector<DFEVar> out = outVecType.newInstance(this);
+    DFEVar outValid = dfeBool().newInstance(this);
+
+    // only read input feature map when computing the first filter
+    DFEVar inpEnable = (f === 0);
+    DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
+
+    debug.simPrintf("[cache] f = %3d h = %3d w = %3d inp = %d\n", f, h, w, inp.cast(DEFAULT_TYPE));
+    
+    // initialise the input buffer kernel
+    new InputBufferKernel(
+      this,
+      type,
+      inp,
+      out,
+      constant.var(1).cast(dfeBool()),
+      inpEnable,
+      outValid,
+      convParams.kernelSize,
+      convParams.height,
+      convParams.width
+    );
+
+    debug.simPrintf("[cache] vld = %3d out = [%3d %3d %3d %3d]\n", outValid, out[0], out[1], out[2], out[3]);
+    io.output(OUT_INP_NAME, out, outVecType, outValid);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType);
+  }
+}
+
+class InputBufferKernel extends KernelLib {
+
+  /**
+   * This kernel is the buffer of the input feature map of the convolution layer.
+   *
+   * Unlike those RTL based approach, this kernel will fully utilise the 
+   * functionalities of streams in MaxJ. 
+   *
+   * @param owner The owner kernel of this KernelLib
+   * @param type The type of the data inside the streams
+   * @param inp The input stream to the input buffer
+   * @param out The output stream to the computing kernel
+   * @param enable The signal to enable this buffer to run
+   * @param writeBRAMEnable Whether or not the inner BRAM should be overwritten
+   * @param valid The valid signal of the output vector
+   * @param K The size of the kernel
+   * @param H The height of the input feature map
+   * @param W The width of the input feature map
+   */
+  public InputBufferKernel(
+    KernelLib owner,
+    DFEType type,
+    DFEVar inp,
+    DFEVector<DFEVar> out,
+    DFEVar enable,
+    DFEVar writeBRAMEnable,
+    DFEVar valid,
+    int K,
+    int H,
+    int W
+  ) {
+    super(owner);
+
+    CounterChain chain = owner.control.count.makeCounterChain(enable);
+    DFEVar h = chain.addCounter(H, 1).cast(dfeInt(32));
+    DFEVar w = chain.addCounter(W, 1).cast(dfeInt(32));
+
+    DFEVar addr = h * W + w;
+    addr = addr.cast(dfeUInt(MathUtils.bitsToAddress(H * W)));
+    Memory<DFEVar> cache = mem.alloc(type, H * W);
+
+    DFEVar cacheOut = cache.port(
+        addr,
+        inp,
+        writeBRAMEnable,
+        Mem.RamWriteMode.WRITE_FIRST);
+
+    debug.simPrintf("[buffer] h = %3d w = %3d addr = %3d cacheOut = %3d\n",
+        h, w, addr, cacheOut);
+
+    valid <== h >= K;
+
+    for (int i = 0; i < K; i ++)
+      out[i] <== stream.offset(cacheOut, - i * W);
+  }
+
+}
