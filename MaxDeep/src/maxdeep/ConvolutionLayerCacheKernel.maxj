@@ -5,15 +5,13 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
+// import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
-
-import java.util.*;
 
 public class ConvolutionLayerCacheKernel extends Kernel {
 
@@ -40,10 +38,20 @@ public class ConvolutionLayerCacheKernel extends Kernel {
 
     DFEType type = dfeUInt(32);
 
+    /**
+     * Counters:
+     *
+     * This part of code declares the counters and the counter chain.
+     * It follows the channel-major style, and ignores the padding and
+     * stride currently.
+     * There are several signals, especially for valid and enable, 
+     * depends on these counter DFEVars.
+     *
+     * (2017-03-03) Ruizhe Zhao
+     */
     CounterChain chain = control.count.makeCounterChain();
     // DFEVar c = (convParams.numChannels == 1)
     //   ? constant.var(0) : chain.addCounter(convParams.numChannels, 1);
-    
     if (convParams.numChannels == 1)
       chain.addCounter(convParams.numChannels, 1);
     DFEVar f = (convParams.numFilters == 1)
@@ -51,6 +59,37 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     DFEVar h = chain.addCounter(convParams.height, 1);
     DFEVar w = chain.addCounter(convParams.width, 1);
 
+    /**
+     * Input:
+     *
+     * These lines creates the input stream of the feature map. Only in the
+     * first filter's computation of each channel will the input be enabled,
+     * which is controlled by inpEnable.
+     * Unlike the wgtVec, which takes (K * K) variables in each cycle,
+     * the inp DFEVar will only take one element in each cycle.
+     * Following logics for this variable will be implemented in the InputBuffer
+     * kernel.
+     *
+     * (2017-03-03) Ruizhe Zhao
+     */
+    DFEVar inpEnable = (f === 0);
+    DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
+
+    /**
+     * Weights:
+     *
+     * This snippets creates the wgtVec vector, which has shape (K * K).
+     * This wgtVec is completely fed by the io.input(), and the input
+     * action will only be enabled once for each filter and each channel,
+     * controlled by wgtEnable.
+     * 
+     * (2017-03-03) Ruizhe Zhao
+     * 
+     * TODO: The input stream might be revised to take only one element at 
+     * one tick. It is worthless to take all of them in when the input feature
+     * map is not ready.
+     * (2017-03-03) Ruizhe Zhao
+     */
     int wgtVecSize = convParams.kernelSize * convParams.kernelSize;
     DFEVar wgtEnable = (h === 0) & (w === 0);
     DFEVectorType<DFEVar> wgtVecDefaultType =
@@ -60,17 +99,29 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     DFEVector<DFEVar> wgtVec =
       io.input(WGT_NAME, wgtVecDefaultType, wgtEnable).cast(wgtVecType);
     
+    /**
+     * Output:
+     *
+     * This is the output vector for the input feature map, which is generated
+     * by the InputBuffer.
+     *
+     * TODO: May decide what the length of the outputVec later.
+     * (2017-03-03) Ruizhe Zhao
+     */
     int outVecSize = convParams.kernelSize * convParams.kernelSize;
     DFEVectorType<DFEVar> outVecType = 
       new DFEVectorType<DFEVar>(type, outVecSize);
     DFEVector<DFEVar> out = outVecType.newInstance(this);
     DFEVar outValid = dfeBool().newInstance(this);
 
-    // only read input feature map when computing the first filter
-    DFEVar inpEnable = (f === 0);
-    DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
-    
-    // initialise the input buffer kernel
+    /**
+     * Input Buffer:
+     * This is merely an instantiation of the InputBufferKernel.
+     *
+     * TODO: The always high signal for this buffer looks a bit weird,
+     * may revise it later.
+     * (2017-03-03) Ruizhe Zhao
+     */
     new InputBufferKernel(
       this,
       type,
@@ -84,8 +135,23 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       convParams.width
     );
 
+    /**
+     * There are two output streams of this kernel, one is for K * K elements from 
+     * the input feature map, the other one is for K * K weights that remain the 
+     * same for the computation in the same channel.
+     *
+     * As these two streams will be triggered at the same tick, we add a 
+     * io.forceOutputsTogether to let the compiler know about this issue.
+     * See the Debugging and Optimization Tutorial (p30).
+     * Currently I don't know how this will affect the optimisation in the compiler,
+     * hope it will help.
+     *
+     * TODO: Make this two output stream aware of the following parallelisation
+     * (2017-03-03) Ruizhe Zhao
+     */
     io.output(OUT_INP_NAME, out, outVecType, outValid);
     io.output(OUT_WGT_NAME, wgtVec, wgtVecType, outValid);
+    io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
   }
 }
 
@@ -122,27 +188,47 @@ class InputBufferKernel extends KernelLib {
   ) {
     super(owner);
 
+    /**
+     * This counter chain has the same value as the owner (Cache kernel).
+     * TODO: Might need to think it over and share these variables?
+     * (2017-03-03) Ruizhe Zhao
+     */
     CounterChain chain = owner.control.count.makeCounterChain(enable);
     DFEVar h = chain.addCounter(H, 1).cast(dfeInt(32));
     DFEVar w = chain.addCounter(W, 1).cast(dfeInt(32));
 
+    /**
+     * The address for the read/write of the current input buffer.
+     * Also the cache is allocated here.
+     * There is only one port needed for this cache BRAM, which will
+     * greatly reduce the BRAM usage of this layer (or there will be
+     * multiple copies).
+     */
     DFEVar addr = h * W + w;
     addr = addr.cast(dfeUInt(MathUtils.bitsToAddress(H * W)));
     Memory<DFEVar> cache = mem.alloc(type, H * W);
-
     DFEVar cacheOut = cache.port(
         addr,
         inp,
         writeBRAMEnable,
         Mem.RamWriteMode.WRITE_FIRST);
 
+    /**
+     * This valid signal controls when to output the outVec and the 
+     * wgtVec. Note that only when the stream can offset a full kernel
+     * of the input feature map this valid signal will be high.
+     */
     valid <== h >= (K - 1) & w >= (K - 1);
 
+    /**
+     * This double-loop constructs the output vector. Note that the 
+     * sequence of the elements of the output vector are iterated
+     * reversely.
+     */
     for (int x = 0; x < K; x ++)
       for (int y = 0; y < K; y ++) {
         int i = x * K + y;
-        out[K * K - i - 1] <==
-          stream.offset(cacheOut, - (x * W + y));
+        out[K * K - i - 1] <== stream.offset(cacheOut, - (x * W + y));
       }
   }
 
