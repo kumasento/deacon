@@ -64,6 +64,7 @@ class MultiPumpedConvolveKernel extends Kernel {
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
     if (dbg) {
+      debug.simPrintf("%KObj%\n", inpVec);
       debug.simPrintf("[\n");
       for (int kx = 0; kx < maxKernelSize; kx ++) {
         debug.simPrintf("  [ ");

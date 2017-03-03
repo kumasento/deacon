@@ -157,7 +157,6 @@ class MaxDeepManager extends CustomManager {
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_KERNEL_SIZE_INP_NAME,
       kernelSize);
-
     ei.setScalar(
       MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
       MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,

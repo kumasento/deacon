@@ -313,15 +313,19 @@ class InputBufferKernel extends KernelLib {
       DFEVar x = (kernelSize - m.getQuotient() - 1).cast(dfeInt(32));
       DFEVar y = (kernelSize - m.getRemainder() - 1).cast(dfeInt(32));
 
-      debug.simPrintf("(%3d, %3d)\n", x, y);
+      // NOTE: Please make sure the min_offset is the min case of the second
+      // term.
+      // (2017-03-03) Ruizhe Zhao
       out[idx] <== (i < kernelSize * kernelSize)
         ? stream.offset(
             cacheOut,
             - (x * width.cast(dfeInt(32)) + y),
-            - maxKernelSize * maxKernelSize,
+            - (maxKernelSize * maxWidth + maxKernelSize),
             0)
         : constant.var(0).cast(type);
     }
+    
+    debug.simPrintf("%KObj%\n", out);
   }
 
 }
