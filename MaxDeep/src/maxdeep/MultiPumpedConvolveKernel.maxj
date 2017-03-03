@@ -29,13 +29,15 @@ class MultiPumpedConvolveKernel extends Kernel {
    * @param N the number of parallelised convolvers
    * @param K the shape of the convolve kernel
    * @param C the multi-pumping factor 
+   * @param dbg The flag to use DEBUG mode
    */
   public MultiPumpedConvolveKernel(
-      KernelParameters params,
-      int N,
-      int K,
-      int C)
-  {
+    KernelParameters params,
+    int N,
+    int K,
+    int C,
+    boolean dbg
+  ) {
     super(params);
 
     optimization.pushPipeliningFactor(1.0);
@@ -58,14 +60,17 @@ class MultiPumpedConvolveKernel extends Kernel {
     DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
-    debug.simPrintf("[\n");
-    for (int kx = 0; kx < K; kx ++) {
-      debug.simPrintf("  [ ");
-      for (int ky = 0; ky < K - 1; ky ++)
-        debug.simPrintf("%3d, ", inpVec[kx * K + ky]);
-      debug.simPrintf("%3d ]\n", inpVec[kx * K + K - 1]);
+
+    if (dbg) {
+      debug.simPrintf("[\n");
+      for (int kx = 0; kx < K; kx ++) {
+        debug.simPrintf("  [ ");
+        for (int ky = 0; ky < K - 1; ky ++)
+          debug.simPrintf("%3d, ", inpVec[kx * K + ky]);
+        debug.simPrintf("%3d ]\n", inpVec[kx * K + K - 1]);
+      }
+      debug.simPrintf("]\n");
     }
-    debug.simPrintf("]\n");
 
     for (int idx = 0; idx < outVecSize; idx ++) {
       DFEVector<DFEVar> window = windowType.newInstance(this);

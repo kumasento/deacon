@@ -9,16 +9,30 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int freq = 100;
   private static final int multiPumpingFactor = 2;
 
+  private static final int maxConvHeight      = 8;
+  private static final int maxConvWidth       = 8;
+  private static final int maxConvNumChannels = 3;
+  private static final int maxConvNumFilters  = 96;
+  private static final int maxConvKernelSize  = 4;
+
+  private static boolean dbg = false;
+
   MaxDeepEngineParameters(String ...args) {
     super(args);
   }
 
   @Override
   protected void declarations() {
-    declareParam("kernelSize", DataType.INT, kernelSize);
-    declareParam("numPipes", DataType.INT, numPipes);
-    declareParam("freq", DataType.INT, freq);
+    declareParam("kernelSize",         DataType.INT, kernelSize);
+    declareParam("numPipes",           DataType.INT, numPipes);
+    declareParam("freq",               DataType.INT, freq);
     declareParam("multiPumpingFactor", DataType.INT, multiPumpingFactor);
+    declareParam("maxConvHeight",      DataType.INT, maxConvHeight);
+    declareParam("maxConvWidth",       DataType.INT, maxConvWidth);
+    declareParam("maxConvNumChannels", DataType.INT, maxConvNumChannels);
+    declareParam("maxConvNumFilters",  DataType.INT, maxConvNumFilters);
+    declareParam("maxConvKernelSize",  DataType.INT, maxConvKernelSize);
+    declareParam("dbg",                DataType.BOOL, dbg);
   }
 
   public int getKernelSize() {
@@ -37,15 +51,43 @@ public class MaxDeepEngineParameters extends EngineParameters {
     return getParam("multiPumpingFactor");
   }
 
+  public int getMaxConvHeight() {
+    return getParam("maxConvHeight");
+  }
+
+  public int getMaxConvWidth() {
+    return getParam("maxConvWidth");
+  }
+
+  public int getMaxConvNumChannels() {
+    return getParam("maxConvNumChannels");
+  }
+
+  public int getMaxConvNumFilters() {
+    return getParam("maxConvNumFilters");
+  }
+
+  public int getMaxConvKernelSize() {
+    return getParam("maxConvKernelSize");
+  }
+
+  public boolean getDbg() {
+    return getParam("dbg");
+  }
+
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_N_%d_K_%d_C_%d_F_%03dMHz",
+        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_C_%d_F_%03dMHz",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
         getNumPipes(),
-        getKernelSize(),
+        getMaxConvHeight(),
+        getMaxConvWidth(),
+        getMaxConvNumChannels(),
+        getMaxConvNumFilters(),
+        getMaxConvKernelSize(),
         getMultiPumpingFactor(),
         getFreq());
   }

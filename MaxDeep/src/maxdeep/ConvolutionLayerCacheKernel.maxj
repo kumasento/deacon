@@ -11,32 +11,75 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 public class ConvolutionLayerCacheKernel extends Kernel {
 
-  public static final String INP_NAME = "CONV_CACHE_INP";
-  public static final String WGT_NAME = "CONV_CACHE_WGT";
-  public static final String OUT_INP_NAME = "CONV_CACHE_OUT_INP";
-  public static final String OUT_WGT_NAME = "CONV_CACHE_OUT_WGT";
+  public static final String INP_NAME                     = "CONV_CACHE_INP";
+  public static final String WGT_NAME                     = "CONV_CACHE_WGT";
+  public static final String OUT_INP_NAME                 = "CONV_CACHE_OUT_INP";
+  public static final String OUT_WGT_NAME                 = "CONV_CACHE_OUT_WGT";
+
+  public static final String SCALAR_HEIGHT_INP_NAME
+    = "CONV_CACHE_SCALAR_HEIGHT_INP";
+  public static final String SCALAR_WIDTH_INP_NAME
+    = "CONV_CACHE_SCALAR_WIDTH_INP";
+  public static final String SCALAR_NUM_CHANNELS_INP_NAME
+    = "CONV_CACHE_SCALAR_NUM_CHANNELS_INP";
+  public static final String SCALAR_NUM_FILTERS_INP_NAME
+    = "CONV_CACHE_SCALAR_NUM_FILTERS_INP";
+  public static final String SCALAR_KERNEL_SIZE_INP_NAME
+    = "CONV_CACHE_SCALAR_KERNEL_SIZE_INP";
 
   public static final DFEType DEFAULT_TYPE = dfeUInt(32);
   public int bitOfInteger = 8;
   public int bitOfFraction = 24;
 
   /**
+   * Design principles:
    * This is the kernel for caching the input data for the convolution
    * layer. There are mainly two kinds of buffers: input buffer and 
    * weights buffer. The input buffer will be organised as line buffers,
    * and the weights buffer is simply a DFEVector.
+   * 
+   * Parameters:
+   * @param params The default kernel parameters made by Manager
+   * @param maxHeight Maximum height of the input feature map
+   * @param maxWidth Maximum width of the input feature map
+   * @param maxNumChannels Maximum number of channels of the input feature map
+   * @param maxNumFilters Maximum number of filters of the input feature map
+   * @param maxKernelSize Maximum shape of the kernel
+   * @param dbg The flag to use DEBUG mode
    */
   public ConvolutionLayerCacheKernel(
     KernelParameters params,
-    ConvolutionLayerParameter convParams
+    int maxHeight,
+    int maxWidth,
+    int maxNumChannels,
+    int maxNumFilters,
+    int maxKernelSize,
+    boolean dbg 
   ) {
     super(params);
 
     DFEType type = dfeUInt(32);
+    DFEType scalarParamType = dfeUInt(32);
+
+    /**
+     * Scalar IOs:
+     * - height: The height of the current input feature map
+     * - width: The width of the current input feature map
+     * - numChannels: The number of channels of the current input feature map
+     * - numFilters: The number of filters of the current output feature map
+     * - kernelSize: The kernel size of the current computation
+     */
+
+    DFEVar height      = io.scalarInput(SCALAR_HEIGHT_INP_NAME, scalarParamType);
+    DFEVar width       = io.scalarInput(SCALAR_WIDTH_INP_NAME, scalarParamType);
+    DFEVar numChannels = io.scalarInput(SCALAR_NUM_CHANNELS_INP_NAME, scalarParamType);
+    DFEVar numFilters  = io.scalarInput(SCALAR_NUM_FILTERS_INP_NAME, scalarParamType);
+    DFEVar kernelSize  = io.scalarInput(SCALAR_KERNEL_SIZE_INP_NAME, scalarParamType);
 
     /**
      * Counters:
@@ -50,14 +93,17 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * (2017-03-03) Ruizhe Zhao
      */
     CounterChain chain = control.count.makeCounterChain();
-    // DFEVar c = (convParams.numChannels == 1)
-    //   ? constant.var(0) : chain.addCounter(convParams.numChannels, 1);
-    if (convParams.numChannels == 1)
-      chain.addCounter(convParams.numChannels, 1);
-    DFEVar f = (convParams.numFilters == 1)
-      ? constant.var(0) : chain.addCounter(convParams.numFilters, 1);
-    DFEVar h = chain.addCounter(convParams.height, 1);
-    DFEVar w = chain.addCounter(convParams.width, 1);
+    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeUInt(32));
+    DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
+    DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
+    DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    
+    DFEVar tick = control.count.simpleCounter(32);
+
+    if (dbg) {
+      debug.simPrintf("%d: [%3d] (%3d, %3d, %3d, %3d)\n",
+        tick, numFilters, c, f, h, w);
+    }
 
     /**
      * Input:
@@ -74,6 +120,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      */
     DFEVar inpEnable = (f === 0);
     DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
+    if (dbg)
+      debug.simPrintf("%d: %KObj%\n", tick, inp);
 
     /**
      * Weights:
@@ -88,9 +136,13 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * TODO: The input stream might be revised to take only one element at 
      * one tick. It is worthless to take all of them in when the input feature
      * map is not ready.
+     * One thing is also restricting this variable: The scalar input kernelSize
+     * should have the same value as maxKernelSize.
+     * This should not be the case for streams between cache and compute kernels,
+     * but we might need some padding/unpadding work for the input stream from LMem.
      * (2017-03-03) Ruizhe Zhao
      */
-    int wgtVecSize = convParams.kernelSize * convParams.kernelSize;
+    int wgtVecSize = maxKernelSize * maxKernelSize;
     DFEVar wgtEnable = (h === 0) & (w === 0);
     DFEVectorType<DFEVar> wgtVecDefaultType =
       new DFEVectorType<DFEVar>(DEFAULT_TYPE, wgtVecSize);
@@ -98,6 +150,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       new DFEVectorType<DFEVar>(type, wgtVecSize);
     DFEVector<DFEVar> wgtVec =
       io.input(WGT_NAME, wgtVecDefaultType, wgtEnable).cast(wgtVecType);
+    if (dbg)
+      debug.simPrintf("%d: %KObj%\n", tick, wgtVec);
     
     /**
      * Output:
@@ -108,7 +162,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * TODO: May decide what the length of the outputVec later.
      * (2017-03-03) Ruizhe Zhao
      */
-    int outVecSize = convParams.kernelSize * convParams.kernelSize;
+    int outVecSize = maxKernelSize * maxKernelSize;
     DFEVectorType<DFEVar> outVecType = 
       new DFEVectorType<DFEVar>(type, outVecSize);
     DFEVector<DFEVar> out = outVecType.newInstance(this);
@@ -121,18 +175,23 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * TODO: The always high signal for this buffer looks a bit weird,
      * may revise it later.
      * (2017-03-03) Ruizhe Zhao
+     * Revised it to use c, in order to avoid c's warnings
+     * (2017-03-03) Ruizhe Zhao
      */
     new InputBufferKernel(
       this,
       type,
       inp,
       out,
-      constant.var(1).cast(dfeBool()),
+      c >= 0,
       inpEnable,
       outValid,
-      convParams.kernelSize,
-      convParams.height,
-      convParams.width
+      height,
+      width,
+      kernelSize,
+      maxHeight,
+      maxWidth,
+      maxKernelSize
     );
 
     /**
@@ -170,9 +229,12 @@ class InputBufferKernel extends KernelLib {
    * @param enable The signal to enable this buffer to run
    * @param writeBRAMEnable Whether or not the inner BRAM should be overwritten
    * @param valid The valid signal of the output vector
-   * @param K The size of the kernel
-   * @param H The height of the input feature map
-   * @param W The width of the input feature map
+   * @param height The height of the input feature map
+   * @param width The width of the input feature map
+   * @param kernelSize The size of the kernel
+   * @param maxKernelSize The size of the kernel
+   * @param maxHeight The height of the input feature map
+   * @param maxWidth The width of the input feature map
    */
   public InputBufferKernel(
     KernelLib owner,
@@ -182,9 +244,12 @@ class InputBufferKernel extends KernelLib {
     DFEVar enable,
     DFEVar writeBRAMEnable,
     DFEVar valid,
-    int K,
-    int H,
-    int W
+    DFEVar height,
+    DFEVar width,
+    DFEVar kernelSize,
+    int maxHeight,
+    int maxWidth,
+    int maxKernelSize
   ) {
     super(owner);
 
@@ -194,8 +259,8 @@ class InputBufferKernel extends KernelLib {
      * (2017-03-03) Ruizhe Zhao
      */
     CounterChain chain = owner.control.count.makeCounterChain(enable);
-    DFEVar h = chain.addCounter(H, 1).cast(dfeInt(32));
-    DFEVar w = chain.addCounter(W, 1).cast(dfeInt(32));
+    DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
+    DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
 
     /**
      * The address for the read/write of the current input buffer.
@@ -204,9 +269,9 @@ class InputBufferKernel extends KernelLib {
      * greatly reduce the BRAM usage of this layer (or there will be
      * multiple copies).
      */
-    DFEVar addr = h * W + w;
-    addr = addr.cast(dfeUInt(MathUtils.bitsToAddress(H * W)));
-    Memory<DFEVar> cache = mem.alloc(type, H * W);
+    DFEVar addr = h * width + w;
+    addr = addr.cast(dfeUInt(MathUtils.bitsToAddress(maxHeight * maxWidth)));
+    Memory<DFEVar> cache = mem.alloc(type, maxHeight * maxWidth);
     DFEVar cacheOut = cache.port(
         addr,
         inp,
@@ -218,18 +283,28 @@ class InputBufferKernel extends KernelLib {
      * wgtVec. Note that only when the stream can offset a full kernel
      * of the input feature map this valid signal will be high.
      */
-    valid <== h >= (K - 1) & w >= (K - 1);
+    valid <== h >= (kernelSize - 1) & w >= (kernelSize - 1);
 
     /**
      * This double-loop constructs the output vector. Note that the 
      * sequence of the elements of the output vector are iterated
      * reversely.
      */
-    for (int x = 0; x < K; x ++)
-      for (int y = 0; y < K; y ++) {
-        int i = x * K + y;
-        out[K * K - i - 1] <== stream.offset(cacheOut, - (x * W + y));
-      }
+    for (int idx = 0; idx < maxKernelSize * maxKernelSize; idx ++) {
+      DFEVar i = constant.var(idx).cast(dfeUInt(32));
+
+      KernelMath.DivModResult m = KernelMath.divMod(i, kernelSize);
+      DFEVar x = (kernelSize - m.getQuotient() - 1).cast(dfeInt(32));
+      DFEVar y = (kernelSize - m.getRemainder() - 1).cast(dfeInt(32));
+
+      out[idx] <== (i < kernelSize * kernelSize)
+        ? stream.offset(
+            cacheOut,
+            - (x * width.cast(dfeInt(32)) + y),
+            - maxKernelSize * maxKernelSize,
+            0)
+        : constant.var(0).cast(type);
+    }
   }
 
 }
