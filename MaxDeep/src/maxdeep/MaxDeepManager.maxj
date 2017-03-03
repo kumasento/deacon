@@ -158,6 +158,11 @@ class MaxDeepManager extends CustomManager {
       ConvolutionLayerCacheKernel.SCALAR_KERNEL_SIZE_INP_NAME,
       kernelSize);
 
+    ei.setScalar(
+      MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
+      MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,
+      kernelSize);
+
     InterfaceParam inpSize
       = height * width * numChannels * CPUTypes.UINT32.sizeInBytes();
     InterfaceParam wgtSize

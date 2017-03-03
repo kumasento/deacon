@@ -19,6 +19,7 @@ class MultiPumpedConvolveKernel extends Kernel {
   public static final String INP_NAME = "MPC_INP";
   public static final String WGT_NAME = "MPC_WGT";
   public static final String OUT_NAME = "MPC_OUT";
+  public static final String SCALAR_KERNEL_SIZE_NAME = "MPC_SCALAR_KERNEL_SIZE";
 
   public static final DFEType DATA_TYPE = dfeUInt(32);
 
@@ -27,14 +28,14 @@ class MultiPumpedConvolveKernel extends Kernel {
    *   
    * @param params kernel parameters provided by Manager
    * @param N the number of parallelised convolvers
-   * @param K the shape of the convolve kernel
+   * @param maxKernelSize the shape of the convolve kernel
    * @param C the multi-pumping factor 
    * @param dbg The flag to use DEBUG mode
    */
   public MultiPumpedConvolveKernel(
     KernelParameters params,
     int N,
-    int K,
+    int maxKernelSize,
     int C,
     boolean dbg
   ) {
@@ -43,8 +44,10 @@ class MultiPumpedConvolveKernel extends Kernel {
     optimization.pushPipeliningFactor(1.0);
     optimization.pushDSPFactor(1);
 
-    int inpVecSize = K * K * N / C;
-    int wgtVecSize = K * K * N / C;
+    DFEVar kernelSize = io.scalarInput(SCALAR_KERNEL_SIZE_NAME, DATA_TYPE);
+
+    int inpVecSize = maxKernelSize * maxKernelSize * N / C;
+    int wgtVecSize = maxKernelSize * maxKernelSize * N / C;
     int outVecSize = N / C;
 
     DFEVectorType<DFEVar> inpVecType =
@@ -54,20 +57,19 @@ class MultiPumpedConvolveKernel extends Kernel {
     DFEVectorType<DFEVar> outVecType =
       new DFEVectorType<DFEVar>(DATA_TYPE, outVecSize);
     DFEVectorType<DFEVar> windowType =
-      new DFEVectorType<DFEVar>(DATA_TYPE, K * K);
+      new DFEVectorType<DFEVar>(DATA_TYPE, maxKernelSize * maxKernelSize);
 
     DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
     DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
-
     if (dbg) {
       debug.simPrintf("[\n");
-      for (int kx = 0; kx < K; kx ++) {
+      for (int kx = 0; kx < maxKernelSize; kx ++) {
         debug.simPrintf("  [ ");
-        for (int ky = 0; ky < K - 1; ky ++)
-          debug.simPrintf("%3d, ", inpVec[kx * K + ky]);
-        debug.simPrintf("%3d ]\n", inpVec[kx * K + K - 1]);
+        for (int ky = 0; ky < maxKernelSize - 1; ky ++)
+          debug.simPrintf("%3d, ", inpVec[kx * maxKernelSize + ky]);
+        debug.simPrintf("%3d ]\n", inpVec[kx * maxKernelSize + maxKernelSize - 1]);
       }
       debug.simPrintf("]\n");
     }
@@ -75,8 +77,15 @@ class MultiPumpedConvolveKernel extends Kernel {
     for (int idx = 0; idx < outVecSize; idx ++) {
       DFEVector<DFEVar> window = windowType.newInstance(this);
 
-      for (int i = 0; i < K * K; i ++)
-        window[i] <== inpVec[i + idx * K * K] * wgtVec[i + idx * K * K];
+      int maxKernelArea = maxKernelSize * maxKernelSize;
+      DFEVar kernelArea = kernelSize * kernelSize;
+      for (int i = 0; i < maxKernelArea; i ++) {
+        DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
+        window[i] <==
+          (dfeI < kernelArea)
+          ? (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea])
+          : constant.var(0);
+      }
 
       outVec[idx] <== Reductions.reduce(window); 
     }

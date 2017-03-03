@@ -2,12 +2,19 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
+#include <getopt.h>
 
 #include <MaxSLiCInterface.h>
 #include "Maxfiles.h"
 
 int main(int argc, char *argv[]) {
   printf("\x1B[32mMaxDeep Command Line Program\x1B[0m\n");
+
+  unsigned int conv_height       = 8;
+  unsigned int conv_width        = 8;
+  unsigned int conv_num_channels = 3;
+  unsigned int conv_num_filters  = 96;
+  unsigned int conv_kernel_size  = 3;
   
   printf("\x1B[32mLoading\x1B[0m maxfile ...\n");
   max_file_t *maxfile = MaxDeep_init();
@@ -31,11 +38,6 @@ int main(int argc, char *argv[]) {
   printf("\t- maxConvNumFilters:  %ld\n", max_conv_num_filters);
   printf("\t- maxConvKernelSize:  %ld\n", max_conv_kernel_size);
 
-  const unsigned int conv_height       = 8;
-  const unsigned int conv_width        = 8;
-  const unsigned int conv_num_channels = 3;
-  const unsigned int conv_num_filters  = 96;
-  const unsigned int conv_kernel_size  = 4;
   const unsigned int inp_size
     = conv_height * conv_width * conv_num_channels;
   const unsigned int wgt_size
@@ -94,7 +96,7 @@ int main(int argc, char *argv[]) {
   MaxDeep_run(engine, &actions);
   MaxDeep_dramRead_run(engine, &out_read_actions);
 
-  for (int i = (int) (out_size - 10) * 4; i < (int)out_size * 4; i += 4) {
+  for (int i = 0; i < 4 * 4; i += 4) {
     uint32_t val = 0;
     for (int j = 0; j < 4; j ++)
       val += (data_out[i + j] << (j * 8));

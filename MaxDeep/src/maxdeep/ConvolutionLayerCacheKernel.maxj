@@ -16,10 +16,10 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 public class ConvolutionLayerCacheKernel extends Kernel {
 
-  public static final String INP_NAME                     = "CONV_CACHE_INP";
-  public static final String WGT_NAME                     = "CONV_CACHE_WGT";
-  public static final String OUT_INP_NAME                 = "CONV_CACHE_OUT_INP";
-  public static final String OUT_WGT_NAME                 = "CONV_CACHE_OUT_WGT";
+  public static final String INP_NAME     = "CONV_CACHE_INP";
+  public static final String WGT_NAME     = "CONV_CACHE_WGT";
+  public static final String OUT_INP_NAME = "CONV_CACHE_OUT_INP";
+  public static final String OUT_WGT_NAME = "CONV_CACHE_OUT_WGT";
 
   public static final String SCALAR_HEIGHT_INP_NAME
     = "CONV_CACHE_SCALAR_HEIGHT_INP";
@@ -74,7 +74,6 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * - numFilters: The number of filters of the current output feature map
      * - kernelSize: The kernel size of the current computation
      */
-
     DFEVar height      = io.scalarInput(SCALAR_HEIGHT_INP_NAME, scalarParamType);
     DFEVar width       = io.scalarInput(SCALAR_WIDTH_INP_NAME, scalarParamType);
     DFEVar numChannels = io.scalarInput(SCALAR_NUM_CHANNELS_INP_NAME, scalarParamType);
@@ -141,17 +140,34 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * This should not be the case for streams between cache and compute kernels,
      * but we might need some padding/unpadding work for the input stream from LMem.
      * (2017-03-03) Ruizhe Zhao
+     * 
+     * The idea of the NEW wgtEnable is to read K * K elements in K * K cycles,
+     * only when the current counter shows it is the first K * K cycles in the
+     * frame.
+     * The weights will be saved statically in a BRAM buffer, which might be duplicated
+     * for multiple read operations in the same cycle.
      */
     int wgtVecSize = maxKernelSize * maxKernelSize;
-    DFEVar wgtEnable = (h === 0) & (w === 0);
-    DFEVectorType<DFEVar> wgtVecDefaultType =
-      new DFEVectorType<DFEVar>(DEFAULT_TYPE, wgtVecSize);
-    DFEVectorType<DFEVar> wgtVecType =
-      new DFEVectorType<DFEVar>(type, wgtVecSize);
-    DFEVector<DFEVar> wgtVec =
-      io.input(WGT_NAME, wgtVecDefaultType, wgtEnable).cast(wgtVecType);
+
+    DFEVar wgtEnable                 = (h * width + w).cast(scalarParamType) < (kernelSize * kernelSize);
+    DFEVar wgt                       = io.input(WGT_NAME, DEFAULT_TYPE, wgtEnable).cast(type);
+    DFEVectorType<DFEVar> wgtVecType = new DFEVectorType<DFEVar>(type, wgtVecSize);
+    DFEVector<DFEVar> wgtVec         = wgtVecType.newInstance(this);
+    Memory<DFEVar> wgtMem            = mem.alloc(type, maxKernelSize * maxKernelSize);
+    DFEType wgtAddrType              = dfeUInt(MathUtils.bitsToAddress(maxKernelSize * maxKernelSize));
+    DFEVar wgtAddr                   = (h * width + w).cast(wgtAddrType);
+
+    wgtMem.write(wgtAddr, wgt, wgtEnable);
+    for (int idx = 0; idx < wgtVecSize; idx ++) {
+      DFEVar i = constant.var(idx).cast(dfeUInt(32));
+      wgtVec[idx] <==
+        (i < kernelSize * kernelSize)
+        ? wgtMem.read(i.cast(wgtAddrType))
+        : constant.var(0);
+    }
+
     if (dbg)
-      debug.simPrintf("%d: %KObj%\n", tick, wgtVec);
+      debug.simPrintf("%d: %KObj% %d\n", tick, wgtVec, wgtEnable);
     
     /**
      * Output:
@@ -297,6 +313,7 @@ class InputBufferKernel extends KernelLib {
       DFEVar x = (kernelSize - m.getQuotient() - 1).cast(dfeInt(32));
       DFEVar y = (kernelSize - m.getRemainder() - 1).cast(dfeInt(32));
 
+      debug.simPrintf("(%3d, %3d)\n", x, y);
       out[idx] <== (i < kernelSize * kernelSize)
         ? stream.offset(
             cacheOut,
