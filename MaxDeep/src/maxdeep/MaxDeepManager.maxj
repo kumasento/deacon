@@ -89,8 +89,10 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam numFilters  = ei.addConstant(96);
     InterfaceParam numOutput   = (height - kernelSize + 1) * (width - kernelSize + 1) * numFilters;
 
-    ei.setTicks(CONV_CACHE_KERNEL_NAME, height * width * numChannels * numFilters);
-    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME, numOutput * numChannels);
+    ei.setTicks(CONV_CACHE_KERNEL_NAME,
+        height * width * numChannels * numFilters);
+    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
+        numOutput * numChannels);
 
     InterfaceParam inpSize
       = height * width * numChannels * CPUTypes.UINT32.sizeInBytes();

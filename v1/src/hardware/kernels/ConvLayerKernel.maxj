@@ -85,9 +85,12 @@ public class ConvLayerKernel extends Kernel {
     // Counter {{{
     
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c  = (C == 1)
-      ? constant.var(0)
-      : chain.addCounter(C, 1).cast(dfeInt(32));
+    // DFEVar c  = (C == 1)
+    //   ? constant.var(0)
+    //   : chain.addCounter(C, 1).cast(dfeInt(32));
+    
+    if (C > 1)
+      chain.addCounter(C, 1).cast(dfeInt(32));
     DFEVar f  = (F == 1)
       ? constant.var(0)
       : chain.addCounter(F, P_F).cast(dfeInt(32));

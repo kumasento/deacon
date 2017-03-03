@@ -58,8 +58,14 @@ class MultiPumpedConvolveKernel extends Kernel {
     DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
-    debug.simPrintf("[MPC] inpVec = %d %d %d %d \n", 
-        inpVec[0], inpVec[1], inpVec[2], inpVec[3]);
+    debug.simPrintf("[\n");
+    for (int kx = 0; kx < K; kx ++) {
+      debug.simPrintf("  [ ");
+      for (int ky = 0; ky < K - 1; ky ++)
+        debug.simPrintf("%3d, ", inpVec[kx * K + ky]);
+      debug.simPrintf("%3d ]\n", inpVec[kx * K + K - 1]);
+    }
+    debug.simPrintf("]\n");
 
     for (int idx = 0; idx < outVecSize; idx ++) {
       DFEVector<DFEVar> window = windowType.newInstance(this);

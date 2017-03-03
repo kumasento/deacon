@@ -60,7 +60,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     DFEVector<DFEVar> wgtVec =
       io.input(WGT_NAME, wgtVecDefaultType, wgtEnable).cast(wgtVecType);
     
-    int outVecSize = convParams.kernelSize;
+    int outVecSize = convParams.kernelSize * convParams.kernelSize;
     DFEVectorType<DFEVar> outVecType = 
       new DFEVectorType<DFEVar>(type, outVecSize);
     DFEVector<DFEVar> out = outVecType.newInstance(this);
@@ -69,8 +69,6 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     // only read input feature map when computing the first filter
     DFEVar inpEnable = (f === 0);
     DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
-
-    debug.simPrintf("[cache] f = %3d h = %3d w = %3d inp = %d\n", f, h, w, inp.cast(DEFAULT_TYPE));
     
     // initialise the input buffer kernel
     new InputBufferKernel(
@@ -86,9 +84,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       convParams.width
     );
 
-    debug.simPrintf("[cache] vld = %3d out = [%3d %3d %3d %3d]\n", outValid, out[0], out[1], out[2], out[3]);
     io.output(OUT_INP_NAME, out, outVecType, outValid);
-    io.output(OUT_WGT_NAME, wgtVec, wgtVecType);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType, outValid);
   }
 }
 
@@ -139,13 +136,14 @@ class InputBufferKernel extends KernelLib {
         writeBRAMEnable,
         Mem.RamWriteMode.WRITE_FIRST);
 
-    debug.simPrintf("[buffer] h = %3d w = %3d addr = %3d cacheOut = %3d\n",
-        h, w, addr, cacheOut);
+    valid <== h >= (K - 1) & w >= (K - 1);
 
-    valid <== h >= K;
-
-    for (int i = 0; i < K; i ++)
-      out[i] <== stream.offset(cacheOut, - i * W);
+    for (int x = 0; x < K; x ++)
+      for (int y = 0; y < K; y ++) {
+        int i = x * K + y;
+        out[K * K - i - 1] <==
+          stream.offset(cacheOut, - (x * W + y));
+      }
   }
 
 }
