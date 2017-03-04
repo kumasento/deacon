@@ -50,7 +50,6 @@ int main(int argc, char *argv[]) {
   unsigned int out_size
     = ((conv_height - conv_kernel_size + 1) *
        (conv_width - conv_kernel_size + 1) *
-       conv_num_channels *
        conv_num_filters);
 
   printf("\x1B[32mComputed:\x1B[0m\n");
@@ -70,14 +69,14 @@ int main(int argc, char *argv[]) {
   // data type
   // (2017-02-24) Ruizhe Zhao
   for (int i = 0; i < (int) inp_size * 4; i += 4) {
-    uint32_t val = i / 4 + 1;
+    uint32_t val = 1;
     for (int j = 0; j < 4; j ++) {
       data_inp[i + j] = (val >> (j * 8));
     }
   }
 
   for (int i = 0; i < (int) wgt_size * 4; i += 4) {
-    uint32_t val = i / 4 + 1;
+    uint32_t val = 1;
     for (int j = 0; j < 4; j ++) {
       data_wgt[i + j] = (val >> (j * 8));
     }
@@ -110,7 +109,7 @@ int main(int argc, char *argv[]) {
   MaxDeep_run(engine, &actions);
   MaxDeep_dramRead_run(engine, &out_read_actions);
 
-  for (int i = 0; i < (int) 10 * 4; i += 4) {
+  for (int i = 0; i < (int) out_size * 4; i += 4) {
     uint32_t val = 0;
     for (int j = 0; j < 4; j ++)
       val += (data_out[i + j] << (j * 8));

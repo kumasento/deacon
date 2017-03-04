@@ -21,6 +21,8 @@ class MaxDeepManager extends CustomManager {
     = "MultiPumpedConvolveKernel";
   private static final String CONV_CACHE_KERNEL_NAME
     = "ConvolutionLayerCacheKernel";
+  private static final String CONV_POST_PROCESS_KERNEL_NAME
+    = "ConvolutionLayerPostProcessKernel";
   private static final String PADDING_KERNEL_NAME
     = "PaddingKernel";
   
@@ -60,18 +62,27 @@ class MaxDeepManager extends CustomManager {
     addMaxFileConstant("maxConvKernelSize",  maxConvKernelSize);
 
     KernelBlock mpc = addKernel(
-        new MultiPumpedConvolveKernel(
-          makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
-          1, maxConvKernelSize, 1, params.getDbg()));
+      new MultiPumpedConvolveKernel(
+        makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
+        1, maxConvKernelSize, 1, params.getDbg()));
     KernelBlock cache = addKernel(
-        new ConvolutionLayerCacheKernel(
-          makeKernelParameters(CONV_CACHE_KERNEL_NAME),
-          maxConvHeight,
-          maxConvWidth,
-          maxConvNumChannels,
-          maxConvNumFilters,
-          maxConvKernelSize,
-          params.getDbg()));
+      new ConvolutionLayerCacheKernel(
+        makeKernelParameters(CONV_CACHE_KERNEL_NAME),
+        maxConvHeight,
+        maxConvWidth,
+        maxConvNumChannels,
+        maxConvNumFilters,
+        maxConvKernelSize,
+        params.getDbg()));
+    KernelBlock post = addKernel(
+      new ConvolutionLayerPostProcessKernel(
+        makeKernelParameters(CONV_POST_PROCESS_KERNEL_NAME),
+        maxConvHeight,
+        maxConvWidth,
+        maxConvNumChannels,
+        maxConvNumFilters,
+        maxConvKernelSize,
+        params.getDbg()));
     KernelBlock paddingKernel = addKernel(
       new PaddingKernel(
         makeKernelParameters(PADDING_KERNEL_NAME)));
@@ -86,17 +97,20 @@ class MaxDeepManager extends CustomManager {
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
     mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
-    paddingKernel.getInput(PaddingKernel.INP_NAME)
+    post.getInput(ConvolutionLayerPostProcessKernel.INP_NAME)
       <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
+    paddingKernel.getInput(PaddingKernel.INP_NAME)
+      <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
 
     config.setDefaultStreamClockFrequency(freq);
-    ManagerClock clock =
-      generateStreamClock(DEFAULT_KERNEL_CLK, freq);
-    cache.setClock(clock);
-    paddingKernel.setClock(clock);
+    ManagerClock clock
+      = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
+    ManagerClock clockForMPC
+      = generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
 
-    ManagerClock clockForMPC =
-      generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
+    cache.setClock(clock);
+    post.setClock(clock);
+    paddingKernel.setClock(clock);
     mpc.setClock(clockForMPC);
   }
 
@@ -145,6 +159,8 @@ class MaxDeepManager extends CustomManager {
         height * width * numChannels * numFilters);
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
         numOutput * numChannels);
+    ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
+        numOutput * numChannels);
 
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
@@ -166,6 +182,28 @@ class MaxDeepManager extends CustomManager {
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_KERNEL_SIZE_INP_NAME,
       kernelSize);
+
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_HEIGHT_INP_NAME,
+      height);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_WIDTH_INP_NAME,
+      width);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_NUM_CHANNELS_INP_NAME,
+      numChannels);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_NUM_FILTERS_INP_NAME,
+      numFilters);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_KERNEL_SIZE_INP_NAME,
+      kernelSize);
+    
     ei.setScalar(
       MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
       MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,
@@ -177,7 +215,7 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam wgtSize
       = kernelSize * kernelSize * numChannels * numFilters;
     InterfaceParam outSize
-      = numOutput * numChannels;
+      = numOutput;
 
     InterfaceParam burstAlignedInpSize
       = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
