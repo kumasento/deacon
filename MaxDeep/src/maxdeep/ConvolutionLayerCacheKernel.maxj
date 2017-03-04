@@ -207,7 +207,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       kernelSize,
       maxHeight,
       maxWidth,
-      maxKernelSize
+      maxKernelSize,
+      dbg
     );
 
     /**
@@ -251,6 +252,7 @@ class InputBufferKernel extends KernelLib {
    * @param maxKernelSize The size of the kernel
    * @param maxHeight The height of the input feature map
    * @param maxWidth The width of the input feature map
+   * @param dbg The debug flag
    */
   public InputBufferKernel(
     KernelLib owner,
@@ -265,7 +267,8 @@ class InputBufferKernel extends KernelLib {
     DFEVar kernelSize,
     int maxHeight,
     int maxWidth,
-    int maxKernelSize
+    int maxKernelSize,
+    boolean dbg
   ) {
     super(owner);
 
@@ -325,7 +328,6 @@ class InputBufferKernel extends KernelLib {
         : constant.var(0).cast(type);
     }
     
-    debug.simPrintf("%KObj%\n", out);
   }
 
 }

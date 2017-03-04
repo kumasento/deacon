@@ -2,18 +2,23 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
+#include <math.h>
 #include <getopt.h>
 
 #include <MaxSLiCInterface.h>
 #include "Maxfiles.h"
 
+unsigned int burst_aligned_size(unsigned int size, size_t num_bytes) {
+  return (unsigned int) (ceil((double) size * num_bytes / 384) * 384 / num_bytes);
+}
+
 int main(int argc, char *argv[]) {
   printf("\x1B[32mMaxDeep Command Line Program\x1B[0m\n");
 
-  unsigned int conv_height       = 8;
-  unsigned int conv_width        = 8;
-  unsigned int conv_num_channels = 3;
-  unsigned int conv_num_filters  = 96;
+  unsigned int conv_height       = 5;
+  unsigned int conv_width        = 5;
+  unsigned int conv_num_channels = 4;
+  unsigned int conv_num_filters  = 4;
   unsigned int conv_kernel_size  = 3;
   
   printf("\x1B[32mLoading\x1B[0m maxfile ...\n");
@@ -38,15 +43,24 @@ int main(int argc, char *argv[]) {
   printf("\t- maxConvNumFilters:  %ld\n", max_conv_num_filters);
   printf("\t- maxConvKernelSize:  %ld\n", max_conv_kernel_size);
 
-  const unsigned int inp_size
+  unsigned int inp_size
     = conv_height * conv_width * conv_num_channels;
-  const unsigned int wgt_size
+  unsigned int wgt_size
     = conv_kernel_size * conv_kernel_size * conv_num_channels * conv_num_filters;
-  const unsigned int out_size
+  unsigned int out_size
     = ((conv_height - conv_kernel_size + 1) *
        (conv_width - conv_kernel_size + 1) *
        conv_num_channels *
        conv_num_filters);
+
+  printf("\x1B[32mComputed:\x1B[0m\n");
+  printf("\t- Input size:   %10d (%d)\n", inp_size, burst_aligned_size(inp_size, sizeof(unsigned int)));
+  printf("\t- Weights size: %10d (%d)\n", wgt_size, burst_aligned_size(wgt_size, sizeof(unsigned int)));
+  printf("\t- Output size:  %10d (%d)\n", out_size, burst_aligned_size(out_size, sizeof(unsigned int)));
+
+  inp_size = burst_aligned_size(inp_size, sizeof(unsigned int));
+  wgt_size = burst_aligned_size(wgt_size, sizeof(unsigned int));
+  out_size = burst_aligned_size(out_size, sizeof(unsigned int));
 
   uint8_t *data_inp = (uint8_t *) malloc(sizeof(uint32_t) * inp_size);
   uint8_t *data_wgt = (uint8_t *) malloc(sizeof(uint32_t) * wgt_size);
@@ -96,7 +110,7 @@ int main(int argc, char *argv[]) {
   MaxDeep_run(engine, &actions);
   MaxDeep_dramRead_run(engine, &out_read_actions);
 
-  for (int i = 0; i < 4 * 4; i += 4) {
+  for (int i = 0; i < (int) 10 * 4; i += 4) {
     uint32_t val = 0;
     for (int j = 0; j < 4; j ++)
       val += (data_out[i + j] << (j * 8));

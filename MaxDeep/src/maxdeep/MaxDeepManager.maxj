@@ -9,17 +9,20 @@ import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 
 class MaxDeepManager extends CustomManager {
 
-  private static final String MAXDEEP_KERNEL_NAME
-    = "MaxDeepKernel";
+  // private static final String MAXDEEP_KERNEL_NAME
+  //   = "MaxDeepKernel";
   private static final String MULTI_PUMPED_CONVOLVE_KERNEL_NAME
     = "MultiPumpedConvolveKernel";
   private static final String CONV_CACHE_KERNEL_NAME
     = "ConvolutionLayerCacheKernel";
+  private static final String PADDING_KERNEL_NAME
+    = "PaddingKernel";
   
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
   private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
@@ -69,22 +72,28 @@ class MaxDeepManager extends CustomManager {
           maxConvNumFilters,
           maxConvKernelSize,
           params.getDbg()));
+    KernelBlock paddingKernel = addKernel(
+      new PaddingKernel(
+        makeKernelParameters(PADDING_KERNEL_NAME)));
 
     iface = addLMemInterface();
 
     ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.WGT_NAME);
-    ManagerUtils.addLinearStreamFromKernelToLMem(iface, mpc, MultiPumpedConvolveKernel.OUT_NAME);
+    ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME);
 
     mpc.getInput(MultiPumpedConvolveKernel.INP_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
     mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
+    paddingKernel.getInput(PaddingKernel.INP_NAME)
+      <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
 
     config.setDefaultStreamClockFrequency(freq);
     ManagerClock clock =
       generateStreamClock(DEFAULT_KERNEL_CLK, freq);
     cache.setClock(clock);
+    paddingKernel.setClock(clock);
 
     ManagerClock clockForMPC =
       generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
@@ -162,19 +171,59 @@ class MaxDeepManager extends CustomManager {
       MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,
       kernelSize);
 
+    InterfaceParam burstSize = ei.addConstant(384);
     InterfaceParam inpSize
-      = height * width * numChannels * CPUTypes.UINT32.sizeInBytes();
+      = height * width * numChannels;
     InterfaceParam wgtSize
-      = kernelSize * kernelSize * numChannels * numFilters * CPUTypes.UINT32.sizeInBytes();
+      = kernelSize * kernelSize * numChannels * numFilters;
     InterfaceParam outSize
-      = numOutput * numChannels * CPUTypes.UINT32.sizeInBytes();
+      = numOutput * numChannels;
 
-    ei.setLMemLinear(ConvolutionLayerCacheKernel.INP_NAME, zero, inpSize);
-    ei.setLMemLinear(ConvolutionLayerCacheKernel.WGT_NAME, inpSize, wgtSize);
-    ei.setLMemLinear(MultiPumpedConvolveKernel.OUT_NAME, inpSize + wgtSize, outSize);
+    InterfaceParam burstAlignedInpSize
+      = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam burstAlignedWgtSize
+      = burstAlignedSize(wgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam burstAlignedOutSize
+      = burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+
+    ei.setTicks(PADDING_KERNEL_NAME,
+      burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+    ei.setScalar(
+      PADDING_KERNEL_NAME,
+      PaddingKernel.SCALAR_NUM_INP,
+      outSize);
+    ei.setScalar(
+      PADDING_KERNEL_NAME,
+      PaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+
+    ei.setLMemLinear(
+      ConvolutionLayerCacheKernel.INP_NAME,
+      zero,
+      burstAlignedInpSize);
+    ei.setLMemLinear(ConvolutionLayerCacheKernel.WGT_NAME,
+      burstAlignedInpSize,
+      burstAlignedWgtSize);
+    ei.setLMemLinear(PaddingKernel.OUT_NAME,
+      burstAlignedInpSize + burstAlignedWgtSize,
+      burstAlignedOutSize);
 
     ManagerUtils.ignoreLMemStreams(ei);
     return ei;
+  }
+
+  private InterfaceParam burstAlignedSize(
+    InterfaceParam num,
+    int size,
+    InterfaceParam burstSize
+  ) {
+    InterfaceParam length = num * size;
+    InterfaceParam burstAlignedLength
+      = InterfaceMath.ceil(length.cast(CPUTypes.FLOAT) / burstSize.cast(CPUTypes.FLOAT));
+    return burstAlignedLength.cast(CPUTypes.UINT32) * burstSize / size;
   }
 
   public static void main(String [] args) {

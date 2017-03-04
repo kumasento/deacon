@@ -41,6 +41,8 @@ class MultiPumpedConvolveKernel extends Kernel {
   ) {
     super(params);
 
+    DFEVar c = control.count.simpleCounter(32);
+
     optimization.pushPipeliningFactor(1.0);
     optimization.pushDSPFactor(1);
 
@@ -64,8 +66,9 @@ class MultiPumpedConvolveKernel extends Kernel {
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
     if (dbg) {
-      debug.simPrintf("%KObj%\n", inpVec);
-      debug.simPrintf("[\n");
+      debug.simPrintf("%d - inp %KObj%\n", c, inpVec);
+      debug.simPrintf("%d - wgt %KObj%\n", c, wgtVec);
+      debug.simPrintf("%d - [\n", c);
       for (int kx = 0; kx < maxKernelSize; kx ++) {
         debug.simPrintf("  [ ");
         for (int ky = 0; ky < maxKernelSize - 1; ky ++)
@@ -90,6 +93,8 @@ class MultiPumpedConvolveKernel extends Kernel {
 
       outVec[idx] <== Reductions.reduce(window); 
     }
+    if (dbg)
+      debug.simPrintf("%d - out %KObj%\n", c, outVec);
 
     io.output(OUT_NAME, outVec, outVecType);
   }
