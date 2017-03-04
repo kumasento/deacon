@@ -41,31 +41,79 @@ class MultiPumpedConvolveKernel extends Kernel {
   ) {
     super(params);
 
-    DFEVar c = control.count.simpleCounter(32);
-
+    /**
+     * Optimisation configuration:
+     * The pipeling and DSP factor will be fully used.
+     */
     optimization.pushPipeliningFactor(1.0);
     optimization.pushDSPFactor(1);
 
+    /**
+     * Scalar inputs:
+     * - kernelSize: the size of the kernel in the current computation
+     */
     DFEVar kernelSize = io.scalarInput(SCALAR_KERNEL_SIZE_NAME, DATA_TYPE);
 
+    /**
+     * Input:
+     * The input vector of the MPC kernel. For each convolver, this vector
+     * will give K * K elements.
+     */
     int inpVecSize = maxKernelSize * maxKernelSize * N / C;
-    int wgtVecSize = maxKernelSize * maxKernelSize * N / C;
-    int outVecSize = N / C;
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(DATA_TYPE, inpVecSize);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
 
-    DFEVectorType<DFEVar> inpVecType =
-      new DFEVectorType<DFEVar>(DATA_TYPE, inpVecSize);
-    DFEVectorType<DFEVar> wgtVecType =
-      new DFEVectorType<DFEVar>(DATA_TYPE, wgtVecSize);
+    /**
+     * Weight:
+     * The weight vector for the computation of each cycle. Same size 
+     * as the input vector, which will be easier to handle in this case.
+     */
+    int wgtVecSize = maxKernelSize * maxKernelSize * N / C;
+    DFEVectorType<DFEVar> wgtVecType
+      = new DFEVectorType<DFEVar>(DATA_TYPE, wgtVecSize);
+    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
+
+    /**
+     * Output:
+     * The output vector of this MPC kernel.
+     */
+    int outVecSize = N / C;
     DFEVectorType<DFEVar> outVecType =
       new DFEVectorType<DFEVar>(DATA_TYPE, outVecSize);
-    DFEVectorType<DFEVar> windowType =
-      new DFEVectorType<DFEVar>(DATA_TYPE, maxKernelSize * maxKernelSize);
-
-    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
-    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
+    /**
+     * Computation:
+     * Treat the whole kernel as a collection of multiple one-cycle 
+     * dot products.
+     * window stores the element-wise multiplication result.
+     */
+    DFEVectorType<DFEVar> windowType =
+      new DFEVectorType<DFEVar>(DATA_TYPE, maxKernelSize * maxKernelSize);
+    for (int idx = 0; idx < outVecSize; idx ++) {
+      DFEVector<DFEVar> window = windowType.newInstance(this);
+
+      int maxKernelArea = maxKernelSize * maxKernelSize;
+      DFEVar kernelArea = kernelSize * kernelSize;
+      
+      for (int i = 0; i < maxKernelArea; i ++) {
+        DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
+
+        // assign the value to be 0 if it is out of bound.
+        window[i] <==
+          (dfeI < kernelArea)
+          ? (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea])
+          : constant.var(0);
+      }
+
+      outVec[idx] <== Reductions.reduce(window); 
+    }
+
+    io.output(OUT_NAME, outVec, outVecType);
+
     if (dbg) {
+      DFEVar c = control.count.simpleCounter(32);
       debug.simPrintf("%d - inp %KObj%\n", c, inpVec);
       debug.simPrintf("%d - wgt %KObj%\n", c, wgtVec);
       debug.simPrintf("%d - [\n", c);
@@ -76,26 +124,7 @@ class MultiPumpedConvolveKernel extends Kernel {
         debug.simPrintf("%3d ]\n", inpVec[kx * maxKernelSize + maxKernelSize - 1]);
       }
       debug.simPrintf("]\n");
-    }
-
-    for (int idx = 0; idx < outVecSize; idx ++) {
-      DFEVector<DFEVar> window = windowType.newInstance(this);
-
-      int maxKernelArea = maxKernelSize * maxKernelSize;
-      DFEVar kernelArea = kernelSize * kernelSize;
-      for (int i = 0; i < maxKernelArea; i ++) {
-        DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
-        window[i] <==
-          (dfeI < kernelArea)
-          ? (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea])
-          : constant.var(0);
-      }
-
-      outVec[idx] <== Reductions.reduce(window); 
-    }
-    if (dbg)
       debug.simPrintf("%d - out %KObj%\n", c, outVec);
-
-    io.output(OUT_NAME, outVec, outVecType);
+    }
   }
 }
