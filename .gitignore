@@ -24,7 +24,8 @@ hs_err_pid*
 debug*
 
 # generated files
-build
+MaxDeep/build/*
+!MaxDeep/build/Makefile
 
 # generated data
 *.bin
