@@ -92,18 +92,11 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * (2017-03-03) Ruizhe Zhao
      */
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeUInt(32));
+    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeInt(32));
     DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
     DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
     DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
     
-    DFEVar tick = control.count.simpleCounter(32);
-
-    if (dbg) {
-      debug.simPrintf("%d: [%3d] (%3d, %3d, %3d, %3d)\n",
-        tick, numFilters, c, f, h, w);
-    }
-
     /**
      * Input:
      *
@@ -119,8 +112,6 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      */
     DFEVar inpEnable = (f === 0);
     DFEVar inp = io.input(INP_NAME, DEFAULT_TYPE, inpEnable).cast(type);
-    if (dbg)
-      debug.simPrintf("%d: %KObj%\n", tick, inp);
 
     /**
      * Weights:
@@ -165,9 +156,6 @@ public class ConvolutionLayerCacheKernel extends Kernel {
         ? wgtMem.read(i.cast(wgtAddrType))
         : constant.var(0);
     }
-
-    if (dbg)
-      debug.simPrintf("%d: %KObj% %d\n", tick, wgtVec, wgtEnable);
     
     /**
      * Output:
@@ -228,6 +216,14 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     io.output(OUT_INP_NAME, out, outVecType, outValid);
     io.output(OUT_WGT_NAME, wgtVec, wgtVecType, outValid);
     io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
+
+    if (dbg) {
+      DFEVar tick = control.count.simpleCounter(32);
+      debug.simPrintf("%d: counters - (%3d, %3d, %3d, %3d)\n",
+        tick, c, f, h, w);
+      debug.simPrintf("%d: inpVec   - %KObj%\n", tick, inp);
+      debug.simPrintf("%d: wgtVec   - %KObj%\n", tick, wgtVec);
+    }
   }
 }
 

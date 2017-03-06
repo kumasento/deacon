@@ -10,6 +10,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 
@@ -271,6 +272,9 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramWrite(manager, manager.iface));
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
+
+    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
+
     manager.build();
   }
 }
