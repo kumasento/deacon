@@ -2,6 +2,7 @@ package maxdeep;
 
 // import com.maxeler.maxcompiler.v2.build.EngineParameters;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
 import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 // import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
@@ -10,6 +11,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
@@ -62,6 +64,8 @@ class MaxDeepManager extends CustomManager {
     addMaxFileConstant("maxConvNumFilters",  maxConvNumFilters);
     addMaxFileConstant("maxConvKernelSize",  maxConvKernelSize);
 
+    ManagerUtils.setDRAMMaxDeviceFrequency(this, params);
+
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
         makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
@@ -113,6 +117,7 @@ class MaxDeepManager extends CustomManager {
     post.setClock(clock);
     paddingKernel.setClock(clock);
     mpc.setClock(clockForMPC);
+
   }
 
   private EngineInterface interfaceDefault() {
@@ -272,7 +277,7 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramWrite(manager, manager.iface));
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
-
+    // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
     ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
 
     manager.build();

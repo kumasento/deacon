@@ -55,8 +55,11 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
   ) {
     super(params);
 
+    optimization.pushPipeliningFactor(1.0);
+    optimization.pushDSPFactor(1);
+
     // configured by set-and-test
-    int latency = 3;
+    int latency = 10;
 
     DFEType type = dfeUInt(32);
     DFEType scalarParamType = dfeUInt(32);
@@ -89,11 +92,13 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      *
      */
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeInt(32));
-    DFEVar f = chain.addCounter(numFilters, 1).cast(dfeInt(32));
-    DFEVar h = chain.addCounter(outputHeight, 1).cast(dfeInt(32));
-    DFEVar w = chain.addCounter(outputWidth, 1).cast(dfeInt(32));
-    DFEVar t = control.count.simpleCounter(32).cast(dfeInt(32));
+    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeUInt(32));
+    // DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
+    // DFEVar h = chain.addCounter(outputHeight, 1).cast(dfeUInt(32));
+    // DFEVar w = chain.addCounter(outputWidth, 1).cast(dfeUInt(32));
+    DFEVar x = chain.addCounter(numFilters * outputHeight * outputWidth, 1)
+      .cast(dfeUInt(32));
+    DFEVar t = control.count.simpleCounter(32).cast(dfeUInt(32));
 
     /**
      * Output cache:
@@ -125,10 +130,11 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      * duplicating the BRAM?
      * (2017-03-04) Ruizhe Zhao
      */
-    DFEVar cacheAddr = (
-      f * (outputWidth * outputHeight).cast(dfeInt(32)) +
-      h * outputWidth.cast(dfeInt(32)) +
-      w).cast(cacheAddrType);
+    // DFEVar cacheAddr = (
+    //   f * (outputWidth * outputHeight) +
+    //   h * outputWidth +
+    //   w).cast(cacheAddrType);
+    DFEVar cacheAddr = x.cast(cacheAddrType);
 
     DFEVar sum              = (c === 0) ? constant.var(0) : cache.read(cacheAddr);
     DFEVar newSum           = sum + inp;
@@ -138,6 +144,6 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
 
     cache.write(cacheWriteAddr, cacheWriteValue, cacheWriteEnable);
 
-    io.output(OUT_NAME, newSum, type, c === (numChannels - 1).cast(dfeInt(32)));
+    io.output(OUT_NAME, newSum, type, c === (numChannels - 1).cast(dfeUInt(32)));
   }
 }
