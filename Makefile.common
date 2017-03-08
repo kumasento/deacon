@@ -18,7 +18,7 @@ NUMDEVICES ?= 1
 
 BUILD_DATE?=$(shell date +"%d-%m-%y")
 # ---- Paths ----
-MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/vzhao/builds/$(BUILD_DATE)
+MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/rz3515/builds/$(BUILD_DATE)
 #ifndef $(MAXCOMPILER_BUILD_DIR)
 #	MAXCOMPILER_BUILD_DIR=.
 #endif

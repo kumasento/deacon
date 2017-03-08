@@ -2,7 +2,7 @@ package maxdeep;
 
 // import com.maxeler.maxcompiler.v2.build.EngineParameters;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
-import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
+// import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
 import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 // import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
@@ -11,7 +11,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
-import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
+// import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
@@ -26,6 +26,12 @@ class MaxDeepManager extends CustomManager {
     = "ConvolutionLayerCacheKernel";
   private static final String CONV_POST_PROCESS_KERNEL_NAME
     = "ConvolutionLayerPostProcessKernel";
+  private static final String MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME
+    = "MultiPumpedDotProductKernel";
+  private static final String FC_CACHE_KERNEL_NAME
+    = "FullyConnectedLayerCacheKernel";
+  private static final String FC_POST_PROCESS_KERNEL_NAME
+    = "FullyConnectedLayerPostProcessKernel";
   private static final String PADDING_KERNEL_NAME
     = "PaddingKernel";
   
@@ -40,6 +46,8 @@ class MaxDeepManager extends CustomManager {
   private final int maxConvNumChannels;
   private final int maxConvNumFilters;
   private final int maxConvKernelSize;
+  private final int maxFCHeight;
+  private final int maxFCWidth;
 
   protected LMemInterface iface;
 
@@ -278,7 +286,7 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
-    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
+    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 1, 1);
 
     manager.build();
   }
