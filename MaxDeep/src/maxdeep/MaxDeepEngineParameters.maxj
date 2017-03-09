@@ -25,7 +25,6 @@ public class MaxDeepEngineParameters extends EngineParameters {
 
   @Override
   protected void declarations() {
-    declareParam("kernelSize",         DataType.INT, kernelSize);
     declareParam("numPipes",           DataType.INT, numPipes);
     declareParam("freq",               DataType.INT, freq);
     declareParam("multiPumpingFactor", DataType.INT, multiPumpingFactor);
@@ -39,50 +38,22 @@ public class MaxDeepEngineParameters extends EngineParameters {
     declareParam("dbg",                DataType.BOOL, dbg);
   }
 
-  public int getKernelSize() {
-    return getParam("kernelSize");
-  }
-
-  public int getNumPipes() {
-    return getParam("numPipes");
-  }
-
-  public int getFreq() {
-    return getParam("freq");
-  }
-
-  public int getMultiPumpingFactor() {
-    return getParam("multiPumpingFactor");
-  }
-
-  public int getMaxConvHeight() {
-    return getParam("maxConvHeight");
-  }
-
-  public int getMaxConvWidth() {
-    return getParam("maxConvWidth");
-  }
-
-  public int getMaxConvNumChannels() {
-    return getParam("maxConvNumChannels");
-  }
-
-  public int getMaxConvNumFilters() {
-    return getParam("maxConvNumFilters");
-  }
-
-  public int getMaxConvKernelSize() {
-    return getParam("maxConvKernelSize");
-  }
-
-  public boolean getDbg() {
-    return getParam("dbg");
-  }
+  public int getNumPipes()           { return getParam("numPipes");           }
+  public int getFreq()               { return getParam("freq");               }
+  public int getMultiPumpingFactor() { return getParam("multiPumpingFactor"); }
+  public int getMaxConvHeight()      { return getParam("maxConvHeight");      }
+  public int getMaxConvWidth()       { return getParam("maxConvWidth");       }
+  public int getMaxConvNumChannels() { return getParam("maxConvNumChannels"); }
+  public int getMaxConvNumFilters()  { return getParam("maxConvNumFilters");  }
+  public int getMaxConvKernelSize()  { return getParam("maxConvKernelSize");  }
+  public int getMaxFCHeight()        { return getParam("maxFCHeight");        }
+  public int getMaxFCWidth()         { return getParam("maxFCWidth");         }
+  public boolean getDbg()            { return getParam("dbg");                }
 
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_C_%d_F_%03dMHz",
+        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_FH_%d_FW_%d_C_%d_F_%03dMHz",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
@@ -92,6 +63,8 @@ public class MaxDeepEngineParameters extends EngineParameters {
         getMaxConvNumChannels(),
         getMaxConvNumFilters(),
         getMaxConvKernelSize(),
+        getMaxFCHeight(),
+        getMaxFCWidth(),
         getMultiPumpingFactor(),
         getFreq());
   }

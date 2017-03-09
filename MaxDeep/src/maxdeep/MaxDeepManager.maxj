@@ -5,13 +5,14 @@ import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 // import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
 import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 // import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
-// import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
@@ -33,7 +34,9 @@ class MaxDeepManager extends CustomManager {
   private static final String FC_POST_PROCESS_KERNEL_NAME
     = "FullyConnectedLayerPostProcessKernel";
   private static final String PADDING_KERNEL_NAME
-    = "PaddingKernel";
+    = "PaddingKernelConvolution";
+  private static final String PADDING_KERNEL_FC_NAME
+    = "PaddingKernelFullyConnected";
   
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
   private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
@@ -62,6 +65,8 @@ class MaxDeepManager extends CustomManager {
     maxConvNumChannels = params.getMaxConvNumChannels();
     maxConvNumFilters  = params.getMaxConvNumFilters();
     maxConvKernelSize  = params.getMaxConvKernelSize();
+    maxFCHeight        = params.getMaxFCHeight();
+    maxFCWidth         = params.getMaxFCWidth();
 
     addMaxFileConstant("numPipes",           N);
     addMaxFileConstant("freq",               freq);
@@ -71,13 +76,23 @@ class MaxDeepManager extends CustomManager {
     addMaxFileConstant("maxConvNumChannels", maxConvNumChannels);
     addMaxFileConstant("maxConvNumFilters",  maxConvNumFilters);
     addMaxFileConstant("maxConvKernelSize",  maxConvKernelSize);
+    addMaxFileConstant("maxFCHeight",        maxFCHeight);
+    addMaxFileConstant("maxFCWidth",         maxFCWidth);
 
-    ManagerUtils.setDRAMMaxDeviceFrequency(this, params);
+    // ManagerUtils.setDRAMMaxDeviceFrequency(this, params);
+    // NOTE: This option will help timing when using multiple kernels
+    // (2017-03-03)
+    KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
+    kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
 
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
         makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
         1, maxConvKernelSize, 1, params.getDbg()));
+    KernelBlock mpdp = addKernel(
+      new MultiPumpedDotProductKernel(
+        makeKernelParameters(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME),
+        1, 1, params.getDbg()));
     KernelBlock cache = addKernel(
       new ConvolutionLayerCacheKernel(
         makeKernelParameters(CONV_CACHE_KERNEL_NAME),
@@ -96,36 +111,63 @@ class MaxDeepManager extends CustomManager {
         maxConvNumFilters,
         maxConvKernelSize,
         params.getDbg()));
+    KernelBlock fcCache = addKernel(
+      new FullyConnectedLayerCacheKernel(
+        makeKernelParameters(FC_CACHE_KERNEL_NAME),
+        maxFCHeight,
+        maxFCWidth));
+    KernelBlock fcPost = addKernel(
+      new FullyConnectedLayerPostProcessKernel(
+        makeKernelParameters(FC_POST_PROCESS_KERNEL_NAME),
+        maxFCHeight,
+        maxFCWidth));
     KernelBlock paddingKernel = addKernel(
       new PaddingKernel(
         makeKernelParameters(PADDING_KERNEL_NAME)));
+    KernelBlock paddingKernelFC = addKernel(
+      new PaddingKernel(
+        makeKernelParameters(PADDING_KERNEL_FC_NAME)));
 
     iface = addLMemInterface();
 
     ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.WGT_NAME);
-    ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, fcCache, FullyConnectedLayerCacheKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, fcCache, FullyConnectedLayerCacheKernel.WGT_NAME);
+    ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_CONV");
+    ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernelFC, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_FC");
 
     mpc.getInput(MultiPumpedConvolveKernel.INP_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
     mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
+    mpdp.getInput(MultiPumpedDotProductKernel.INP_NAME)
+      <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_INP_NAME);
+    mpdp.getInput(MultiPumpedDotProductKernel.WGT_NAME)
+      <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_WGT_NAME);
     post.getInput(ConvolutionLayerPostProcessKernel.INP_NAME)
       <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
+    fcPost.getInput(FullyConnectedLayerPostProcessKernel.INP_NAME)
+      <== mpdp.getOutput(MultiPumpedDotProductKernel.OUT_NAME);
     paddingKernel.getInput(PaddingKernel.INP_NAME)
       <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
+    paddingKernelFC.getInput(PaddingKernel.INP_NAME)
+      <== fcPost.getOutput(FullyConnectedLayerPostProcessKernel.OUT_NAME);
 
     config.setDefaultStreamClockFrequency(freq);
-    ManagerClock clock
+    ManagerClock clk
       = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
     ManagerClock clockForMPC
       = generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
 
-    cache.setClock(clock);
-    post.setClock(clock);
-    paddingKernel.setClock(clock);
-    mpc.setClock(clockForMPC);
+    cache.setClock(clk);
+    post.setClock(clk);
+    paddingKernel.setClock(clk);
+    mpdp.setClock(clk);
+    fcCache.setClock(clk);
+    fcPost.setClock(clk);
 
+    mpc.setClock(clockForMPC);
   }
 
   private EngineInterface interfaceDefault() {
@@ -168,6 +210,18 @@ class MaxDeepManager extends CustomManager {
          (width - kernelSize + 1) *
          numFilters
         );
+    InterfaceParam fcHeight 
+      = ei.addParam(
+          "fc_height",
+          CPUTypes.UINT32,
+          "The height of the current fully-connected layer computation"
+        );
+    InterfaceParam fcWidth 
+      = ei.addParam(
+          "fc_width",
+          CPUTypes.UINT32,
+          "The width of the current fully-connected layer computation"
+        );
 
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
         height * width * numChannels * numFilters);
@@ -175,6 +229,12 @@ class MaxDeepManager extends CustomManager {
         numOutput * numChannels);
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
         numOutput * numChannels);
+    ei.setTicks(FC_CACHE_KERNEL_NAME,
+        fcHeight * fcWidth);
+    ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
+        fcHeight * fcWidth);
+    ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
+        fcHeight * fcWidth);
 
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
@@ -223,6 +283,24 @@ class MaxDeepManager extends CustomManager {
       MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,
       kernelSize);
 
+    ei.setScalar(
+      FC_CACHE_KERNEL_NAME,
+      FullyConnectedLayerCacheKernel.SCALAR_HEIGHT_NAME,
+      fcHeight);
+    ei.setScalar(
+      FC_CACHE_KERNEL_NAME,
+      FullyConnectedLayerCacheKernel.SCALAR_WIDTH_NAME,
+      fcWidth);
+
+    ei.setScalar(
+      FC_POST_PROCESS_KERNEL_NAME,
+      FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
+      fcHeight);
+    ei.setScalar(
+      FC_POST_PROCESS_KERNEL_NAME,
+      FullyConnectedLayerPostProcessKernel.SCALAR_WIDTH_NAME,
+      fcWidth);
+
     InterfaceParam burstSize = ei.addConstant(384);
     InterfaceParam inpSize
       = height * width * numChannels;
@@ -252,16 +330,67 @@ class MaxDeepManager extends CustomManager {
       PaddingKernel.SCALAR_TOTAL_CYCLES,
       burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
 
+    InterfaceParam fcInpSize
+      = fcWidth;
+    InterfaceParam fcWgtSize
+      = fcHeight * fcWidth;
+    InterfaceParam fcOutSize
+      = fcHeight;
+
+    InterfaceParam burstAlignedFCInpSize
+      = burstAlignedSize(fcInpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam burstAlignedFCWgtSize
+      = burstAlignedSize(fcWgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+    InterfaceParam burstAlignedFCOutSize
+      = burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+        * CPUTypes.UINT32.sizeInBytes();
+
+    ei.setTicks(PADDING_KERNEL_FC_NAME,
+      burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+    ei.setScalar(
+      PADDING_KERNEL_FC_NAME,
+      PaddingKernel.SCALAR_NUM_INP,
+      fcOutSize);
+    ei.setScalar(
+      PADDING_KERNEL_FC_NAME,
+      PaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedFCOutSize);
+
+    InterfaceParam baseAddr = zero;
+
     ei.setLMemLinear(
       ConvolutionLayerCacheKernel.INP_NAME,
-      zero,
+      baseAddr,
       burstAlignedInpSize);
+    baseAddr += burstAlignedInpSize;
+
     ei.setLMemLinear(ConvolutionLayerCacheKernel.WGT_NAME,
-      burstAlignedInpSize,
+      baseAddr,
       burstAlignedWgtSize);
-    ei.setLMemLinear(PaddingKernel.OUT_NAME,
-      burstAlignedInpSize + burstAlignedWgtSize,
+    baseAddr += burstAlignedWgtSize;
+
+    ei.setLMemLinear(PaddingKernel.OUT_NAME + "_CONV",
+      baseAddr,
       burstAlignedOutSize);
+    baseAddr += burstAlignedOutSize;
+
+    ei.setLMemLinear(
+      FullyConnectedLayerCacheKernel.INP_NAME,
+      baseAddr,
+      burstAlignedFCInpSize);
+    baseAddr += burstAlignedFCInpSize;
+
+    ei.setLMemLinear(FullyConnectedLayerCacheKernel.WGT_NAME,
+      baseAddr,
+      burstAlignedFCWgtSize);
+    baseAddr += burstAlignedFCWgtSize;
+
+    ei.setLMemLinear(PaddingKernel.OUT_NAME + "_FC",
+      baseAddr,
+      burstAlignedOutSize);
+    baseAddr += burstAlignedFCOutSize;
 
     ManagerUtils.ignoreLMemStreams(ei);
     return ei;
@@ -286,7 +415,7 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
-    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 1, 1);
+    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
 
     manager.build();
   }
