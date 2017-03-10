@@ -115,6 +115,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      * Input value
      */
     DFEVar inp = io.input(INP_NAME, type);
+    inp = optimization.pipeline(inp);
 
     /**
      * Accumulator
@@ -134,9 +135,11 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     //   f * (outputWidth * outputHeight) +
     //   h * outputWidth +
     //   w).cast(cacheAddrType);
+    x = optimization.pipeline(x);
     DFEVar cacheAddr = x.cast(cacheAddrType);
 
     DFEVar sum              = (c === 0) ? constant.var(0) : cache.read(cacheAddr);
+    sum = optimization.pipeline(sum);
     DFEVar newSum           = sum + inp;
     DFEVar cacheWriteAddr   = stream.offset(cacheAddr, -latency);
     DFEVar cacheWriteValue  = stream.offset(newSum, -latency);
@@ -144,6 +147,17 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
 
     cache.write(cacheWriteAddr, cacheWriteValue, cacheWriteEnable);
 
-    io.output(OUT_NAME, newSum, type, c === (numChannels - 1).cast(dfeUInt(32)));
+    /**
+     * NOTE: According to today's timing report, there is a delay between the minus 
+     * and the comparison.
+     * Just add this redundant code here, may remove it later.
+     * Ref: 160MHz
+     * (2017-03-10) Ruizhe Zhao
+     */
+    DFEVar numChannelsMinusOne = numChannels - 1;
+    numChannelsMinusOne = optimization.pipeline(numChannelsMinusOne);
+    numChannelsMinusOne = numChannelsMinusOne.cast(dfeUInt(32));
+
+    io.output(OUT_NAME, newSum, type, c === numChannelsMinusOne);
   }
 }

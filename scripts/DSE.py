@@ -31,10 +31,16 @@ if __name__ == '__main__':
     print '%s for MaxDeep' % colored('Design Space Exploration', 'cyan', attrs=['blink', 'reverse'])
 
     processes = [
+        mp.Process(target=build, args=(MaxDeepBuildParam(110), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(130), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(150), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(160), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(170), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(180), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(190), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(200), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(210), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(200), ))
     ]
 
     idx = 0

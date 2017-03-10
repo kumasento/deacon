@@ -40,6 +40,7 @@ public class FullyConnectedLayerPostProcessKernel extends Kernel {
     CounterChain chain = control.count.makeCounterChain();
     chain.addCounter(height, 1).cast(dfeUInt(32));
     DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    w = optimization.pipeline(w);
 
     /**
      * Input

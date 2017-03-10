@@ -66,6 +66,9 @@ public class ConvolutionLayerCacheKernel extends Kernel {
     DFEType type = dfeUInt(32);
     DFEType scalarParamType = dfeUInt(32);
 
+    optimization.pushPipeliningFactor(1.0);
+    optimization.pushDSPFactor(1);
+
     /**
      * Scalar IOs:
      * - height: The height of the current input feature map
@@ -187,7 +190,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       type,
       inp,
       out,
-      c >= 0,
+      h,
+      w,
       inpEnable,
       outValid,
       height,
@@ -223,6 +227,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
         tick, c, f, h, w);
       debug.simPrintf("%d: inpVec   - %KObj%\n", tick, inp);
       debug.simPrintf("%d: wgtVec   - %KObj%\n", tick, wgtVec);
+      debug.simPrintf("%d: valid    - %KObj%\n", tick, outValid);
     }
   }
 }
@@ -255,7 +260,8 @@ class InputBufferKernel extends KernelLib {
     DFEType type,
     DFEVar inp,
     DFEVector<DFEVar> out,
-    DFEVar enable,
+    DFEVar h,
+    DFEVar w,
     DFEVar writeBRAMEnable,
     DFEVar valid,
     DFEVar height,
@@ -273,9 +279,11 @@ class InputBufferKernel extends KernelLib {
      * TODO: Might need to think it over and share these variables?
      * (2017-03-03) Ruizhe Zhao
      */
-    CounterChain chain = owner.control.count.makeCounterChain(enable);
-    DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
-    DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    // CounterChain chain = owner.control.count.makeCounterChain(enable);
+    // DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
+    // DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    // h = optimization.pipeline(h);
+    // w = optimization.pipeline(w);
 
     /**
      * The address for the read/write of the current input buffer.
@@ -298,7 +306,9 @@ class InputBufferKernel extends KernelLib {
      * wgtVec. Note that only when the stream can offset a full kernel
      * of the input feature map this valid signal will be high.
      */
-    valid <== h >= (kernelSize - 1) & w >= (kernelSize - 1);
+    DFEVar kernelSizeMinusOne = kernelSize - 1;
+    kernelSizeMinusOne = optimization.pipeline(kernelSizeMinusOne);
+    valid <== (h >= kernelSizeMinusOne) & (w >= kernelSizeMinusOne);
 
     /**
      * This double-loop constructs the output vector. Note that the 
