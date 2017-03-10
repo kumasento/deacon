@@ -42,6 +42,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
    * @param maxNumChannels Maximum number of channels of the input feature map
    * @param maxNumFilters Maximum number of filters of the input feature map
    * @param maxKernelSize Maximum shape of the kernel
+   * @param hasPooling Whether this layer has a pooling layer appended
    * @param dbg The flag to use DEBUG mode
    */
   public ConvolutionLayerPostProcessKernel(

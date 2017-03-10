@@ -33,6 +33,8 @@ class MaxDeepManager extends CustomManager {
     = "FullyConnectedLayerCacheKernel";
   private static final String FC_POST_PROCESS_KERNEL_NAME
     = "FullyConnectedLayerPostProcessKernel";
+  private static final String POOL_KERNEL_NAME
+    = "PoolingLayerKernel";
   private static final String PADDING_KERNEL_NAME
     = "PaddingKernelConvolution";
   private static final String PADDING_KERNEL_FC_NAME
@@ -51,6 +53,8 @@ class MaxDeepManager extends CustomManager {
   private final int maxConvKernelSize;
   private final int maxFCHeight;
   private final int maxFCWidth;
+  private final int poolKernelSize = 2;
+  private final int poolStride = 2;
 
   protected LMemInterface iface;
 
@@ -121,6 +125,13 @@ class MaxDeepManager extends CustomManager {
         makeKernelParameters(FC_POST_PROCESS_KERNEL_NAME),
         maxFCHeight,
         maxFCWidth));
+    KernelBlock pool = addKernel(
+      new PoolingLayerKernel(
+        makeKernelParameters(POOL_KERNEL_NAME),
+        poolKernelSize,
+        poolStride,
+        maxConvWidth,
+        params.getDbg()));
     KernelBlock paddingKernel = addKernel(
       new PaddingKernel(
         makeKernelParameters(PADDING_KERNEL_NAME)));
@@ -147,10 +158,12 @@ class MaxDeepManager extends CustomManager {
       <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_WGT_NAME);
     post.getInput(ConvolutionLayerPostProcessKernel.INP_NAME)
       <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
+    pool.getInput(PoolingLayerKernel.INP_NAME)
+      <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
     fcPost.getInput(FullyConnectedLayerPostProcessKernel.INP_NAME)
       <== mpdp.getOutput(MultiPumpedDotProductKernel.OUT_NAME);
     paddingKernel.getInput(PaddingKernel.INP_NAME)
-      <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
+      <== pool.getOutput(PoolingLayerKernel.OUT_NAME);
     paddingKernelFC.getInput(PaddingKernel.INP_NAME)
       <== fcPost.getOutput(FullyConnectedLayerPostProcessKernel.OUT_NAME);
 
@@ -222,19 +235,23 @@ class MaxDeepManager extends CustomManager {
           CPUTypes.UINT32,
           "The width of the current fully-connected layer computation"
         );
+    InterfaceParam poolHeight = (height - kernelSize + 1);
+    InterfaceParam poolWidth = (width - kernelSize + 1);
 
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
-        height * width * numChannels * numFilters);
+      height * width * numChannels * numFilters);
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
-        numOutput * numChannels);
+      numOutput * numChannels);
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
-        numOutput * numChannels);
+      numOutput * numChannels);
     ei.setTicks(FC_CACHE_KERNEL_NAME,
-        fcHeight * fcWidth);
+      fcHeight * fcWidth);
     ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
-        fcHeight * fcWidth);
+      fcHeight * fcWidth);
     ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
-        fcHeight * fcWidth);
+      fcHeight * fcWidth);
+    ei.setTicks(POOL_KERNEL_NAME,
+      poolHeight * poolWidth * numFilters);
 
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
@@ -301,13 +318,22 @@ class MaxDeepManager extends CustomManager {
       FullyConnectedLayerPostProcessKernel.SCALAR_WIDTH_NAME,
       fcWidth);
 
+    ei.setScalar(
+      POOL_KERNEL_NAME,
+      PoolingLayerKernel.SCALAR_HEIGHT,
+      poolHeight);
+    ei.setScalar(
+      POOL_KERNEL_NAME,
+      PoolingLayerKernel.SCALAR_WIDTH,
+      poolWidth);
+
     InterfaceParam burstSize = ei.addConstant(384);
     InterfaceParam inpSize
       = height * width * numChannels;
     InterfaceParam wgtSize
       = kernelSize * kernelSize * numChannels * numFilters;
     InterfaceParam outSize
-      = numOutput;
+      = poolHeight * poolWidth * numFilters / (poolStride * poolStride);
 
     InterfaceParam burstAlignedInpSize
       = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)

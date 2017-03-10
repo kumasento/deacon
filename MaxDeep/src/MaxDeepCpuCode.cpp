@@ -15,8 +15,8 @@ unsigned int burst_aligned_size(unsigned int size, size_t num_bytes) {
 int main(int argc, char *argv[]) {
   printf("\x1B[32mMaxDeep Command Line Program\x1B[0m\n");
 
-  unsigned int conv_height       = 5;
-  unsigned int conv_width        = 5;
+  unsigned int conv_height       = 6;
+  unsigned int conv_width        = 6;
   unsigned int conv_num_channels = 4;
   unsigned int conv_num_filters  = 4;
   unsigned int conv_kernel_size  = 3;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   unsigned int out_size
     = ((conv_height - conv_kernel_size + 1) *
        (conv_width - conv_kernel_size + 1) *
-       conv_num_filters);
+       conv_num_filters) / 4;
   unsigned int fc_inp_size
     = fc_width;
   unsigned int fc_wgt_size
@@ -92,13 +92,13 @@ int main(int argc, char *argv[]) {
   // data type
   // (2017-02-24) Ruizhe Zhao
   for (int i = 0; i < (int) inp_size * 4; i += 4) {
-    uint32_t val = 1;
+    uint32_t val = i / 4;
     for (int j = 0; j < 4; j ++) {
       data_inp[i + j] = (val >> (j * 8));
     }
   }
   for (int i = 0; i < (int) fc_inp_size * 4; i += 4) {
-    uint32_t val = 1;
+    uint32_t val = i;
     for (int j = 0; j < 4; j ++) {
       data_fc_inp[i + j] = (val >> (j * 8));
     }
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
   MaxDeep_dramRead_run(engine, &out_read_actions);
   MaxDeep_dramRead_run(engine, &fc_out_read_actions);
 
-  for (int i = 0; i < (int) ((conv_height - conv_kernel_size + 1) * (conv_width - conv_kernel_size + 1) * conv_num_filters * 4); i += 4) {
+  for (int i = 0; i < (int) ((conv_height - conv_kernel_size + 1) * (conv_width - conv_kernel_size + 1) * conv_num_filters * 4) / 4; i += 4) {
     uint32_t val = 0;
     for (int j = 0; j < 4; j ++)
       val += (data_out[i + j] << (j * 8));

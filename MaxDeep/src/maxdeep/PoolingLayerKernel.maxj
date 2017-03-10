@@ -1,0 +1,117 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+
+import java.util.*;
+
+public class PoolingLayerKernel extends Kernel {
+
+  public static final String INP_NAME      = "POOLING_LAYER_INP";
+  public static final String OUT_NAME      = "POOLING_LAYER_OUT";
+  public static final String SCALAR_HEIGHT = "POOLING_LAYER_HEIGHT";
+  public static final String SCALAR_WIDTH  = "POOLING_LAYER_WIDTH";
+
+  /**
+   * This is the pooling layer kernel.
+   *
+   * In this kernel, we assume that the input stream has been reshaped from 
+   * the blocked output.
+   * Will think about how to reshape the stream later.
+   *
+   * @author Ruizhe Zhao
+   * @since 2017-03-10
+   * @param kernelSize fixed kernel size
+   * @param stride fixed stride
+   * @param maxWidth maximum width of the matrix to be pooled
+   * @param dbg Debug option
+   */
+  public PoolingLayerKernel(
+    KernelParameters params,
+    int kernelSize,
+    int stride,
+    int maxWidth,
+    boolean dbg
+  ) {
+    super(params);
+
+    DFEType type = dfeUInt(32);
+
+    /**
+     * Currently we assume that this pooling layer uses a 2x2 kernel with stride 2.
+     * (2017-03-10) Ruizhe Zhao
+     */
+
+    DFEVar height = io.scalarInput(SCALAR_HEIGHT, dfeUInt(32));
+    DFEVar width = io.scalarInput(SCALAR_WIDTH, dfeUInt(32));
+
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar h  = chain.addCounter(height, stride).cast(dfeUInt(32));
+    DFEVar sh = chain.addCounter(stride, 1).cast(dfeUInt(32));
+    DFEVar w  = chain.addCounter(width, stride).cast(dfeUInt(32));
+    DFEVar sw = chain.addCounter(stride, 1).cast(dfeUInt(32));
+    DFEVar rh = h + sh;
+    DFEVar rw = w + sw;
+    
+    DFEVar inp = io.input(INP_NAME, type);
+    DFEVar out = type.newInstance(this);
+    DFEVar outEnable = dfeBool().newInstance(this);
+
+    outEnable <== (
+      (rh >= (kernelSize - 1)) &
+      (rw >= (kernelSize - 1)) &
+      (sw === (stride - 1)) &
+      (sh === (stride - 1)));
+
+    DFEVectorType<DFEVar> knlType
+      = new DFEVectorType<DFEVar>(type, kernelSize * kernelSize);
+    DFEVector<DFEVar> knl = knlType.newInstance(this);
+    for (int i = 0; i < kernelSize * kernelSize; i ++) {
+      int x = kernelSize - i / kernelSize - 1;
+      int y = kernelSize - i % kernelSize - 1;
+      knl[i] <== stream.offset(
+        inp,
+        - (x * width.cast(dfeInt(32)) + y),
+        - (kernelSize * maxWidth + kernelSize),
+        0);
+    }
+
+    out <== MaxReductions.reduce(knl);
+    
+    io.output(OUT_NAME, out, type, outEnable);
+
+    if (dbg) {
+      debug.simPrintf("POOL: (%3d %3d %3d %3d)\n", h, sh, w, sw);
+      debug.simPrintf("POOL: %KObj%\n", knl);
+      debug.simPrintf("POOL: valid %d\n", outEnable);
+    }
+  } 
+}
+
+/**
+ * TODO: move this class into dfe-snippets
+ */
+class MaxReductions {
+
+  public static DFEVar reduce(DFEVector<DFEVar> vector) {
+    return reduce(vector.getElementsAsList());
+  }
+
+  public static DFEVar reduce(List<DFEVar> vector) {
+    if (vector.size() == 1)
+      return vector.get(0);
+    return
+      KernelMath.max(
+        reduce(vector.subList(0, vector.size() / 2)),
+        reduce(vector.subList(vector.size() / 2, vector.size()))
+      );
+  }
+
+}
+
