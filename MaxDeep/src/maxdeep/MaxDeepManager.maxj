@@ -12,7 +12,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
-import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
+// import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
@@ -88,6 +88,7 @@ class MaxDeepManager extends CustomManager {
     // (2017-03-03)
     KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
     kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
+    kernelConfiguration.optimization.setCEPipelining(3);
 
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
@@ -261,10 +262,10 @@ class MaxDeepManager extends CustomManager {
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_WIDTH_INP_NAME,
       width);
-    ei.setScalar(
-      CONV_CACHE_KERNEL_NAME,
-      ConvolutionLayerCacheKernel.SCALAR_NUM_CHANNELS_INP_NAME,
-      numChannels);
+    // ei.setScalar(
+    //   CONV_CACHE_KERNEL_NAME,
+    //   ConvolutionLayerCacheKernel.SCALAR_NUM_CHANNELS_INP_NAME,
+    //   numChannels);
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_NUM_FILTERS_INP_NAME,
@@ -309,10 +310,10 @@ class MaxDeepManager extends CustomManager {
       FullyConnectedLayerCacheKernel.SCALAR_WIDTH_NAME,
       fcWidth);
 
-    ei.setScalar(
-      FC_POST_PROCESS_KERNEL_NAME,
-      FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
-      fcHeight);
+    // ei.setScalar(
+    //   FC_POST_PROCESS_KERNEL_NAME,
+    //   FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
+    //   fcHeight);
     ei.setScalar(
       FC_POST_PROCESS_KERNEL_NAME,
       FullyConnectedLayerPostProcessKernel.SCALAR_WIDTH_NAME,

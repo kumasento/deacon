@@ -4,7 +4,6 @@ import com.maxeler.maxcompiler.v2.build.EngineParameters;
 
 public class MaxDeepEngineParameters extends EngineParameters {
 
-  private static final int kernelSize = 4;
   private static final int numPipes = 2;
   private static final int freq = 100;
   private static final int multiPumpingFactor = 2;

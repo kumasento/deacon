@@ -51,30 +51,30 @@ public class PoolingLayerKernel extends Kernel {
     DFEVar height = io.scalarInput(SCALAR_HEIGHT, dfeUInt(32));
     DFEVar width = io.scalarInput(SCALAR_WIDTH, dfeUInt(32));
 
-    CounterChain chain = control.count.makeCounterChain();
-    DFEVar h  = chain.addCounter(height, stride).cast(dfeUInt(32));
-    DFEVar sh = chain.addCounter(stride, 1).cast(dfeUInt(32));
-    DFEVar w  = chain.addCounter(width, stride).cast(dfeUInt(32));
-    DFEVar sw = chain.addCounter(stride, 1).cast(dfeUInt(32));
-    DFEVar rh = h + sh;
-    DFEVar rw = w + sw;
+    DFEVar t = control.count.simpleCounter(32, height * width);
+    DFEVar h  = KernelMath.divMod(t, width).getQuotient().cast(dfeUInt(32));
+    DFEVar w  = KernelMath.divMod(t, width).getRemainder().cast(dfeUInt(32));
+    DFEVar sh = KernelMath.divMod(h, constant.var(stride)).getRemainder().cast(dfeUInt(32));
+    DFEVar sw = KernelMath.divMod(w, constant.var(stride)).getRemainder().cast(dfeUInt(32));
     
     DFEVar inp = io.input(INP_NAME, type);
     DFEVar out = type.newInstance(this);
     DFEVar outEnable = dfeBool().newInstance(this);
 
     outEnable <== (
-      (rh >= (kernelSize - 1)) &
-      (rw >= (kernelSize - 1)) &
+      (h >= (kernelSize - 1)) &
+      (w >= (kernelSize - 1)) &
       (sw === (stride - 1)) &
       (sh === (stride - 1)));
 
     DFEVectorType<DFEVar> knlType
       = new DFEVectorType<DFEVar>(type, kernelSize * kernelSize);
     DFEVector<DFEVar> knl = knlType.newInstance(this);
+
     for (int i = 0; i < kernelSize * kernelSize; i ++) {
-      int x = kernelSize - i / kernelSize - 1;
-      int y = kernelSize - i % kernelSize - 1;
+      DFEVar x = constant.var((int) kernelSize - i / kernelSize - 1).cast(dfeInt(32));
+      DFEVar y = constant.var((int) kernelSize - i % kernelSize - 1).cast(dfeInt(32));
+
       knl[i] <== stream.offset(
         inp,
         - (x * width.cast(dfeInt(32)) + y),
@@ -83,7 +83,7 @@ public class PoolingLayerKernel extends Kernel {
     }
 
     out <== MaxReductions.reduce(knl);
-    
+      
     io.output(OUT_NAME, out, type, outEnable);
 
     if (dbg) {

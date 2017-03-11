@@ -79,7 +79,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      */
     DFEVar height      = io.scalarInput(SCALAR_HEIGHT_INP_NAME, scalarParamType);
     DFEVar width       = io.scalarInput(SCALAR_WIDTH_INP_NAME, scalarParamType);
-    DFEVar numChannels = io.scalarInput(SCALAR_NUM_CHANNELS_INP_NAME, scalarParamType);
+    // DFEVar numChannels = io.scalarInput(SCALAR_NUM_CHANNELS_INP_NAME, scalarParamType);
     DFEVar numFilters  = io.scalarInput(SCALAR_NUM_FILTERS_INP_NAME, scalarParamType);
     DFEVar kernelSize  = io.scalarInput(SCALAR_KERNEL_SIZE_INP_NAME, scalarParamType);
 
@@ -95,7 +95,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * (2017-03-03) Ruizhe Zhao
      */
     CounterChain chain = control.count.makeCounterChain();
-    DFEVar c = chain.addCounter(numChannels, 1).cast(dfeInt(32));
+    // DFEVar c = chain.addCounter(numChannels, 1).cast(dfeInt(32));
     DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
     DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
     DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
@@ -223,8 +223,8 @@ public class ConvolutionLayerCacheKernel extends Kernel {
 
     if (dbg) {
       DFEVar tick = control.count.simpleCounter(32);
-      debug.simPrintf("%d: counters - (%3d, %3d, %3d, %3d)\n",
-        tick, c, f, h, w);
+      debug.simPrintf("%d: counters - (%3d, %3d, %3d)\n",
+        tick, f, h, w);
       debug.simPrintf("%d: inpVec   - %KObj%\n", tick, inp);
       debug.simPrintf("%d: wgtVec   - %KObj%\n", tick, wgtVec);
       debug.simPrintf("%d: valid    - %KObj%\n", tick, outValid);

@@ -6,9 +6,9 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 // import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 // import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+// import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
-import com.maxeler.maxcompiler.v2.utils.MathUtils;
+// import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 public class FullyConnectedLayerPostProcessKernel extends Kernel {
 
@@ -31,14 +31,14 @@ public class FullyConnectedLayerPostProcessKernel extends Kernel {
      * - height: height of the current FC layer
      * - width: width of the current FC layer
      */
-    DFEVar height = io.scalarInput(SCALAR_HEIGHT_NAME, dfeUInt(32));
+    // DFEVar height = io.scalarInput(SCALAR_HEIGHT_NAME, dfeUInt(32));
     DFEVar width  = io.scalarInput(SCALAR_WIDTH_NAME, dfeUInt(32));
 
     /**
      * Counters
      */
     CounterChain chain = control.count.makeCounterChain();
-    chain.addCounter(height, 1).cast(dfeUInt(32));
+    // chain.addCounter(height, 1).cast(dfeUInt(32));
     DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
     w = optimization.pipeline(w);
 

@@ -31,6 +31,7 @@ if __name__ == '__main__':
     print '%s for MaxDeep' % colored('Design Space Exploration', 'cyan', attrs=['blink', 'reverse'])
 
     processes = [
+        mp.Process(target=build, args=(MaxDeepBuildParam(100), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(110), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(120), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(130), )),
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     ]
 
     idx = 0
-    num_pipes = 2
+    num_pipes = 3
     while idx < len(processes):
         ps = processes[idx:idx+num_pipes]
         for p in ps:

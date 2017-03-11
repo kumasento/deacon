@@ -159,6 +159,13 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     numChannelsMinusOne = optimization.pipeline(numChannelsMinusOne);
     numChannelsMinusOne = numChannelsMinusOne.cast(dfeUInt(32));
 
-    io.output(OUT_NAME, newSum, type, c === numChannelsMinusOne);
+    /**
+     * NOTE: According to the diagram and the timing report, it seems that if
+     * we delayed the minus one, we might also need to delay the counter.
+     * (2017-03-10) Ruizhe Zhao
+     */
+    DFEVar cPipelinedLevelOne = optimization.pipeline(c); 
+
+    io.output(OUT_NAME, newSum, type, cPipelinedLevelOne === numChannelsMinusOne);
   }
 }
