@@ -442,7 +442,7 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
-    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
+    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 8, 8);
 
     manager.build();
   }

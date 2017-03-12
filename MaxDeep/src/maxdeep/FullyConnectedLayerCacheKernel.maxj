@@ -6,7 +6,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+// import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 public class FullyConnectedLayerCacheKernel extends Kernel {
@@ -48,9 +49,9 @@ public class FullyConnectedLayerCacheKernel extends Kernel {
     /**
      * Counters
      */
-    CounterChain chain = control.count.makeCounterChain();
-    DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
-    DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    DFEVar idx = control.count.simpleCounter(32, height * width);
+    DFEVar h = KernelMath.divMod(idx, width).getQuotient().cast(dfeUInt(32));
+    DFEVar w = KernelMath.divMod(idx, width).getRemainder().cast(dfeUInt(32));
 
     /**
      * Input
