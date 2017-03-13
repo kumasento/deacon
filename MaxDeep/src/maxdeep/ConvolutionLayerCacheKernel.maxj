@@ -54,6 +54,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
    */
   public ConvolutionLayerCacheKernel(
     KernelParameters params,
+    int numPipes,
     int maxHeight,
     int maxWidth,
     int maxNumChannels,
@@ -96,7 +97,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      */
     CounterChain chain = control.count.makeCounterChain();
     // DFEVar c = chain.addCounter(numChannels, 1).cast(dfeInt(32));
-    DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
+    DFEVar f = chain.addCounter(numFilters, numPipes).cast(dfeUInt(32));
     DFEVar h = chain.addCounter(height, 1).cast(dfeUInt(32));
     DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
     
@@ -142,22 +143,38 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * for multiple read operations in the same cycle.
      */
     int wgtVecSize = maxKernelSize * maxKernelSize;
+    int wgtVecTotalSize = wgtVecSize * numPipes;
 
-    DFEVar wgtEnable                 = (h * width + w).cast(scalarParamType) < (kernelSize * kernelSize);
+    DFEVar wgtEnable                 = (h * width + w).cast(scalarParamType) < (kernelSize * kernelSize * numPipes);
+    DFEVar wgtValid                  = ~wgtEnable;
     DFEVar wgt                       = io.input(WGT_NAME, DEFAULT_TYPE, wgtEnable).cast(type);
-    DFEVectorType<DFEVar> wgtVecType = new DFEVectorType<DFEVar>(type, wgtVecSize);
+    DFEVectorType<DFEVar> wgtVecType = new DFEVectorType<DFEVar>(type, wgtVecTotalSize);
     DFEVector<DFEVar> wgtVec         = wgtVecType.newInstance(this);
-    Memory<DFEVar> wgtMem            = mem.alloc(type, maxKernelSize * maxKernelSize);
-    DFEType wgtAddrType              = dfeUInt(MathUtils.bitsToAddress(maxKernelSize * maxKernelSize));
-    DFEVar wgtAddr                   = (h * width + w).cast(wgtAddrType);
+    Memory<DFEVar> wgtMem            = mem.alloc(type, wgtVecTotalSize);
+    DFEType wgtAddrType              = dfeUInt(MathUtils.bitsToAddress(wgtVecTotalSize));
+    DFEVar wgtAddr                   = wgtAddrType.newInstance(this);
+
+    DFEVar kernelArea = kernelSize * kernelSize;
+    DFEVar wgtReadIdx = h * width + w;
+    
+    KernelMath.DivModResult m = KernelMath.divMod(wgtReadIdx, kernelArea);
+    DFEVar wgtReadPipeIdx = m.getQuotient().cast(dfeUInt(32));
+    DFEVar wgtReadInPipeIdx = m.getRemainder().cast(dfeUInt(32));
+    wgtAddr <== (wgtReadPipeIdx * wgtVecSize + wgtReadInPipeIdx).cast(wgtAddrType);
 
     wgtMem.write(wgtAddr, wgt, wgtEnable);
-    for (int idx = 0; idx < wgtVecSize; idx ++) {
-      DFEVar i = constant.var(idx).cast(dfeUInt(32));
-      wgtVec[idx] <==
-        (i < kernelSize * kernelSize)
-        ? wgtMem.read(i.cast(wgtAddrType))
-        : constant.var(0);
+
+    for (int pipe = 0; pipe < numPipes; pipe ++) {
+      for (int idx = 0; idx < wgtVecSize; idx ++) {
+        DFEVar i = constant.var(idx).cast(dfeUInt(32));
+        DFEVar p = constant.var(pipe).cast(dfeUInt(32));
+        DFEVar readAddr = (i + p * wgtVecSize).cast(wgtAddrType);
+
+        wgtVec[idx + pipe * wgtVecSize] <==
+          (i < kernelSize * kernelSize)
+          ? wgtMem.read(readAddr)
+          : constant.var(0);
+      }
     }
     
     /**
@@ -170,10 +187,19 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * (2017-03-03) Ruizhe Zhao
      */
     int outVecSize = maxKernelSize * maxKernelSize;
+    int outVecTotalSize = outVecSize * numPipes;
     DFEVectorType<DFEVar> outVecType = 
       new DFEVectorType<DFEVar>(type, outVecSize);
     DFEVector<DFEVar> out = outVecType.newInstance(this);
     DFEVar outValid = dfeBool().newInstance(this);
+
+    DFEVectorType<DFEVar> outVecTotalType = 
+      new DFEVectorType<DFEVar>(type, outVecTotalSize);
+    DFEVector<DFEVar> outVec = outVecTotalType.newInstance(this);
+
+    for (int pipe = 0; pipe < numPipes; pipe ++)
+      for (int idx = 0; idx < outVecSize; idx ++)
+        outVec[pipe * outVecSize + idx] <== optimization.pipeline(out[idx]);
 
     /**
      * Input Buffer:
@@ -217,9 +243,9 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * TODO: Make this two output stream aware of the following parallelisation
      * (2017-03-03) Ruizhe Zhao
      */
-    io.output(OUT_INP_NAME, out, outVecType, outValid);
-    io.output(OUT_WGT_NAME, wgtVec, wgtVecType, outValid);
-    io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
+    io.output(OUT_INP_NAME, outVec, outVecTotalType, outValid);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType, wgtValid);
+    // io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
 
     if (dbg) {
       DFEVar tick = control.count.simpleCounter(32);
@@ -227,7 +253,10 @@ public class ConvolutionLayerCacheKernel extends Kernel {
         tick, f, h, w);
       debug.simPrintf("%d: inpVec   - %KObj%\n", tick, inp);
       debug.simPrintf("%d: wgtVec   - %KObj%\n", tick, wgtVec);
-      debug.simPrintf("%d: valid    - %KObj%\n", tick, outValid);
+      debug.simPrintf("%d: outVec   - %KObj%\n", tick, outVec);
+      debug.simPrintf("%d: outValid - %KObj%\n", tick, outValid);
+      debug.simPrintf("%d: wgtValid - %KObj%\n", tick, wgtValid);
+      debug.simPrintf("%d: valid    - %KObj%\n", tick, outValid & wgtValid);
     }
   }
 }

@@ -93,7 +93,7 @@ class MaxDeepManager extends CustomManager {
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
         makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
-        1, maxConvKernelSize, 1, params.getDbg()));
+        N, maxConvKernelSize, 1, params.getDbg()));
     KernelBlock mpdp = addKernel(
       new MultiPumpedDotProductKernel(
         makeKernelParameters(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME),
@@ -101,6 +101,7 @@ class MaxDeepManager extends CustomManager {
     KernelBlock cache = addKernel(
       new ConvolutionLayerCacheKernel(
         makeKernelParameters(CONV_CACHE_KERNEL_NAME),
+        N,
         maxConvHeight,
         maxConvWidth,
         maxConvNumChannels,
@@ -110,6 +111,7 @@ class MaxDeepManager extends CustomManager {
     KernelBlock post = addKernel(
       new ConvolutionLayerPostProcessKernel(
         makeKernelParameters(CONV_POST_PROCESS_KERNEL_NAME),
+        N,
         maxConvHeight,
         maxConvWidth,
         maxConvNumChannels,
@@ -240,11 +242,11 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam poolWidth = (width - kernelSize + 1);
 
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
-      height * width * numChannels * numFilters);
+      height * width * numChannels * numFilters / N);
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
-      numOutput * numChannels);
+      numOutput * numChannels / N);
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
-      numOutput * numChannels);
+      numOutput * numChannels / N);
     ei.setTicks(FC_CACHE_KERNEL_NAME,
       fcHeight * fcWidth);
     ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,

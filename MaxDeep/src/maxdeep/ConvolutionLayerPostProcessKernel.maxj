@@ -4,11 +4,13 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
-// import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
-// import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+import java.util.*;
 
 /**
  * The post processing kernel is aiming at accumulate the result from
@@ -47,6 +49,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
    */
   public ConvolutionLayerPostProcessKernel(
     KernelParameters params,
+    int numPipes,
     int maxHeight,
     int maxWidth,
     int maxNumChannels,
@@ -94,11 +97,10 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      */
     CounterChain chain = control.count.makeCounterChain();
     DFEVar c = chain.addCounter(numChannels, 1).cast(dfeUInt(32));
-    // DFEVar f = chain.addCounter(numFilters, 1).cast(dfeUInt(32));
+    DFEVar f = chain.addCounter(numFilters, numPipes).cast(dfeUInt(32));
     // DFEVar h = chain.addCounter(outputHeight, 1).cast(dfeUInt(32));
     // DFEVar w = chain.addCounter(outputWidth, 1).cast(dfeUInt(32));
-    DFEVar x = chain.addCounter(numFilters * outputHeight * outputWidth, 1)
-      .cast(dfeUInt(32));
+    DFEVar x = chain.addCounter(outputHeight * outputWidth, 1).cast(dfeUInt(32));
     DFEVar t = control.count.simpleCounter(32).cast(dfeUInt(32));
 
     /**
@@ -107,17 +109,26 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      * size is maxHeight * maxWidth * maxNumFilters, which is definitely
      * larger than the space requirement of this cache.
      */
-    int cacheSize         = maxHeight * maxWidth * maxNumFilters;
+    int cacheSize         = maxHeight * maxWidth * maxNumFilters / numPipes;
+    int cacheTotalSize    = maxHeight * maxWidth * maxNumFilters;
     int cacheAddrBitWidth = MathUtils.bitsToAddress(cacheSize);
     DFEType cacheAddrType = dfeUInt(cacheAddrBitWidth);
-    Memory<DFEVar> cache  = mem.alloc(type, cacheSize);
+    
+    List<Memory<DFEVar>> cache = new ArrayList<Memory<DFEVar>>();
+    for (int pipe = 0; pipe < numPipes; pipe ++) 
+      cache.add(mem.alloc(type, cacheSize));
 
     /**
      * Input value
      */
-    DFEVar inp = io.input(INP_NAME, type);
-    inp = optimization.pipeline(inp);
+    int inpVecSize = numPipes;
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(type, inpVecSize);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
 
+    DFEVectorType<DFEVar> outVecType
+      = new DFEVectorType<DFEVar>(type, numPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
     /**
      * Accumulator
      * This accumulator is quite interesting - It will read the address that
@@ -136,17 +147,20 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     //   f * (outputWidth * outputHeight) +
     //   h * outputWidth +
     //   w).cast(cacheAddrType);
-    x = optimization.pipeline(x);
-    DFEVar cacheAddr = x.cast(cacheAddrType);
 
-    DFEVar sum              = (c === 0) ? constant.var(0) : cache.read(cacheAddr);
-    sum = optimization.pipeline(sum);
-    DFEVar newSum           = sum + inp;
-    DFEVar cacheWriteAddr   = stream.offset(cacheAddr, -latency);
-    DFEVar cacheWriteValue  = stream.offset(newSum, -latency);
-    DFEVar cacheWriteEnable = t >= latency;
+    for (int pipe = 0; pipe < numPipes; pipe ++) {
+      DFEVar cacheAddr        = (optimization.pipeline(x) + (f / numPipes) * outputHeight * outputWidth).cast(cacheAddrType);
+      DFEVar sum              = (c === 0) ? constant.var(0) : cache[pipe].read(cacheAddr);
+      sum                     = optimization.pipeline(sum);
+      DFEVar newSum           = sum + inpVec[pipe];
+      DFEVar cacheWriteAddr   = stream.offset(cacheAddr, -latency);
+      DFEVar cacheWriteValue  = stream.offset(newSum, -latency);
+      DFEVar cacheWriteEnable = t >= latency;
 
-    cache.write(cacheWriteAddr, cacheWriteValue, cacheWriteEnable);
+      cache[pipe].write(cacheWriteAddr, cacheWriteValue, cacheWriteEnable);
+
+      outVec[pipe] <== newSum;
+    }
 
     /**
      * NOTE: According to today's timing report, there is a delay between the minus 
@@ -169,6 +183,10 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      */
     DFEVar cPipelinedLevelOne = optimization.pipeline(c); 
 
-    io.output(OUT_NAME, newSum, type, cPipelinedLevelOne === numChannelsMinusOne);
+    io.output(OUT_NAME, outVec, outVecType, cPipelinedLevelOne === numChannelsMinusOne);
+
+    if (dbg) {
+      debug.simPrintf("CONV POST PROCESS: %d - out %KObj%\n", c, outVec);
+    }
   }
 }
