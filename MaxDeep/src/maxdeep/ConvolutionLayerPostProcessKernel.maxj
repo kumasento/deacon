@@ -154,10 +154,13 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      * Just add this redundant code here, may remove it later.
      * Ref: 160MHz
      * (2017-03-10) Ruizhe Zhao
+     * 
+     * NOTE: Switched the place of the pipelining and the casting
+     * (2017-03-12) Ruizhe Zhao
      */
     DFEVar numChannelsMinusOne = numChannels - 1;
-    numChannelsMinusOne = optimization.pipeline(numChannelsMinusOne);
     numChannelsMinusOne = numChannelsMinusOne.cast(dfeUInt(32));
+    numChannelsMinusOne = optimization.pipeline(numChannelsMinusOne);
 
     /**
      * NOTE: According to the diagram and the timing report, it seems that if

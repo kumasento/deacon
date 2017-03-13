@@ -88,7 +88,7 @@ class MaxDeepManager extends CustomManager {
     // (2017-03-03)
     KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
     kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
-    kernelConfiguration.optimization.setCEPipelining(3);
+    kernelConfiguration.optimization.setCEPipelining(4);
 
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(

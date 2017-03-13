@@ -99,10 +99,17 @@ class MultiPumpedConvolveKernel extends Kernel {
       
       for (int i = 0; i < maxKernelArea; i ++) {
         DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
+        /**
+         * NOTE: There is a timing issue in the comparison node, which I think might due
+         * to the kernelArea's fanout. Here I add a level of pipelining to replicate
+         * this DFEVar manually.
+         * (2017-03-13) Ruizhe Zhao
+         */
+        DFEVar kernelAreaPipelined = optimization.pipeline(kernelArea);
 
         // assign the value to be 0 if it is out of bound.
         window[i] <==
-          (dfeI < kernelArea)
+          (dfeI < kernelAreaPipelined)
           ? (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea])
           : constant.var(0);
       }
