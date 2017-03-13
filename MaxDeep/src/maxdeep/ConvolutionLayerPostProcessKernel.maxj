@@ -137,6 +137,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     //   h * outputWidth +
     //   w).cast(cacheAddrType);
     x = optimization.pipeline(x);
+    x = optimization.pipeline(x);
     DFEVar cacheAddr = x.cast(cacheAddrType);
 
     DFEVar sum              = (c === 0) ? constant.var(0) : cache.read(cacheAddr);
