@@ -34,6 +34,7 @@ public class PoolingLayerKernel extends Kernel {
    */
   public PoolingLayerKernel(
     KernelParameters params,
+    int numPipes,
     int kernelSize,
     int stride,
     int maxWidth,
@@ -57,8 +58,16 @@ public class PoolingLayerKernel extends Kernel {
     DFEVar sh = KernelMath.divMod(h, constant.var(stride)).getRemainder().cast(dfeUInt(32));
     DFEVar sw = KernelMath.divMod(w, constant.var(stride)).getRemainder().cast(dfeUInt(32));
     
-    DFEVar inp = io.input(INP_NAME, type);
-    DFEVar out = type.newInstance(this);
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(type, numPipes);
+    DFEVector<DFEVar> inpVec = inpVecType.newInstance(this);
+    inpVec <== io.input(INP_NAME, inpVecType);
+
+    List<DFEVar> inpList = inpVec.getElementsAsList();
+
+    DFEVectorType<DFEVar> outVecType
+      = new DFEVectorType<DFEVar>(type, numPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
     DFEVar outEnable = dfeBool().newInstance(this);
 
     outEnable <== (
@@ -69,26 +78,29 @@ public class PoolingLayerKernel extends Kernel {
 
     DFEVectorType<DFEVar> knlType
       = new DFEVectorType<DFEVar>(type, kernelSize * kernelSize);
-    DFEVector<DFEVar> knl = knlType.newInstance(this);
-
-    for (int i = 0; i < kernelSize * kernelSize; i ++) {
-      DFEVar x = constant.var((int) kernelSize - i / kernelSize - 1).cast(dfeInt(32));
-      DFEVar y = constant.var((int) kernelSize - i % kernelSize - 1).cast(dfeInt(32));
-
-      knl[i] <== stream.offset(
-        inp,
-        - (x * width.cast(dfeInt(32)) + y),
-        - (kernelSize * maxWidth + kernelSize),
-        0);
-    }
-
-    out <== MaxReductions.reduce(knl);
       
-    io.output(OUT_NAME, out, type, outEnable);
+    for (int pipe = 0; pipe < numPipes; pipe ++) {
+      DFEVector<DFEVar> knl = knlType.newInstance(this);
+
+      for (int i = 0; i < kernelSize * kernelSize; i ++) {
+        DFEVar x = constant.var((int) kernelSize - i / kernelSize - 1).cast(dfeInt(32));
+        DFEVar y = constant.var((int) kernelSize - i % kernelSize - 1).cast(dfeInt(32));
+
+        knl[i] <== stream.offset(
+          inpList[pipe],
+          - (x * width.cast(dfeInt(32)) + y),
+          - (kernelSize * maxWidth + kernelSize),
+          0);
+      }
+
+      outVec[pipe] <== MaxReductions.reduce(knl);
+    }
+      
+    io.output(OUT_NAME, outVec, outVecType, outEnable);
 
     if (dbg) {
       debug.simPrintf("POOL: (%3d %3d %3d %3d)\n", h, sh, w, sw);
-      debug.simPrintf("POOL: %KObj%\n", knl);
+      debug.simPrintf("POOL: %KObj%\n", outVec);
       debug.simPrintf("POOL: valid %d\n", outEnable);
     }
   } 

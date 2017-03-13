@@ -129,6 +129,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     DFEVectorType<DFEVar> outVecType
       = new DFEVectorType<DFEVar>(type, numPipes);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+
     /**
      * Accumulator
      * This accumulator is quite interesting - It will read the address that
@@ -143,10 +144,9 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      * duplicating the BRAM?
      * (2017-03-04) Ruizhe Zhao
      */
-    // DFEVar cacheAddr = (
-    //   f * (outputWidth * outputHeight) +
-    //   h * outputWidth +
-    //   w).cast(cacheAddrType);
+
+    x = optimization.pipeline(x);
+    x = optimization.pipeline(x);
 
     for (int pipe = 0; pipe < numPipes; pipe ++) {
       DFEVar cacheAddr        = (optimization.pipeline(x) + (f / numPipes) * outputHeight * outputWidth).cast(cacheAddrType);

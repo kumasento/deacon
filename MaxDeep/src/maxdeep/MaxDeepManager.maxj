@@ -131,6 +131,7 @@ class MaxDeepManager extends CustomManager {
     KernelBlock pool = addKernel(
       new PoolingLayerKernel(
         makeKernelParameters(POOL_KERNEL_NAME),
+        N,
         poolKernelSize,
         poolStride,
         maxConvWidth,
@@ -254,7 +255,7 @@ class MaxDeepManager extends CustomManager {
     ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
       fcHeight * fcWidth);
     ei.setTicks(POOL_KERNEL_NAME,
-      poolHeight * poolWidth * numFilters);
+      poolHeight * poolWidth * numFilters / N);
 
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
