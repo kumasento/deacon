@@ -170,8 +170,10 @@ public class ConvolutionLayerCacheKernel extends Kernel {
         DFEVar p = constant.var(pipe).cast(dfeUInt(32));
         DFEVar readAddr = (i + p * wgtVecSize).cast(wgtAddrType);
 
+        kernelArea = optimization.pipeline(kernelArea);
+
         wgtVec[idx + pipe * wgtVecSize] <==
-          (i < kernelSize * kernelSize)
+          (i < kernelArea)
           ? wgtMem.read(readAddr)
           : constant.var(0);
       }
@@ -354,7 +356,9 @@ class InputBufferKernel extends KernelLib {
       // NOTE: Please make sure the min_offset is the min case of the second
       // term.
       // (2017-03-03) Ruizhe Zhao
-      out[idx] <== (i < kernelSize * kernelSize)
+      DFEVar kernelArea = kernelSize * kernelSize; 
+      kernelArea = optimization.pipeline(kernelArea);
+      out[idx] <== (i < kernelArea)
         ? stream.offset(
             cacheOut,
             - (x * width.cast(dfeInt(32)) + y),

@@ -9,6 +9,9 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 // import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 
+import maxpower.kernel.KernelBinaryOp.*;
+import maxpower.utils.TreeReduce;
+
 import java.util.*;
 
 public class PoolingLayerKernel extends Kernel {
@@ -93,7 +96,7 @@ public class PoolingLayerKernel extends Kernel {
           0);
       }
 
-      outVec[pipe] <== MaxReductions.reduce(knl);
+      outVec[pipe] <== TreeReduce.reduce(new Max(), knl.getElementsAsList());
     }
       
     io.output(OUT_NAME, outVec, outVecType, outEnable);
@@ -105,25 +108,3 @@ public class PoolingLayerKernel extends Kernel {
     }
   } 
 }
-
-/**
- * TODO: move this class into dfe-snippets
- */
-class MaxReductions {
-
-  public static DFEVar reduce(DFEVector<DFEVar> vector) {
-    return reduce(vector.getElementsAsList());
-  }
-
-  public static DFEVar reduce(List<DFEVar> vector) {
-    if (vector.size() == 1)
-      return vector.get(0);
-    return
-      KernelMath.max(
-        reduce(vector.subList(0, vector.size() / 2)),
-        reduce(vector.subList(vector.size() / 2, vector.size()))
-      );
-  }
-
-}
-

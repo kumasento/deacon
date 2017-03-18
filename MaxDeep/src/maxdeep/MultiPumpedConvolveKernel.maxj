@@ -7,7 +7,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
-import com.custom_computing_ic.dfe_snippets.utils.Reductions;
+import maxpower.kernel.KernelBinaryOp.*;
+import maxpower.utils.TreeReduce;
 
 /**
  * NOTE: updated MultiPumpedConvolveKernel from KernelLib to Kernel
@@ -114,7 +115,7 @@ class MultiPumpedConvolveKernel extends Kernel {
           : constant.var(0);
       }
 
-      outVec[idx] <== Reductions.reduce(window); 
+      outVec[idx] <== TreeReduce.reduce(new Add(), window.getElementsAsList()); 
     }
 
     io.output(OUT_NAME, outVec, outVecType);

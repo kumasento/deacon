@@ -1,3 +1,6 @@
 [submodule "lib/dfe-snippets"]
 	path = lib/dfe-snippets
 	url = git@github.com:custom-computing-ic/dfe-snippets.git
+[submodule "lib/maxpower"]
+	path = lib/maxpower
+	url = git@github.com:maxeler/maxpower.git
