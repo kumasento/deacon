@@ -15,8 +15,8 @@ unsigned int burst_aligned_size(unsigned int size, size_t num_bytes) {
 int main(int argc, char *argv[]) {
   printf("\x1B[32mMaxDeep Command Line Program\x1B[0m\n");
 
-  unsigned int conv_height       = 6;
-  unsigned int conv_width        = 6;
+  unsigned int conv_height       = 10;
+  unsigned int conv_width        = 10;
   unsigned int conv_num_channels = 4;
   unsigned int conv_num_filters  = 4;
   unsigned int conv_kernel_size  = 3;
@@ -41,6 +41,8 @@ int main(int argc, char *argv[]) {
     = max_get_constant_uint64t(maxfile, "maxFCHeight");
   const uint64_t max_fc_width
     = max_get_constant_uint64t(maxfile, "maxFCWidth");
+  const uint64_t num_pipes 
+    = max_get_constant_uint64t(maxfile, "numPipes");
 
   printf("\x1B[32mConstants:\x1B[0m\n");
   printf("\t- maxConvHeight:      %ld\n", max_conv_height);
@@ -50,6 +52,7 @@ int main(int argc, char *argv[]) {
   printf("\t- maxConvKernelSize:  %ld\n", max_conv_kernel_size);
   printf("\t- maxFCHeight:        %ld\n", max_fc_height);
   printf("\t- maxFCWidth:         %ld\n", max_fc_width);
+  printf("\t- numPipes:           %ld\n", num_pipes);
 
   unsigned int inp_size
     = conv_height * conv_width * conv_num_channels;
@@ -58,7 +61,8 @@ int main(int argc, char *argv[]) {
   unsigned int out_size
     = ((conv_height - conv_kernel_size + 1) *
        (conv_width - conv_kernel_size + 1) *
-       conv_num_filters) / 4;
+       (ceil((double) conv_num_filters / num_pipes) * num_pipes)) / 4;
+  unsigned int origin_out_size = out_size;
   unsigned int fc_inp_size
     = fc_width;
   unsigned int fc_wgt_size
@@ -177,7 +181,7 @@ int main(int argc, char *argv[]) {
   MaxDeep_dramRead_run(engine, &out_read_actions);
   MaxDeep_dramRead_run(engine, &fc_out_read_actions);
 
-  for (int i = 0; i < (int) ((conv_height - conv_kernel_size + 1) * (conv_width - conv_kernel_size + 1) * conv_num_filters * 4) / 4; i += 4) {
+  for (int i = 0; i < (int) origin_out_size * 4; i += 4) {
     uint32_t val = 0;
     for (int j = 0; j < 4; j ++)
       val += (data_out[i + j] << (j * 8));

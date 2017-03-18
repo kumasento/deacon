@@ -227,6 +227,8 @@ class MaxDeepManager extends CustomManager {
          (width - kernelSize + 1) *
          numFilters
         );
+    InterfaceParam convOutputHeight = (height - kernelSize + 1);
+    InterfaceParam convOutputWidth = (width - kernelSize + 1);
     InterfaceParam fcHeight 
       = ei.addParam(
           "fc_height",
@@ -242,12 +244,29 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam poolHeight = (height - kernelSize + 1);
     InterfaceParam poolWidth = (width - kernelSize + 1);
 
+    /**
+     * NOTE: We will use the ceil(numFilters/N) as the cycles for computing
+     * numFilters filters.
+     */
+    InterfaceParam paddedNumFilterCycles
+      = InterfaceMath.ceil(numFilters.cast(CPUTypes.DOUBLE) / N).cast(CPUTypes.UINT32);
+    InterfaceParam paddedNumFilters = paddedNumFilterCycles * N;
+      
+    /**
+     * Setup cycles for each kernel (besides padding kernels).
+     * - The conv cache kernel should process all elements in the input
+     * feature map, AND send weights of all filters to the next level 
+     * of convolution, thus the total number of ticks should be:
+     *  height * width * numChannels * numFilters
+     * With parallelisation in the filter level, the fourth term can be
+     * replaced by the paddedNumFilterCycles.
+     */ 
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
-      height * width * numChannels * numFilters / N);
+      height * width * numChannels * paddedNumFilterCycles);
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
-      numOutput * numChannels / N);
+      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
-      numOutput * numChannels / N);
+      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
     ei.setTicks(FC_CACHE_KERNEL_NAME,
       fcHeight * fcWidth);
     ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
@@ -255,7 +274,7 @@ class MaxDeepManager extends CustomManager {
     ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
       fcHeight * fcWidth);
     ei.setTicks(POOL_KERNEL_NAME,
-      poolHeight * poolWidth * numFilters / N);
+      poolHeight * poolWidth * paddedNumFilterCycles);
 
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
@@ -337,7 +356,8 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam wgtSize
       = kernelSize * kernelSize * numChannels * numFilters;
     InterfaceParam outSize
-      = poolHeight * poolWidth * numFilters / (poolStride * poolStride);
+      = poolHeight * poolWidth * paddedNumFilters
+      / (poolStride * poolStride);
 
     InterfaceParam burstAlignedInpSize
       = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)

@@ -8,6 +8,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 import java.util.*;
@@ -83,6 +84,12 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     DFEVar numFilters  = io.scalarInput(SCALAR_NUM_FILTERS_INP_NAME, scalarParamType);
     DFEVar kernelSize  = io.scalarInput(SCALAR_KERNEL_SIZE_INP_NAME, scalarParamType);
 
+    DFEVar paddedNumFilters
+      = KernelMath.ceil(
+          numFilters.cast(dfeFloat(8, 24)) / numPipes
+        ).cast(scalarParamType)
+        * numPipes;
+
     /**
      * Other constants.
      * - outputHeight: the height of the output feature map
@@ -97,7 +104,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
      */
     CounterChain chain = control.count.makeCounterChain();
     DFEVar c = chain.addCounter(numChannels, 1).cast(dfeUInt(32));
-    DFEVar f = chain.addCounter(numFilters, numPipes).cast(dfeUInt(32));
+    DFEVar f = chain.addCounter(paddedNumFilters, numPipes).cast(dfeUInt(32));
     // DFEVar h = chain.addCounter(outputHeight, 1).cast(dfeUInt(32));
     // DFEVar w = chain.addCounter(outputWidth, 1).cast(dfeUInt(32));
     DFEVar x = chain.addCounter(outputHeight * outputWidth, 1).cast(dfeUInt(32));
