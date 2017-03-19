@@ -35,20 +35,23 @@ if __name__ == '__main__':
     processes = [
         mp.Process(target=build, args=(MaxDeepBuildParam(100, 1), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(100, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(110, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(110, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(100, 4), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(100, 8), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(100, 16), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(100, 32), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(100, 64), )),
+
         mp.Process(target=build, args=(MaxDeepBuildParam(120, 1), )),
         mp.Process(target=build, args=(MaxDeepBuildParam(120, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(130, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(130, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(140, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(140, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(150, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(150, 2), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 4), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 8), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 16), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 32), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 64), )),
     ]
 
     idx = 0
-    num_pipes = 2
+    num_pipes = 3
     while idx < len(processes):
         ps = processes[idx:idx+num_pipes]
         for p in ps:

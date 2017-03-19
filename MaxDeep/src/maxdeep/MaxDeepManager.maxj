@@ -43,6 +43,9 @@ class MaxDeepManager extends CustomManager {
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
   private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
 
+  /**
+   * Engine parameters
+   */
   private final int N;
   private final int C;
   private final int freq;
@@ -56,11 +59,34 @@ class MaxDeepManager extends CustomManager {
   private final int poolKernelSize = 2;
   private final int poolStride = 2;
 
+  /**
+   * Interface Parameters
+   */
+  private InterfaceParam zero;
+  private InterfaceParam kernelSize;
+  private InterfaceParam height; 
+  private InterfaceParam width;
+  private InterfaceParam numChannels;
+  private InterfaceParam numFilters;
+  private InterfaceParam numOutput;
+  private InterfaceParam convOutputHeight;
+  private InterfaceParam convOutputWidth;
+  private InterfaceParam fcHeight;
+  private InterfaceParam fcWidth;
+  private InterfaceParam poolHeight;
+  private InterfaceParam poolWidth;
+  private InterfaceParam paddedNumFilterCycles;
+  private InterfaceParam paddedNumFilters;
+  private InterfaceParam baseAddr;
+
   protected LMemInterface iface;
 
   public MaxDeepManager(MaxDeepEngineParameters params) {
     super(params);
 
+    /**
+     * Parse engine parameters
+     */
     N                  = params.getNumPipes();
     C                  = params.getMultiPumpingFactor();
     freq               = params.getFreq();
@@ -72,6 +98,9 @@ class MaxDeepManager extends CustomManager {
     maxFCHeight        = params.getMaxFCHeight();
     maxFCWidth         = params.getMaxFCWidth();
 
+    /**
+     * Export parameters to Maxfile.h
+     */
     addMaxFileConstant("numPipes",           N);
     addMaxFileConstant("freq",               freq);
     addMaxFileConstant("multiPumpingFactor", C);
@@ -90,6 +119,9 @@ class MaxDeepManager extends CustomManager {
     kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
     kernelConfiguration.optimization.setCEPipelining(4);
 
+    /**
+     * Kernel Blocks
+     */
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
         makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
@@ -143,6 +175,11 @@ class MaxDeepManager extends CustomManager {
       new PaddingKernel(
         makeKernelParameters(PADDING_KERNEL_FC_NAME)));
 
+    /**
+     * LMem interface:
+     * Input streams will come from the LMem to each layer's cache kernel.
+     * Output streams will come from the padding kernel to the LMem
+     */
     iface = addLMemInterface();
 
     ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.INP_NAME);
@@ -152,6 +189,9 @@ class MaxDeepManager extends CustomManager {
     ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_CONV");
     ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernelFC, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_FC");
 
+    /**
+     * Connections between kernels' streams
+     */
     mpc.getInput(MultiPumpedConvolveKernel.INP_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
     mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
@@ -171,6 +211,9 @@ class MaxDeepManager extends CustomManager {
     paddingKernelFC.getInput(PaddingKernel.INP_NAME)
       <== fcPost.getOutput(FullyConnectedLayerPostProcessKernel.OUT_NAME);
 
+    /**
+     * Clock configuration
+     */
     config.setDefaultStreamClockFrequency(freq);
     ManagerClock clk
       = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
@@ -187,71 +230,67 @@ class MaxDeepManager extends CustomManager {
     mpc.setClock(clockForMPC);
   }
 
-  private EngineInterface interfaceDefault() {
-    EngineInterface ei = new EngineInterface();
-
-    InterfaceParam zero
-      = ei.addConstant(0);
-    InterfaceParam kernelSize
-      = ei.addParam(
-          "conv_kernel_size",
-          CPUTypes.UINT32,
-          "The kernel size of the current convolution layer computation"
-        );
-    InterfaceParam height 
-      = ei.addParam(
-          "conv_height",
-          CPUTypes.UINT32,
-          "The height of the current convolution layer computation"
-        );
-    InterfaceParam width 
-      = ei.addParam(
-          "conv_width",
-          CPUTypes.UINT32,
-          "The width of the current convolution layer computation"
-        );
-    InterfaceParam numChannels 
-      = ei.addParam(
-          "conv_num_channels",
-          CPUTypes.UINT32,
-          "The num of channels of the current convolution layer computation"
-        );
-    InterfaceParam numFilters 
-      = ei.addParam(
-          "conv_num_filters",
-          CPUTypes.UINT32,
-          "The number of filters of the current convolution layer computation"
-        );
-    InterfaceParam numOutput
-      = ((height - kernelSize + 1) *
-         (width - kernelSize + 1) *
-         numFilters
-        );
-    InterfaceParam convOutputHeight = (height - kernelSize + 1);
-    InterfaceParam convOutputWidth = (width - kernelSize + 1);
-    InterfaceParam fcHeight 
-      = ei.addParam(
-          "fc_height",
-          CPUTypes.UINT32,
-          "The height of the current fully-connected layer computation"
-        );
-    InterfaceParam fcWidth 
-      = ei.addParam(
-          "fc_width",
-          CPUTypes.UINT32,
-          "The width of the current fully-connected layer computation"
-        );
-    InterfaceParam poolHeight = (height - kernelSize + 1);
-    InterfaceParam poolWidth = (width - kernelSize + 1);
+  private void addConvParamsToEngineInterface(EngineInterface ei) {
+    kernelSize = ei.addParam(
+      "conv_kernel_size",
+      CPUTypes.UINT32,
+      "The kernel size of the current convolution layer computation"
+    );
+    height = ei.addParam(
+      "conv_height",
+      CPUTypes.UINT32,
+      "The height of the current convolution layer computation"
+    );
+    width = ei.addParam(
+      "conv_width",
+      CPUTypes.UINT32,
+      "The width of the current convolution layer computation"
+    );
+    numChannels = ei.addParam(
+      "conv_num_channels",
+      CPUTypes.UINT32,
+      "The num of channels of the current convolution layer computation"
+    );
+    numFilters = ei.addParam(
+      "conv_num_filters",
+      CPUTypes.UINT32,
+      "The number of filters of the current convolution layer computation"
+    );
+    numOutput = (
+      (height - kernelSize + 1) *
+      (width - kernelSize + 1) *
+      numFilters
+    );
+    convOutputHeight = (height - kernelSize + 1);
+    convOutputWidth = (width - kernelSize + 1);
+    poolHeight = (height - kernelSize + 1);
+    poolWidth = (width - kernelSize + 1);
 
     /**
      * NOTE: We will use the ceil(numFilters/N) as the cycles for computing
      * numFilters filters.
      */
-    InterfaceParam paddedNumFilterCycles
+    paddedNumFilterCycles
       = InterfaceMath.ceil(numFilters.cast(CPUTypes.DOUBLE) / N).cast(CPUTypes.UINT32);
-    InterfaceParam paddedNumFilters = paddedNumFilterCycles * N;
-      
+    paddedNumFilters = paddedNumFilterCycles * N;
+    
+    baseAddr = zero;
+  }
+
+  private void addFCParamsToEngineInterface(EngineInterface ei) {
+    fcHeight = ei.addParam(
+      "fc_height",
+      CPUTypes.UINT32,
+      "The height of the current fully-connected layer computation"
+    );
+    fcWidth = ei.addParam(
+      "fc_width",
+      CPUTypes.UINT32,
+      "The width of the current fully-connected layer computation"
+    );
+  }
+
+  private void setTicksOfEngineInterface(EngineInterface ei) {
     /**
      * Setup cycles for each kernel (besides padding kernels).
      * - The conv cache kernel should process all elements in the input
@@ -275,7 +314,9 @@ class MaxDeepManager extends CustomManager {
       fcHeight * fcWidth);
     ei.setTicks(POOL_KERNEL_NAME,
       poolHeight * poolWidth * paddedNumFilterCycles);
+  }
 
+  private void setScalarOfEngineInterface(EngineInterface ei) {
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_HEIGHT_INP_NAME,
@@ -349,6 +390,20 @@ class MaxDeepManager extends CustomManager {
       POOL_KERNEL_NAME,
       PoolingLayerKernel.SCALAR_WIDTH,
       poolWidth);
+  }
+
+  private EngineInterface interfaceDefault() {
+    EngineInterface ei = new EngineInterface();
+
+    zero = ei.addConstant(0);
+
+    addConvParamsToEngineInterface(ei);
+
+    addFCParamsToEngineInterface(ei);
+
+    setTicksOfEngineInterface(ei);
+
+    setScalarOfEngineInterface(ei);
 
     InterfaceParam burstSize = ei.addConstant(384);
     InterfaceParam inpSize
@@ -407,8 +462,6 @@ class MaxDeepManager extends CustomManager {
       PADDING_KERNEL_FC_NAME,
       PaddingKernel.SCALAR_TOTAL_CYCLES,
       burstAlignedFCOutSize);
-
-    InterfaceParam baseAddr = zero;
 
     ei.setLMemLinear(
       ConvolutionLayerCacheKernel.INP_NAME,
