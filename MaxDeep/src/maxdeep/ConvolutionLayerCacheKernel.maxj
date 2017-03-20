@@ -11,8 +11,12 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.Counter;
+// import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.WrapMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 
 public class ConvolutionLayerCacheKernel extends Kernel {
 
@@ -148,6 +152,12 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * The weights will be saved statically in a BRAM buffer, which might be duplicated
      * for multiple read operations in the same cycle.
      */
+
+    /**
+     * TODO: This part of design needs to be fully revised - 
+     * The weight cache cannot support multiple read without duplication!
+     * (2017-03-19) Ruizhe Zhao
+     */
     int wgtVecSize = maxKernelSize * maxKernelSize;
     int wgtVecTotalSize = wgtVecSize * numPipes;
 
@@ -166,7 +176,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       : kernelArea * numPipes;
     DFEVar wgtEnable
       = wgtReadIdx.cast(scalarParamType) < wgtReadIdxUpper;
-    DFEVar wgtValid = ~wgtEnable;
+    DFEVar wgtValid = dfeBool().newInstance(this);
 
     DFEVar wgt = io.input(WGT_NAME, DEFAULT_TYPE, wgtEnable).cast(type);
 
@@ -174,32 +184,45 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       = new DFEVectorType<DFEVar>(type, wgtVecTotalSize);
     DFEVector<DFEVar> wgtVec = wgtVecType.newInstance(this);
 
-    Memory<DFEVar> wgtMem            = mem.alloc(type, wgtVecTotalSize);
-    DFEType wgtAddrType              = dfeUInt(MathUtils.bitsToAddress(wgtVecTotalSize));
-    DFEVar wgtAddr                   = wgtAddrType.newInstance(this);
-    
-    KernelMath.DivModResult m = KernelMath.divMod(wgtReadIdx, kernelArea);
-    DFEVar wgtReadPipeIdx = m.getQuotient().cast(dfeUInt(32));
-    DFEVar wgtReadInPipeIdx = m.getRemainder().cast(dfeUInt(32));
-    wgtAddr <==
-      (wgtReadPipeIdx * wgtVecSize + wgtReadInPipeIdx).cast(wgtAddrType);
+    // Stream based implementation
+    new WeightBufferKernel(
+      this,
+      maxKernelSize,
+      numPipes,
+      kernelSize, 
+      wgtReadIdx,
+      wgt,
+      wgtValid,
+      wgtVec);
 
-    wgtMem.write(wgtAddr, wgt, wgtEnable);
+    // Memory based implementation:
+    //
+    // Memory<DFEVar> wgtMem            = mem.alloc(type, wgtVecTotalSize);
+    // DFEType wgtAddrType              = dfeUInt(MathUtils.bitsToAddress(wgtVecTotalSize));
+    // DFEVar wgtAddr                   = wgtAddrType.newInstance(this);
+    // 
+    // KernelMath.DivModResult m = KernelMath.divMod(wgtReadIdx, kernelArea);
+    // DFEVar wgtReadPipeIdx = m.getQuotient().cast(dfeUInt(32));
+    // DFEVar wgtReadInPipeIdx = m.getRemainder().cast(dfeUInt(32));
+    // wgtAddr <==
+    //   (wgtReadPipeIdx * wgtVecSize + wgtReadInPipeIdx).cast(wgtAddrType);
 
-    for (int pipe = 0; pipe < numPipes; pipe ++) {
-      for (int idx = 0; idx < wgtVecSize; idx ++) {
-        DFEVar i = constant.var(idx).cast(dfeUInt(32));
-        DFEVar p = constant.var(pipe).cast(dfeUInt(32));
-        DFEVar readAddr = (i + p * wgtVecSize).cast(wgtAddrType);
+    // wgtMem.write(wgtAddr, wgt, wgtEnable);
 
-        kernelArea = optimization.pipeline(kernelArea);
+    // for (int pipe = 0; pipe < numPipes; pipe ++) {
+    //   for (int idx = 0; idx < wgtVecSize; idx ++) {
+    //     DFEVar i = constant.var(idx).cast(dfeUInt(32));
+    //     DFEVar p = constant.var(pipe).cast(dfeUInt(32));
+    //     DFEVar readAddr = (i + p * wgtVecSize).cast(wgtAddrType);
 
-        wgtVec[idx + pipe * wgtVecSize] <==
-          (i < kernelArea)
-          ? wgtMem.read(readAddr)
-          : constant.var(0);
-      }
-    }
+    //     kernelArea = optimization.pipeline(kernelArea);
+
+    //     wgtVec[idx + pipe * wgtVecSize] <==
+    //       (i < kernelArea)
+    //       ? wgtMem.read(readAddr)
+    //       : constant.var(0);
+    //   }
+    // }
     
     /**
      * Output:
@@ -392,4 +415,58 @@ class InputBufferKernel extends KernelLib {
     
   }
 
+}
+
+class WeightBufferKernel extends KernelLib {
+
+  private static final int MAX_WGT_INP_FANOUT = 8;
+
+  WeightBufferKernel(
+      KernelLib owner,
+      int maxKernelSize,
+      int numPipes,
+      DFEVar kernelSize,
+      DFEVar wgtReadIdx,
+      DFEVar wgtInp,
+      DFEVar wgtOutValid,
+      DFEVector<DFEVar> wgtOutVec) 
+  {
+    super(owner);
+
+    int wgtOutVecInnerSize = maxKernelSize * maxKernelSize;
+    int wgtOutVecSize = maxKernelSize * maxKernelSize * numPipes;
+
+    DFEVar idx = owner.optimization.pipeline(wgtReadIdx);
+
+    /**
+     * Create wgtInpArray, a fanout of the input stream.
+     */
+    DFEVar [] wgtInpArray = new DFEVar [wgtOutVecSize];
+    DFEVar wgtInpCopy = wgtInp;
+    for (int i = 0; i < wgtOutVecSize; i ++) {
+      if (i % MAX_WGT_INP_FANOUT == 0)
+        wgtInpCopy = owner.optimization.pipeline(wgtInp);
+
+      wgtInpArray[i] = wgtInpCopy;
+    }
+
+    DFEVar kernelArea = kernelSize * kernelSize;
+    KernelMath.DivModResult m = KernelMath.divMod(idx, kernelArea);
+    DFEVar wgtOuterIdx = m.getQuotient().cast(dfeUInt(32));
+    DFEVar wgtInnerIdx = m.getRemainder().cast(dfeUInt(32));
+
+    for (int p = 0; p < numPipes; p ++) {
+      for (int i = 0; i < wgtOutVecInnerSize; i ++) {
+        DFEVar iVar = constant.var(i).cast(dfeUInt(32));
+        DFEVar pVar = constant.var(p).cast(dfeUInt(32));
+        DFEVar store = (wgtOuterIdx === pVar & wgtInnerIdx === iVar);
+
+        int j = p * wgtOutVecInnerSize + i;
+
+        wgtOutVec[j] <== Reductions.streamHold(wgtInpArray[j], store);
+      }
+    }
+
+    wgtOutValid <== idx >= (wgtOutVecSize - 1);
+  }
 }
