@@ -317,6 +317,8 @@ class InputBufferKernel extends KernelLib {
    * Unlike those RTL based approach, this kernel will fully utilise the 
    * functionalities of streams in MaxJ. 
    *
+   * @author Ruizhe Zhao (ruizhe.zhao15@imperial.ac.uk)
+   *
    * @param owner The owner kernel of this KernelLib
    * @param type The type of the data inside the streams
    * @param inp The input stream to the input buffer
@@ -326,7 +328,7 @@ class InputBufferKernel extends KernelLib {
    * @param valid The valid signal of the output vector
    * @param height The height of the input feature map
    * @param width The width of the input feature map
-   * @param kernelSize The size of the kernel
+   * @param kernelSize The size of the kernel.
    * @param maxKernelSize The size of the kernel
    * @param maxHeight The height of the input feature map
    * @param maxWidth The width of the input feature map
@@ -421,6 +423,37 @@ class WeightBufferKernel extends KernelLib {
 
   private static final int MAX_WGT_INP_FANOUT = 8;
 
+  /**
+   * This buffer kernel will turn the input weight stream (wgtInp) into a
+   * vector output (wgtOutVec), which has length maxKernelSize^2 * numPipes.
+   * The output vector will be dispatched to multiple convolvers in the
+   * MPC kernel.
+   * In order to deal with the mismatch between the maxKernelSize and the 
+   * current kernel size (kernelSize), also the mismatch between the numFilters
+   * and the numPipes, there are several control logics:
+   * - The input stream will be disabled if the current read index exceeds the
+   *   * number of filters for the current channel;
+   * - The whole chunk of input data will be distributed to the correct positions
+   *   in the output vector. For example, if the maxKernelSize = 3 and kernelSize = 2, 
+   *   the input stream is:
+   *    1 2 3 4 5 6 7 8 9
+   *   then the output stream will be:
+   *    1 2 3 4 0 0 0 0 0 | 5 6 7 8 0 0 0 0 0 | ...
+   *   Actually the value between [kernelSize^2, maxKernelSize^2) are not exactly zero
+   *   they could be any value from the input stream and we won't bother to predict
+   *   it. 
+   *
+   * @author Ruizhe Zhao (ruizhe.zhao15@imperial.ac.uk)
+   * @since 2017-03-19
+   * @param owner The parent kernel
+   * @param maxKernelSize maximum kernel size
+   * @param numPipes number of pipes
+   * @param kernelSize The current kernel size
+   * @param wgtReadIdx The current index of reading wgt stream
+   * @param wgtInp The wgt stream
+   * @param wgtOutValid The valid signal of the output vector
+   * @param wgtOutVec The output vector
+   */
   WeightBufferKernel(
       KernelLib owner,
       int maxKernelSize,
@@ -450,15 +483,25 @@ class WeightBufferKernel extends KernelLib {
       wgtInpArray[i] = wgtInpCopy;
     }
 
+    /**
+     * Compute the current index within each pipe, and each kernel
+     */
     DFEVar kernelArea = kernelSize * kernelSize;
     KernelMath.DivModResult m = KernelMath.divMod(idx, kernelArea);
     DFEVar wgtOuterIdx = m.getQuotient().cast(dfeUInt(32));
     DFEVar wgtInnerIdx = m.getRemainder().cast(dfeUInt(32));
 
+    /**
+     * Construct the output vector
+     */ 
     for (int p = 0; p < numPipes; p ++) {
       for (int i = 0; i < wgtOutVecInnerSize; i ++) {
         DFEVar iVar = constant.var(i).cast(dfeUInt(32));
         DFEVar pVar = constant.var(p).cast(dfeUInt(32));
+        
+        // once the store is triggered, the value of the input stream
+        // for the current element in the coeffient matrix will stay 
+        // the same.
         DFEVar store = (wgtOuterIdx === pVar & wgtInnerIdx === iVar);
 
         int j = p * wgtOutVecInnerSize + i;
