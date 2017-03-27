@@ -41,7 +41,8 @@ class MaxDeepManager extends CustomManager {
     = "PaddingKernelFullyConnected";
   
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
-  private static final String MULTI_PUMPED_KERNEL_CLK = "MultiPumpedKernelClock";
+  private static final String MPC_CLK = "MPCClock";
+  private static final String MPDP_CLK = "MPDPClock";
 
   /**
    * Engine parameters
@@ -56,6 +57,9 @@ class MaxDeepManager extends CustomManager {
   private final int maxConvKernelSize;
   private final int maxFCHeight;
   private final int maxFCWidth;
+  private final int numFCRowPipes;
+  private final int numFCColPipes;
+  private final int numMPDPFactor;
   private final int poolKernelSize = 2;
   private final int poolStride = 2;
 
@@ -97,6 +101,9 @@ class MaxDeepManager extends CustomManager {
     maxConvKernelSize  = params.getMaxConvKernelSize();
     maxFCHeight        = params.getMaxFCHeight();
     maxFCWidth         = params.getMaxFCWidth();
+    numFCRowPipes      = params.getNumFCRowPipes();
+    numFCColPipes      = params.getNumFCColPipes();
+    numMPDPFactor      = params.getNumMPDPFactor();
 
     /**
      * Export parameters to Maxfile.h
@@ -117,7 +124,7 @@ class MaxDeepManager extends CustomManager {
     // (2017-03-03)
     KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
     kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
-    kernelConfiguration.optimization.setCEPipelining(4);
+    // kernelConfiguration.optimization.setCEPipelining(2);
 
     /**
      * Kernel Blocks
@@ -125,11 +132,11 @@ class MaxDeepManager extends CustomManager {
     KernelBlock mpc = addKernel(
       new MultiPumpedConvolveKernel(
         makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
-        N, maxConvKernelSize, 1, params.getDbg()));
+        N, maxConvKernelSize, C, params.getDbg()));
     KernelBlock mpdp = addKernel(
       new MultiPumpedDotProductKernel(
         makeKernelParameters(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME),
-        1, 1, params.getDbg()));
+        numFCRowPipes, numFCColPipes, numMPDPFactor, params.getDbg()));
     KernelBlock cache = addKernel(
       new ConvolutionLayerCacheKernel(
         makeKernelParameters(CONV_CACHE_KERNEL_NAME),
@@ -154,12 +161,16 @@ class MaxDeepManager extends CustomManager {
       new FullyConnectedLayerCacheKernel(
         makeKernelParameters(FC_CACHE_KERNEL_NAME),
         maxFCHeight,
-        maxFCWidth));
+        maxFCWidth,
+        numFCRowPipes,
+        numFCColPipes));
     KernelBlock fcPost = addKernel(
       new FullyConnectedLayerPostProcessKernel(
         makeKernelParameters(FC_POST_PROCESS_KERNEL_NAME),
         maxFCHeight,
-        maxFCWidth));
+        maxFCWidth,
+        numFCRowPipes,
+        numFCColPipes));
     KernelBlock pool = addKernel(
       new PoolingLayerKernel(
         makeKernelParameters(POOL_KERNEL_NAME),
@@ -218,16 +229,18 @@ class MaxDeepManager extends CustomManager {
     ManagerClock clk
       = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
     ManagerClock clockForMPC
-      = generateStreamClock(MULTI_PUMPED_KERNEL_CLK, freq * C);
+      = generateStreamClock(MPC_CLK, freq * C);
+    ManagerClock clockForMPDP
+      = generateStreamClock(MPDP_CLK, freq * numMPDPFactor);
 
     cache.setClock(clk);
     post.setClock(clk);
     paddingKernel.setClock(clk);
-    mpdp.setClock(clk);
     fcCache.setClock(clk);
     fcPost.setClock(clk);
 
     mpc.setClock(clockForMPC);
+    mpdp.setClock(clockForMPDP);
   }
 
   private void addConvParamsToEngineInterface(EngineInterface ei) {
@@ -303,15 +316,15 @@ class MaxDeepManager extends CustomManager {
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
       height * width * numChannels * paddedNumFilterCycles);
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
-      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
+      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles * C);
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
       convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
     ei.setTicks(FC_CACHE_KERNEL_NAME,
-      fcHeight * fcWidth);
+      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
     ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
-      fcHeight * fcWidth);
+      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes) * numMPDPFactor);
     ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
-      fcHeight * fcWidth);
+      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
     ei.setTicks(POOL_KERNEL_NAME,
       poolHeight * poolWidth * paddedNumFilterCycles);
   }
@@ -518,7 +531,7 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
-    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
+    // ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 4, 4);
 
     manager.build();
   }

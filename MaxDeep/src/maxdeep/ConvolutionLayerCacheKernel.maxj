@@ -46,6 +46,10 @@ public class ConvolutionLayerCacheKernel extends Kernel {
    * layer. There are mainly two kinds of buffers: input buffer and 
    * weights buffer. The input buffer will be organised as line buffers,
    * and the weights buffer is simply a DFEVector.
+   *
+   * WARNING: This kernel will not work unless the following equation has
+   * been satisfied:
+   * (maxKernelSize^2 \times numPipes) \le (kernelSize + (kernelSize-1) \times width)
    * 
    * Parameters:
    * @param params The default kernel parameters made by Manager
@@ -273,8 +277,7 @@ public class ConvolutionLayerCacheKernel extends Kernel {
       maxHeight,
       maxWidth,
       maxKernelSize,
-      dbg
-    );
+      dbg);
 
     /**
      * There are two output streams of this kernel, one is for K * K elements from 
@@ -349,8 +352,8 @@ class InputBufferKernel extends KernelLib {
     int maxHeight,
     int maxWidth,
     int maxKernelSize,
-    boolean dbg
-  ) {
+    boolean dbg)
+  {
     super(owner);
 
     /**

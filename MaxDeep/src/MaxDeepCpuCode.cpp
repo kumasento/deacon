@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
     }
   }
   for (int i = 0; i < (int) fc_inp_size * 4; i += 4) {
-    uint32_t val = i;
+    uint32_t val = i / 4;
     for (int j = 0; j < 4; j ++) {
       data_fc_inp[i + j] = (val >> (j * 8));
     }

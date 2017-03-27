@@ -7,6 +7,9 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int numPipes = 2;
   private static final int freq = 100;
   private static final int multiPumpingFactor = 2;
+  private static final int numMPDPFactor = 1;
+  private static final int numFCRowPipes = 1;
+  private static final int numFCColPipes = 1;
 
   private static final int maxConvHeight      = 8;
   private static final int maxConvWidth       = 8;
@@ -34,6 +37,9 @@ public class MaxDeepEngineParameters extends EngineParameters {
     declareParam("maxConvKernelSize",  DataType.INT, maxConvKernelSize);
     declareParam("maxFCHeight",        DataType.INT, maxFCHeight);
     declareParam("maxFCWidth",         DataType.INT, maxFCWidth);
+    declareParam("numFCRowPipes",      DataType.INT, numFCRowPipes);
+    declareParam("numFCColPipes",      DataType.INT, numFCColPipes);
+    declareParam("numMPDPFactor",      DataType.INT, numMPDPFactor);
     declareParam("dbg",                DataType.BOOL, dbg);
   }
 
@@ -48,11 +54,14 @@ public class MaxDeepEngineParameters extends EngineParameters {
   public int getMaxFCHeight()        { return getParam("maxFCHeight");        }
   public int getMaxFCWidth()         { return getParam("maxFCWidth");         }
   public boolean getDbg()            { return getParam("dbg");                }
+  public int getNumFCRowPipes()      { return getParam("numFCRowPipes");      }
+  public int getNumFCColPipes()      { return getParam("numFCColPipes");      }
+  public int getNumMPDPFactor()      { return getParam("numMPDPFactor");      }
 
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_FH_%d_FW_%d_C_%d_F_%03dMHz",
+        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_FH_%d_FW_%d_FR_%d_FC_%d_MPDP_%d_C_%d_F_%03dMHz",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
@@ -64,6 +73,9 @@ public class MaxDeepEngineParameters extends EngineParameters {
         getMaxConvKernelSize(),
         getMaxFCHeight(),
         getMaxFCWidth(),
+        getNumFCRowPipes(),
+        getNumFCColPipes(),
+        getNumMPDPFactor(),
         getMultiPumpingFactor(),
         getFreq());
   }

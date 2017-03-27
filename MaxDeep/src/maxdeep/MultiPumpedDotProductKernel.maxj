@@ -35,6 +35,7 @@ public class MultiPumpedDotProductKernel extends Kernel {
     KernelParameters params,
     int numRowPipes,
     int numColPipes,
+    int numMPDPFactor,
     boolean dbg
   ) {
     super(params);
@@ -46,17 +47,17 @@ public class MultiPumpedDotProductKernel extends Kernel {
       = new DFEVectorType<DFEVar>(type, inpVecSize);
     DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
 
-    int wgtVecSize = numRowPipes * numColPipes;
+    int wgtVecSize = numRowPipes / numMPDPFactor * numColPipes;
     DFEVectorType<DFEVar> wgtVecType
       = new DFEVectorType<DFEVar>(type, wgtVecSize);
     DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
 
-    int outVecSize = numRowPipes;
+    int outVecSize = numRowPipes / numMPDPFactor;
     DFEVectorType<DFEVar> outVecType
       = new DFEVectorType<DFEVar>(type, outVecSize);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
-    for (int i = 0; i < numRowPipes; i ++) {
+    for (int i = 0; i < numRowPipes / numMPDPFactor; i ++) {
       DFEVector<DFEVar> tmpVec = inpVecType.newInstance(this); 
 
       for (int j = 0; j < numColPipes; j ++) {
@@ -69,5 +70,12 @@ public class MultiPumpedDotProductKernel extends Kernel {
     }
 
     io.output(OUT_NAME, outVec, outVecType);
+
+    if (dbg) {
+      debug.simPrintf("MPDP - wgtVec: %KObj%\n", wgtVec);
+      debug.simPrintf("MPDP - inpVec: %KObj%\n", inpVec);
+      debug.simPrintf("MPDP - outVec: %KObj%\n", outVec);
+    }
   }
+
 }

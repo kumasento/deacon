@@ -4,8 +4,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
-// import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
-// import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 // import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 // import com.maxeler.maxcompiler.v2.utils.MathUtils;
@@ -20,7 +20,9 @@ public class FullyConnectedLayerPostProcessKernel extends Kernel {
   public FullyConnectedLayerPostProcessKernel(
     KernelParameters params,
     int maxHeight,
-    int maxWidth
+    int maxWidth,
+    int numRowPipes,
+    int numColPipes
   ) {
     super(params);
 
@@ -39,25 +41,38 @@ public class FullyConnectedLayerPostProcessKernel extends Kernel {
      */
     CounterChain chain = control.count.makeCounterChain();
     // chain.addCounter(height, 1).cast(dfeUInt(32));
-    DFEVar w = chain.addCounter(width, 1).cast(dfeUInt(32));
+    DFEVar w = chain.addCounter(width, numColPipes).cast(dfeUInt(32));
     w = optimization.pipeline(w);
 
     /**
      * Input
      */
-    DFEVar inp = io.input(INP_NAME, type);
-
-    /**
-     * Accumulator
-     */
-    DFEVar carriedSum = type.newInstance(this);
-    DFEVar sum = (w === 0) ? constant.var(0) : carriedSum;
-    DFEVar newSum = sum + inp;
-    carriedSum <== stream.offset(newSum, -1);
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(type, numRowPipes);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
 
     /**
      * Output
      */
-    io.output(OUT_NAME, newSum, type, w === width - 1);
+    DFEVectorType<DFEVar> outVecType
+      = new DFEVectorType<DFEVar>(type, numRowPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+
+    /**
+     * Accumulator
+     */
+    for (int i = 0; i < numRowPipes; i ++) {
+      DFEVar carriedSum = type.newInstance(this);
+      DFEVar sum = (w === 0) ? constant.var(0) : carriedSum;
+      DFEVar newSum = sum + inpVec[i];
+      carriedSum <== stream.offset(newSum, -1);
+
+      outVec[i] <== newSum;
+    }
+
+    /**
+     * Output
+     */
+    io.output(OUT_NAME, outVec, outVecType, w === width - numColPipes);
   }
 }

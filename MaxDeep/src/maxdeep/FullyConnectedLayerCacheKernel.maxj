@@ -4,11 +4,15 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
-// import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+import java.util.*;
 
 public class FullyConnectedLayerCacheKernel extends Kernel {
 
@@ -32,7 +36,9 @@ public class FullyConnectedLayerCacheKernel extends Kernel {
   public FullyConnectedLayerCacheKernel(
     KernelParameters params,
     int maxHeight,
-    int maxWidth
+    int maxWidth,
+    int numRowPipes,
+    int numColPipes
   ) {
     super(params);
 
@@ -49,43 +55,70 @@ public class FullyConnectedLayerCacheKernel extends Kernel {
     /**
      * Counters
      */
-    DFEVar idx = control.count.simpleCounter(32, height * width);
-    DFEVar h = KernelMath.divMod(idx, width).getQuotient().cast(dfeUInt(32));
-    DFEVar w = KernelMath.divMod(idx, width).getRemainder().cast(dfeUInt(32));
+    // Counters without counter chain
+    // DFEVar idx = control.count.simpleCounter(32, height * width);
+    // KernelMath.DivModResult m = KernelMath.divMod(idx, width);
+    // DFEVar h = m.getQuotient().cast(dfeInt(32));
+    // DFEVar w = m.getRemainder().cast(dfeInt(32));
+    
+    // Counters with counter chain
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar h = chain.addCounter(height, numRowPipes).cast(dfeInt(32));
+    DFEVar w = chain.addCounter(width, numColPipes).cast(dfeInt(32));
 
     /**
      * Input
      */
     DFEVar inpEnable = dfeBool().newInstance(this);
     inpEnable <== h === 0;
-    DFEVar inp = io.input(INP_NAME, type, inpEnable);
+
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(type, numColPipes);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType, inpEnable);
+
+    /**
+     * Output
+     */
+    DFEVectorType<DFEVar> outVecType
+      = new DFEVectorType<DFEVar>(type, numColPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
     
     /**
      * Cache:
      * Only write to the cache when we are working on the first row.
      */
-    int cacheSize = maxWidth;
+
+    List<Memory<DFEVar>> cacheArray = new ArrayList<Memory<DFEVar>>(numColPipes);
+
+    int cacheSize = (int) Math.ceil((double) maxWidth / numColPipes);
     int cacheAddrBits = MathUtils.bitsToAddress(cacheSize);
     DFEType cacheAddrType = dfeUInt(cacheAddrBits);
-    Memory<DFEVar> cache = mem.alloc(type, cacheSize);
-    DFEVar cacheWriteEnable = inpEnable;
-    DFEVar cacheWriteValue = inp;
-    DFEVar cacheWriteAddr = w.cast(cacheAddrType);
-    DFEVar out = cache.port(
-      cacheWriteAddr,
-      cacheWriteValue,
-      cacheWriteEnable,
-      Mem.RamWriteMode.WRITE_FIRST);
+
+    for (int i = 0; i < numColPipes; i ++) {
+      cacheArray.add(mem.alloc(type, cacheSize));
+
+      DFEVar cacheWriteEnable = inpEnable;
+      DFEVar cacheWriteValue = inpVec[i];
+      DFEVar cacheWriteAddr = (w / numColPipes).cast(cacheAddrType);
+
+      outVec[i] <== cacheArray.get(i).port(
+        cacheWriteAddr,
+        cacheWriteValue,
+        cacheWriteEnable,
+        Mem.RamWriteMode.WRITE_FIRST);
+    }
 
     /**
      * Weight
      */
-    DFEVar wgt = io.input(WGT_NAME, type);
+    DFEVectorType<DFEVar> wgtVecType
+      = new DFEVectorType<DFEVar>(type, numRowPipes * numColPipes);
+    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
 
     /**
      * Output
      */
-    io.output(OUT_INP_NAME, out, type);
-    io.output(OUT_WGT_NAME, wgt, type);
+    io.output(OUT_INP_NAME, outVec, outVecType);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType);
   }
 }

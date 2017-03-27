@@ -42,6 +42,27 @@ class MultiPumpedConvolveKernel extends Kernel {
   ) {
     super(params);
 
+    if (C <= 0) 
+      throw new IllegalArgumentException("C should be larger than or equal to 1.");
+
+    if (C > N)
+      throw new IllegalArgumentException("C should not be larger than N.");
+
+    if (N % C != 0)
+      throw new IllegalArgumentException("C should not be divisible by N.");
+
+    /**
+     * Main multi-pumping control logic
+     */
+    // M is the real number of pipes after multi-pumping
+    int M = N / C;
+
+    // c is the value of the counter for the current cycle
+    // in the multi-pumping computation.
+    // If C is 1, then c will always be 0
+    // If C is larger than 1, c will count from 0 to C - 1.
+    // DFEVar c = control.count.simpleCounter(32, C);
+
     /**
      * Optimisation configuration:
      * The pipeling and DSP factor will be fully used.
@@ -60,7 +81,7 @@ class MultiPumpedConvolveKernel extends Kernel {
      * The input vector of the MPC kernel. For each convolver, this vector
      * will give K * K elements.
      */
-    int inpVecSize = maxKernelSize * maxKernelSize * N / C;
+    int inpVecSize = maxKernelSize * maxKernelSize * M;
     DFEVectorType<DFEVar> inpVecType
       = new DFEVectorType<DFEVar>(DATA_TYPE, inpVecSize);
     DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
@@ -70,7 +91,7 @@ class MultiPumpedConvolveKernel extends Kernel {
      * The weight vector for the computation of each cycle. Same size 
      * as the input vector, which will be easier to handle in this case.
      */
-    int wgtVecSize = maxKernelSize * maxKernelSize * N / C;
+    int wgtVecSize = maxKernelSize * maxKernelSize * M;
     DFEVectorType<DFEVar> wgtVecType
       = new DFEVectorType<DFEVar>(DATA_TYPE, wgtVecSize);
     DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
@@ -79,7 +100,7 @@ class MultiPumpedConvolveKernel extends Kernel {
      * Output:
      * The output vector of this MPC kernel.
      */
-    int outVecSize = N / C;
+    int outVecSize = M;
     DFEVectorType<DFEVar> outVecType =
       new DFEVectorType<DFEVar>(DATA_TYPE, outVecSize);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
@@ -121,10 +142,10 @@ class MultiPumpedConvolveKernel extends Kernel {
     io.output(OUT_NAME, outVec, outVecType);
 
     if (dbg) {
-      DFEVar c = control.count.simpleCounter(32);
-      debug.simPrintf("%d - inp %KObj%\n", c, inpVec);
-      debug.simPrintf("%d - wgt %KObj%\n", c, wgtVec);
-      debug.simPrintf("%d - [\n", c);
+      DFEVar t = control.count.simpleCounter(32);
+      debug.simPrintf("%d - inp %KObj%\n", t, inpVec);
+      debug.simPrintf("%d - wgt %KObj%\n", t, wgtVec);
+      debug.simPrintf("%d - [\n", t);
       for (int kx = 0; kx < maxKernelSize; kx ++) {
         debug.simPrintf("  [ ");
         for (int ky = 0; ky < maxKernelSize - 1; ky ++)
@@ -132,7 +153,7 @@ class MultiPumpedConvolveKernel extends Kernel {
         debug.simPrintf("%3d ]\n", inpVec[kx * maxKernelSize + maxKernelSize - 1]);
       }
       debug.simPrintf("]\n");
-      debug.simPrintf("%d - out %KObj%\n", c, outVec);
+      debug.simPrintf("%d - out %KObj%\n", t, outVec);
     }
   }
 }
