@@ -65,7 +65,7 @@ public class FullyConnectedLayerPostProcessKernel extends Kernel {
       DFEVar carriedSum = type.newInstance(this);
       DFEVar sum = (w === 0) ? constant.var(0) : carriedSum;
       DFEVar newSum = sum + inpVec[i];
-      carriedSum <== stream.offset(newSum, -1);
+      carriedSum <== stream.offset(newSum, -2);
 
       outVec[i] <== newSum;
     }

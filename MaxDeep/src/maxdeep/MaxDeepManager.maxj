@@ -39,6 +39,14 @@ class MaxDeepManager extends CustomManager {
     = "PaddingKernelConvolution";
   private static final String PADDING_KERNEL_FC_NAME
     = "PaddingKernelFullyConnected";
+  private static final String UNPADDING_KERNEL_CONV_CACHE_INP_NAME
+    = "UnpaddingKernelConvolutionCacheInp";
+  private static final String UNPADDING_KERNEL_CONV_CACHE_WGT_NAME
+    = "UnpaddingKernelConvolutionCacheWgt";
+  private static final String UNPADDING_KERNEL_FC_CACHE_INP_NAME
+    = "UnpaddingKernelFullyConnectedCacheInp";
+  private static final String UNPADDING_KERNEL_FC_CACHE_WGT_NAME
+    = "UnpaddingKernelFullyConnectedCacheWgt";
   
   private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
   private static final String MPC_CLK = "MPCClock";
@@ -82,6 +90,8 @@ class MaxDeepManager extends CustomManager {
   private InterfaceParam paddedNumFilterCycles;
   private InterfaceParam paddedNumFilters;
   private InterfaceParam baseAddr;
+  private InterfaceParam convNumIters;
+  private InterfaceParam fcNumIters;
 
   protected LMemInterface iface;
 
@@ -123,8 +133,8 @@ class MaxDeepManager extends CustomManager {
     // NOTE: This option will help timing when using multiple kernels
     // (2017-03-03)
     KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
-    kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
-    // kernelConfiguration.optimization.setCEPipelining(2);
+    // kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
+    // kernelConfiguration.optimization.setCEPipelining(3);
 
     /**
      * Kernel Blocks
@@ -181,10 +191,30 @@ class MaxDeepManager extends CustomManager {
         params.getDbg()));
     KernelBlock paddingKernel = addKernel(
       new PaddingKernel(
-        makeKernelParameters(PADDING_KERNEL_NAME)));
+        makeKernelParameters(PADDING_KERNEL_NAME), params.getDbg()));
     KernelBlock paddingKernelFC = addKernel(
       new PaddingKernel(
-        makeKernelParameters(PADDING_KERNEL_FC_NAME)));
+        makeKernelParameters(PADDING_KERNEL_FC_NAME), params.getDbg()));
+    KernelBlock unpaddingConvCacheInpKernel = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(UNPADDING_KERNEL_CONV_CACHE_INP_NAME),
+          32
+        ));
+    KernelBlock unpaddingConvCacheWgtKernel = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(UNPADDING_KERNEL_CONV_CACHE_WGT_NAME),
+          32
+        ));
+    KernelBlock unpaddingFCCacheInpKernel = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(UNPADDING_KERNEL_FC_CACHE_INP_NAME),
+          32
+        ));
+    KernelBlock unpaddingFCCacheWgtKernel = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(UNPADDING_KERNEL_FC_CACHE_WGT_NAME),
+          32
+        ));
 
     /**
      * LMem interface:
@@ -193,30 +223,44 @@ class MaxDeepManager extends CustomManager {
      */
     iface = addLMemInterface();
 
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.INP_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, cache, ConvolutionLayerCacheKernel.WGT_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, fcCache, FullyConnectedLayerCacheKernel.INP_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(iface, fcCache, FullyConnectedLayerCacheKernel.WGT_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingConvCacheInpKernel, UnpaddingKernel.INP_NAME + "_INP", UnpaddingKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingConvCacheWgtKernel, UnpaddingKernel.INP_NAME + "_WGT", UnpaddingKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingFCCacheInpKernel, UnpaddingKernel.INP_NAME + "_FC_INP", UnpaddingKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingFCCacheWgtKernel, UnpaddingKernel.INP_NAME + "_FC_WGT", UnpaddingKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_CONV");
     ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernelFC, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_FC");
 
     /**
      * Connections between kernels' streams
      */
+    cache.getInput(ConvolutionLayerCacheKernel.INP_NAME)
+      <== unpaddingConvCacheInpKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    cache.getInput(ConvolutionLayerCacheKernel.WGT_NAME)
+      <== unpaddingConvCacheWgtKernel.getOutput(UnpaddingKernel.OUT_NAME);
+
     mpc.getInput(MultiPumpedConvolveKernel.INP_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
     mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
       <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
+
+    fcCache.getInput(FullyConnectedLayerCacheKernel.INP_NAME)
+      <== unpaddingFCCacheInpKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    fcCache.getInput(FullyConnectedLayerCacheKernel.WGT_NAME)
+      <== unpaddingFCCacheWgtKernel.getOutput(UnpaddingKernel.OUT_NAME);
+
     mpdp.getInput(MultiPumpedDotProductKernel.INP_NAME)
       <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_INP_NAME);
     mpdp.getInput(MultiPumpedDotProductKernel.WGT_NAME)
       <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_WGT_NAME);
+
     post.getInput(ConvolutionLayerPostProcessKernel.INP_NAME)
       <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
     pool.getInput(PoolingLayerKernel.INP_NAME)
       <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
+
     fcPost.getInput(FullyConnectedLayerPostProcessKernel.INP_NAME)
       <== mpdp.getOutput(MultiPumpedDotProductKernel.OUT_NAME);
+
     paddingKernel.getInput(PaddingKernel.INP_NAME)
       <== pool.getOutput(PoolingLayerKernel.OUT_NAME);
     paddingKernelFC.getInput(PaddingKernel.INP_NAME)
@@ -244,6 +288,11 @@ class MaxDeepManager extends CustomManager {
   }
 
   private void addConvParamsToEngineInterface(EngineInterface ei) {
+    convNumIters = ei.addParam(
+      "conv_num_iters",
+      CPUTypes.UINT32,
+      "The number of iterations to run the convolution kernel"
+    );
     kernelSize = ei.addParam(
       "conv_kernel_size",
       CPUTypes.UINT32,
@@ -291,6 +340,11 @@ class MaxDeepManager extends CustomManager {
   }
 
   private void addFCParamsToEngineInterface(EngineInterface ei) {
+    fcNumIters = ei.addParam(
+      "fc_num_iters",
+      CPUTypes.UINT32,
+      "The number of iterations to run the fully-connected layer kernel"
+    );
     fcHeight = ei.addParam(
       "fc_height",
       CPUTypes.UINT32,
@@ -314,19 +368,25 @@ class MaxDeepManager extends CustomManager {
      * replaced by the paddedNumFilterCycles.
      */ 
     ei.setTicks(CONV_CACHE_KERNEL_NAME,
-      height * width * numChannels * paddedNumFilterCycles);
+      convNumIters * height * width * numChannels * paddedNumFilterCycles);
+
     ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
-      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles * C);
+      convNumIters * convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles * C);
+
     ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
-      convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
-    ei.setTicks(FC_CACHE_KERNEL_NAME,
-      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
-    ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
-      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes) * numMPDPFactor);
-    ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
-      fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
+      convNumIters * convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
+    
     ei.setTicks(POOL_KERNEL_NAME,
-      poolHeight * poolWidth * paddedNumFilterCycles);
+      convNumIters * poolHeight * poolWidth * paddedNumFilterCycles);
+
+    ei.setTicks(FC_CACHE_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
+
+    ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes) * numMPDPFactor);
+    
+    ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
   }
 
   private void setScalarOfEngineInterface(EngineInterface ei) {
@@ -338,10 +398,10 @@ class MaxDeepManager extends CustomManager {
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_WIDTH_INP_NAME,
       width);
-    // ei.setScalar(
-    //   CONV_CACHE_KERNEL_NAME,
-    //   ConvolutionLayerCacheKernel.SCALAR_NUM_CHANNELS_INP_NAME,
-    //   numChannels);
+    ei.setScalar(
+      CONV_CACHE_KERNEL_NAME,
+      ConvolutionLayerCacheKernel.SCALAR_NUM_CHANNELS_INP_NAME,
+      numChannels);
     ei.setScalar(
       CONV_CACHE_KERNEL_NAME,
       ConvolutionLayerCacheKernel.SCALAR_NUM_FILTERS_INP_NAME,
@@ -386,10 +446,10 @@ class MaxDeepManager extends CustomManager {
       FullyConnectedLayerCacheKernel.SCALAR_WIDTH_NAME,
       fcWidth);
 
-    // ei.setScalar(
-    //   FC_POST_PROCESS_KERNEL_NAME,
-    //   FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
-    //   fcHeight);
+    ei.setScalar(
+      FC_POST_PROCESS_KERNEL_NAME,
+      FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
+      fcHeight);
     ei.setScalar(
       FC_POST_PROCESS_KERNEL_NAME,
       FullyConnectedLayerPostProcessKernel.SCALAR_WIDTH_NAME,
@@ -418,6 +478,9 @@ class MaxDeepManager extends CustomManager {
 
     setScalarOfEngineInterface(ei);
 
+    /**
+     * LMem address management
+     */
     InterfaceParam burstSize = ei.addConstant(384);
     InterfaceParam inpSize
       = height * width * numChannels;
@@ -429,16 +492,42 @@ class MaxDeepManager extends CustomManager {
 
     InterfaceParam burstAlignedInpSize
       = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
-        * CPUTypes.UINT32.sizeInBytes();
+      * CPUTypes.UINT32.sizeInBytes();
+
     InterfaceParam burstAlignedWgtSize
       = burstAlignedSize(wgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
-        * CPUTypes.UINT32.sizeInBytes();
+      * CPUTypes.UINT32.sizeInBytes();
+
     InterfaceParam burstAlignedOutSize
       = burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
-        * CPUTypes.UINT32.sizeInBytes();
+      * CPUTypes.UINT32.sizeInBytes();
+    
+    ei.setTicks(
+      UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+      convNumIters * burstAlignedInpSize / CPUTypes.UINT32.sizeInBytes());
+    ei.setScalar(
+      UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+      UnpaddingKernel.SCALAR_NUM_INP,
+      inpSize);
+    ei.setScalar(
+      UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+      UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedInpSize / CPUTypes.UINT32.sizeInBytes());
+
+    ei.setTicks(
+      UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+      convNumIters * burstAlignedWgtSize / CPUTypes.UINT32.sizeInBytes());
+    ei.setScalar(
+      UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+      UnpaddingKernel.SCALAR_NUM_INP,
+      wgtSize);
+    ei.setScalar(
+      UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+      UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedWgtSize / CPUTypes.UINT32.sizeInBytes());
 
     ei.setTicks(PADDING_KERNEL_NAME,
-      burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+      convNumIters * burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
     ei.setScalar(
       PADDING_KERNEL_NAME,
       PaddingKernel.SCALAR_NUM_INP,
@@ -448,25 +537,48 @@ class MaxDeepManager extends CustomManager {
       PaddingKernel.SCALAR_TOTAL_CYCLES,
       burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
 
-    InterfaceParam fcInpSize
-      = fcWidth;
-    InterfaceParam fcWgtSize
-      = fcHeight * fcWidth;
-    InterfaceParam fcOutSize
-      = fcHeight;
+    InterfaceParam fcInpSize = fcWidth;
+    InterfaceParam fcWgtSize = fcHeight * fcWidth;
+    InterfaceParam fcOutSize = fcHeight;
 
     InterfaceParam burstAlignedFCInpSize
       = burstAlignedSize(fcInpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
         * CPUTypes.UINT32.sizeInBytes();
+
     InterfaceParam burstAlignedFCWgtSize
       = burstAlignedSize(fcWgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
         * CPUTypes.UINT32.sizeInBytes();
+
     InterfaceParam burstAlignedFCOutSize
       = burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
         * CPUTypes.UINT32.sizeInBytes();
 
+    ei.setTicks(
+      UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+      fcNumIters * burstAlignedFCInpSize / CPUTypes.UINT32.sizeInBytes());
+    ei.setScalar(
+      UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+      UnpaddingKernel.SCALAR_NUM_INP,
+      fcInpSize);
+    ei.setScalar(
+      UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+      UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedFCInpSize / CPUTypes.UINT32.sizeInBytes());
+
+    ei.setTicks(
+      UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+      fcNumIters * burstAlignedFCWgtSize / CPUTypes.UINT32.sizeInBytes());
+    ei.setScalar(
+      UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+      UnpaddingKernel.SCALAR_NUM_INP,
+      fcWgtSize);
+    ei.setScalar(
+      UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+      UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+      burstAlignedFCWgtSize / CPUTypes.UINT32.sizeInBytes());
+
     ei.setTicks(PADDING_KERNEL_FC_NAME,
-      burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+      fcNumIters * burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
     ei.setScalar(
       PADDING_KERNEL_FC_NAME,
       PaddingKernel.SCALAR_NUM_INP,
@@ -474,15 +586,16 @@ class MaxDeepManager extends CustomManager {
     ei.setScalar(
       PADDING_KERNEL_FC_NAME,
       PaddingKernel.SCALAR_TOTAL_CYCLES,
-      burstAlignedFCOutSize);
+      burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
 
     ei.setLMemLinear(
-      ConvolutionLayerCacheKernel.INP_NAME,
+      UnpaddingKernel.INP_NAME + "_INP",
       baseAddr,
       burstAlignedInpSize);
     baseAddr += burstAlignedInpSize;
 
-    ei.setLMemLinear(ConvolutionLayerCacheKernel.WGT_NAME,
+    ei.setLMemLinear(
+      UnpaddingKernel.INP_NAME + "_WGT",
       baseAddr,
       burstAlignedWgtSize);
     baseAddr += burstAlignedWgtSize;
@@ -493,12 +606,13 @@ class MaxDeepManager extends CustomManager {
     baseAddr += burstAlignedOutSize;
 
     ei.setLMemLinear(
-      FullyConnectedLayerCacheKernel.INP_NAME,
+      UnpaddingKernel.INP_NAME + "_FC_INP",
       baseAddr,
       burstAlignedFCInpSize);
     baseAddr += burstAlignedFCInpSize;
 
-    ei.setLMemLinear(FullyConnectedLayerCacheKernel.WGT_NAME,
+    ei.setLMemLinear(
+      UnpaddingKernel.INP_NAME + "_FC_WGT",
       baseAddr,
       burstAlignedFCWgtSize);
     baseAddr += burstAlignedFCWgtSize;
@@ -519,14 +633,16 @@ class MaxDeepManager extends CustomManager {
   ) {
     InterfaceParam length = num * size;
     InterfaceParam burstAlignedLength
-      = InterfaceMath.ceil(length.cast(CPUTypes.FLOAT) / burstSize.cast(CPUTypes.FLOAT));
-    return burstAlignedLength.cast(CPUTypes.UINT32) * burstSize / size;
+      = InterfaceMath.ceil(length.cast(CPUTypes.DOUBLE) / burstSize.cast(CPUTypes.DOUBLE));
+    return (burstAlignedLength * burstSize / size).cast(CPUTypes.UINT32);
   }
 
   public static void main(String [] args) {
     MaxDeepEngineParameters params = new MaxDeepEngineParameters(args);
     MaxDeepManager manager = new MaxDeepManager(params);
 
+    // if (params.getDbg())
+    ManagerUtils.debug(manager);
     manager.createSLiCinterface(ManagerUtils.dramWrite(manager, manager.iface));
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault());

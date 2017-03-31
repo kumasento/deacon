@@ -64,7 +64,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     optimization.pushDSPFactor(1);
 
     // configured by set-and-test
-    int latency = 10;
+    int latency = 5;
 
     DFEType type = dfeUInt(32);
     DFEType scalarParamType = dfeUInt(32);
@@ -193,7 +193,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     io.output(OUT_NAME, outVec, outVecType, cPipelinedLevelOne === numChannelsMinusOne);
 
     if (dbg) {
-      debug.simPrintf("CONV POST PROCESS: %d - out %KObj%\n", c, outVec);
+      debug.simPrintf("CONV POST PROCESS: %d - out %KObj%\n", t, outVec);
     }
   }
 }

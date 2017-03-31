@@ -293,9 +293,9 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * TODO: Make this two output stream aware of the following parallelisation
      * (2017-03-03) Ruizhe Zhao
      */
-    io.output(OUT_INP_NAME, outVec, outVecTotalType, outValid);
-    io.output(OUT_WGT_NAME, wgtVec, wgtVecType, wgtValid);
-    // io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
+    io.output(OUT_INP_NAME, outVec, outVecTotalType, outValid & wgtValid);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType, outValid & wgtValid);
+    io.forceOutputsTogether(OUT_INP_NAME, OUT_WGT_NAME);
 
     if (dbg) {
       DFEVar tick = control.count.simpleCounter(32);

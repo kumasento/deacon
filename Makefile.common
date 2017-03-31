@@ -143,7 +143,7 @@ $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
 
 runsim: $(PRJBUILDNAME)_sim
 	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
-	SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(USER)a0:$(USER)a
+	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(USER)a0:$(USER)a
 	make stopsim
 
 stopsim:

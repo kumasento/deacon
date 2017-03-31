@@ -108,9 +108,10 @@ public class PoolingLayerKernel extends Kernel {
     io.output(OUT_NAME, outVec, outVecType, outEnable);
 
     if (dbg) {
-      debug.simPrintf("POOL: (%3d %3d %3d %3d)\n", h, sh, w, sw);
-      debug.simPrintf("POOL: %KObj%\n", outVec);
-      debug.simPrintf("POOL: valid %d\n", outEnable);
+      DFEVar tick = control.count.simpleCounter(32);
+      debug.simPrintf("POOL: %d - (%3d %3d %3d %3d)\n", tick, h, sh, w, sw);
+      debug.simPrintf("POOL: %d - %KObj%\n", tick, outVec);
+      debug.simPrintf("POOL: %d - valid %d\n", tick, outEnable);
     }
   } 
 }
