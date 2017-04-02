@@ -284,7 +284,7 @@ class MaxDeepManager extends CustomManager {
     /**
      * Clock configuration
      */
-    config.setDefaultStreamClockFrequency(freq);
+    // config.setDefaultStreamClockFrequency(freq);
     ManagerClock clk
       = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
     ManagerClock clockForMPC

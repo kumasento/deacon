@@ -6,9 +6,12 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 import maxpower.kernel.KernelBinaryOp.*;
 import maxpower.utils.TreeReduce;
+
+import java.util.*;
 
 /**
  * NOTE: updated MultiPumpedConvolveKernel from KernelLib to Kernel
@@ -51,6 +54,10 @@ class MultiPumpedConvolveKernel extends Kernel {
     if (N % C != 0)
       throw new IllegalArgumentException("C should not be divisible by N.");
 
+    DFEVar c = control.count.simpleCounter(32, C);
+    if (C > 1)
+      c = c.cast(dfeUInt(MathUtils.bitsToAddress(C)));
+
     /**
      * Main multi-pumping control logic
      */
@@ -82,9 +89,26 @@ class MultiPumpedConvolveKernel extends Kernel {
      * will give K * K elements.
      */
     int inpVecSize = maxKernelSize * maxKernelSize * M;
+    int inpTotalVecSize = inpVecSize * C;
+
     DFEVectorType<DFEVar> inpVecType
       = new DFEVectorType<DFEVar>(DATA_TYPE, inpVecSize);
-    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType);
+    DFEVectorType<DFEVar> inpTotalVecType
+      = new DFEVectorType<DFEVar>(DATA_TYPE, inpTotalVecSize);
+
+    DFEVector<DFEVar> inpTotalVec = io.input(INP_NAME, inpTotalVecType, c === 0);
+    DFEVector<DFEVar> inpVec = inpVecType.newInstance(this);
+
+    for (int i = 0; i < maxKernelSize * maxKernelSize * M; i ++) {
+      if (C == 1)
+        inpVec[i] <== inpTotalVec[i];
+      else {
+        List<DFEVar> inpList = new ArrayList<DFEVar>();
+        for (int j = 0; j < C; j ++)
+          inpList.add(inpTotalVec[j * M + i]);
+        inpVec[i] <== control.mux(c, inpList);
+      }
+    }
 
     /**
      * Weight:
@@ -92,18 +116,39 @@ class MultiPumpedConvolveKernel extends Kernel {
      * as the input vector, which will be easier to handle in this case.
      */
     int wgtVecSize = maxKernelSize * maxKernelSize * M;
+    int wgtTotalVecSize = wgtVecSize * C;
+    DFEVectorType<DFEVar> wgtTotalVecType
+      = new DFEVectorType<DFEVar>(DATA_TYPE, wgtTotalVecSize);
     DFEVectorType<DFEVar> wgtVecType
       = new DFEVectorType<DFEVar>(DATA_TYPE, wgtVecSize);
-    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
+    DFEVector<DFEVar> wgtTotalVec = io.input(WGT_NAME, wgtTotalVecType, c === 0);
+    DFEVector<DFEVar> wgtVec = wgtVecType.newInstance(this);
+    for (int i = 0; i < maxKernelSize * maxKernelSize * M; i ++) {
+      if (C == 1)
+        wgtVec[i] <== wgtTotalVec[i];
+      else {
+        List<DFEVar> wgtList = new ArrayList<DFEVar>();
+        for (int j = 0; j < C; j ++)
+          wgtList.add(wgtTotalVec[j * M + i]);
+
+        wgtVec[i] <== control.mux(c, wgtList);
+      }
+    }
 
     /**
      * Output:
      * The output vector of this MPC kernel.
      */
     int outVecSize = M;
+    int outTotalVecSize = N;
+
     DFEVectorType<DFEVar> outVecType =
       new DFEVectorType<DFEVar>(DATA_TYPE, outVecSize);
+    DFEVectorType<DFEVar> outTotalVecType =
+      new DFEVectorType<DFEVar>(DATA_TYPE, outTotalVecSize);
+
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+    DFEVector<DFEVar> outTotalVec = outTotalVecType.newInstance(this);
 
     /**
      * Computation:
@@ -117,29 +162,33 @@ class MultiPumpedConvolveKernel extends Kernel {
       DFEVector<DFEVar> window = windowType.newInstance(this);
 
       int maxKernelArea = maxKernelSize * maxKernelSize;
-      DFEVar kernelArea = kernelSize * kernelSize;
+      // DFEVar kernelArea = kernelSize * kernelSize;
       
       for (int i = 0; i < maxKernelArea; i ++) {
-        DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
+        // DFEVar dfeI = constant.var(i).cast(dfeUInt(32));
         /**
          * NOTE: There is a timing issue in the comparison node, which I think might due
          * to the kernelArea's fanout. Here I add a level of pipelining to replicate
          * this DFEVar manually.
          * (2017-03-13) Ruizhe Zhao
          */
-        DFEVar kernelAreaPipelined = optimization.pipeline(kernelArea);
+        // DFEVar kernelAreaPipelined = optimization.pipeline(kernelArea);
 
         // assign the value to be 0 if it is out of bound.
-        window[i] <==
-          (dfeI < kernelAreaPipelined)
-          ? (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea])
-          : constant.var(0);
+        window[i] <== (inpVec[i + idx * maxKernelArea] * wgtVec[i + idx * maxKernelArea]);
       }
 
       outVec[idx] <== TreeReduce.reduce(new Add(), window.getElementsAsList()); 
     }
 
-    io.output(OUT_NAME, outVec, outVecType);
+    for (int i = 0; i < C; i ++) {
+      for (int j = 0; j < M; j ++) {
+        DFEVector<DFEVar> out = stream.offset(outVec, -i);
+        outTotalVec[i * M + j] <== out[j];
+      }
+    }
+
+    io.output(OUT_NAME, outTotalVec, outTotalVecType, c === C - 1);
 
     if (dbg) {
       DFEVar t = control.count.simpleCounter(32);
