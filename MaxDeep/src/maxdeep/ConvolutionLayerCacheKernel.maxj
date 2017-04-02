@@ -175,29 +175,31 @@ public class ConvolutionLayerCacheKernel extends Kernel {
      * add f with numPipes.
      * (2017-03-18) Ruizhe Zhao
      */ 
-    DFEVar wgtReadIdxUpper = (f + numPipes >= numFilters)
-      ? kernelArea * (numFilters - f)
-      : kernelArea * numPipes;
-    DFEVar wgtEnable
-      = wgtReadIdx.cast(scalarParamType) < wgtReadIdxUpper;
-    DFEVar wgtValid = dfeBool().newInstance(this);
+    // DFEVar wgtReadIdxUpper = (f + numPipes >= numFilters)
+    //   ? kernelArea * (numFilters - f)
+    //   : kernelArea * numPipes;
+    // DFEVar wgtEnable
+    //   = wgtReadIdx.cast(scalarParamType) < wgtReadIdxUpper;
+    // DFEVar wgtValid = dfeBool().newInstance(this);
+    DFEVar wgtValid = constant.var(true).cast(dfeBool());
 
-    DFEVar wgt = io.input(WGT_NAME, DEFAULT_TYPE, wgtEnable).cast(type);
+    // DFEVar wgt = io.input(WGT_NAME, DEFAULT_TYPE, wgtEnable).cast(type);
 
     DFEVectorType<DFEVar> wgtVecType
       = new DFEVectorType<DFEVar>(type, wgtVecTotalSize);
-    DFEVector<DFEVar> wgtVec = wgtVecType.newInstance(this);
+    // DFEVector<DFEVar> wgtVec = wgtVecType.newInstance(this);
+    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType, h === 0 & w === 0);
 
     // Stream based implementation
-    new WeightBufferKernel(
-      this,
-      maxKernelSize,
-      numPipes,
-      kernelSize, 
-      wgtReadIdx,
-      wgt,
-      wgtValid,
-      wgtVec);
+    // new WeightBufferKernel(
+    //   this,
+    //   maxKernelSize,
+    //   numPipes,
+    //   kernelSize, 
+    //   wgtReadIdx,
+    //   wgt,
+    //   wgtValid,
+    //   wgtVec);
 
     // Memory based implementation:
     //

@@ -28,15 +28,15 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
   public static final String OUT_NAME = "POST_PROCESS_OUT";
 
   public static final String SCALAR_HEIGHT_INP_NAME
-    = "CONV_CACHE_SCALAR_HEIGHT_INP";
+    = "CONV_POST_SCALAR_HEIGHT_INP";
   public static final String SCALAR_WIDTH_INP_NAME
-    = "CONV_CACHE_SCALAR_WIDTH_INP";
+    = "CONV_POST_SCALAR_WIDTH_INP";
   public static final String SCALAR_NUM_CHANNELS_INP_NAME
-    = "CONV_CACHE_SCALAR_NUM_CHANNELS_INP";
+    = "CONV_POST_SCALAR_NUM_CHANNELS_INP";
   public static final String SCALAR_NUM_FILTERS_INP_NAME
-    = "CONV_CACHE_SCALAR_NUM_FILTERS_INP";
+    = "CONV_POST_SCALAR_NUM_FILTERS_INP";
   public static final String SCALAR_KERNEL_SIZE_INP_NAME
-    = "CONV_CACHE_SCALAR_KERNEL_SIZE_INP";
+    = "CONV_POST_SCALAR_KERNEL_SIZE_INP";
 
   /**
    * @param params The default kernel parameters made by Manager
@@ -193,7 +193,7 @@ public class ConvolutionLayerPostProcessKernel extends Kernel {
     io.output(OUT_NAME, outVec, outVecType, cPipelinedLevelOne === numChannelsMinusOne);
 
     if (dbg) {
-      debug.simPrintf("CONV POST PROCESS: %d - out %KObj%\n", t, outVec);
+      debug.simPrintf("CONV POST PROCESS: %d - c %d out %KObj%\n", t, c, outVec);
     }
   }
 }
