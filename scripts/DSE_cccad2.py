@@ -41,28 +41,29 @@ if __name__ == '__main__':
     # print '%s for MaxDeep' % colored('Design Space Exploration', 'cyan', attrs=['blink', 'reverse'])
 
     processes = [
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 24, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 24, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 24, 3), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 30, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 30, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 30, 3), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 36, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 36, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 36, 3), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 48, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 48, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 48, 3), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 56, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 56, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 56, 3), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 72, 1), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 72, 2), )),
-        mp.Process(target=build, args=(MaxDeepBuildParam(100, 72, 3), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 1, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 2, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 4, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 6, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 8, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 10, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 12, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 14, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(120, 16, 1), )),
+        
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 1, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 2, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 4, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 6, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 8, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 10, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 12, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 14, 1), )),
+        mp.Process(target=build, args=(MaxDeepBuildParam(140, 16, 1), )),
     ]
 
     idx = 0
-    num_pipes = 16
+    num_pipes = 4
     while idx < len(processes):
         ps = processes[idx:idx+num_pipes]
         for p in ps:
