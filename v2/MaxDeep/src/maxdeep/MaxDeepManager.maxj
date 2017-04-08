@@ -1,0 +1,696 @@
+package maxdeep;
+
+// import com.maxeler.maxcompiler.v2.build.EngineParameters;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+// import com.maxeler.maxcompiler.v2.managers.custom.CustomManager.LMemFrequency;
+import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
+// import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
+// import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+
+import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
+
+class MaxDeepManager extends CustomManager {
+
+  // private static final String MAXDEEP_KERNEL_NAME
+  //   = "MaxDeepKernel";
+  private static final String MULTI_PUMPED_CONVOLVE_KERNEL_NAME
+    = "MultiPumpedConvolveKernel";
+  private static final String CONV_CACHE_KERNEL_NAME
+    = "ConvolutionLayerCacheKernel";
+  private static final String CONV_POST_PROCESS_KERNEL_NAME
+    = "ConvolutionLayerPostProcessKernel";
+  private static final String MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME
+    = "MultiPumpedDotProductKernel";
+  private static final String FC_CACHE_KERNEL_NAME
+    = "FullyConnectedLayerCacheKernel";
+  private static final String FC_POST_PROCESS_KERNEL_NAME
+    = "FullyConnectedLayerPostProcessKernel";
+  private static final String POOL_KERNEL_NAME
+    = "PoolingLayerKernel";
+  private static final String PADDING_KERNEL_NAME
+    = "PaddingKernelConvolution";
+  private static final String PADDING_KERNEL_FC_NAME
+    = "PaddingKernelFullyConnected";
+  private static final String UNPADDING_KERNEL_CONV_CACHE_INP_NAME
+    = "UnpaddingKernelConvolutionCacheInp";
+  private static final String UNPADDING_KERNEL_CONV_CACHE_WGT_NAME
+    = "UnpaddingKernelConvolutionCacheWgt";
+  private static final String UNPADDING_KERNEL_FC_CACHE_INP_NAME
+    = "UnpaddingKernelFullyConnectedCacheInp";
+  private static final String UNPADDING_KERNEL_FC_CACHE_WGT_NAME
+    = "UnpaddingKernelFullyConnectedCacheWgt";
+  
+  private static final String DEFAULT_KERNEL_CLK = "DefaultKernelClock";
+  private static final String MPC_CLK = "MPCClock";
+  private static final String MPDP_CLK = "MPDPClock";
+
+  /**
+   * Engine parameters
+   */
+  private final int N;
+  private final int C;
+  private final int freq;
+  private final int maxConvHeight;
+  private final int maxConvWidth;
+  private final int maxConvNumChannels;
+  private final int maxConvNumFilters;
+  private final int maxConvKernelSize;
+  private final int maxFCHeight;
+  private final int maxFCWidth;
+  private final int numFCRowPipes;
+  private final int numFCColPipes;
+  private final int numMPDPFactor;
+  private final int poolKernelSize = 2;
+  private final int poolStride = 2;
+
+  /**
+   * Interface Parameters
+   */
+  private InterfaceParam zero;
+  private InterfaceParam kernelSize;
+  private InterfaceParam height; 
+  private InterfaceParam width;
+  private InterfaceParam numChannels;
+  private InterfaceParam numFilters;
+  private InterfaceParam numOutput;
+  private InterfaceParam convOutputHeight;
+  private InterfaceParam convOutputWidth;
+  private InterfaceParam fcHeight;
+  private InterfaceParam fcWidth;
+  private InterfaceParam poolHeight;
+  private InterfaceParam poolWidth;
+  private InterfaceParam paddedNumFilterCycles;
+  private InterfaceParam paddedNumFilters;
+  private InterfaceParam baseAddr;
+  private InterfaceParam convNumIters;
+  private InterfaceParam fcNumIters;
+
+  protected LMemInterface iface;
+
+  public MaxDeepManager(MaxDeepEngineParameters params) {
+    super(params);
+
+    /**
+     * Parse engine parameters
+     */
+    N                  = params.getNumPipes();
+    C                  = params.getMultiPumpingFactor();
+    freq               = params.getFreq();
+    maxConvHeight      = params.getMaxConvHeight();
+    maxConvWidth       = params.getMaxConvWidth();
+    maxConvNumChannels = params.getMaxConvNumChannels();
+    maxConvNumFilters  = params.getMaxConvNumFilters();
+    maxConvKernelSize  = params.getMaxConvKernelSize();
+    maxFCHeight        = params.getMaxFCHeight();
+    maxFCWidth         = params.getMaxFCWidth();
+    numFCRowPipes      = params.getNumFCRowPipes();
+    numFCColPipes      = params.getNumFCColPipes();
+    numMPDPFactor      = params.getNumMPDPFactor();
+    config.setAllowNonMultipleTransitions(true);
+
+    /**
+     * Export parameters to Maxfile.h
+     */
+    addMaxFileConstant("numPipes",           N);
+    addMaxFileConstant("freq",               freq);
+    addMaxFileConstant("multiPumpingFactor", C);
+    addMaxFileConstant("maxConvHeight",      maxConvHeight);
+    addMaxFileConstant("maxConvWidth",       maxConvWidth);
+    addMaxFileConstant("maxConvNumChannels", maxConvNumChannels);
+    addMaxFileConstant("maxConvNumFilters",  maxConvNumFilters);
+    addMaxFileConstant("maxConvKernelSize",  maxConvKernelSize);
+    addMaxFileConstant("maxFCHeight",        maxFCHeight);
+    addMaxFileConstant("maxFCWidth",         maxFCWidth);
+
+    // ManagerUtils.setDRAMMaxDeviceFrequency(this, params);
+    // NOTE: This option will help timing when using multiple kernels
+    // (2017-03-03)
+    KernelConfiguration kernelConfiguration = this.getCurrentKernelConfig();
+    kernelConfiguration.optimization.setUseGlobalClockBuffer(true);
+    kernelConfiguration.optimization.setCEPipelining(3);
+
+    /**
+     * Kernel Blocks
+     */
+    KernelBlock mpc = addKernel(
+      new MultiPumpedConvolveKernel(
+        makeKernelParameters(MULTI_PUMPED_CONVOLVE_KERNEL_NAME),
+        N, maxConvKernelSize, C, params.getDbg()));
+    KernelBlock mpdp = addKernel(
+      new MultiPumpedDotProductKernel(
+        makeKernelParameters(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME),
+        numFCRowPipes, numFCColPipes, numMPDPFactor, params.getDbg()));
+    KernelBlock cache = addKernel(
+      new ConvolutionLayerCacheKernel(
+        makeKernelParameters(CONV_CACHE_KERNEL_NAME),
+        N,
+        maxConvHeight,
+        maxConvWidth,
+        maxConvNumChannels,
+        maxConvNumFilters,
+        maxConvKernelSize,
+        params.getDbg()));
+    KernelBlock post = addKernel(
+      new ConvolutionLayerPostProcessKernel(
+        makeKernelParameters(CONV_POST_PROCESS_KERNEL_NAME),
+        N,
+        maxConvHeight,
+        maxConvWidth,
+        maxConvNumChannels,
+        maxConvNumFilters,
+        maxConvKernelSize,
+        params.getDbg()));
+    KernelBlock fcCache = addKernel(
+      new FullyConnectedLayerCacheKernel(
+        makeKernelParameters(FC_CACHE_KERNEL_NAME),
+        maxFCHeight,
+        maxFCWidth,
+        numFCRowPipes,
+        numFCColPipes));
+    KernelBlock fcPost = addKernel(
+      new FullyConnectedLayerPostProcessKernel(
+        makeKernelParameters(FC_POST_PROCESS_KERNEL_NAME),
+        maxFCHeight,
+        maxFCWidth,
+        numFCRowPipes,
+        numFCColPipes));
+    // KernelBlock pool = addKernel(
+    //   new PoolingLayerKernel(
+    //     makeKernelParameters(POOL_KERNEL_NAME),
+    //     N,
+    //     poolKernelSize,
+    //     poolStride,
+    //     maxConvWidth,
+    //     params.getDbg()));
+    // KernelBlock paddingKernel = addKernel(
+    //   new PaddingKernel(
+    //     makeKernelParameters(PADDING_KERNEL_NAME), params.getDbg()));
+    // KernelBlock paddingKernelFC = addKernel(
+    //   new PaddingKernel(
+    //     makeKernelParameters(PADDING_KERNEL_FC_NAME), params.getDbg()));
+    // KernelBlock unpaddingConvCacheInpKernel = addKernel(
+    //     new UnpaddingKernel(
+    //       makeKernelParameters(UNPADDING_KERNEL_CONV_CACHE_INP_NAME),
+    //       32
+    //     ));
+    // KernelBlock unpaddingConvCacheWgtKernel = addKernel(
+    //     new UnpaddingKernel(
+    //       makeKernelParameters(UNPADDING_KERNEL_CONV_CACHE_WGT_NAME),
+    //       32
+    //     ));
+    // KernelBlock unpaddingFCCacheInpKernel = addKernel(
+    //     new UnpaddingKernel(
+    //       makeKernelParameters(UNPADDING_KERNEL_FC_CACHE_INP_NAME),
+    //       32
+    //     ));
+    // KernelBlock unpaddingFCCacheWgtKernel = addKernel(
+    //     new UnpaddingKernel(
+    //       makeKernelParameters(UNPADDING_KERNEL_FC_CACHE_WGT_NAME),
+    //       32
+    //     ));
+
+    /**
+     * LMem interface:
+     * Input streams will come from the LMem to each layer's cache kernel.
+     * Output streams will come from the padding kernel to the LMem
+     */
+    // iface = addLMemInterface();
+
+    // ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingConvCacheInpKernel, UnpaddingKernel.INP_NAME + "_INP", UnpaddingKernel.INP_NAME);
+    // ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingConvCacheWgtKernel, UnpaddingKernel.INP_NAME + "_WGT", UnpaddingKernel.INP_NAME);
+    // ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingFCCacheInpKernel, UnpaddingKernel.INP_NAME + "_FC_INP", UnpaddingKernel.INP_NAME);
+    // ManagerUtils.addLinearStreamFromLMemToKernel(iface, unpaddingFCCacheWgtKernel, UnpaddingKernel.INP_NAME + "_FC_WGT", UnpaddingKernel.INP_NAME);
+    // ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernel, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_CONV");
+    // ManagerUtils.addLinearStreamFromKernelToLMem(iface, paddingKernelFC, PaddingKernel.OUT_NAME, PaddingKernel.OUT_NAME + "_FC");
+
+    /**
+     * Connections between kernels' streams
+     */
+    // cache.getInput(ConvolutionLayerCacheKernel.INP_NAME)
+    //   <== unpaddingConvCacheInpKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    // cache.getInput(ConvolutionLayerCacheKernel.WGT_NAME)
+    //   <== unpaddingConvCacheWgtKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    cache.getInput(ConvolutionLayerCacheKernel.INP_NAME)
+      <== addStreamFromCPU("conv_cache_inp");
+    cache.getInput(ConvolutionLayerCacheKernel.WGT_NAME)
+      <== addStreamFromCPU("conv_cache_wgt");
+
+    mpc.getInput(MultiPumpedConvolveKernel.INP_NAME)
+      <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_INP_NAME);
+    mpc.getInput(MultiPumpedConvolveKernel.WGT_NAME)
+      <== cache.getOutput(ConvolutionLayerCacheKernel.OUT_WGT_NAME);
+
+    // fcCache.getInput(FullyConnectedLayerCacheKernel.INP_NAME)
+    //   <== unpaddingFCCacheInpKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    // fcCache.getInput(FullyConnectedLayerCacheKernel.WGT_NAME)
+    //   <== unpaddingFCCacheWgtKernel.getOutput(UnpaddingKernel.OUT_NAME);
+    fcCache.getInput(FullyConnectedLayerCacheKernel.INP_NAME)
+      <== addStreamFromCPU("fc_cache_inp");
+    fcCache.getInput(FullyConnectedLayerCacheKernel.WGT_NAME)
+      <== addStreamFromCPU("fc_cache_wgt");
+
+    mpdp.getInput(MultiPumpedDotProductKernel.INP_NAME)
+      <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_INP_NAME);
+    mpdp.getInput(MultiPumpedDotProductKernel.WGT_NAME)
+      <== fcCache.getOutput(FullyConnectedLayerCacheKernel.OUT_WGT_NAME);
+
+    post.getInput(ConvolutionLayerPostProcessKernel.INP_NAME)
+      <== mpc.getOutput(MultiPumpedConvolveKernel.OUT_NAME);
+    // pool.getInput(PoolingLayerKernel.INP_NAME)
+    //   <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
+
+    fcPost.getInput(FullyConnectedLayerPostProcessKernel.INP_NAME)
+      <== mpdp.getOutput(MultiPumpedDotProductKernel.OUT_NAME);
+
+    // paddingKernel.getInput(PaddingKernel.INP_NAME)
+    //   <== pool.getOutput(PoolingLayerKernel.OUT_NAME);
+    // paddingKernelFC.getInput(PaddingKernel.INP_NAME)
+    //   <== fcPost.getOutput(FullyConnectedLayerPostProcessKernel.OUT_NAME);
+    // addStreamToCPU("conv_out")
+    //   <== pool.getOutput(PoolingLayerKernel.OUT_NAME);
+    addStreamToCPU("conv_out")
+      <== post.getOutput(ConvolutionLayerPostProcessKernel.OUT_NAME);
+    addStreamToCPU("fc_out")
+      <== fcPost.getOutput(FullyConnectedLayerPostProcessKernel.OUT_NAME);
+
+    /**
+     * Clock configuration
+     */
+    // config.setDefaultStreamClockFrequency(freq);
+    ManagerClock clk
+      = generateStreamClock(DEFAULT_KERNEL_CLK, freq);
+    ManagerClock clockForMPC
+      = generateStreamClock(MPC_CLK, freq * C);
+    ManagerClock clockForMPDP
+      = generateStreamClock(MPDP_CLK, freq * numMPDPFactor);
+
+    cache.setClock(clk);
+    post.setClock(clk);
+    // paddingKernel.setClock(clk);
+    fcCache.setClock(clk);
+    fcPost.setClock(clk);
+
+    mpc.setClock(clockForMPC);
+    mpdp.setClock(clockForMPDP);
+  }
+
+  private void addConvParamsToEngineInterface(EngineInterface ei) {
+    convNumIters = ei.addParam(
+      "conv_num_iters",
+      CPUTypes.UINT32,
+      "The number of iterations to run the convolution kernel"
+    );
+    kernelSize = ei.addParam(
+      "conv_kernel_size",
+      CPUTypes.UINT32,
+      "The kernel size of the current convolution layer computation"
+    );
+    height = ei.addParam(
+      "conv_height",
+      CPUTypes.UINT32,
+      "The height of the current convolution layer computation"
+    );
+    width = ei.addParam(
+      "conv_width",
+      CPUTypes.UINT32,
+      "The width of the current convolution layer computation"
+    );
+    numChannels = ei.addParam(
+      "conv_num_channels",
+      CPUTypes.UINT32,
+      "The num of channels of the current convolution layer computation"
+    );
+    numFilters = ei.addParam(
+      "conv_num_filters",
+      CPUTypes.UINT32,
+      "The number of filters of the current convolution layer computation"
+    );
+    numOutput = (
+      (height - kernelSize + 1) *
+      (width - kernelSize + 1) *
+      numFilters
+    );
+    convOutputHeight = (height - kernelSize + 1);
+    convOutputWidth = (width - kernelSize + 1);
+    // poolHeight = (height - kernelSize + 1);
+    // poolWidth = (width - kernelSize + 1);
+
+    /**
+     * NOTE: We will use the ceil(numFilters/N) as the cycles for computing
+     * numFilters filters.
+     */
+    paddedNumFilterCycles
+      = InterfaceMath.ceil(numFilters.cast(CPUTypes.DOUBLE) / N).cast(CPUTypes.UINT32);
+    paddedNumFilters = paddedNumFilterCycles * N;
+    
+    baseAddr = zero;
+  }
+
+  private void addFCParamsToEngineInterface(EngineInterface ei) {
+    fcNumIters = ei.addParam(
+      "fc_num_iters",
+      CPUTypes.UINT32,
+      "The number of iterations to run the fully-connected layer kernel"
+    );
+    fcHeight = ei.addParam(
+      "fc_height",
+      CPUTypes.UINT32,
+      "The height of the current fully-connected layer computation"
+    );
+    fcWidth = ei.addParam(
+      "fc_width",
+      CPUTypes.UINT32,
+      "The width of the current fully-connected layer computation"
+    );
+  }
+
+  private void setTicksOfEngineInterface(EngineInterface ei) {
+    /**
+     * Setup cycles for each kernel (besides padding kernels).
+     * - The conv cache kernel should process all elements in the input
+     * feature map, AND send weights of all filters to the next level 
+     * of convolution, thus the total number of ticks should be:
+     *  height * width * numChannels * numFilters
+     * With parallelisation in the filter level, the fourth term can be
+     * replaced by the paddedNumFilterCycles.
+     */ 
+    ei.setTicks(CONV_CACHE_KERNEL_NAME,
+      convNumIters * height * width * numChannels * paddedNumFilterCycles);
+
+    ei.setTicks(MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
+      convNumIters * convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles * C);
+
+    ei.setTicks(CONV_POST_PROCESS_KERNEL_NAME,
+      convNumIters * convOutputHeight * convOutputWidth * numChannels * paddedNumFilterCycles);
+    
+    // ei.setTicks(POOL_KERNEL_NAME,
+    //   convNumIters * convOutputHeight * convOutputWidth * paddedNumFilterCycles);
+
+    ei.setTicks(FC_CACHE_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
+
+    ei.setTicks(MULTI_PUMPED_DOT_PRODUCT_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes) * numMPDPFactor);
+    
+    ei.setTicks(FC_POST_PROCESS_KERNEL_NAME,
+      fcNumIters * fcHeight * fcWidth / (numFCRowPipes * numFCColPipes));
+  }
+
+  private void setScalarOfEngineInterface(EngineInterface ei) {
+    ei.setScalar(
+      CONV_CACHE_KERNEL_NAME,
+      ConvolutionLayerCacheKernel.SCALAR_HEIGHT_INP_NAME,
+      height);
+    ei.setScalar(
+      CONV_CACHE_KERNEL_NAME,
+      ConvolutionLayerCacheKernel.SCALAR_WIDTH_INP_NAME,
+      width);
+    // ei.setScalar(
+    //   CONV_CACHE_KERNEL_NAME,
+    //   ConvolutionLayerCacheKernel.SCALAR_NUM_CHANNELS_INP_NAME,
+    //   numChannels);
+    ei.setScalar(
+      CONV_CACHE_KERNEL_NAME,
+      ConvolutionLayerCacheKernel.SCALAR_NUM_FILTERS_INP_NAME,
+      numFilters);
+    ei.setScalar(
+      CONV_CACHE_KERNEL_NAME,
+      ConvolutionLayerCacheKernel.SCALAR_KERNEL_SIZE_INP_NAME,
+      kernelSize);
+
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_HEIGHT_INP_NAME,
+      height);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_WIDTH_INP_NAME,
+      width);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_NUM_CHANNELS_INP_NAME,
+      numChannels);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_NUM_FILTERS_INP_NAME,
+      numFilters);
+    ei.setScalar(
+      CONV_POST_PROCESS_KERNEL_NAME,
+      ConvolutionLayerPostProcessKernel.SCALAR_KERNEL_SIZE_INP_NAME,
+      kernelSize);
+    
+    ei.setScalar(
+      MULTI_PUMPED_CONVOLVE_KERNEL_NAME,
+      MultiPumpedConvolveKernel.SCALAR_KERNEL_SIZE_NAME,
+      kernelSize);
+
+    ei.setScalar(
+      FC_CACHE_KERNEL_NAME,
+      FullyConnectedLayerCacheKernel.SCALAR_HEIGHT_NAME,
+      fcHeight);
+    ei.setScalar(
+      FC_CACHE_KERNEL_NAME,
+      FullyConnectedLayerCacheKernel.SCALAR_WIDTH_NAME,
+      fcWidth);
+
+    // ei.setScalar(
+    //   FC_POST_PROCESS_KERNEL_NAME,
+    //   FullyConnectedLayerPostProcessKernel.SCALAR_HEIGHT_NAME,
+    //   fcHeight);
+    ei.setScalar(
+      FC_POST_PROCESS_KERNEL_NAME,
+      FullyConnectedLayerPostProcessKernel.SCALAR_WIDTH_NAME,
+      fcWidth);
+
+    // ei.setScalar(
+    //   POOL_KERNEL_NAME,
+    //   PoolingLayerKernel.SCALAR_HEIGHT,
+    //   poolHeight);
+    // ei.setScalar(
+    //   POOL_KERNEL_NAME,
+    //   PoolingLayerKernel.SCALAR_WIDTH,
+    //   poolWidth);
+  }
+
+  private EngineInterface interfaceDefault() {
+    EngineInterface ei = new EngineInterface();
+
+    zero = ei.addConstant(0);
+
+    addConvParamsToEngineInterface(ei);
+
+    addFCParamsToEngineInterface(ei);
+
+    setTicksOfEngineInterface(ei);
+
+    setScalarOfEngineInterface(ei);
+
+    ei.setStream(
+        "conv_cache_inp",
+        CPUTypes.UINT32,
+        height * width * numChannels * CPUTypes.UINT32.sizeInBytes());
+    ei.setStream(
+        "conv_cache_wgt",
+        CPUTypes.UINT32,
+        kernelSize * kernelSize * numChannels * paddedNumFilters * CPUTypes.UINT32.sizeInBytes());
+    ei.setStream(
+        "conv_out",
+        CPUTypes.UINT32,
+        (convOutputHeight * convOutputWidth * paddedNumFilters) /
+        (1) * CPUTypes.UINT32.sizeInBytes());
+
+    ei.setStream(
+        "fc_cache_inp",
+        CPUTypes.UINT32,
+        fcWidth * CPUTypes.UINT32.sizeInBytes());
+    ei.setStream(
+        "fc_cache_wgt",
+        CPUTypes.UINT32,
+        fcHeight * fcWidth * CPUTypes.UINT32.sizeInBytes());
+    ei.setStream(
+        "fc_out",
+        CPUTypes.UINT32,
+        fcHeight * CPUTypes.UINT32.sizeInBytes());
+
+    /**
+     * LMem address management
+     */
+    // InterfaceParam burstSize = ei.addConstant(384);
+    // InterfaceParam inpSize
+    //   = height * width * numChannels;
+    // InterfaceParam wgtSize
+    //   = kernelSize * kernelSize * numChannels * numFilters;
+    // InterfaceParam outSize
+    //   = poolHeight * poolWidth * paddedNumFilters
+    //   / (poolStride * poolStride);
+
+    // InterfaceParam burstAlignedInpSize
+    //   = burstAlignedSize(inpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //   * CPUTypes.UINT32.sizeInBytes();
+
+    // InterfaceParam burstAlignedWgtSize
+    //   = burstAlignedSize(wgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //   * CPUTypes.UINT32.sizeInBytes();
+
+    // InterfaceParam burstAlignedOutSize
+    //   = burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //   * CPUTypes.UINT32.sizeInBytes();
+    // 
+    // ei.setTicks(
+    //   UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+    //   convNumIters * burstAlignedInpSize / CPUTypes.UINT32.sizeInBytes());
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+    //   UnpaddingKernel.SCALAR_NUM_INP,
+    //   inpSize);
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_CONV_CACHE_INP_NAME,
+    //   UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedInpSize / CPUTypes.UINT32.sizeInBytes());
+
+    // ei.setTicks(
+    //   UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+    //   convNumIters * burstAlignedWgtSize / CPUTypes.UINT32.sizeInBytes());
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+    //   UnpaddingKernel.SCALAR_NUM_INP,
+    //   wgtSize);
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_CONV_CACHE_WGT_NAME,
+    //   UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedWgtSize / CPUTypes.UINT32.sizeInBytes());
+
+    // ei.setTicks(PADDING_KERNEL_NAME,
+    //   convNumIters * burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+    // ei.setScalar(
+    //   PADDING_KERNEL_NAME,
+    //   PaddingKernel.SCALAR_NUM_INP,
+    //   outSize);
+    // ei.setScalar(
+    //   PADDING_KERNEL_NAME,
+    //   PaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedSize(outSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+
+    // InterfaceParam fcInpSize = fcWidth;
+    // InterfaceParam fcWgtSize = fcHeight * fcWidth;
+    // InterfaceParam fcOutSize = fcHeight;
+
+    // InterfaceParam burstAlignedFCInpSize
+    //   = burstAlignedSize(fcInpSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //     * CPUTypes.UINT32.sizeInBytes();
+
+    // InterfaceParam burstAlignedFCWgtSize
+    //   = burstAlignedSize(fcWgtSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //     * CPUTypes.UINT32.sizeInBytes();
+
+    // InterfaceParam burstAlignedFCOutSize
+    //   = burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize)
+    //     * CPUTypes.UINT32.sizeInBytes();
+
+    // ei.setTicks(
+    //   UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+    //   fcNumIters * burstAlignedFCInpSize / CPUTypes.UINT32.sizeInBytes());
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+    //   UnpaddingKernel.SCALAR_NUM_INP,
+    //   fcInpSize);
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_FC_CACHE_INP_NAME,
+    //   UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedFCInpSize / CPUTypes.UINT32.sizeInBytes());
+
+    // ei.setTicks(
+    //   UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+    //   fcNumIters * burstAlignedFCWgtSize / CPUTypes.UINT32.sizeInBytes());
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+    //   UnpaddingKernel.SCALAR_NUM_INP,
+    //   fcWgtSize);
+    // ei.setScalar(
+    //   UNPADDING_KERNEL_FC_CACHE_WGT_NAME,
+    //   UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedFCWgtSize / CPUTypes.UINT32.sizeInBytes());
+
+    // ei.setTicks(PADDING_KERNEL_FC_NAME,
+    //   fcNumIters * burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+    // ei.setScalar(
+    //   PADDING_KERNEL_FC_NAME,
+    //   PaddingKernel.SCALAR_NUM_INP,
+    //   fcOutSize);
+    // ei.setScalar(
+    //   PADDING_KERNEL_FC_NAME,
+    //   PaddingKernel.SCALAR_TOTAL_CYCLES,
+    //   burstAlignedSize(fcOutSize, CPUTypes.UINT32.sizeInBytes(), burstSize));
+
+    // ei.setLMemLinear(
+    //   UnpaddingKernel.INP_NAME + "_INP",
+    //   baseAddr,
+    //   burstAlignedInpSize);
+    // baseAddr += burstAlignedInpSize;
+
+    // ei.setLMemLinear(
+    //   UnpaddingKernel.INP_NAME + "_WGT",
+    //   baseAddr,
+    //   burstAlignedWgtSize);
+    // baseAddr += burstAlignedWgtSize;
+
+    // ei.setLMemLinear(PaddingKernel.OUT_NAME + "_CONV",
+    //   baseAddr,
+    //   burstAlignedOutSize);
+    // baseAddr += burstAlignedOutSize;
+
+    // ei.setLMemLinear(
+    //   UnpaddingKernel.INP_NAME + "_FC_INP",
+    //   baseAddr,
+    //   burstAlignedFCInpSize);
+    // baseAddr += burstAlignedFCInpSize;
+
+    // ei.setLMemLinear(
+    //   UnpaddingKernel.INP_NAME + "_FC_WGT",
+    //   baseAddr,
+    //   burstAlignedFCWgtSize);
+    // baseAddr += burstAlignedFCWgtSize;
+
+    // ei.setLMemLinear(PaddingKernel.OUT_NAME + "_FC",
+    //   baseAddr,
+    //   burstAlignedOutSize);
+    // baseAddr += burstAlignedFCOutSize;
+
+    // ManagerUtils.ignoreLMemStreams(ei);
+    return ei;
+  }
+
+  private InterfaceParam burstAlignedSize(
+    InterfaceParam num,
+    int size,
+    InterfaceParam burstSize
+  ) {
+    InterfaceParam length = num * size;
+    InterfaceParam burstAlignedLength
+      = InterfaceMath.ceil(length.cast(CPUTypes.DOUBLE) / burstSize.cast(CPUTypes.DOUBLE));
+    return (burstAlignedLength * burstSize / size).cast(CPUTypes.UINT32);
+  }
+
+  public static void main(String [] args) {
+    MaxDeepEngineParameters params = new MaxDeepEngineParameters(args);
+    MaxDeepManager manager = new MaxDeepManager(params);
+
+    // if (params.getDbg())
+    // ManagerUtils.debug(manager);
+    // manager.createSLiCinterface(ManagerUtils.dramWrite(manager, manager.iface));
+    // manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
+    manager.createSLiCinterface(manager.interfaceDefault());
+    // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
+    ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 2, 2);
+
+    manager.build();
+  }
+}

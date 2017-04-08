@@ -1,0 +1,32 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+
+public class AddrGeneratorKernel extends Kernel {
+
+  public static final String CMD_NAME = "CMD_STREAM";
+  
+  public AddrGeneratorKernel(KernelParameters params) {
+    super(params);
+
+    DFEVar totalBursts = io.scalarInput("totalBursts", dfeUInt(32));
+    DFEVar wordsPerBurst = io.scalarInput("wordsPerBurst", dfeUInt(32));
+
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar burstCount = chain.addCounter(totalBursts, 1);
+    DFEVar wordCount = chain.addCounter(wordsPerBurst, 1);
+
+    LMemCommandStream.makeKernelOutput(
+        CMD_NAME,
+        wordCount === 0,
+        burstCount,
+        constant.var(dfeUInt(8), 1),
+        constant.var(dfeUInt(1), 0),
+        constant.var(dfeUInt(1), 0),
+        constant.var(false));
+  }
+}

@@ -1,0 +1,124 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+import java.util.*;
+
+public class FullyConnectedLayerCacheKernel extends Kernel {
+
+  public static final String INP_NAME           = "FC_CACHE_INP";
+  public static final String WGT_NAME           = "FC_CACHE_WGT";
+  public static final String OUT_INP_NAME       = "FC_CACHE_OUT_INP";
+  public static final String OUT_WGT_NAME       = "FC_CACHE_OUT_WGT";
+  public static final String SCALAR_HEIGHT_NAME = "FC_CACHE_SCALAR_HEIGHT";
+  public static final String SCALAR_WIDTH_NAME  = "FC_CACHE_SCALAR_WIDTH";
+
+  /**
+   * This is the kernel for storing the input vector of the FC layer.
+   * Also it helps organise the output to the MPDP.
+   *
+   * @author Ruizhe Zhao
+   * @since 2017-03-08
+   * @param params The kernel parameters
+   * @param maxHeight The maximum height that this cache can support
+   * @param maxWidth The maximum width that this cache kernel can support
+   */
+  public FullyConnectedLayerCacheKernel(
+    KernelParameters params,
+    int maxHeight,
+    int maxWidth,
+    int numRowPipes,
+    int numColPipes
+  ) {
+    super(params);
+
+    DFEType type = dfeUInt(32);
+
+    /**
+     * Scalar inputs:
+     * - height: height of the current FC layer
+     * - width: width of the current FC layer
+     */
+    DFEVar height = io.scalarInput(SCALAR_HEIGHT_NAME, dfeUInt(32));
+    DFEVar width  = io.scalarInput(SCALAR_WIDTH_NAME, dfeUInt(32));
+
+    /**
+     * Counters
+     */
+    // Counters without counter chain
+    // DFEVar idx = control.count.simpleCounter(32, height * width);
+    // KernelMath.DivModResult m = KernelMath.divMod(idx, width);
+    // DFEVar h = m.getQuotient().cast(dfeInt(32));
+    // DFEVar w = m.getRemainder().cast(dfeInt(32));
+    
+    // Counters with counter chain
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar h = chain.addCounter(height, numRowPipes).cast(dfeInt(32));
+    DFEVar w = chain.addCounter(width, numColPipes).cast(dfeInt(32));
+
+    /**
+     * Input
+     */
+    DFEVar inpEnable = dfeBool().newInstance(this);
+    inpEnable <== h === 0;
+
+    DFEVectorType<DFEVar> inpVecType
+      = new DFEVectorType<DFEVar>(type, numColPipes);
+    DFEVector<DFEVar> inpVec = io.input(INP_NAME, inpVecType, inpEnable);
+
+    /**
+     * Output
+     */
+    DFEVectorType<DFEVar> outVecType
+      = new DFEVectorType<DFEVar>(type, numColPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+    
+    /**
+     * Cache:
+     * Only write to the cache when we are working on the first row.
+     */
+
+    List<Memory<DFEVar>> cacheArray = new ArrayList<Memory<DFEVar>>(numColPipes);
+
+    int cacheSize = (int) Math.ceil((double) maxWidth / numColPipes);
+    int cacheAddrBits = MathUtils.bitsToAddress(cacheSize);
+    DFEType cacheAddrType = dfeUInt(cacheAddrBits);
+
+    for (int i = 0; i < numColPipes; i ++) {
+      cacheArray.add(mem.alloc(type, cacheSize));
+
+      DFEVar cacheWriteEnable = inpEnable;
+      DFEVar cacheWriteValue = inpVec[i];
+      DFEVar cacheWriteAddr = (w / numColPipes).cast(cacheAddrType);
+
+      outVec[i] <== cacheArray.get(i).port(
+        cacheWriteAddr,
+        cacheWriteValue,
+        cacheWriteEnable,
+        Mem.RamWriteMode.WRITE_FIRST);
+    }
+
+    /**
+     * Weight
+     */
+    DFEVectorType<DFEVar> wgtVecType
+      = new DFEVectorType<DFEVar>(type, numRowPipes * numColPipes);
+    DFEVector<DFEVar> wgtVec = io.input(WGT_NAME, wgtVecType);
+
+    /**
+     * Output
+     */
+    io.output(OUT_INP_NAME, outVec, outVecType);
+    io.output(OUT_WGT_NAME, wgtVec, wgtVecType);
+  }
+}
