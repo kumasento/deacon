@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
 from scipy.optimize import curve_fit
+
+font = {
+    'family' : 'monospace',
+    'size'   : 22
+}
+
+matplotlib.rc('font', **font)
 
 class RuntimeDataRow(object):
     def __init__(self, params):
@@ -63,7 +71,7 @@ class RuntimeData(object):
 
         popt, pcov = curve_fit(f, P_list, runtime_list[0])
 
-        width = 0.15
+        width = 0.25
         fig, (ax0, ax1) = plt.subplots(1, 2)
         rects0 = ax0.bar(P_list, runtime_list[0], width, color='r')
         rects1 = ax0.bar(P_list+width, runtime_list[1], width, color='g')
@@ -75,7 +83,7 @@ class RuntimeData(object):
 
         fit, = ax0.plot(P_list, f(P_list, *popt), color='k', linestyle='--', linewidth=2)
 
-        ax0.set_title('Time per Frame among Different $P^{conv}$')
+        ax0.set_title('Time per Frame')
         ax0.set_xlabel('$P^{conv}$')
         ax0.set_xticks(P_list+width)
         ax0.set_xticklabels(P_list)
@@ -83,7 +91,7 @@ class RuntimeData(object):
         ax0.set_ylabel('Time per frame (s)')
         ax0.legend((rects0, rects1, rects2, fit), ('100MHz', '120MHz', '140MHz', 'fit curve'))
 
-        ax1.set_title('Power Consumption among Different $P^{conv}$')
+        ax1.set_title('Power Consumption')
         ax1.set_xlabel('$P^{conv}$')
         ax1.set_xticks(P_list+width)
         ax1.set_xticklabels(P_list)
@@ -92,8 +100,8 @@ class RuntimeData(object):
         ax1.set_ylabel('Power (W)')
         ax1.legend((rects3, rects4, rects5), ('100MHz', '120MHz', '140MHz'))
 
-        fig.set_figheight(4)
-        fig.set_figwidth(12)
+        fig.set_figheight(7)
+        fig.set_figwidth(20)
         fig.savefig('runtime_power_by_freq.pdf')
 
     def group_by_M(self):
@@ -187,7 +195,7 @@ class RuntimeData(object):
         rects6 = ax3.bar(eff_P_list, eff_energy_list[0], width, color='r')
         rects7 = ax3.bar(eff_P_list+width, eff_energy_list[1], width, color='b')
 
-        ax0.set_title('Time per Frame among Different $P^{conv}$')
+        ax0.set_title('Time per Frame')
         ax0.set_xlabel('$P^{conv}$')
         ax0.set_xticks(P_list+width)
         ax0.set_xticklabels(P_list)
@@ -195,7 +203,7 @@ class RuntimeData(object):
         ax0.set_ylabel('Time per frame (s)')
         ax0.legend((rects0, rects1), ('$M^{conv}=1$', '$M^{conv}=2$'))
 
-        ax1.set_title('Power Consumption among Different $P^{conv}$')
+        ax1.set_title('Power Consumption')
         ax1.set_xlabel('$P^{conv}$')
         ax1.set_xticks(P_list+width)
         ax1.set_xticklabels(P_list)
@@ -203,7 +211,7 @@ class RuntimeData(object):
         ax1.set_ylim([10, None]) 
         ax1.set_ylabel('Power (W)')
 
-        ax2.set_title('Energy per Frame among Different $P^{conv}$')
+        ax2.set_title('Energy per Frame')
         ax2.set_xlabel('$P^{conv}$')
         ax2.set_xticks(P_list+width)
         ax2.set_xticklabels(P_list)
@@ -211,7 +219,7 @@ class RuntimeData(object):
         ax2.set_ylabel('Energy per Frame (J)')
         ax2.legend((rects4, rects5), ('$M^{conv}=1$', '$M^{conv}=2$'))
 
-        ax3.set_title('Energy per Frame among Effective $P^{conv}$')
+        ax3.set_title('Energy per Frame')
         ax3.set_xlabel('Effective $P^{conv}$')
         ax3.set_xticks(eff_P_list+width)
         ax3.set_xticklabels(eff_P_list)
@@ -219,8 +227,8 @@ class RuntimeData(object):
         ax3.set_ylabel('Energy per Frame (J)')
         ax3.legend((rects6, rects7), ('$M^{conv}=1$', '$M^{conv}=2$'))
 
-        fig.set_figheight(10)
-        fig.set_figwidth(12)
+        fig.set_figheight(15)
+        fig.set_figwidth(18)
         fig.savefig('energy_by_M.pdf')
 
 if __name__ == '__main__':

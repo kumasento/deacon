@@ -5,8 +5,15 @@ import sys
 import re
 import numpy as np
 from sklearn import linear_model
+import matplotlib
 import matplotlib.pyplot as plt
-from pulp import *
+
+font = {
+    'family' : 'monospace',
+    'size'   : 22
+}
+
+matplotlib.rc('font', **font)
 
 BUILD_ROOT_DIR='/mnt/data/scratch/rz3515/builds/'
 
@@ -163,10 +170,10 @@ class DesignModel(object):
         return self.models[M_conv].predict([[P_conv]])
 
     def plot(self):
-        colors = ['r', 'g', 'b']
-        markers = ['x', 'o', '^']
+        colors = ['r', 'g', 'b', 'y']
+        markers = ['x', 'o', '^', '>']
 
-        fig = plt.figure(figsize=(17, 4))
+        fig = plt.figure(figsize=(24, 7))
         ax0 = fig.add_subplot(1, 3, 1)
         ax1 = fig.add_subplot(1, 3, 2)
 
@@ -198,15 +205,15 @@ class DesignModel(object):
                 np.sort(P_conv_list, axis=0),
                 self.models[M_conv].predict(np.sort(P_conv_list, axis=0))[:, 1],
                 color=colors[M_conv-1])
-        ax0.set_title('Logic Usage for Different $P^{conv}$ and $M^{conv}$')
-        ax0.set_xlabel('$P^{conv}$')
+        ax0.set_title('Logic Usage')
+        ax0.set_xlabel('$P^{conv}$', fontsize=22)
         ax0.set_xlim(left=0)
-        ax0.set_ylabel('$U_{logic}$')
+        ax0.set_ylabel('$U_{logic}$', fontsize=22)
         # ax0.legend()
-        ax1.set_title('DSP Usage for Different $P^{conv}$ and $M^{conv}$')
-        ax1.set_xlabel('$P^{conv}$')
+        ax1.set_title('DSP Usage')
+        ax1.set_xlabel('$P^{conv}$', fontsize=22)
         ax1.set_xlim(left=0)
-        ax1.set_ylabel('$U_{dsp}$')
+        ax1.set_ylabel('$U_{dsp}$', fontsize=22)
 
         plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         plt.savefig('logic_dsp.pdf')
