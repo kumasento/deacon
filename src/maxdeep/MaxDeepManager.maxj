@@ -1,0 +1,58 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.managers.custom.*;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.*;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.*;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+
+public class MaxDeepManager extends CustomManager {
+
+  private static final String MAX_DEEP_KERNEL_NAME = "MAX_DEEP_KERNEL";
+  private static final String MAX_DEEP_KERNEL_BLOCK_CLOCK = "MAX_DEEP_KERNEL_BLOCK_CLOCK";
+
+  private static final String CPU_INP_NAME = "cpu_inp";
+  private static final String CPU_OUT_NAME = "cpu_out";
+
+  public MaxDeepManager(MaxDeepEngineParameters params) {
+    super(params);
+
+    KernelBlock maxDeepKernelBlock = addKernel(
+        new MaxDeepKernel(
+          makeKernelParameters(MAX_DEEP_KERNEL_NAME)));
+
+    maxDeepKernelBlock.getInput(MaxDeepKernel.INP_NAME)
+      <== addStreamFromCPU(CPU_INP_NAME);
+
+    addStreamToCPU(CPU_OUT_NAME)
+      <== maxDeepKernelBlock.getOutput(MaxDeepKernel.OUT_NAME);
+
+    ManagerClock maxDeepKernelBlockClock
+      = generateStreamClock(MAX_DEEP_KERNEL_BLOCK_CLOCK, params.getFreq());
+    maxDeepKernelBlock.setClock(maxDeepKernelBlockClock);
+  }
+
+  public EngineInterface interfaceDefault() {
+    EngineInterface engineInterface = new EngineInterface(); 
+
+    InterfaceParam numElems = engineInterface.addParam(
+        "num_elems",
+        CPUTypes.UINT32,
+        "The number of elements to be transferred"
+    );
+
+    engineInterface.setTicks(MAX_DEEP_KERNEL_NAME, numElems);
+    engineInterface.setStream(CPU_INP_NAME, CPUTypes.UINT32, numElems * CPUTypes.UINT32.sizeInBytes());
+    engineInterface.setStream(CPU_OUT_NAME, CPUTypes.UINT32, numElems * CPUTypes.UINT32.sizeInBytes());
+
+    return engineInterface;
+  }
+
+  public static void main(String[] args) {
+    MaxDeepEngineParameters params = new MaxDeepEngineParameters(args);
+    MaxDeepManager manager = new MaxDeepManager(params);
+
+    manager.createSLiCinterface(manager.interfaceDefault());
+    manager.build();
+  }
+}

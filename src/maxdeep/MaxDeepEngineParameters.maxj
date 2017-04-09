@@ -1,0 +1,33 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+
+public class MaxDeepEngineParameters extends EngineParameters {
+
+  private static final String PARAM_FREQ_NAME = "freq";
+
+  private static final int defaultFreq = 100;
+
+  MaxDeepEngineParameters(String ...args) {
+    super(args);
+  }
+
+  @Override
+  protected void declarations() {
+    declareParam(PARAM_FREQ_NAME, DataType.INT, defaultFreq);
+  }
+
+  public int getFreq() {
+    return getParam(PARAM_FREQ_NAME);
+  }
+
+  @Override
+  public String getBuildName() {
+    return String.format(
+        "%s_%s_%s_FREQ_%dMHz",
+        getMaxFileName(),
+        getDFEModel(),
+        getTarget(),
+        getFreq());
+  }
+}
