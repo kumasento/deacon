@@ -37,7 +37,7 @@ public class MaxDeepManager extends CustomManager {
 
     InterfaceParam numElems = engineInterface.addParam(
         "num_elems",
-        CPUTypes.UINT32,
+        CPUTypes.UINT64,
         "The number of elements to be transferred"
     );
 
