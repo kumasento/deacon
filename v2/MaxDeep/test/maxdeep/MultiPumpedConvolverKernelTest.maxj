@@ -1,0 +1,67 @@
+package maxdeep;
+
+import org.junit.*;
+import java.util.*;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.managers.standard.SimulationManager;
+
+import maxdeep.lib.ConvolverKernelLib;
+
+/**
+ * Run unit tests for the MultiPumpedConvolverKernel
+ *
+ * @author Ruizhe Zhao
+ * @since 2017-04-12
+ */
+public class MultiPumpedConvolverKernelTest {
+
+  private static final String TEST_NAME = "MultiPumpedConvolverKernelTest";
+
+  private class ConvolverTestKernel extends Kernel {
+
+    public static final String INP_NAME = "CONVOLVER_TEST_KERNEL_INP";
+    public static final String OUT_NAME = "CONVOLVER_TEST_KERNEL_OUT";
+
+    ConvolverTestKernel(KernelParameters params) {
+      super(params);
+
+      DFEVar ticks = control.count.simpleCounter(32);
+      DFEVar inp = io.input(INP_NAME, dfeUInt(32));
+      DFEVar out = inp * inp;
+      io.output(OUT_NAME, out, dfeUInt(32));
+
+      ConvolverKernelLib convolver = new ConvolverKernelLib(this);
+    }
+  }
+
+  @Test
+  public void testConvolverKernelLib() {
+    int numOfTicks = 1024;
+    int numOfElems = numOfTicks;
+
+    long [] inp = new long [numOfElems];
+    long [] expected = new long [numOfElems];
+    for (int i = 0; i < numOfElems; i ++) {
+      inp[i] = (long) i;
+      expected[i] = inp[i] * inp[i];
+    }
+
+    SimulationManager manager
+      = new SimulationManager(TEST_NAME);
+    ConvolverTestKernel convolverTestKernel
+      = new ConvolverTestKernel(manager.makeKernelParameters());
+    manager.setKernel(convolverTestKernel);
+    manager.setKernelCycles(numOfTicks);
+    manager.setInputDataLong(ConvolverTestKernel.INP_NAME, inp);
+    manager.runTest();
+
+    long [] out = manager.getOutputDataLongArray(ConvolverTestKernel.OUT_NAME);
+    Assert.assertArrayEquals(expected, out);
+  }
+}
