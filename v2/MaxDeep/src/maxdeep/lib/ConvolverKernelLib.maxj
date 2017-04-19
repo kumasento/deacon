@@ -8,6 +8,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
+@Deprecated
 public class ConvolverKernelLib extends KernelLib {
 
   public ConvolverKernelLib(KernelLib owner) {

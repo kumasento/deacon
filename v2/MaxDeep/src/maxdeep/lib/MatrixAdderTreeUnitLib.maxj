@@ -1,0 +1,92 @@
+package maxdeep.lib;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+// import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+import maxpower.kernel.KernelBinaryOp.*;
+import maxpower.utils.TreeReduce;
+
+import java.util.*;
+
+public class MatrixAdderTreeUnitLib extends KernelLib {
+  
+  /**
+   * The constructor for the MatrixAdderTreeUnitLib.
+   *
+   * @param owner The kernel owner of this library
+   * @param H The height of the unit 
+   * @param W The width of the unit
+   * @param R Whether to reduce results from all rows
+   * @param inp The input stream
+   * @param wgt The weight input stream
+   * @param out The output stream
+   */
+  public MatrixAdderTreeUnitLib(
+      KernelLib owner,
+      int H,
+      int W,
+      boolean R,
+      DFEVector<DFEVar> inp,
+      DFEVector<DFEVar> wgt,
+      DFEVector<DFEVar> out)
+  {
+    super(owner);
+
+    // validation
+    if (inp.getSize() != H * W)
+      throw new IllegalArgumentException("Size of inp should equal to H * W");
+    if (wgt.getSize() != H * W)
+      throw new IllegalArgumentException("Size of wgt should equal to H * W");
+    if (R && out.getSize() != 1)
+      throw new IllegalArgumentException("Size of out should be 1 when R is true");
+    if (!R && out.getSize() != H)
+      throw new IllegalArgumentException("Size of out should be H when R is false");
+
+    DFEType baseType = inp[0].getType();
+    DFEVectorType<DFEVar> dotProdVecType
+      = new DFEVectorType<DFEVar>(inp[0].getType(), W);
+    DFEVectorType<DFEVar> dotProdOutVecType
+      = new DFEVectorType<DFEVar>(inp[0].getType(), H);
+    DFEVector<DFEVar> dotProdOut = dotProdOutVecType.newInstance();
+
+    for (int h = 0; h < H; h ++) {
+      DFEVector<DFEVar> dotProdInpVec = dotProdVecType.newInstance();
+      DFEVector<DFEVar> dotProdWgtVec = dotProdVecType.newInstance();
+
+      for (int w = 0; w < W; w ++) {
+        dotprodInpVec[w] <== owner.optimization.pipeline(inp[h * W + w]);
+        dotprodWgtVec[w] <== owner.optimization.pipeline(wgt[h * W + w]);
+      }
+
+      dotProdOut[h] <== dotprod(W, dotProdInpVec, dotProdWgtVec);
+    }
+
+    if (R)
+      out[0] <== TreeReduce.reduce(new Add(), dotProdOut.getElementsAsList());
+    else {
+      for (int h = 0; h < H; h ++)
+        out[h] <== dotProdOut[h];
+    }
+  }
+
+  /**
+   * The dot product operation within the MATU. This dot product will be
+   * complished in one cycle.
+   *
+   * @param length The length of the dot product 
+   * @param x The first input vector
+   * @param y The second input vector
+   */
+  private DFEVar dotprod(
+      int length,
+      DFEVector<DFEVar> x,
+      DFEVector<DFEVar> y)
+  {
+    return TreeReduce.reduce(new Add(), (x * y).getElementsAsList());
+  }
+}
