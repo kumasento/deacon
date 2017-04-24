@@ -1,0 +1,82 @@
+package maxdeep.lib;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+/**
+ * @author Ruizhe Zhao
+ * @since 24/04/2017
+ */
+public class LineBufferKernelLib extends KernelLib {
+
+  private int maxHeight;
+  private int maxWidth;
+  private DFEType valueType;
+  private DFEType indexType;
+  private DFEVar height;
+  private DFEVar width;
+  private DFEVar capacity;
+  private DFEVar buf;
+  private DFEVar vld;
+  private DFEVar idx;
+
+  public LineBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth, DFEType type) {
+    super(owner);
+
+    this.maxHeight = maxHeight;
+    this.maxWidth = maxWidth;
+
+    valueType = type;
+    indexType = dfeInt(32);
+
+    height = indexType.newInstance(this);
+    width = indexType.newInstance(this);
+    capacity = indexType.newInstance(this);
+
+    buf = valueType.newInstance(this);
+    idx = control.count.simpleCounter(32, capacity.cast(dfeUInt(32))).cast(indexType);
+    vld = idx >= (width * (height - 1));
+  }
+
+  public void setInput(DFEVar inp) { buf <== inp; }
+
+  public void setHeight(DFEVar height) { this.height <== height; }
+
+  public void setWidth(DFEVar width) { this.width <== width; }
+
+  /**
+   * Capacity should not be smaller than height * width
+   */
+  public void setCapacity(DFEVar capacity) { this.capacity <== capacity; }
+
+  public DFEVar getOutputElementAt(int i) {
+    if (i == 0)
+      return buf;
+
+    DFEVar index = constant.var(i).cast(indexType);
+    DFEVar offset = index * (- width);
+    int maxOffset = - maxWidth * (maxHeight - 1);
+    DFEVar readBufByOffset = stream.offset(
+        buf,
+        offset,
+        maxOffset,
+        0);
+    return (index < height) ? readBufByOffset : constant.var(0).cast(valueType);
+  }
+
+  public DFEVar getValid() { return vld; }
+
+  public DFEVector<DFEVar> getOutput() {
+    DFEVectorType<DFEVar> outVecType = new DFEVectorType<DFEVar>(valueType, maxHeight);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+
+    for (int i = 0; i < maxHeight; i ++) {
+      outVec[i] <== getOutputElementAt(i);
+    }
+
+    return outVec;
+  }
+}

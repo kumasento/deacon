@@ -7,7 +7,7 @@ import org.junit.runner.notification.Failure;
 public class MaxDeepTestRunner {
 
   public static void main(String [] args) {
-    Result result = JUnitCore.runClasses(MultiPumpedConvolverKernelTest.class);
+    Result result = JUnitCore.runClasses(LineBufferKernelLibTest.class);
     System.out.println(result.wasSuccessful());
     for (Failure failure: result.getFailures())
       System.out.println(failure.getMessage());

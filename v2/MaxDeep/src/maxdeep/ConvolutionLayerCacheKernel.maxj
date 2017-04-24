@@ -18,6 +18,11 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 
+/**
+ * The input cache for the convolutional layer.
+ *
+ * @author Ruizhe Zhao
+ */
 public class ConvolutionLayerCacheKernel extends Kernel {
 
   public static final String INP_NAME     = "CONV_CACHE_INP";

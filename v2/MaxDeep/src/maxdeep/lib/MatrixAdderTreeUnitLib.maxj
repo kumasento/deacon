@@ -59,8 +59,8 @@ public class MatrixAdderTreeUnitLib extends KernelLib {
       DFEVector<DFEVar> dotProdWgtVec = dotProdVecType.newInstance();
 
       for (int w = 0; w < W; w ++) {
-        dotprodInpVec[w] <== owner.optimization.pipeline(inp[h * W + w]);
-        dotprodWgtVec[w] <== owner.optimization.pipeline(wgt[h * W + w]);
+        dotProdInpVec[w] <== owner.optimization.pipeline(inp[h * W + w]);
+        dotProdWgtVec[w] <== owner.optimization.pipeline(wgt[h * W + w]);
       }
 
       dotProdOut[h] <== dotprod(W, dotProdInpVec, dotProdWgtVec);

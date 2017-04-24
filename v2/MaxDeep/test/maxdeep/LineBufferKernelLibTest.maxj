@@ -1,0 +1,77 @@
+package maxdeep;
+
+import org.junit.*;
+import java.util.*;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.managers.standard.SimulationManager;
+import com.maxeler.maxcompiler.v2.utils.*;
+
+import maxdeep.lib.LineBufferKernelLib;
+
+public class LineBufferKernelLibTest {
+
+  private static final String TEST_NAME = "LineBufferKernelLibTest";
+
+  private class LineBufferKernelLibTestKernel extends Kernel {
+
+    public static final String INP_NAME = "LINE_BUFFER_KERNEL_LIB_TEST_KERNEL_INP";
+    public static final String OUT_NAME = "LINE_BUFFER_KERNEL_LIB_TEST_KERNEL_OUT";
+    public static final String VLD_NAME = "LINE_BUFFER_KERNEL_LIB_TEST_KERNEL_VLD";
+
+    LineBufferKernelLibTestKernel(KernelParameters params, int maxHeight, int maxWidth, int capacity) {
+      super(params);
+
+      DFEType valueType = dfeUInt(32);
+      DFEType indexType = dfeInt(32);
+
+      LineBufferKernelLib lineBufferKernelLib
+        = new LineBufferKernelLib(this, maxHeight, maxWidth, valueType);
+
+      DFEVar inp = io.input(INP_NAME, valueType);
+      DFEVar height = constant.var(maxHeight).cast(indexType);
+      DFEVar width = constant.var(maxWidth).cast(indexType);
+
+      lineBufferKernelLib.setInput(inp);
+      lineBufferKernelLib.setHeight(height);
+      lineBufferKernelLib.setWidth(width);
+      lineBufferKernelLib.setCapacity(constant.var(capacity).cast(indexType));
+
+      DFEVector<DFEVar> outVec = lineBufferKernelLib.getOutput();
+      io.output(VLD_NAME, lineBufferKernelLib.getValid(), dfeBool());
+      io.output(OUT_NAME, outVec, outVec.getType());
+    }
+  }
+
+  public void test(int numOfTicks, int height, int width, int capacity) {
+    int numOfElems = numOfTicks;
+
+    long [] inp = new long [numOfElems];
+    for (int i = 0; i < numOfElems; i ++) {
+      inp[i] = (long) i;
+    }
+
+    SimulationManager manager
+      = new SimulationManager(TEST_NAME);
+    LineBufferKernelLibTestKernel kernel
+      = new LineBufferKernelLibTestKernel(manager.makeKernelParameters(), height, width, capacity);
+    manager.setKernel(kernel);
+    manager.setKernelCycles(numOfTicks);
+    manager.setInputDataLong(LineBufferKernelLibTestKernel.INP_NAME, inp);
+    manager.runTest();
+
+    Bits [] vldRawArray = manager.getOutputDataRawArray(LineBufferKernelLibTestKernel.VLD_NAME);
+    Bits [] outRawArray = manager.getOutputDataRawArray(LineBufferKernelLibTestKernel.OUT_NAME);
+    for (int i = 0; i < numOfTicks; i ++) {
+      Assert.assertEquals(vldRawArray[i].getBit(0), (i % capacity) >= (width * (height - 1)));
+    }
+  }
+
+  @Test
+  public void test() {
+    test(60, 3, 10, 30);
+    // test(60, 3, 20, 30);
+  }
+}
