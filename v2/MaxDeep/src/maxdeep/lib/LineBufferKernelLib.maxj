@@ -7,6 +7,13 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 
 /**
+ * This is a kernel for integrating line buffer with your design.
+ *
+ * Usage:
+ * 1. specify maximum height and width, and also the base DFEType
+ * 2. setup input stream, current height, width, and capacity of the buffer
+ * 3. setup connections from the output stream and the valid signal
+ *
  * @author Ruizhe Zhao
  * @since 24/04/2017
  */
@@ -52,7 +59,20 @@ public class LineBufferKernelLib extends KernelLib {
    */
   public void setCapacity(DFEVar capacity) { this.capacity <== capacity; }
 
-  public DFEVar getOutputElementAt(int i) {
+  public DFEVar getValid() { return vld; }
+
+  public DFEVector<DFEVar> getOutput() {
+    DFEVectorType<DFEVar> outVecType = new DFEVectorType<DFEVar>(valueType, maxHeight);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+
+    for (int i = 0; i < maxHeight; i ++) {
+      outVec[i] <== getOutputElementAt(i);
+    }
+
+    return outVec;
+  }
+
+  private DFEVar getOutputElementAt(int i) {
     if (i == 0)
       return buf;
 
@@ -65,18 +85,5 @@ public class LineBufferKernelLib extends KernelLib {
         maxOffset,
         0);
     return (index < height) ? readBufByOffset : constant.var(0).cast(valueType);
-  }
-
-  public DFEVar getValid() { return vld; }
-
-  public DFEVector<DFEVar> getOutput() {
-    DFEVectorType<DFEVar> outVecType = new DFEVectorType<DFEVar>(valueType, maxHeight);
-    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
-
-    for (int i = 0; i < maxHeight; i ++) {
-      outVec[i] <== getOutputElementAt(i);
-    }
-
-    return outVec;
   }
 }
