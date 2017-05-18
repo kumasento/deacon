@@ -14,216 +14,77 @@ unsigned int burst_aligned_size(unsigned int size, size_t num_bytes, size_t burs
   return (unsigned int) (ceil((double) size * num_bytes / burst_size) * burst_size / num_bytes);
 }
 
+void run_loopback_test(max_file_t *maxfile, max_engine_t *engine);
+
 int main(int argc, char *argv[]) {
-  printf("\x1B[32mMaxDeep Command Line Program\x1B[0m\n");
+  printf("\x1B[33mMaxDeep Command Line Program\x1B[0m\n");
 
-  int num_iters = 1000;
-
-  unsigned int conv_height       = 30;
-  unsigned int conv_width        = 30;
-  unsigned int conv_num_channels = 128;
-  unsigned int conv_num_filters  = 128;
-  unsigned int conv_kernel_size  = 3;
-  unsigned int fc_height         = 16;
-  unsigned int fc_width          = 16;
-  
-  printf("Loading maxfile ...\n");
+  printf("\x1B[32mLOADING\x1B[0m maxfile ...\n");
   max_file_t *maxfile = MaxDeep_init();
-  max_engine_t *engine = max_load(maxfile, "local:0");
-  // size_t burst_size = max_get_burst_size(maxfile, NULL);
-  // printf("Burst size: %ld\n", burst_size);
+  max_engine_t *engine = max_load(maxfile, "*:0");
 
-  const uint64_t max_conv_height
-    = max_get_constant_uint64t(maxfile, "maxConvHeight");
-  const uint64_t max_conv_width
-    = max_get_constant_uint64t(maxfile, "maxConvWidth");
-  const uint64_t max_conv_num_channels
-    = max_get_constant_uint64t(maxfile, "maxConvNumChannels");
-  const uint64_t max_conv_num_filters
-    = max_get_constant_uint64t(maxfile, "maxConvNumFilters");
-  const uint64_t max_conv_kernel_size
-    = max_get_constant_uint64t(maxfile, "maxConvKernelSize");
-  const uint64_t max_fc_height
-    = max_get_constant_uint64t(maxfile, "maxFCHeight");
-  const uint64_t max_fc_width
-    = max_get_constant_uint64t(maxfile, "maxFCWidth");
-  const uint64_t num_pipes 
-    = max_get_constant_uint64t(maxfile, "numPipes");
+  run_loopback_test(maxfile, engine);
 
-  printf("Constants:\n");
-  printf("\t- maxConvHeight:      %ld\n", max_conv_height);
-  printf("\t- maxConvWidth:       %ld\n", max_conv_width);
-  printf("\t- maxConvNumChannels: %ld\n", max_conv_num_channels);
-  printf("\t- maxConvNumFilters:  %ld\n", max_conv_num_filters);
-  printf("\t- maxConvKernelSize:  %ld\n", max_conv_kernel_size);
-  printf("\t- maxFCHeight:        %ld\n", max_fc_height);
-  printf("\t- maxFCWidth:         %ld\n", max_fc_width);
-  printf("\t- numPipes:           %ld\n", num_pipes);
+  return 0;
+}
 
-  printf("Computed:\n");
-  unsigned int inp_size
-    = conv_height * conv_width * conv_num_channels;
-  printf("\t- CONV Input size:   %10d\n", inp_size);
-  unsigned int wgt_size
-    = ( conv_kernel_size
-      * conv_kernel_size
-      * conv_num_channels
-      * ceil((double) conv_num_filters / num_pipes) * num_pipes);
-  printf("\t- CONV Weights size: %10d\n", wgt_size);
-  unsigned int out_size
-    = (conv_height - conv_kernel_size + 1) *
-      (conv_width - conv_kernel_size + 1) *
-      (ceil((double) conv_num_filters / num_pipes) * num_pipes)
-      ;
-  printf("\t- CONV Output size:  %10d\n", out_size);
-  // unsigned int origin_out_size = out_size;
-  unsigned int fc_inp_size = fc_width;
-  printf("\t- FC   Input size:   %10d\n", fc_inp_size);
-  unsigned int fc_wgt_size = fc_height * fc_width;
-  printf("\t- FC   Weights size: %10d\n", fc_wgt_size);
-  unsigned int fc_out_size = fc_height;
-  printf("\t- FC   Output size:  %10d\n", fc_out_size);
+/**
+ * This test is aiming to find out the bandwidth and power
+ * consumption of DRAM read and write on the Maxeler platform.
+ *
+ * @author Ruizhe Zhao
+ * @since 16/05/2017
+ * @param maxfile max_file_t pointer
+ * @param engine max_engine_t *engine
+ */
+void run_loopback_test(max_file_t *maxfile, max_engine_t *engine) {
+  printf("\x1B[32mTESTING\x1B[0m loopback ...\n");
+  const int num_iters = 1;
 
-  // printf("\t- CONV Input size:   %10d (%d)\n", inp_size,    burst_aligned_size(inp_size,    sizeof(unsigned int), burst_size));
-  // printf("\t- CONV Weights size: %10d (%d)\n", wgt_size,    burst_aligned_size(wgt_size,    sizeof(unsigned int), burst_size));
-  // printf("\t- CONV Output size:  %10d (%d)\n", out_size,    burst_aligned_size(out_size,    sizeof(unsigned int), burst_size));
-  // printf("\t- FC   Input size:   %10d (%d)\n", fc_inp_size, burst_aligned_size(fc_inp_size, sizeof(unsigned int), burst_size));
-  // printf("\t- FC   Weights size: %10d (%d)\n", fc_wgt_size, burst_aligned_size(fc_wgt_size, sizeof(unsigned int), burst_size));
-  // printf("\t- FC   Output size:  %10d (%d)\n", fc_out_size, burst_aligned_size(fc_out_size, sizeof(unsigned int), burst_size));
+  size_t burst_size = max_get_burst_size(maxfile, NULL);
+  printf("Burst size: %ld\n", burst_size);
 
-  // inp_size    = burst_aligned_size(inp_size,    sizeof(unsigned int), burst_size);
-  // wgt_size    = burst_aligned_size(wgt_size,    sizeof(unsigned int), burst_size);
-  // out_size    = burst_aligned_size(out_size,    sizeof(unsigned int), burst_size);
-  // fc_inp_size = burst_aligned_size(fc_inp_size, sizeof(unsigned int), burst_size);
-  // fc_wgt_size = burst_aligned_size(fc_wgt_size, sizeof(unsigned int), burst_size);
-  // fc_out_size = burst_aligned_size(fc_out_size, sizeof(unsigned int), burst_size);
+  const int64_t inp_size = burst_size * 1024 * 1024;
+  const int64_t wgt_size = inp_size;
+  const int64_t out_size = inp_size;
 
-  // uint8_t *data_inp    = (uint8_t *) malloc(sizeof(uint32_t) * inp_size);
-  // uint8_t *data_wgt    = (uint8_t *) malloc(sizeof(uint32_t) * wgt_size);
-  // uint8_t *data_out    = (uint8_t *) malloc(sizeof(uint32_t) * out_size);
-  // uint8_t *data_fc_inp = (uint8_t *) malloc(sizeof(uint32_t) * fc_inp_size);
-  // uint8_t *data_fc_wgt = (uint8_t *) malloc(sizeof(uint32_t) * fc_wgt_size);
-  // uint8_t *data_fc_out = (uint8_t *) malloc(sizeof(uint32_t) * fc_out_size);
-  uint32_t *data_inp    = (uint32_t *) malloc(sizeof(uint32_t) * inp_size);
-  uint32_t *data_wgt    = (uint32_t *) malloc(sizeof(uint32_t) * wgt_size);
-  uint32_t *data_out    = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
-  uint32_t *data_fc_inp = (uint32_t *) malloc(sizeof(uint32_t) * fc_inp_size);
-  uint32_t *data_fc_wgt = (uint32_t *) malloc(sizeof(uint32_t) * fc_wgt_size);
-  uint32_t *data_fc_out = (uint32_t *) malloc(sizeof(uint32_t) * fc_out_size);
-  if (!data_inp || !data_wgt || !data_out || !data_fc_inp || !data_fc_wgt || !data_fc_out)
-    fprintf(stderr, "Cannot allocat inp stream\n");
-  printf("Allocated memory\n");
-  
-  // TODO: write stream encoder and decoder methods to transform the
-  // data type
-  // (2017-02-24) Ruizhe Zhao
-  // for (int i = 0; i < (int) inp_size * 4; i += 4) {
-  //   uint32_t val = i / 4;
-  //   for (int j = 0; j < 4; j ++) {
-  //     data_inp[i + j] = (val >> (j * 8));
-  //   }
-  // }
-  // for (int i = 0; i < (int) fc_inp_size * 4; i += 4) {
-  //   uint32_t val = i / 4;
-  //   for (int j = 0; j < 4; j ++) {
-  //     data_fc_inp[i + j] = (val >> (j * 8));
-  //   }
-  // }
-  // for (int i = 0; i < (int) wgt_size * 4; i += 4) {
-  //   uint32_t val = i / 4;
-  //   for (int j = 0; j < 4; j ++) {
-  //     data_wgt[i + j] = (val >> (j * 8));
-  //   }
-  // }
-  // for (int i = 0; i < (int) fc_wgt_size * 4; i += 4) {
-  //   uint32_t val = 1;
-  //   for (int j = 0; j < 4; j ++) {
-  //     data_fc_wgt[i + j] = (val >> (j * 8));
-  //   }
-  // }
-  // uint32_t base_addr = 0;
-
-  for (int i = 0; i < (int) inp_size; i ++) {
-    data_inp[i] = (unsigned int) i;
-  }
-  printf("Assigned data_inp\n");
-  for (int i = 0; i < (int) wgt_size; i ++) {
-    data_wgt[i] = i;
-  }
-  printf("Assigned data_wgt\n");
-  for (int i = 0; i < (int) fc_inp_size; i ++) {
-    data_fc_inp[i] = i;
-  }
-  for (int i = 0; i < (int) fc_wgt_size; i ++) {
-    data_fc_wgt[i] = i;
+  uint32_t *inp = (uint32_t *) malloc(sizeof(uint32_t) * inp_size);
+  uint32_t *wgt = (uint32_t *) malloc(sizeof(uint32_t) * wgt_size);
+  uint32_t *out = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
+  uint32_t *expected_out = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
+  if (!inp || !wgt || !out) {
+    fprintf(stderr, "Cannot allocat streams\n");
+    exit(-1);
   }
 
+  for (int i = 0; i < (int) inp_size; i++)
+    inp[i] = (uint32_t) i;
+  for (int i = 0; i < (int) wgt_size; i++)
+    wgt[i] = (uint32_t) i;
+  for (int i = 0; i < (int) out_size; i++)
+    expected_out[i] = (uint32_t) i + i;
 
-  // MaxDeep_dramWrite_actions_t inp_write_actions;
-  // inp_write_actions.param_size_bytes  = inp_size * sizeof(uint32_t);
-  // inp_write_actions.param_start_bytes = base_addr;
-  // inp_write_actions.instream_fromcpu  = data_inp;
-  // base_addr += inp_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
+  MaxDeep_dramWrite_actions_t inp_write_actions;
+  inp_write_actions.param_size_bytes = inp_size * sizeof(uint32_t);
+  inp_write_actions.param_start_bytes = 0;
+  inp_write_actions.instream_fromcpu = (const uint8_t *) inp;
 
-  // MaxDeep_dramWrite_actions_t wgt_write_actions;
-  // wgt_write_actions.param_size_bytes  = wgt_size * sizeof(uint32_t);
-  // wgt_write_actions.param_start_bytes = base_addr;
-  // wgt_write_actions.instream_fromcpu  = data_wgt;
-  // base_addr += wgt_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
+  MaxDeep_dramWrite_actions_t wgt_write_actions;
+  wgt_write_actions.param_size_bytes = wgt_size * sizeof(uint32_t);
+  wgt_write_actions.param_start_bytes = inp_size * sizeof(uint32_t);
+  wgt_write_actions.instream_fromcpu = (const uint8_t *) wgt;
 
-  // MaxDeep_dramRead_actions_t out_read_actions;
-  // out_read_actions.param_size_bytes  = out_size * sizeof(uint32_t);
-  // out_read_actions.param_start_bytes = base_addr;
-  // out_read_actions.outstream_tocpu   = data_out;
-  // base_addr += out_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
-
-  // MaxDeep_dramWrite_actions_t fc_inp_write_actions;
-  // fc_inp_write_actions.param_size_bytes  = fc_inp_size * sizeof(uint32_t);
-  // fc_inp_write_actions.param_start_bytes = base_addr;
-  // fc_inp_write_actions.instream_fromcpu  = data_fc_inp;
-  // base_addr += fc_inp_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
-
-  // MaxDeep_dramWrite_actions_t fc_wgt_write_actions;
-  // fc_wgt_write_actions.param_size_bytes  = fc_wgt_size * sizeof(uint32_t);
-  // fc_wgt_write_actions.param_start_bytes = base_addr;
-  // fc_wgt_write_actions.instream_fromcpu  = data_fc_wgt;
-  // base_addr += fc_wgt_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
-
-  // MaxDeep_dramRead_actions_t fc_out_read_actions;
-  // fc_out_read_actions.param_size_bytes  = fc_out_size * sizeof(uint32_t);
-  // fc_out_read_actions.param_start_bytes = base_addr;
-  // fc_out_read_actions.outstream_tocpu   = data_fc_out;
-  // base_addr += fc_out_size * sizeof(uint32_t);
-  // printf("ADDR = 0x%08x\n", base_addr);
+  MaxDeep_dramRead_actions_t read_actions;
+  read_actions.param_size_bytes = out_size * sizeof(uint32_t);
+  read_actions.param_start_bytes = (inp_size + wgt_size) * sizeof(uint32_t);
+  read_actions.outstream_tocpu = (uint8_t *) out;
 
   MaxDeep_actions_t actions;
-  // max_set_debug((max_actions_t *) &actions, "maxdeep", MAX_DEBUG_ALWAYS);
-  actions.param_conv_height       = conv_height;
-  actions.param_conv_width        = conv_width;
-  actions.param_conv_num_channels = conv_num_channels;
-  actions.param_conv_num_filters  = conv_num_filters;
-  actions.param_conv_kernel_size  = conv_kernel_size;
-  actions.param_conv_num_iters    = 1;
-  actions.param_fc_height         = fc_height;
-  actions.param_fc_width          = fc_width;
-  actions.param_fc_num_iters      = 1;
-  actions.instream_conv_cache_inp = data_inp;
-  actions.instream_conv_cache_wgt = data_wgt;
-  actions.instream_fc_cache_inp   = data_fc_inp;
-  actions.instream_fc_cache_wgt   = data_fc_wgt;
-  actions.outstream_conv_out      = data_out;
-  actions.outstream_fc_out        = data_fc_out;
+  actions.param_num_elems = inp_size;
 
-  // printf("Writing to DRAM ...\n\n");
-  // MaxDeep_dramWrite_run(engine, &inp_write_actions);
-  // MaxDeep_dramWrite_run(engine, &wgt_write_actions);
-  // MaxDeep_dramWrite_run(engine, &fc_inp_write_actions);
-  // MaxDeep_dramWrite_run(engine, &fc_wgt_write_actions);
+  printf("Writing to DRAM ...\n\n");
+  MaxDeep_dramWrite_run(engine, &inp_write_actions);
+  MaxDeep_dramWrite_run(engine, &wgt_write_actions);
 
   printf("Computing ...\n\n");
 
@@ -234,28 +95,24 @@ int main(int argc, char *argv[]) {
     MaxDeep_run(engine, &actions);
   gettimeofday(&t1, NULL);
   double elapsed = (t1.tv_sec - t0.tv_sec) + (t1.tv_usec - t0.tv_usec) * 1e-6;
-  printf("TOTAL TIME:     %lf s\n", elapsed);
-  printf("EACH ITER TIME: %lf s\n", elapsed / num_iters);
-  printf("BANDWIDTH TIME: %lf s\n",
-      ((double) (inp_size + wgt_size + fc_inp_size + fc_wgt_size) * sizeof(unsigned int)) /
-      ((double) 2 * 1024 * 1024 * 1024));
+  elapsed /= num_iters;
 
-  // printf("Reading back ...\n\n");
-  // MaxDeep_dramRead_run(engine, &out_read_actions);
-  // MaxDeep_dramRead_run(engine, &fc_out_read_actions);
+  printf("RUN TIME:       %lf s\n", elapsed);
+  printf("FREQUENCY:      %.2f MHz\n", inp_size / elapsed * 1e-6);
 
-  // for (int i = 0; i < (int) origin_out_size * 4; i += 4) {
-  //   uint32_t val = 0;
-  //   for (int j = 0; j < 4; j ++)
-  //     val += (data_out[i + j] << (j * 8));
-  //   printf("CONV out[%4d] = %u\n", i / 4, val);
-  // }
-  // for (int i = 0; i < (int) fc_height * 4; i += 4) {
-  //   uint32_t val = 0;
-  //   for (int j = 0; j < 4; j ++)
-  //     val += (data_fc_out[i + j] << (j * 8));
-  //   printf("FC   out[%4d] = %u\n", i / 4, val);
-  // }
+  printf("Reading back ...\n\n");
+  MaxDeep_dramRead_run(engine, &read_actions);
+  for (int i = 0; i < 10; i ++)
+    printf("out[%3d] = %u\n", i, out[i]);
+  for (int i = 0; i < out_size; i ++) {
+    if (out[i] != expected_out[i]) {
+      fprintf(stderr,
+          "out[%3d] = %u is different from expected result %u\n",
+          i, out[i], expected_out[i]);
+    }
+  }
+  printf("TEST PASSED if no error shows up\n");
 
-  return 0;
+  free(inp);
+  free(out);
 }

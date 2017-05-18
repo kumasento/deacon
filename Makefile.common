@@ -18,10 +18,11 @@ NUMDEVICES ?= 1
 
 BUILD_DATE?=$(shell date +"%d-%m-%y")
 # ---- Paths ----
-MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/rz3515/builds/$(BUILD_DATE)
-ifndef $(MAXCOMPILER_BUILD_DIR)
-	MAXCOMPILER_BUILD_DIR=.
-endif
+# MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/$(BUILD_DATE)
+MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
+# ifndef $(MAXCOMPILER_BUILD_DIR)
+# 	MAXCOMPILER_BUILD_DIR=.
+# endif
 
 SIMMAXNAME=$(PRJ)_$(DFEModel)_DFE_SIM$(BUILD_NAME_OPTION)
 DFEMAXNAME=$(PRJ)_$(DFEModel)_DFE$(BUILD_NAME_OPTION)
@@ -165,11 +166,11 @@ $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXPOWER) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
-	rm $(DFEMAXDIR)/$(PRJ).h
-	rm $(DFEMAXDIR)/$(PRJ).max
-	cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
-	cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
-	rm -rf $(DFEMAXDIR)/../scratch
+	# rm $(DFEMAXDIR)/$(PRJ).h
+	# rm $(DFEMAXDIR)/$(PRJ).max
+	# cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
+	# cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
+	# rm -rf $(DFEMAXDIR)/../scratch
 
 $(PRJBUILDNAME)_dfe.o: $(DFEMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@

@@ -19,6 +19,8 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int maxFCHeight        = 16;
   private static final int maxFCWidth         = 16;
 
+  private static final String designName = "DEFAULT";
+
   private static boolean dbg = false;
 
   MaxDeepEngineParameters(String ...args) {
@@ -27,22 +29,24 @@ public class MaxDeepEngineParameters extends EngineParameters {
 
   @Override
   protected void declarations() {
-    declareParam("numPipes",           DataType.INT, numPipes);
-    declareParam("freq",               DataType.INT, freq);
-    declareParam("multiPumpingFactor", DataType.INT, multiPumpingFactor);
-    declareParam("maxConvHeight",      DataType.INT, maxConvHeight);
-    declareParam("maxConvWidth",       DataType.INT, maxConvWidth);
-    declareParam("maxConvNumChannels", DataType.INT, maxConvNumChannels);
-    declareParam("maxConvNumFilters",  DataType.INT, maxConvNumFilters);
-    declareParam("maxConvKernelSize",  DataType.INT, maxConvKernelSize);
-    declareParam("maxFCHeight",        DataType.INT, maxFCHeight);
-    declareParam("maxFCWidth",         DataType.INT, maxFCWidth);
-    declareParam("numFCRowPipes",      DataType.INT, numFCRowPipes);
-    declareParam("numFCColPipes",      DataType.INT, numFCColPipes);
-    declareParam("numMPDPFactor",      DataType.INT, numMPDPFactor);
-    declareParam("dbg",                DataType.BOOL, dbg);
+    declareParam("designName",         DataType.STRING, designName);
+    declareParam("numPipes",           DataType.INT,    numPipes);
+    declareParam("freq",               DataType.INT,    freq);
+    declareParam("multiPumpingFactor", DataType.INT,    multiPumpingFactor);
+    declareParam("maxConvHeight",      DataType.INT,    maxConvHeight);
+    declareParam("maxConvWidth",       DataType.INT,    maxConvWidth);
+    declareParam("maxConvNumChannels", DataType.INT,    maxConvNumChannels);
+    declareParam("maxConvNumFilters",  DataType.INT,    maxConvNumFilters);
+    declareParam("maxConvKernelSize",  DataType.INT,    maxConvKernelSize);
+    declareParam("maxFCHeight",        DataType.INT,    maxFCHeight);
+    declareParam("maxFCWidth",         DataType.INT,    maxFCWidth);
+    declareParam("numFCRowPipes",      DataType.INT,    numFCRowPipes);
+    declareParam("numFCColPipes",      DataType.INT,    numFCColPipes);
+    declareParam("numMPDPFactor",      DataType.INT,    numMPDPFactor);
+    declareParam("dbg",                DataType.BOOL,   dbg);
   }
 
+  public String getDesignName()      { return getParam("designName"); }
   public int getNumPipes()           { return getParam("numPipes");           }
   public int getFreq()               { return getParam("freq");               }
   public int getMultiPumpingFactor() { return getParam("multiPumpingFactor"); }
@@ -61,22 +65,32 @@ public class MaxDeepEngineParameters extends EngineParameters {
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_FH_%d_FW_%d_FR_%d_FC_%d_MPDP_%d_C_%d_F_%03dMHz",
+        "%s_%s_%s_%s_FREQ_%sMHz",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
-        getNumPipes(),
-        getMaxConvHeight(),
-        getMaxConvWidth(),
-        getMaxConvNumChannels(),
-        getMaxConvNumFilters(),
-        getMaxConvKernelSize(),
-        getMaxFCHeight(),
-        getMaxFCWidth(),
-        getNumFCRowPipes(),
-        getNumFCColPipes(),
-        getNumMPDPFactor(),
-        getMultiPumpingFactor(),
+        getDesignName(),
         getFreq());
   }
+  // @Override
+  // public String getBuildName() {
+  //   return String.format(
+  //       "%s_%s_%s_N_%d_H_%d_W_%d_C_%d_F_%d_K_%d_FH_%d_FW_%d_FR_%d_FC_%d_MPDP_%d_C_%d_F_%03dMHz",
+  //       getMaxFileName(),
+  //       getDFEModel(),
+  //       getTarget(),
+  //       getNumPipes(),
+  //       getMaxConvHeight(),
+  //       getMaxConvWidth(),
+  //       getMaxConvNumChannels(),
+  //       getMaxConvNumFilters(),
+  //       getMaxConvKernelSize(),
+  //       getMaxFCHeight(),
+  //       getMaxFCWidth(),
+  //       getNumFCRowPipes(),
+  //       getNumFCColPipes(),
+  //       getNumMPDPFactor(),
+  //       getMultiPumpingFactor(),
+  //       getFreq());
+  // }
 }
