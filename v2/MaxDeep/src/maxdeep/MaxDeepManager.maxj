@@ -16,6 +16,8 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
+import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
+import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 
 class MaxDeepManager extends CustomManager {
 
@@ -24,6 +26,9 @@ class MaxDeepManager extends CustomManager {
    */
   protected LMemInterface iface;
   protected LMemCommandGroup group;
+  public static final String LMEM_INP_NAME = "LMEM_INP";
+  public static final String LMEM_WGT_NAME = "LMEM_WGT";
+  public static final String LMEM_OUT_NAME = "LMEM_OUT";
 
   /**
    * Manager clocks
@@ -35,19 +40,33 @@ class MaxDeepManager extends CustomManager {
    * Kernel instance names
    */
   public static final String LOOPBACK_KERNEL_NAME = "LOOPBACK_KERNEL";
+  public static final String PADDING_KERNEL_NAME = "PADDING_KERNEL";
+  public static final String UNPADDING_INP_KERNEL_NAME = "UNPADDING_INP_KERNEL";
+  public static final String UNPADDING_WGT_KERNEL_NAME = "UNPADDING_WGT_KERNEL";
+
+  /**
+   * Shared kernel blocks
+   */
+  private KernelBlock padding;
+  private KernelBlock unpadding_inp;
+  private KernelBlock unpadding_wgt;
 
   public MaxDeepManager(MaxDeepEngineParameters params) {
     super(params);
 
-    initializeLMemInterface();
     initializeManagerClocks(params);
+    initializeLMemInterface(params);
 
-    if (params.getDesignName().equals("LOOPBACK"))
-      initializeLoopbackKernel(params);
-    else
+    if (params.getDesignName().equals("LOOPBACK")) {
+      initializeLoopbackKernel(params, false);
+    } else if (params.getDesignName().equals("LOOPBACK_PADDED")) {
+      initializePaddingKernels(params);
+      initializeLoopbackKernel(params, true);
+    } else {
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
             params.getDesignName()));
+    }
   }
 
   /**
@@ -56,14 +75,27 @@ class MaxDeepManager extends CustomManager {
    * @author Ruizhe Zhao
    * @since 16/05/2017
    */
-  private void initializeLMemInterface() {
+  private void initializeLMemInterface(MaxDeepEngineParameters params) {
     iface = addLMemInterface();
     group = iface.addCommandGroup(
         "control", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
   }
 
+  /**
+   * Initialize manager clock for kernels within this manager.
+   *
+   * Currently only the clk is initialized, other clocks that has different
+   * clock frequencies will be added later.
+   *
+   * Also, the default stream clock will be altered.
+   * 
+   * @author Ruizhe Zhao
+   * @since 16/05/2017
+   */
   private void initializeManagerClocks(MaxDeepEngineParameters params) {
     clk = generateStreamClock(DEFAULT_CLK_NAME, params.getFreq());
+
+    config.setDefaultStreamClockFrequency(params.getFreq());
   }
 
   /**
@@ -71,17 +103,64 @@ class MaxDeepManager extends CustomManager {
    * to the LMem interface.
    * @author Ruizhe Zhao
    * @since 16/05/2017
+   *
+   * @param params engine parameters
+   * @param is_padded whether to connect the loopback kernel block to padding kernels
    */
-  private void initializeLoopbackKernel(MaxDeepEngineParameters params) {
+  private void initializeLoopbackKernel(MaxDeepEngineParameters params, boolean is_padded) {
     KernelBlock loopback = addKernel(
         new LoopbackKernel(
           makeKernelParameters(MaxDeepManager.LOOPBACK_KERNEL_NAME)));
      
-    ManagerUtils.addLinearStreamFromLMemToKernel(group, loopback, LoopbackKernel.INP_NAME);
-    ManagerUtils.addLinearStreamFromLMemToKernel(group, loopback, LoopbackKernel.WGT_NAME);
-    ManagerUtils.addLinearStreamFromKernelToLMem(group, loopback, LoopbackKernel.OUT_NAME);
+    if (!is_padded) {
+      ManagerUtils.addLinearStreamFromLMemToKernel(
+          group, loopback, LMEM_INP_NAME, LoopbackKernel.INP_NAME);
+      ManagerUtils.addLinearStreamFromLMemToKernel(
+          group, loopback, LMEM_WGT_NAME, LoopbackKernel.WGT_NAME);
+      ManagerUtils.addLinearStreamFromKernelToLMem(
+          group, loopback, LoopbackKernel.OUT_NAME, LMEM_OUT_NAME);
+    } else {
+      loopback.getInput(LoopbackKernel.INP_NAME) <==
+        unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
+      loopback.getInput(LoopbackKernel.WGT_NAME) <==
+        unpadding_wgt.getOutput(UnpaddingKernel.OUT_NAME);
+      padding.getInput(PaddingKernel.INP_NAME) <==
+        loopback.getOutput(LoopbackKernel.OUT_NAME);
+    }
 
     loopback.setClock(clk);
+  }
+
+  /**
+   * Create padding kernels and connect them to LMem.
+   *
+   * @author Ruizhe Zhao
+   * @since 18/05/2017
+   */
+  private void initializePaddingKernels(MaxDeepEngineParameters params) {
+    padding = addKernel(
+        new PaddingKernel(
+          makeKernelParameters(MaxDeepManager.PADDING_KERNEL_NAME),
+          32, params.getDbg()));
+    unpadding_inp = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(MaxDeepManager.UNPADDING_INP_KERNEL_NAME),
+          32, params.getDbg()));
+    unpadding_wgt = addKernel(
+        new UnpaddingKernel(
+          makeKernelParameters(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME),
+          32, params.getDbg()));
+
+    ManagerUtils.addLinearStreamFromLMemToKernel(
+        group, unpadding_inp, LMEM_INP_NAME, UnpaddingKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromLMemToKernel(
+        group, unpadding_wgt, LMEM_WGT_NAME, UnpaddingKernel.INP_NAME);
+    ManagerUtils.addLinearStreamFromKernelToLMem(
+        group, padding, PaddingKernel.OUT_NAME, LMEM_OUT_NAME);
+
+    padding.setClock(clk);
+    unpadding_inp.setClock(clk);
+    unpadding_wgt.setClock(clk);
   }
 
   /**
@@ -101,9 +180,41 @@ class MaxDeepManager extends CustomManager {
     InterfaceParam sizeInBytes = N * CPUTypes.UINT32.sizeInBytes();
 
     ei.setTicks(MaxDeepManager.LOOPBACK_KERNEL_NAME, N);
-    ei.setLMemLinear(LoopbackKernel.INP_NAME, ZERO, sizeInBytes);
-    ei.setLMemLinear(LoopbackKernel.WGT_NAME, sizeInBytes, sizeInBytes);
-    ei.setLMemLinear(LoopbackKernel.OUT_NAME, 2 * sizeInBytes, sizeInBytes);
+    ei.setLMemLinear(LMEM_INP_NAME, ZERO, sizeInBytes);
+    ei.setLMemLinear(LMEM_WGT_NAME, sizeInBytes, sizeInBytes);
+    ei.setLMemLinear(LMEM_OUT_NAME, 2 * sizeInBytes, sizeInBytes);
+  }
+
+  /**
+   * Create LOOPBACK_PADDED related configuration in the engine interface.
+   *
+   * @author Ruizhe Zhao
+   * @since 18/05/2017
+   */
+  private void initializeEngineInterfaceForLoopbackPadded(EngineInterface ei) {
+    InterfaceParam N =
+      ei.addParam(
+          "num_elems",
+          CPUTypes.INT32,
+          "Number of elements to be transferred");
+    InterfaceParam ZERO = ei.addConstant(0);
+    InterfaceParam sizeInBytes = N * CPUTypes.UINT32.sizeInBytes();
+
+    ei.setTicks(MaxDeepManager.LOOPBACK_KERNEL_NAME, N);
+    ei.setTicks(MaxDeepManager.PADDING_KERNEL_NAME, N);
+    ei.setTicks(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, N);
+    ei.setTicks(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, N);
+
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME, PaddingKernel.SCALAR_NUM_INP, N);
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME, PaddingKernel.SCALAR_TOTAL_CYCLES, N);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, N);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, N);
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, N);
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, N);
+
+    ei.setLMemLinear(LMEM_INP_NAME, ZERO, sizeInBytes);
+    ei.setLMemLinear(LMEM_WGT_NAME, sizeInBytes, sizeInBytes);
+    ei.setLMemLinear(LMEM_OUT_NAME, 2 * sizeInBytes, sizeInBytes);
   }
 
   public EngineInterface interfaceDefault(MaxDeepEngineParameters params) {
@@ -111,6 +222,8 @@ class MaxDeepManager extends CustomManager {
 
     if (params.getDesignName().equals("LOOPBACK"))
       initializeEngineInterfaceForLoopback(ei);
+    else if (params.getDesignName().equals("LOOPBACK_PADDED"))
+      initializeEngineInterfaceForLoopbackPadded(ei);
     else
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
@@ -128,7 +241,8 @@ class MaxDeepManager extends CustomManager {
     manager.createSLiCinterface(ManagerUtils.dramRead(manager, manager.iface));
     manager.createSLiCinterface(manager.interfaceDefault(params));
 
-    ManagerUtils.debug(manager);
+    if (params.getDbg())
+      ManagerUtils.debug(manager);
     // NOTE: Please don't uncomment this line of code until you know
     // what you are doing!!!
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);

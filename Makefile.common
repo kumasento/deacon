@@ -89,7 +89,7 @@ MAXOS_SIM=$(MAXELEROSDIR_SIM)/lib/libmaxeleros.so
 
 MAXCOMPILER_PLUGINS=$(MAXCOMPILERDIR)/lib/MaxIDE/plugins
 JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(WHEREISROOT)/lib/dfe-snippets/src:$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar -1.6 -d . -nowarn
-CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I../src -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600
+CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I../src -I../src/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600
 LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lslic -lm -lpthread
 
 # Add this on the command line to pass to make when compiling
@@ -150,7 +150,7 @@ $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
 
 runsim: $(PRJBUILDNAME)_sim
 	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
-	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(USER)a0:$(USER)a
+	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim -n $(DESIGN_NAME)
 	make stopsim
 
 stopsim:
@@ -185,7 +185,7 @@ build: $(PRJBUILDNAME)_dfe
 
 
 run:
-	SLIC_CONF=$(SLIC_CONF) LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe
+	SLIC_CONF=$(SLIC_CONF) LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe -n $(DESIGN_NAME)
 
 gdbdfe:
 	DEBUG_FLAGS="-O0 -g" mmke build
