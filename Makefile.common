@@ -34,7 +34,7 @@ MAXPOWER?=$(WHEREISROOT)/lib/maxpower/src
 
 # ---- Source files ----
 ENGINEFILES=$(wildcard ../src/$(APPPKG)/*.maxj ../src/$(APPPKG)/**/*.maxj) $(MAXPOWER)
-CPUFILES=$(wildcard ../src/*.c ../src/*.cpp)
+CPUFILES=$(wildcard ../src/*.c ../src/*.cpp ../src/include/**/*.h)
 TESTENGINEFILES=$(wildcard ../test/maxdeep/*.maxj) $(ENGINEFILES)
 
 # ---- Compiler settings ----

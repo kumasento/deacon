@@ -64,13 +64,26 @@ public class MaxDeepEngineParameters extends EngineParameters {
 
   @Override
   public String getBuildName() {
-    return String.format(
-        "%s_%s_%s_%s_FREQ_%sMHz",
-        getMaxFileName(),
-        getDFEModel(),
-        getTarget(),
-        getDesignName(),
-        getFreq());
+    String prefix =
+      String.format(
+          "%s_%s_%s_%s",
+          getMaxFileName(),
+          getDFEModel(),
+          getTarget(),
+          getDesignName());
+    String suffix = String.format("FREQ_%dMHz", getFreq());
+
+    if (getDesignName().equals("LOOPBACK") ||
+        getDesignName().equals("LOOPBACK_PADDED"))
+      return prefix + "_" + suffix;
+    else if (getDesignName().equals("MULT_ARRAY"))
+      return String.format(
+          "%s_P_%d_%s",
+          prefix,
+          getNumPipes(),
+          suffix);
+    else
+      throw new RuntimeException("getBuildName: Cannot recognise build name.");
   }
   // @Override
   // public String getBuildName() {

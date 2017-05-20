@@ -1,4 +1,6 @@
 #include <iostream>
+#include <exception>
+#include <stdexcept>
 #include <string>
 
 #include <cstdio>
@@ -49,6 +51,10 @@ int main(int argc, char *argv[]) {
   if (design_name == std::string("LOOPBACK") ||
       design_name == std::string("LOOPBACK_PADDED"))
     maxdeep::test_runners::run_loopback_test(is_sim, maxfile, engine);
+  else if (design_name == std::string("MULT_ARRAY"))
+    maxdeep::test_runners::run_mult_array_test(is_sim, maxfile, engine);
+  else
+    throw std::runtime_error("design_name cannot be recognised!");
 
   max_file_free(maxfile);
   max_unload(engine);
