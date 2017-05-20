@@ -26,6 +26,7 @@ class MaxDeepManager extends CustomManager {
    */
   protected LMemInterface iface;
   protected LMemCommandGroup group;
+  protected LMemCommandGroup groupWgt;
   public static final String LMEM_INP_NAME = "LMEM_INP";
   public static final String LMEM_WGT_NAME = "LMEM_WGT";
   public static final String LMEM_OUT_NAME = "LMEM_OUT";
@@ -83,7 +84,9 @@ class MaxDeepManager extends CustomManager {
   private void initializeLMemInterface(MaxDeepEngineParameters params) {
     iface = addLMemInterface();
     group = iface.addCommandGroup(
-        "control", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+        "GROUP", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+    groupWgt = iface.addCommandGroup(
+        "GROUP_WGT", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
   }
 
   private void initializeMaxFileConstants(MaxDeepEngineParameters params) {
@@ -191,7 +194,7 @@ class MaxDeepManager extends CustomManager {
     ManagerUtils.addLinearStreamFromLMemToKernel(
         group, unpadding_inp, LMEM_INP_NAME, UnpaddingKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromLMemToKernel(
-        group, unpadding_wgt, LMEM_WGT_NAME, UnpaddingKernel.INP_NAME);
+        groupWgt, unpadding_wgt, LMEM_WGT_NAME, UnpaddingKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromKernelToLMem(
         group, padding, PaddingKernel.OUT_NAME, LMEM_OUT_NAME);
 
@@ -371,7 +374,7 @@ class MaxDeepManager extends CustomManager {
     else if (params.getFreq() >= 120)
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.MEDIUM, 4, 4);
     else
-      // Don't set it to LOW effort, and remain at least two CTs,
+      // to LOW effort, and remain at least two CTs,
       // or it will definitely fail.
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.MEDIUM, 2, 2);
 

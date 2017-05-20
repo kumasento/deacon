@@ -122,7 +122,7 @@ bool run_mult_array_test(bool is_sim, max_file_t *maxfile, max_engine_t *engine)
   size_t burst_size = max_get_burst_size(maxfile, NULL);
   int num_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
 
-  int64_t inp_size = 1536;
+  int64_t inp_size = 10000;
   // Increase the total size if not in the simulation environment
   if (!is_sim)
     inp_size = inp_size * 1024 * 1024;
