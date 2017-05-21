@@ -65,13 +65,10 @@ class MaxDeepManager extends CustomManager {
     if (params.getDesignName().equals("LOOPBACK")) {
       initializeLoopbackKernel(params, false);
     } else if (params.getDesignName().equals("LOOPBACK_PADDED")) {
-      initializePaddingKernels(params);
       initializeLoopbackKernel(params, true);
     } else if (params.getDesignName().equals("MULT_ARRAY")) {
-      initializePaddingKernels(params);
       initializeMultArrayKernel(params);
     } else if (params.getDesignName().equals("ONE_DIM_CONV")) {
-      initializePaddingKernels(params);
       initializeOneDimConvKernel(params); 
     } else {
       throw new IllegalArgumentException(
@@ -140,6 +137,7 @@ class MaxDeepManager extends CustomManager {
       ManagerUtils.addLinearStreamFromKernelToLMem(
           groupOut, loopback, LoopbackKernel.OUT_NAME, LMEM_OUT_NAME);
     } else {
+      initializePaddingKernels(params);
       loopback.getInput(LoopbackKernel.INP_NAME) <==
         unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
       loopback.getInput(LoopbackKernel.WGT_NAME) <==
@@ -167,6 +165,7 @@ class MaxDeepManager extends CustomManager {
           params.getNumPipes(),
           params.getDbg()));
 
+    initializePaddingKernels(params);
     // By defaut, multArray will be connected directly to padding
     // and unpadding kernels
     multArray.getInput(MultArrayKernel.INP_NAME) <==
@@ -195,6 +194,8 @@ class MaxDeepManager extends CustomManager {
     logMsg("WINDOW_WIDTH: %d", windowWidth);
     logMsg("NUM_PIPES:    %d", numPipes);
 
+    initializePaddingKernels(params, 32 * numPipes, 32 * numPipes, 32 * numPipes);
+
     // Add the kernel block to the manager
     KernelBlock oneDimConv = addKernel(
         new OneDimConvKernel(
@@ -222,18 +223,29 @@ class MaxDeepManager extends CustomManager {
    * @since 18/05/2017
    */
   private void initializePaddingKernels(MaxDeepEngineParameters params) {
+    initializePaddingKernels(params, 32, 32, 32);
+  }
+
+  /**
+   * Create padding kernels and connect them to LMem.
+   *
+   * @author Ruizhe Zhao
+   * @since 21/05/2017
+   */
+  private void initializePaddingKernels(MaxDeepEngineParameters params,
+      int inpBitWidth, int wgtBitWidth, int outBitWidth) {
     padding = addKernel(
         new PaddingKernel(
           makeKernelParameters(MaxDeepManager.PADDING_KERNEL_NAME),
-          32, params.getDbg()));
+          inpBitWidth, params.getDbg()));
     unpadding_inp = addKernel(
         new UnpaddingKernel(
           makeKernelParameters(MaxDeepManager.UNPADDING_INP_KERNEL_NAME),
-          32, params.getDbg()));
+          wgtBitWidth, params.getDbg()));
     unpadding_wgt = addKernel(
         new UnpaddingKernel(
           makeKernelParameters(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME),
-          32, params.getDbg()));
+          outBitWidth, params.getDbg()));
 
     ManagerUtils.addLinearStreamFromLMemToKernel(
         group, unpadding_inp, LMEM_INP_NAME, UnpaddingKernel.INP_NAME);
@@ -410,18 +422,18 @@ class MaxDeepManager extends CustomManager {
     // for the ONE_DIM_CONV_KERNEL should equal to the total number of input
     // elements, divided by the number of pipes
     ei.setTicks(ONE_DIM_CONV_KERNEL_NAME, inpNumOfElems / numOfPipes);
-    ei.setTicks(PADDING_KERNEL_NAME, burstAlignedOutNumOfElems);
-    ei.setTicks(UNPADDING_INP_KERNEL_NAME, burstAlignedInpNumOfElems);
-    ei.setTicks(UNPADDING_WGT_KERNEL_NAME, burstAlignedWgtNumOfElems);
+    ei.setTicks(PADDING_KERNEL_NAME, burstAlignedOutNumOfElems / numOfPipes);
+    ei.setTicks(UNPADDING_INP_KERNEL_NAME, burstAlignedInpNumOfElems / numOfPipes);
+    ei.setTicks(UNPADDING_WGT_KERNEL_NAME, burstAlignedWgtNumOfElems / numOfPipes);
 
     // Set scalar for ONE_DIM_CONV_KERNEL (lineWidth) and for padding kernels
     ei.setScalar(ONE_DIM_CONV_KERNEL_NAME, OneDimConvKernel.SCALAR_LINE_WIDTH_NAME, lineWidth);
-    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_NUM_INP, outNumOfElems);
-    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedOutNumOfElems);
-    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, inpNumOfElems);
-    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedInpNumOfElems);
-    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, wgtNumOfElems);
-    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedWgtNumOfElems);
+    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_NUM_INP, outNumOfElems / numOfPipes);
+    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedOutNumOfElems / numOfPipes);
+    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, inpNumOfElems / numOfPipes);
+    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedInpNumOfElems / numOfPipes);
+    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, wgtNumOfElems / numOfPipes);
+    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedWgtNumOfElems / numOfPipes);
 
     // Set LMem stream base address and size
     ei.setLMemLinear(LMEM_INP_NAME, ZERO, burstAlignedInpSizeInBytes);
