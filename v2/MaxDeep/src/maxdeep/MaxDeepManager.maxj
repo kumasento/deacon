@@ -27,6 +27,7 @@ class MaxDeepManager extends CustomManager {
   protected LMemInterface iface;
   protected LMemCommandGroup group;
   protected LMemCommandGroup groupWgt;
+  protected LMemCommandGroup groupOut;
   public static final String LMEM_INP_NAME = "LMEM_INP";
   public static final String LMEM_WGT_NAME = "LMEM_WGT";
   public static final String LMEM_OUT_NAME = "LMEM_OUT";
@@ -40,9 +41,10 @@ class MaxDeepManager extends CustomManager {
   /**
    * Kernel instance names
    */
-  public static final String LOOPBACK_KERNEL_NAME = "LOOPBACK_KERNEL";
-  public static final String MULT_ARRAY_KERNEL_NAME = "MULT_ARRAY_KERNEL";
-  public static final String PADDING_KERNEL_NAME = "PADDING_KERNEL";
+  public static final String LOOPBACK_KERNEL_NAME      = "LOOPBACK_KERNEL";
+  public static final String MULT_ARRAY_KERNEL_NAME    = "MULT_ARRAY_KERNEL";
+  public static final String ONE_DIM_CONV_KERNEL_NAME  = "ONE_DIM_CONV_KERNEL";
+  public static final String PADDING_KERNEL_NAME       = "PADDING_KERNEL";
   public static final String UNPADDING_INP_KERNEL_NAME = "UNPADDING_INP_KERNEL";
   public static final String UNPADDING_WGT_KERNEL_NAME = "UNPADDING_WGT_KERNEL";
 
@@ -68,6 +70,9 @@ class MaxDeepManager extends CustomManager {
     } else if (params.getDesignName().equals("MULT_ARRAY")) {
       initializePaddingKernels(params);
       initializeMultArrayKernel(params);
+    } else if (params.getDesignName().equals("ONE_DIM_CONV")) {
+      initializePaddingKernels(params);
+      initializeOneDimConvKernel(params); 
     } else {
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
@@ -87,10 +92,13 @@ class MaxDeepManager extends CustomManager {
         "GROUP", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
     groupWgt = iface.addCommandGroup(
         "GROUP_WGT", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+    groupOut = iface.addCommandGroup(
+        "GROUP_OUT", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
   }
 
   private void initializeMaxFileConstants(MaxDeepEngineParameters params) {
     addMaxFileConstant("NUM_PIPES", params.getNumPipes());
+    addMaxFileConstant("ONE_DIM_CONV_WINDOW_WIDTH", params.getOneDimConvWindowWidth());
   }
 
   /**
@@ -128,9 +136,9 @@ class MaxDeepManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           group, loopback, LMEM_INP_NAME, LoopbackKernel.INP_NAME);
       ManagerUtils.addLinearStreamFromLMemToKernel(
-          group, loopback, LMEM_WGT_NAME, LoopbackKernel.WGT_NAME);
+          groupWgt, loopback, LMEM_WGT_NAME, LoopbackKernel.WGT_NAME);
       ManagerUtils.addLinearStreamFromKernelToLMem(
-          group, loopback, LoopbackKernel.OUT_NAME, LMEM_OUT_NAME);
+          groupOut, loopback, LoopbackKernel.OUT_NAME, LMEM_OUT_NAME);
     } else {
       loopback.getInput(LoopbackKernel.INP_NAME) <==
         unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
@@ -172,6 +180,42 @@ class MaxDeepManager extends CustomManager {
   }
 
   /**
+   * Create an one dimensional convolution kernel.
+   *
+   * @author Ruizhe Zhao
+   * @since 20/05/2017
+   */
+  private void initializeOneDimConvKernel(MaxDeepEngineParameters params) {
+    // Get specific parameters from params
+    int windowWidth = params.getOneDimConvWindowWidth();
+    int numPipes = params.getNumPipes();
+
+    logMsg("Initializing ONE_DIM_CONV kernel ...");
+    logMsg("FREQ:         %d", params.getFreq());
+    logMsg("WINDOW_WIDTH: %d", windowWidth);
+    logMsg("NUM_PIPES:    %d", numPipes);
+
+    // Add the kernel block to the manager
+    KernelBlock oneDimConv = addKernel(
+        new OneDimConvKernel(
+          makeKernelParameters(ONE_DIM_CONV_KERNEL_NAME),
+          windowWidth,
+          numPipes,
+          params.getDbg()));
+
+    // Connect the kernel block to padding kernels
+    oneDimConv.getInput(OneDimConvKernel.INP_NAME) <==
+      unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
+    oneDimConv.getInput(OneDimConvKernel.WGT_NAME) <==
+      unpadding_wgt.getOutput(UnpaddingKernel.OUT_NAME);
+    padding.getInput(PaddingKernel.INP_NAME) <==
+      oneDimConv.getOutput(OneDimConvKernel.OUT_NAME);
+
+    // Set the clock for this kernel block
+    oneDimConv.setClock(clk);
+  }
+
+  /**
    * Create padding kernels and connect them to LMem.
    *
    * @author Ruizhe Zhao
@@ -196,7 +240,7 @@ class MaxDeepManager extends CustomManager {
     ManagerUtils.addLinearStreamFromLMemToKernel(
         groupWgt, unpadding_wgt, LMEM_WGT_NAME, UnpaddingKernel.INP_NAME);
     ManagerUtils.addLinearStreamFromKernelToLMem(
-        group, padding, PaddingKernel.OUT_NAME, LMEM_OUT_NAME);
+        groupOut, padding, PaddingKernel.OUT_NAME, LMEM_OUT_NAME);
 
     // Don't need to explicitly set the clock source for padding kernels
     // padding.setClock(clk);
@@ -305,6 +349,87 @@ class MaxDeepManager extends CustomManager {
         burstAlignedInpSizeInBytes);
   }
 
+
+  /**
+   * Create an engine interface for the ONE_DIM_CONV design.
+   *
+   * @author Ruizhe Zhao
+   * @since 20/05/2017
+   */
+  private void initializeEngineInterfaceForOneDimConv(
+      EngineInterface ei, MaxDeepEngineParameters params) {
+
+    // Add parameters for the SLiC interface:
+    // One parameter for the total number of lines
+    InterfaceParam totalNumOfLines = ei.addParam(
+        "total_num_of_lines",
+        CPUTypes.INT64,
+        "Number of lines to be convolved");
+    
+    // One parameter for the line width
+    InterfaceParam lineWidth = ei.addParam(
+        "line_width",
+        CPUTypes.INT64,
+        "Width of each line");
+
+    InterfaceParam ZERO = ei.addConstant(0);
+    InterfaceParam windowWidth = ei.addConstant(params.getOneDimConvWindowWidth());
+    InterfaceParam numOfPipes = ei.addConstant(params.getNumPipes());
+
+    // Compute the number of input elements required, should equal
+    // to lineWidth * totalNumOfLines
+    InterfaceParam inpNumOfElems = lineWidth * totalNumOfLines;
+
+    // Compute the number of weight elements required, should equal to
+    // totalNumOfLines * windowWidth
+    InterfaceParam wgtNumOfElems = windowWidth  * totalNumOfLines;
+
+    // Compute the number of expected number of output: the number of
+    // output for each line is (lineWidth - windowWidth + 1)
+    InterfaceParam outNumOfElems = (lineWidth - windowWidth + 1) * totalNumOfLines;
+
+    // Compute the burst aligned number of input elements
+    InterfaceParam burstAlignedInpNumOfElems =
+      getBurstAlignedNumOfElems(inpNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedInpSizeInBytes =
+      burstAlignedInpNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    // Compute the burst aligned number of weight elements
+    InterfaceParam burstAlignedWgtNumOfElems =
+      getBurstAlignedNumOfElems(wgtNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedWgtSizeInBytes =
+      burstAlignedWgtNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    // Compute the burst aligned number of output elements
+    InterfaceParam burstAlignedOutNumOfElems =
+      getBurstAlignedNumOfElems(outNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedOutSizeInBytes =
+      burstAlignedOutNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    // Set ticks for ONE_DIM_CONV_KERNEL and padding kernels, the number of ticks
+    // for the ONE_DIM_CONV_KERNEL should equal to the total number of input
+    // elements, divided by the number of pipes
+    ei.setTicks(ONE_DIM_CONV_KERNEL_NAME, inpNumOfElems / numOfPipes);
+    ei.setTicks(PADDING_KERNEL_NAME, burstAlignedOutNumOfElems);
+    ei.setTicks(UNPADDING_INP_KERNEL_NAME, burstAlignedInpNumOfElems);
+    ei.setTicks(UNPADDING_WGT_KERNEL_NAME, burstAlignedWgtNumOfElems);
+
+    // Set scalar for ONE_DIM_CONV_KERNEL (lineWidth) and for padding kernels
+    ei.setScalar(ONE_DIM_CONV_KERNEL_NAME, OneDimConvKernel.SCALAR_LINE_WIDTH_NAME, lineWidth);
+    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_NUM_INP, outNumOfElems);
+    ei.setScalar(PADDING_KERNEL_NAME, PaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedOutNumOfElems);
+    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, inpNumOfElems);
+    ei.setScalar(UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedInpNumOfElems);
+    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, wgtNumOfElems);
+    ei.setScalar(UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedWgtNumOfElems);
+
+    // Set LMem stream base address and size
+    ei.setLMemLinear(LMEM_INP_NAME, ZERO, burstAlignedInpSizeInBytes);
+    ei.setLMemLinear(LMEM_WGT_NAME, burstAlignedInpSizeInBytes, burstAlignedWgtSizeInBytes);
+    ei.setLMemLinear(LMEM_OUT_NAME, burstAlignedInpSizeInBytes + burstAlignedWgtSizeInBytes,
+        burstAlignedOutSizeInBytes);
+  }
+
   /**
    * Get the burst aligned number of elements from the current number of elements and
    * the size of the data type in bytes.
@@ -341,6 +466,8 @@ class MaxDeepManager extends CustomManager {
       initializeEngineInterfaceForLoopbackPadded(ei);
     else if (params.getDesignName().equals("MULT_ARRAY"))
       initializeEngineInterfaceForMultArray(ei, params);
+    else if (params.getDesignName().equals("ONE_DIM_CONV"))
+      initializeEngineInterfaceForOneDimConv(ei, params);
     else
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",

@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
     maxdeep::test_runners::run_loopback_test(is_sim, maxfile, engine);
   else if (design_name == std::string("MULT_ARRAY"))
     maxdeep::test_runners::run_mult_array_test(is_sim, maxfile, engine);
+  else if (design_name == std::string("ONE_DIM_CONV"))
+    maxdeep::test_runners::run_one_dim_conv_test(is_sim, maxfile, engine);
   else
     throw std::runtime_error("design_name cannot be recognised!");
 
