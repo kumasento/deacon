@@ -20,8 +20,8 @@ namespace utils {
  * @param burst_size number of bytes within a burst.
  * @return number of elements of the ALIGNED array.
  */
-unsigned int burst_aligned_size(unsigned int size, size_t num_bytes, size_t burst_size) {
-  return (unsigned int) (ceil((double) size * num_bytes / burst_size) * burst_size / num_bytes);
+int64_t burst_aligned_size(int64_t size, size_t num_bytes, size_t burst_size) {
+  return (int64_t) (ceil((double) size * num_bytes / burst_size) * burst_size / num_bytes);
 }
 
 /**

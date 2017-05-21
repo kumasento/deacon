@@ -18,6 +18,7 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int maxConvKernelSize  = 4;
   private static final int maxFCHeight        = 16;
   private static final int maxFCWidth         = 16;
+  private static final int oneDimConvWindowWidth = 1;
 
   private static final String designName = "DEFAULT";
 
@@ -29,48 +30,66 @@ public class MaxDeepEngineParameters extends EngineParameters {
 
   @Override
   protected void declarations() {
-    declareParam("designName",         DataType.STRING, designName);
-    declareParam("numPipes",           DataType.INT,    numPipes);
-    declareParam("freq",               DataType.INT,    freq);
-    declareParam("multiPumpingFactor", DataType.INT,    multiPumpingFactor);
-    declareParam("maxConvHeight",      DataType.INT,    maxConvHeight);
-    declareParam("maxConvWidth",       DataType.INT,    maxConvWidth);
-    declareParam("maxConvNumChannels", DataType.INT,    maxConvNumChannels);
-    declareParam("maxConvNumFilters",  DataType.INT,    maxConvNumFilters);
-    declareParam("maxConvKernelSize",  DataType.INT,    maxConvKernelSize);
-    declareParam("maxFCHeight",        DataType.INT,    maxFCHeight);
-    declareParam("maxFCWidth",         DataType.INT,    maxFCWidth);
-    declareParam("numFCRowPipes",      DataType.INT,    numFCRowPipes);
-    declareParam("numFCColPipes",      DataType.INT,    numFCColPipes);
-    declareParam("numMPDPFactor",      DataType.INT,    numMPDPFactor);
-    declareParam("dbg",                DataType.BOOL,   dbg);
+    declareParam("designName",            DataType.STRING, designName);
+    declareParam("numPipes",              DataType.INT,    numPipes);
+    declareParam("oneDimConvWindowWidth", DataType.INT,    oneDimConvWindowWidth);
+    declareParam("freq",                  DataType.INT,    freq);
+    declareParam("multiPumpingFactor",    DataType.INT,    multiPumpingFactor);
+    declareParam("maxConvHeight",         DataType.INT,    maxConvHeight);
+    declareParam("maxConvWidth",          DataType.INT,    maxConvWidth);
+    declareParam("maxConvNumChannels",    DataType.INT,    maxConvNumChannels);
+    declareParam("maxConvNumFilters",     DataType.INT,    maxConvNumFilters);
+    declareParam("maxConvKernelSize",     DataType.INT,    maxConvKernelSize);
+    declareParam("maxFCHeight",           DataType.INT,    maxFCHeight);
+    declareParam("maxFCWidth",            DataType.INT,    maxFCWidth);
+    declareParam("numFCRowPipes",         DataType.INT,    numFCRowPipes);
+    declareParam("numFCColPipes",         DataType.INT,    numFCColPipes);
+    declareParam("numMPDPFactor",         DataType.INT,    numMPDPFactor);
+    declareParam("dbg",                   DataType.BOOL,   dbg);
   }
 
-  public String getDesignName()      { return getParam("designName"); }
-  public int getNumPipes()           { return getParam("numPipes");           }
-  public int getFreq()               { return getParam("freq");               }
-  public int getMultiPumpingFactor() { return getParam("multiPumpingFactor"); }
-  public int getMaxConvHeight()      { return getParam("maxConvHeight");      }
-  public int getMaxConvWidth()       { return getParam("maxConvWidth");       }
-  public int getMaxConvNumChannels() { return getParam("maxConvNumChannels"); }
-  public int getMaxConvNumFilters()  { return getParam("maxConvNumFilters");  }
-  public int getMaxConvKernelSize()  { return getParam("maxConvKernelSize");  }
-  public int getMaxFCHeight()        { return getParam("maxFCHeight");        }
-  public int getMaxFCWidth()         { return getParam("maxFCWidth");         }
-  public boolean getDbg()            { return getParam("dbg");                }
-  public int getNumFCRowPipes()      { return getParam("numFCRowPipes");      }
-  public int getNumFCColPipes()      { return getParam("numFCColPipes");      }
-  public int getNumMPDPFactor()      { return getParam("numMPDPFactor");      }
+  public String getDesignName()         { return getParam("designName");            }
+  public int getNumPipes()              { return getParam("numPipes");              }
+  public int getFreq()                  { return getParam("freq");                  }
+  public int getMultiPumpingFactor()    { return getParam("multiPumpingFactor");    }
+  public int getMaxConvHeight()         { return getParam("maxConvHeight");         }
+  public int getMaxConvWidth()          { return getParam("maxConvWidth");          }
+  public int getMaxConvNumChannels()    { return getParam("maxConvNumChannels");    }
+  public int getMaxConvNumFilters()     { return getParam("maxConvNumFilters");     }
+  public int getMaxConvKernelSize()     { return getParam("maxConvKernelSize");     }
+  public int getMaxFCHeight()           { return getParam("maxFCHeight");           }
+  public int getMaxFCWidth()            { return getParam("maxFCWidth");            }
+  public boolean getDbg()               { return getParam("dbg");                   }
+  public int getNumFCRowPipes()         { return getParam("numFCRowPipes");         }
+  public int getNumFCColPipes()         { return getParam("numFCColPipes");         }
+  public int getNumMPDPFactor()         { return getParam("numMPDPFactor");         }
+  public int getOneDimConvWindowWidth() { return getParam("oneDimConvWindowWidth"); }
 
   @Override
   public String getBuildName() {
-    return String.format(
-        "%s_%s_%s_%s_FREQ_%sMHz",
-        getMaxFileName(),
-        getDFEModel(),
-        getTarget(),
-        getDesignName(),
-        getFreq());
+    String prefix =
+      String.format(
+          "%s_%s_%s_%s",
+          getMaxFileName(),
+          getDFEModel(),
+          getTarget(),
+          getDesignName());
+    String suffix = String.format("FREQ_%dMHz", getFreq());
+
+    if (getDesignName().equals("LOOPBACK") ||
+        getDesignName().equals("LOOPBACK_PADDED"))
+      return prefix + "_" + suffix;
+    else if (getDesignName().equals("MULT_ARRAY"))
+      return String.format(
+          "%s_P_%d_%s",
+          prefix,
+          getNumPipes(),
+          suffix);
+    else if (getDesignName().equals("ONE_DIM_CONV"))
+      return String.format("%s_W_%d_P_%d_%s", prefix, getOneDimConvWindowWidth(),
+          getNumPipes(), suffix);
+    else
+      throw new RuntimeException("getBuildName: Cannot recognise build name.");
   }
   // @Override
   // public String getBuildName() {

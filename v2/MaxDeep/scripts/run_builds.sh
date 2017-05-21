@@ -6,12 +6,9 @@ function run_build {
 }
 
 function run_builds {
-  run_build $1 100 &
+  run_build $1 100
   run_build $1 150
-  run_build $1 200 &
-  run_build $1 250
-  run_build $1 300 &
-  run_build $1 350 
+  run_build $1 200
 }
 
 run_builds $1

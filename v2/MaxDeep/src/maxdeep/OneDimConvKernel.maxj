@@ -1,0 +1,112 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import maxdeep.lib.DotProductKernelLib;
+
+import java.util.*;
+
+/**
+ * This kernel does one dimensional convolution for multiple lines, each line has
+ * a different convolution kernel.
+ *
+ * This kernel is a simplified version of the real-world 2D convolution
+ * in CNN.
+ * 
+ * Behaviour:
+ * 1. Each cycle it takes an input value, or **numPipesOfLine** number
+ * of input values, from a input stream;
+ * 2. For each line, the weight will remain the same;
+ * 3. The output will come out after `windowWidth-1` number of cycles
+ * for each line;
+ *
+ * Usage:
+ * 1. Specify kernel parameters
+ * 2. Specify the width of each line through scalar inputs
+ *
+ * @author Ruizhe Zhao
+ * @since 20/05/2017
+ */
+public class OneDimConvKernel extends Kernel {
+
+  public static final String SCALAR_LINE_WIDTH_NAME = "ONE_DIM_CONV_KERNEL_LINE_WIDTH";
+  public static final String INP_NAME = "ONE_DIM_CONV_KERNEL_INP";
+  public static final String WGT_NAME = "ONE_DIM_CONV_KERNEL_WGT";
+  public static final String OUT_NAME = "ONE_DIM_CONV_KERNEL_OUT";
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 20/05/2017
+   *
+   * @param params kernel parameters passed from the manager
+   * @param windowWidth the fixed width of each convolution window
+   * @param numPipesOfLine number of parallel pipes among lines to be convolved
+   */
+  public OneDimConvKernel(KernelParameters params, int windowWidth, int numPipesOfLine, boolean dbg) {
+    super(params);
+
+    // Setup a scalar input of the lineWidth.
+    DFEVar lineWidth = io.scalarInput(SCALAR_LINE_WIDTH_NAME, dfeUInt(32));
+
+    // Setup a counter to count from 0 to `lineWidth` and then wrap back to 0.
+    DFEVar cnt = control.count.simpleCounter(32, lineWidth).cast(dfeInt(32));
+
+    // Setup the input stream, which should be a vector of length `numPipesOfLine`.
+    DFEType scalarType = dfeUInt(32);
+    DFEVectorType<DFEVar> inpType = new DFEVectorType<DFEVar>(scalarType, numPipesOfLine);
+    DFEVector<DFEVar> inp = io.input(INP_NAME, inpType);
+
+    // Setup the input stream for weights, which has width `windowWidth * numPipesOfLine` and
+    // will not refresh until a new line comes in.
+    DFEVectorType<DFEVar> wgtType = new DFEVectorType<DFEVar>(scalarType,
+        windowWidth * numPipesOfLine);
+    DFEVector<DFEVar> wgt = io.input(WGT_NAME, wgtType, cnt === 0);
+
+    // Create the vector for output, which has width `numPipesOfLine`.
+    DFEVector<DFEVar> out = inpType.newInstance(this);
+
+    // Create a boolean to indicate whether the result is ready, by checking
+    // the counter value is larger than or equal to `windowWidth-1`.
+    DFEVar valid = cnt >= windowWidth - 1;
+
+    // Create a vector for the current calculating window in the input stream and
+    // the wgt stream.
+    DFEVectorType<DFEVar> windowType = new DFEVectorType<DFEVar>(scalarType, windowWidth);
+    List<DFEVector<DFEVar>> inpWindowList = new ArrayList<DFEVector<DFEVar>>(numPipesOfLine);
+    List<DFEVector<DFEVar>> wgtWindowList = new ArrayList<DFEVector<DFEVar>>(numPipesOfLine);
+    for (int i = 0; i < numPipesOfLine; i ++) {
+      inpWindowList.add(windowType.newInstance(this));
+      wgtWindowList.add(windowType.newInstance(this));
+      for (int j = 0; j < windowWidth; j ++) {
+        if (j != windowWidth - 1)
+          inpWindowList[i][j] <== stream.offset(inp[i], - (windowWidth - j - 1)); 
+        else
+          inpWindowList[i][j] <== inp[i];
+
+        wgtWindowList[i][j] <== wgt[i * windowWidth + j];
+      }
+    }
+
+    // Initialize `numPipesOfLine` number of DotProductKernelLib.
+    for (int i = 0; i < numPipesOfLine; i ++) {
+      // Connect them to the vectors in this kernel.
+      DotProductKernelLib dotProduct = new DotProductKernelLib(this, windowWidth, scalarType);
+      dotProduct.setInput(inpWindowList[i]);
+      dotProduct.setWeight(wgtWindowList[i]);
+      out[i] <== dotProduct.getOutput();
+    }
+
+    // Setup an output stream. 
+    io.output(OUT_NAME, out, inpType, valid);
+
+
+  }
+
+}
