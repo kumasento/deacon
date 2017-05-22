@@ -20,17 +20,25 @@ function run_builds {
   run_build $name 100 16  3 &
   run_build $name 100 48  3 &
   run_build $name 100 96  3 &
-  run_build $name 100 192 3
+  run_build $name 100 144 3
 
-  run_build $name 150 1 3 &
-  run_build $name 150 2 3 
-  run_build $name 150 4 3 &
-  run_build $name 150 8 3
+  run_build $name 150 1   3 &
+  run_build $name 150 2   3
+  run_build $name 150 4   3 &
+  run_build $name 150 8   3
+  run_build $name 150 16  3 &
+  run_build $name 150 48  3
+  run_build $name 150 96  3 &
+  run_build $name 150 144 3
 
-  run_build $name 200 1 3
-  run_build $name 200 2 3 
-  run_build $name 200 4 3
-  run_build $name 200 8 3
+  run_build $name 200 1   3
+  run_build $name 200 2   3
+  run_build $name 200 4   3
+  run_build $name 200 8   3
+  run_build $name 200 16  3
+  run_build $name 200 48  3
+  run_build $name 200 96  3
+  run_build $name 200 144 3
 }
 
 run_builds ONE_DIM_CONV
