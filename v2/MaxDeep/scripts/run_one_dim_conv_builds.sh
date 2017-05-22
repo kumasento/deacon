@@ -13,10 +13,14 @@ function run_build {
 
 function run_builds {
   name=$1
-  run_build $name 100 1 3 &
-  run_build $name 100 2 3 &
-  run_build $name 100 4 3 &
-  run_build $name 100 8 3
+  run_build $name 100 1   3 &
+  run_build $name 100 2   3 &
+  run_build $name 100 4   3 &
+  run_build $name 100 8   3
+  run_build $name 100 16  3 &
+  run_build $name 100 48  3 &
+  run_build $name 100 96  3 &
+  run_build $name 100 192 3
 
   run_build $name 150 1 3 &
   run_build $name 150 2 3 

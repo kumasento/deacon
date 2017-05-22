@@ -231,18 +231,20 @@ bool run_mult_array_test(bool is_sim, max_file_t *maxfile, max_engine_t *engine)
 bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engine) {
   printf("\x1B[32mTESTING\x1B[0m ONE_DIM_CONV ...\n");
 
-  const int num_iters = 1;
+  const int num_iters = (is_sim) ? 1 : 100;
   size_t burst_size = max_get_burst_size(maxfile, NULL);
   int num_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
   int window_width = (int) max_get_constant_uint64t(maxfile, "ONE_DIM_CONV_WINDOW_WIDTH");
   
-  int64_t num_of_lines = num_pipes * 10;
+  int64_t num_of_lines = num_pipes * 2;
   int64_t line_width = 10;
 
   // Increase the total size if not in the simulation environment
   if (!is_sim) {
-    num_of_lines = num_of_lines * 1024;
-    line_width = line_width * 1024;
+    if (num_of_lines < 100)
+      num_of_lines *= 10;
+    num_of_lines = num_of_lines * 1024 * 10;
+    line_width = line_width * 10;
   }
 
   int64_t inp_size = num_of_lines * line_width;
@@ -253,6 +255,7 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
   int64_t burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, sizeof(uint32_t), burst_size);
   int64_t burst_aligned_out_size = utils::burst_aligned_size(out_size, sizeof(uint32_t), burst_size);
 
+  printf("Allocating memory ...\n");
   uint32_t *inp = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_inp_size);
   uint32_t *inp_orig = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_inp_size);
   uint32_t *wgt = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_wgt_size);
@@ -264,6 +267,8 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
     exit(-1);
   }
 
+  printf("Initializing data ...\n");
+  printf("Initializing INP ...\n");
   int inp_idx = 0;
   for (int i = 0; i < num_of_lines; i += num_pipes) {
     for (int j = 0; j < line_width; j ++) {
@@ -276,10 +281,12 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
     }
   }
 
+  printf("Initializing WGT ...\n");
   for (int i = 0; i < (int) wgt_size; i++)
     wgt[i] = (uint32_t) i + 1;
 
   // expected output
+  printf("Initializing OUT ...\n");
   int out_idx = 0;
   for (int i = 0; i < (int) num_of_lines; i += num_pipes) {
     for (int j = 0; j < (int) line_width; j ++) {
@@ -333,8 +340,11 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
   double elapsed = (t1.tv_sec - t0.tv_sec) + (t1.tv_usec - t0.tv_usec) * 1e-6;
   elapsed /= num_iters;
 
-  printf("RUN TIME:       %lf s\n", elapsed);
-  printf("FREQUENCY:      %.2f MHz\n", inp_size / elapsed * 1e-6);
+  double gop = out_size * window_width * 2 * 1e-9;
+  double gops = gop / elapsed;
+  printf("RUN TIME:  %lf s\n", elapsed);
+  printf("FREQUENCY: %.2f MHz\n", inp_size / elapsed * 1e-6);
+  printf("GOP/s:     %.2f\n", gops); 
 
   printf("Reading back ...\n\n");
   MaxDeep_dramRead_run(engine, &read_actions);
