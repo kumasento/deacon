@@ -166,11 +166,13 @@ $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXPOWER) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS='../src' $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
-	# rm $(DFEMAXDIR)/$(PRJ).h
-	# rm $(DFEMAXDIR)/$(PRJ).max
+	cp $(DFEMAXDIR)/$(PRJ).max $(DFEMAXDIR)/$(PRJ)_backup.max
+	rm $(DFEMAXDIR)/$(PRJ).h
+	rm $(DFEMAXDIR)/$(PRJ).max
+	mv $(DFEMAXDIR)/$(PRJ)_backup.max $(DFEMAXDIR)/$(PRJ).max
 	# cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
 	# cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
-	# rm -rf $(DFEMAXDIR)/../scratch
+	rm -rf $(DFEMAXDIR)/../scratch
 
 $(PRJBUILDNAME)_dfe.o: $(DFEMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@
