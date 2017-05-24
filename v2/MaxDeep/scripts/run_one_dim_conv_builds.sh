@@ -8,35 +8,37 @@ function run_build {
     FREQ=$2 \
     NUM_PIPES=$3 \
     ONE_DIM_CONV_WINDOW_WIDTH=$4 \
+    MULTI_PUMPING_FACTOR=$5 \
     | grep "([0-9]*/[0-9]*)"
 }
 
 function run_builds {
   name=$1
-  run_build $name 100 1   3 &
-  run_build $name 100 2   3 &
-  run_build $name 100 4   3 &
-  run_build $name 100 8   3
-  run_build $name 100 16  3 &
-  run_build $name 100 48  3 &
-  run_build $name 100 96  3
+ 
+  run_build $name 100 1 3 1 &
+  run_build $name 100 2 3 1 &
+  run_build $name 100 4 3 1 &
+  run_build $name 100 8 3 1
 
-  run_build $name 150 1   3 &
-  run_build $name 150 2   3
-  run_build $name 150 4   3 &
-  run_build $name 150 8   3
-  run_build $name 150 16  3 &
-  run_build $name 150 48  3
-  run_build $name 150 96  3
+  run_build $name 100 2 3 2
+  run_build $name 100 4 3 2
+  run_build $name 100 8 3 2
+  run_build $name 100 16 3 2
+                          
+  run_build $name 150 1 3 1 &
+  run_build $name 150 2 3 1
+  run_build $name 150 4 3 1 &
+  run_build $name 150 8 3 1
 
-  run_build $name 200 1   3
-  run_build $name 200 2   3
-  run_build $name 200 4   3
-  run_build $name 200 8   3
-  run_build $name 200 16  3
-  run_build $name 200 48  3
-  run_build $name 200 96  3
-  run_build $name 200 144 3
+  run_build $name 150 2 3 2
+  run_build $name 150 4 3 2 
+  run_build $name 150 8 3 2
+  run_build $name 150 16 3 2
+                          
+  run_build $name 200 1 3 1
+  run_build $name 200 2 3 1
+  run_build $name 200 4 3 1
+  run_build $name 200 8 3 1
 }
 
 run_builds ONE_DIM_CONV

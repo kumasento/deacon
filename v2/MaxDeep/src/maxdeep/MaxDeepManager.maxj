@@ -190,9 +190,10 @@ class MaxDeepManager extends CustomManager {
     int numPipes = params.getNumPipes();
 
     logMsg("Initializing ONE_DIM_CONV kernel ...");
-    logMsg("FREQ:         %d", params.getFreq());
-    logMsg("WINDOW_WIDTH: %d", windowWidth);
-    logMsg("NUM_PIPES:    %d", numPipes);
+    logMsg("FREQ:                 %d", params.getFreq());
+    logMsg("WINDOW_WIDTH:         %d", windowWidth);
+    logMsg("MULTI_PUMPING_FACTOR: %d", params.getMultiPumpingFactor());
+    logMsg("NUM_PIPES:            %d", numPipes);
 
     initializePaddingKernels(params, 32 * numPipes, 32 * numPipes, 32 * numPipes);
 
@@ -202,6 +203,7 @@ class MaxDeepManager extends CustomManager {
           makeKernelParameters(ONE_DIM_CONV_KERNEL_NAME),
           windowWidth,
           numPipes,
+          params.getMultiPumpingFactor(),
           params.getDbg()));
 
     // Connect the kernel block to padding kernels
@@ -213,7 +215,10 @@ class MaxDeepManager extends CustomManager {
       oneDimConv.getOutput(OneDimConvKernel.OUT_NAME);
 
     // Set the clock for this kernel block
-    oneDimConv.setClock(clk);
+    oneDimConv.setClock(
+        generateStreamClock(
+          "MULTI_PUMPED_CLOCK",
+          params.getFreq() * params.getMultiPumpingFactor()));
   }
 
   /**
@@ -421,7 +426,8 @@ class MaxDeepManager extends CustomManager {
     // Set ticks for ONE_DIM_CONV_KERNEL and padding kernels, the number of ticks
     // for the ONE_DIM_CONV_KERNEL should equal to the total number of input
     // elements, divided by the number of pipes
-    ei.setTicks(ONE_DIM_CONV_KERNEL_NAME, inpNumOfElems / numOfPipes);
+    ei.setTicks(ONE_DIM_CONV_KERNEL_NAME,
+        inpNumOfElems / numOfPipes * params.getMultiPumpingFactor());
     ei.setTicks(PADDING_KERNEL_NAME, burstAlignedOutNumOfElems / numOfPipes);
     ei.setTicks(UNPADDING_INP_KERNEL_NAME, burstAlignedInpNumOfElems / numOfPipes);
     ei.setTicks(UNPADDING_WGT_KERNEL_NAME, burstAlignedWgtNumOfElems / numOfPipes);
@@ -512,7 +518,7 @@ class MaxDeepManager extends CustomManager {
      * bottleneck at the memory controller.
      */
     ManagerUtils.setDRAMFreq(manager, params, 400);
-    if (params.getFreq() > 150)
+    if (params.getFreq() > 150 || params.getMultiPumpingFactor() > 1)
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 6, 6);
     else if (params.getFreq() >= 120)
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.MEDIUM, 4, 4);
