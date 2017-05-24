@@ -86,8 +86,12 @@ public class MaxDeepEngineParameters extends EngineParameters {
           getNumPipes(),
           suffix);
     else if (getDesignName().equals("ONE_DIM_CONV"))
-      return String.format("%s_W_%d_P_%d_%s", prefix, getOneDimConvWindowWidth(),
-          getNumPipes(), suffix);
+      return String.format("%s_W_%d_P_%d_M_%d_%s",
+          prefix,
+          getOneDimConvWindowWidth(),
+          getNumPipes(),
+          getMultiPumpingFactor(),
+          suffix);
     else
       throw new RuntimeException("getBuildName: Cannot recognise build name.");
   }

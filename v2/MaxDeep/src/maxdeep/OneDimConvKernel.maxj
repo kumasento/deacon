@@ -4,7 +4,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.*;
+import com.maxeler.maxcompiler.v2.utils.*;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 
 import maxdeep.lib.DotProductKernelLib;
@@ -42,35 +43,54 @@ public class OneDimConvKernel extends Kernel {
   /**
    * Constructor.
    *
+   * Structure:
+   * 1. Two input streams: inp and wgt
+   * 2. One output stream: out
+   * 3. Each cycle a vector of length (numPipesOfLine) will be read in
+   * 4. At the beginning of each line's processing, a vector of
+   * weights will be read in.
+   * 5. inp and wgt will form a list of windows
+   * 6. Windows will be further connected to DotProductKernelLibs
+   *
    * @author Ruizhe Zhao
    * @since 20/05/2017
    *
    * @param params kernel parameters passed from the manager
    * @param windowWidth the fixed width of each convolution window
    * @param numPipesOfLine number of parallel pipes among lines to be convolved
+   * @param multiPumpingFactor number of multi-pumped cycles
    */
-  public OneDimConvKernel(KernelParameters params, int windowWidth, int numPipesOfLine, boolean dbg) {
+  public OneDimConvKernel(KernelParameters params, int windowWidth, int numPipesOfLine,
+      int multiPumpingFactor, boolean dbg) {
     super(params);
+
+    if (numPipesOfLine % multiPumpingFactor != 0)
+      throw new IllegalArgumentException(
+          "Number of pipes should be an integer multiple of the multi-pumping factor");
 
     // Setup a scalar input of the lineWidth.
     DFEVar lineWidth = io.scalarInput(SCALAR_LINE_WIDTH_NAME, dfeUInt(32));
 
     // Setup a counter to count from 0 to `lineWidth` and then wrap back to 0.
-    DFEVar cnt = control.count.simpleCounter(32, lineWidth).cast(dfeInt(32));
+    CounterChain chain = control.count.makeCounterChain(); 
+    DFEVar cnt = chain.addCounter(lineWidth, 1).cast(dfeInt(32));
+    DFEVar mpCnt = (multiPumpingFactor == 1) ? constant.var(0) : chain.addCounter(multiPumpingFactor, 1);
 
     // Setup the input stream, which should be a vector of length `numPipesOfLine`.
     DFEType scalarType = dfeUInt(32);
     DFEVectorType<DFEVar> inpType = new DFEVectorType<DFEVar>(scalarType, numPipesOfLine);
-    DFEVector<DFEVar> inp = io.input(INP_NAME, inpType);
+    DFEVector<DFEVar> inp = io.input(INP_NAME, inpType, mpCnt === 0);
 
     // Setup the input stream for weights, which has width `windowWidth * numPipesOfLine` and
     // will not refresh until a new line comes in.
     DFEVectorType<DFEVar> wgtType = new DFEVectorType<DFEVar>(scalarType,
         windowWidth * numPipesOfLine);
-    DFEVector<DFEVar> wgt = io.input(WGT_NAME, wgtType, cnt === 0);
+    DFEVector<DFEVar> wgt = io.input(WGT_NAME, wgtType, cnt === 0 & mpCnt === 0);
 
     // Create the vector for output, which has width `numPipesOfLine`.
-    DFEVector<DFEVar> out = inpType.newInstance(this);
+    DFEVectorType<DFEVar> outType = new DFEVectorType<DFEVar>(
+        scalarType, numPipesOfLine / multiPumpingFactor);
+    DFEVector<DFEVar> out = outType.newInstance(this);
 
     // Create a boolean to indicate whether the result is ready, by checking
     // the counter value is larger than or equal to `windowWidth-1`.
@@ -86,7 +106,7 @@ public class OneDimConvKernel extends Kernel {
       wgtWindowList.add(windowType.newInstance(this));
       for (int j = 0; j < windowWidth; j ++) {
         if (j != windowWidth - 1)
-          inpWindowList[i][j] <== stream.offset(inp[i], - (windowWidth - j - 1)); 
+          inpWindowList[i][j] <== stream.offset(inp[i], - (windowWidth - j - 1) * multiPumpingFactor); 
         else
           inpWindowList[i][j] <== inp[i];
 
@@ -94,19 +114,78 @@ public class OneDimConvKernel extends Kernel {
       }
     }
 
-    // Initialize `numPipesOfLine` number of DotProductKernelLib.
+    if (multiPumpingFactor > 1) {
+      mpCnt = mpCnt.cast(
+          dfeUInt(MathUtils.bitsToAddress(multiPumpingFactor)));
+      compute(inpWindowList, wgtWindowList, out, mpCnt, multiPumpingFactor);
+    } else
+      compute(inpWindowList, wgtWindowList, out);
+
+    // Setup an output stream. 
+    io.output(OUT_NAME, out, outType, valid);
+
+    if (dbg) {
+      debug.simPrintf("%u %u: %KObj% %KObj%\n", cnt, mpCnt, inp, wgt);
+    }
+  }
+
+  private void compute(
+      List<DFEVector<DFEVar>> inpWindowList,
+      List<DFEVector<DFEVar>> wgtWindowList,
+      DFEVector<DFEVar> out) {
+
+    DFEType scalarType = inpWindowList[0][0].getType();
+    int windowWidth = inpWindowList[0].getSize();
+    int numPipesOfLine = inpWindowList.size();
     for (int i = 0; i < numPipesOfLine; i ++) {
-      // Connect them to the vectors in this kernel.
       DotProductKernelLib dotProduct = new DotProductKernelLib(this, windowWidth, scalarType);
       dotProduct.setInput(inpWindowList[i]);
       dotProduct.setWeight(wgtWindowList[i]);
       out[i] <== dotProduct.getOutput();
     }
-
-    // Setup an output stream. 
-    io.output(OUT_NAME, out, inpType, valid);
-
-
   }
 
+  /**
+   * Create computation units based on dot-product.
+   *
+   * @author Ruizhe Zhao
+   * @since 24/05/2017
+   *
+   * @param inpWindowList a list of windows that are prepared for dot-product input
+   * @param wgtWindowList a list of windows that are prepared for dot-product weights
+   * @param out  a vector of dot-product output
+   * @param multiPumpingCycle a counter counts the current number of multi-pumping cycle
+   * @param multiPumpingFactor a number of multi-pumped cycles
+   */
+  private void compute(
+      List<DFEVector<DFEVar>> inpWindowList,
+      List<DFEVector<DFEVar>> wgtWindowList,
+      DFEVector<DFEVar> out,
+      DFEVar multiPumpingCycle,
+      int multiPumpingFactor) {
+
+    DFEType scalarType = inpWindowList[0][0].getType();
+    int windowWidth = inpWindowList[0].getSize();
+    int numPipesOfLine = inpWindowList.size();
+
+    int numEffectivePipesOfLine = numPipesOfLine / multiPumpingFactor;
+
+    for (int i = 0; i < numEffectivePipesOfLine; i ++) {
+      List<DFEVector<DFEVar>> inpWindowCandidates = new ArrayList<DFEVector<DFEVar>>(multiPumpingFactor);
+      List<DFEVector<DFEVar>> wgtWindowCandidates = new ArrayList<DFEVector<DFEVar>>(multiPumpingFactor);
+
+      for (int m = 0; m < multiPumpingFactor; m ++) {
+        inpWindowCandidates.add(inpWindowList[m * numEffectivePipesOfLine + i]);
+        wgtWindowCandidates.add(wgtWindowList[m * numEffectivePipesOfLine + i]);
+      }
+
+      DFEVector<DFEVar> inpWindow = control.mux(multiPumpingCycle, inpWindowCandidates);
+      DFEVector<DFEVar> wgtWindow = control.mux(multiPumpingCycle, wgtWindowCandidates);
+
+      DotProductKernelLib dotProduct = new DotProductKernelLib(this, windowWidth, scalarType);
+      dotProduct.setInput(inpWindow);
+      dotProduct.setWeight(wgtWindow);
+      out[i] <== dotProduct.getOutput();
+    }
+  }
 }
