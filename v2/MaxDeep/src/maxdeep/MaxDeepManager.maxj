@@ -501,6 +501,10 @@ class MaxDeepManager extends CustomManager {
       ManagerUtils.debug(manager);
     // NOTE: Please don't uncomment this line of code until you know
     // what you are doing!!!
+    // NOTE: Maybe it is not due to this line of code, it is due to
+    // not-seperated LMemCommandGroups.
+    // NOTE: Hmm no, when setting LMem freq to 800 there will always be 
+    // a problem
     // ManagerUtils.setDRAMMaxDeviceFrequency(manager, params);
 
     /**
