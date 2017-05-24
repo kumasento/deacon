@@ -17,8 +17,9 @@ Currently there are several designs are being developed and experimented with. E
 
 A full list of designs are as follows:
 
-| Name | Parameters | Description |
-| `LOOPBACK` | | How to work with 3 different streams with LMem |
-| `LOOPBACK_PADDED` | | The streams are padded with padding kernels |
-| `MULT_ARRAY` | `P` | Depreacted |
-| `ONE_DIM_CONV` | `W` `P` `M` | Test parallel processing, bandwidth limitation, and multi-pumping for one dimensional CONV |
+| Name              | Parameters  | Description                                                          |
+|-------------------|-------------|----------------------------------------------------------------------|
+| `LOOPBACK`        |             | How to work with 3 different streams with LMem                       |
+| `LOOPBACK_PADDED` |             | The streams are padded with padding kernels                          |
+| `MULT_ARRAY`      | `P`         | Depreacted                                                           |
+| `ONE_DIM_CONV`    | `W` `P` `M` | Test parallel, bandwidth, and multi-pumping for one dimensional CONV |
