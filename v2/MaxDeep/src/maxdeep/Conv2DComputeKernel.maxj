@@ -66,6 +66,12 @@ public class Conv2DComputeKernel extends Kernel {
     out <== this.compute(inp, wgt);
 
     io.output(OUT_NAME, out, this.outType);
+
+    if (dbg) {
+      debug.simPrintf("inp: %KObj%\n", inp);
+      debug.simPrintf("wgt: %KObj%\n", wgt);
+      debug.simPrintf("out: %KObj%\n", out);
+    }
   }
 
   /**
