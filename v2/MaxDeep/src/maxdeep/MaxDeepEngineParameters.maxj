@@ -2,6 +2,8 @@ package maxdeep;
 
 import com.maxeler.maxcompiler.v2.build.EngineParameters;
 
+import maxdeep.designs.*;
+
 public class MaxDeepEngineParameters extends EngineParameters {
 
   private static final int numPipes = 2;
@@ -10,6 +12,7 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int numMPDPFactor = 1;
   private static final int numFCRowPipes = 1;
   private static final int numFCColPipes = 1;
+  private static final int kernelSize = 3;
 
   private static final int maxConvHeight      = 8;
   private static final int maxConvWidth       = 8;
@@ -39,6 +42,7 @@ public class MaxDeepEngineParameters extends EngineParameters {
     declareParam("maxConvWidth",          DataType.INT,    maxConvWidth);
     declareParam("maxConvNumChannels",    DataType.INT,    maxConvNumChannels);
     declareParam("maxConvNumFilters",     DataType.INT,    maxConvNumFilters);
+    declareParam("kernelSize",            DataType.INT,    kernelSize);
     declareParam("maxConvKernelSize",     DataType.INT,    maxConvKernelSize);
     declareParam("maxFCHeight",           DataType.INT,    maxFCHeight);
     declareParam("maxFCWidth",            DataType.INT,    maxFCWidth);
@@ -56,6 +60,7 @@ public class MaxDeepEngineParameters extends EngineParameters {
   public int getMaxConvWidth()          { return getParam("maxConvWidth");          }
   public int getMaxConvNumChannels()    { return getParam("maxConvNumChannels");    }
   public int getMaxConvNumFilters()     { return getParam("maxConvNumFilters");     }
+  public int getKernelSize()            { return getParam("kernelSize");     }
   public int getMaxConvKernelSize()     { return getParam("maxConvKernelSize");     }
   public int getMaxFCHeight()           { return getParam("maxFCHeight");           }
   public int getMaxFCWidth()            { return getParam("maxFCWidth");            }
@@ -92,6 +97,8 @@ public class MaxDeepEngineParameters extends EngineParameters {
           getNumPipes(),
           getMultiPumpingFactor(),
           suffix);
+    else if (getDesignName().equals(Conv2DDesign.NAME))
+      return Conv2DDesign.getBuildName(this, prefix, suffix);
     else
       throw new RuntimeException("getBuildName: Cannot recognise build name.");
   }

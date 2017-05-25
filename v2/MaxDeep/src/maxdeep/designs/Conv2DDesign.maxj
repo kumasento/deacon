@@ -1,0 +1,108 @@
+package maxdeep.designs;
+
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.*;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.*;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.*;
+
+import maxdeep.*;
+
+public class Conv2DDesign {
+
+  public static final String NAME = "CONV2D";
+  
+  public static void initializeKernel(MaxDeepManager manager, MaxDeepEngineParameters params) {
+    int freq = params.getFreq();
+    int numOfPipes = params.getNumPipes();
+    int kernelHeight = params.getKernelSize();
+    int kernelWidth = params.getKernelSize();
+    int kernelSize = kernelHeight * kernelWidth;
+
+    manager.logMsg("Initializing ONE_DIM_CONV kernel ...");
+    manager.logMsg("FREQ:          %d", freq);
+    manager.logMsg("NUM_PIPES:     %d", numOfPipes);
+    manager.logMsg("KERNEL_HEIGHT: %d", kernelHeight);
+    manager.logMsg("KERNEL_WIDTH:  %d", kernelWidth);
+
+    manager.initializePaddingKernels(
+        params,
+        32 * kernelSize,
+        32 * kernelSize * numOfPipes,
+        32 * numOfPipes);
+
+    KernelBlock conv2d = manager.addKernel(
+        new Conv2DComputeKernel(
+          manager.makeKernelParameters(MaxDeepManager.CONV2D_COMPUTE_KERNEL_NAME),
+          kernelHeight,
+          kernelWidth,
+          numOfPipes,
+          params.getDbg()));
+
+    conv2d.getInput(Conv2DComputeKernel.INP_NAME) <==
+      manager.unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
+    conv2d.getInput(Conv2DComputeKernel.WGT_NAME) <==
+      manager.unpadding_wgt.getOutput(UnpaddingKernel.OUT_NAME);
+    manager.padding.getInput(PaddingKernel.INP_NAME) <==
+      conv2d.getOutput(Conv2DComputeKernel.OUT_NAME);
+
+    conv2d.setClock(manager.clk);
+  }
+
+  public static void initializeEngineInterface(EngineInterface ei, MaxDeepManager manager,
+      MaxDeepEngineParameters params) {
+    
+    InterfaceParam numOfWindows = ei.addParam(
+        "num_of_windows",
+        CPUTypes.INT64,
+        "Number of 2D windows to be computed");
+
+    InterfaceParam ZERO = ei.addConstant(0);
+    InterfaceParam kernelSize = ei.addConstant(params.getKernelSize());
+    InterfaceParam numOfPipes = ei.addConstant(params.getNumPipes());
+
+    InterfaceParam inpNumOfElems = numOfWindows * kernelSize * kernelSize;
+    InterfaceParam wgtNumOfElems = numOfWindows * numOfPipes * kernelSize * kernelSize;
+    InterfaceParam outNumOfElems = numOfWindows;
+
+    InterfaceParam burstAlignedInpNumOfElems =
+      manager.getBurstAlignedNumOfElems(inpNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedInpSizeInBytes =
+      burstAlignedInpNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    InterfaceParam burstAlignedWgtNumOfElems =
+      manager.getBurstAlignedNumOfElems(wgtNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedWgtSizeInBytes =
+      burstAlignedWgtNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    InterfaceParam burstAlignedOutNumOfElems =
+      manager.getBurstAlignedNumOfElems(outNumOfElems, CPUTypes.UINT32.sizeInBytes(), ei);
+    InterfaceParam burstAlignedOutSizeInBytes =
+      burstAlignedOutNumOfElems * CPUTypes.UINT32.sizeInBytes();
+
+    ei.setTicks(MaxDeepManager.CONV2D_COMPUTE_KERNEL_NAME, inpNumOfElems / numOfPipes);
+    ei.setTicks(MaxDeepManager.PADDING_KERNEL_NAME, burstAlignedOutNumOfElems / numOfPipes);
+    ei.setTicks(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, burstAlignedInpNumOfElems / numOfPipes);
+    ei.setTicks(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, burstAlignedWgtNumOfElems / numOfPipes);
+
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME, PaddingKernel.SCALAR_NUM_INP, outNumOfElems / numOfPipes);
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME, PaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedOutNumOfElems / numOfPipes);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, inpNumOfElems / numOfPipes);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedInpNumOfElems / numOfPipes);
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_NUM_INP, wgtNumOfElems / numOfPipes);
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME, UnpaddingKernel.SCALAR_TOTAL_CYCLES, burstAlignedWgtNumOfElems / numOfPipes);
+
+    ei.setLMemLinear(MaxDeepManager.LMEM_INP_NAME, ZERO, burstAlignedInpSizeInBytes);
+    ei.setLMemLinear(MaxDeepManager.LMEM_WGT_NAME, burstAlignedInpSizeInBytes, burstAlignedWgtSizeInBytes);
+    ei.setLMemLinear(MaxDeepManager.LMEM_OUT_NAME, burstAlignedInpSizeInBytes + burstAlignedWgtSizeInBytes,
+        burstAlignedOutSizeInBytes);
+  }
+
+  public static String getBuildName(MaxDeepEngineParameters params, String prefix,
+      String suffix) {
+    return String.format(
+        "%s_P_%d_K_%d_%s",
+        prefix,
+        params.getNumPipes(),
+        params.getKernelSize(),
+        suffix);
+  }
+}

@@ -1,0 +1,105 @@
+package maxdeep;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.*;
+import com.maxeler.maxcompiler.v2.utils.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import maxdeep.lib.*;
+
+import java.util.*;
+
+public class Conv2DComputeKernel extends Kernel {
+
+  public static final String INP_NAME = "CONV2D_COMPUTE_KERNEL_INP";
+  public static final String WGT_NAME = "CONV2D_COMPUTE_KERNEL_WGT";
+  public static final String OUT_NAME = "CONV2D_COMPUTE_KERNEL_OUT";
+
+  private DFEType scalarType;
+  private DFEVectorType<DFEVar> inpType;
+  private DFEVectorType<DFEVar> wgtType;
+  private DFEVectorType<DFEVar> outType;
+
+  private int kernelHeight;
+  private int kernelWidth;
+  private int kernelSize;
+  private int numOfFilterPipes;
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 25/05/2017
+   *
+   * @param params kernel parameters
+   * @param kernelHeight height of the kernel
+   * @param kernelWidth width of the  kernel
+   * @param numOfFilterPipes pipes along the filter axis
+   * @param dbg debugging flag
+   */
+  public Conv2DComputeKernel(KernelParameters params,
+      int kernelHeight, int kernelWidth, int numOfFilterPipes,
+      boolean dbg) {
+
+    super(params);
+
+    this.kernelHeight = kernelHeight;
+    this.kernelWidth = kernelWidth;
+    this.kernelSize = kernelHeight * kernelWidth;
+    this.numOfFilterPipes = numOfFilterPipes;
+    
+    this.scalarType = dfeUInt(32);
+    this.inpType = new DFEVectorType<DFEVar>(
+        scalarType, this.kernelSize);
+    this.wgtType = new DFEVectorType<DFEVar>(
+        scalarType, this.kernelSize * this.numOfFilterPipes);
+    this.outType = new DFEVectorType<DFEVar>(
+        scalarType, this.numOfFilterPipes);
+
+    DFEVector<DFEVar> inp = io.input(INP_NAME, this.inpType);
+    DFEVector<DFEVar> wgt = io.input(WGT_NAME, this.wgtType);
+    DFEVector<DFEVar> out = this.outType.newInstance(this);
+
+    out <== this.compute(inp, wgt);
+
+    io.output(OUT_NAME, out, this.outType);
+  }
+
+  /**
+   * Compute conv2d in parallel.
+   *
+   * @author Ruizhe Zhao
+   * @since 25/05/2017
+   *
+   * @param inp input vector (K * K)
+   * @param wgt weight vector (P * K * K)
+   * @return output vector (P)
+   */
+  private DFEVector<DFEVar> compute(DFEVector<DFEVar> inp,
+      DFEVector<DFEVar> wgt) {
+    
+    DFEVector<DFEVar> out = this.outType.newInstance(this);
+    DFEVectorType<DFEVar> wgtKnlType = 
+      new DFEVectorType<DFEVar>(this.scalarType, this.kernelSize);
+    
+    for (int i = 0; i < this.numOfFilterPipes; i ++) {
+      DFEVector<DFEVar> wgtKnl = wgtKnlType.newInstance(this);
+      for (int j = 0; j < this.kernelSize; j ++)
+        wgtKnl[j] <== wgt[i * this.kernelSize + j];
+
+      TwoDimConvKernelLib conv = new TwoDimConvKernelLib(
+          this, this.kernelHeight, this.kernelWidth,
+          this.scalarType);
+
+      conv.setInput(inp);
+      conv.setWeight(wgtKnl);
+      out[i] <== conv.getOutput();
+    }
+
+    return out;
+  }
+
+}
