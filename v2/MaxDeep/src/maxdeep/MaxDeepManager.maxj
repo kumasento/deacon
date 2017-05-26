@@ -126,6 +126,10 @@ public class MaxDeepManager extends CustomManager {
   private void initializeMaxFileConstants(MaxDeepEngineParameters params) {
     addMaxFileConstant("NUM_PIPES", params.getNumPipes());
     addMaxFileConstant("KERNEL_SIZE", params.getKernelSize());
+    addMaxFileConstant("MAX_CONV_HEIGHT", params.getMaxConvHeight());
+    addMaxFileConstant("MAX_CONV_WIDTH", params.getMaxConvWidth());
+    addMaxFileConstant("MAX_CONV_NUM_OF_CHANNELS", params.getMaxConvNumChannels());
+    addMaxFileConstant("MAX_CONV_NUM_OF_FILTERS", params.getMaxConvNumFilters());
     addMaxFileConstant("ONE_DIM_CONV_WINDOW_WIDTH", params.getOneDimConvWindowWidth());
   }
 
@@ -492,8 +496,8 @@ public class MaxDeepManager extends CustomManager {
    * @return number of elements in the burst aligned array
    */
   public InterfaceParam getBurstAlignedNumOfElems(InterfaceParam numOfElems, int sizeInBytes,
-      EngineInterface ei) {
-    InterfaceParam burstSize = ei.addConstant(384);
+      InterfaceParam burstFactor, EngineInterface ei) {
+    InterfaceParam burstSize = ei.addConstant(384) * burstFactor;
     InterfaceParam totalSizeInBytes = numOfElems * sizeInBytes;
     InterfaceParam burstAlignedTotalSizeInBytes =
       InterfaceMath
@@ -504,6 +508,11 @@ public class MaxDeepManager extends CustomManager {
     InterfaceParam burstAlignedNumOfElems =
       burstAlignedTotalSizeInBytes / sizeInBytes;
     return burstAlignedNumOfElems.cast(CPUTypes.INT64);
+  }
+
+  public InterfaceParam getBurstAlignedNumOfElems(InterfaceParam numOfElems, int sizeInBytes,
+      EngineInterface ei) {
+    return getBurstAlignedNumOfElems(numOfElems, sizeInBytes, ei.addConstant(1), ei);
   }
 
   public static void main(String [] args) {

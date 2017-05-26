@@ -36,6 +36,9 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
 
     super(owner);
 
+    this.maxHeight = maxHeight;
+    this.maxWidth = maxWidth;
+
     initTypes(scalarType);
     initScalars();
     initStreams();
@@ -49,6 +52,11 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
         this.c === 0,
         Mem.RamWriteMode.WRITE_FIRST);
     this.out <== port;
+
+    if (dbg) {
+      debug.simPrintf("CONV2D_INP_BUFFER\n");
+      debug.simPrintf("%u %u %u\n", addr, this.inp, this.out);
+    }
   }
 
   public void setInput(DFEVar inp) {
@@ -72,9 +80,9 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
   }
 
   private void initTypes(DFEType scalarType) {
-    indexType = dfeInt(32);
+    indexType = dfeUInt(32);
     valueType = scalarType;
-    addrType = dfeInt(MathUtils.bitsToAddress(maxHeight * maxWidth));
+    addrType = dfeUInt(MathUtils.bitsToAddress(maxHeight * maxWidth));
   }
 
   private void initScalars() {

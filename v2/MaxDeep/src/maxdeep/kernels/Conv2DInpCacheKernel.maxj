@@ -46,6 +46,9 @@ public class Conv2DInpCacheKernel extends Kernel {
   public static final String INP_NAME = "CONV2D_INP_CACHE_KERNEL_INP";
   public static final String OUT_NAME = "CONV2D_INP_CACHE_KERNEL_OUT";
 
+  public static final String INP_WGT_NAME = "CONV2D_INP_CACHE_KERNEL_INP_WGT";
+  public static final String OUT_WGT_NAME = "CONV2D_INP_CACHE_KERNEL_OUT_WGT";
+
   public static final String SCALAR_HEIGHT_NAME = "CONV2D_INP_CACHE_SCALAR_HEIGHT";
   public static final String SCALAR_WIDTH_NAME = "CONV2D_INP_CACHE_SCALAR_WIDTH";
   public static final String SCALAR_NUM_OF_CHANNELS_NAME =
@@ -59,10 +62,12 @@ public class Conv2DInpCacheKernel extends Kernel {
   private DFEVar numOfFilters;
 
   private DFEVar inp;
+  private DFEVector<DFEVar> wgt;
   private DFEVector<DFEVar> out;
 
   private DFEType indexType;
   private DFEType scalarValueType;
+  private DFEVectorType<DFEVar> wgtType;
   private DFEVectorType<DFEVar> vectorValueType;
 
   private CounterChain chain;
@@ -110,38 +115,42 @@ public class Conv2DInpCacheKernel extends Kernel {
     initTypes();
     initScalars();
     initRegisters();
-    initStreams();
     initCounters();
+    initStreams();
 
     Conv2DInpBufferKernelLib buffer = new Conv2DInpBufferKernelLib(
         this, this.maxHeight, this.maxWidth, scalarValueType, dbg);
     buffer.setInput(this.inp);
     buffer.setHeight(this.height);
     buffer.setWidth(this.width);
-    buffer.setNumOfChannels(this.numOfChannels);
+    buffer.setNumOfChannels(this.numOfFilters);
     DFEVar bufOut = buffer.getOutput();
 
     LineBufferKernelLib line = new LineBufferKernelLib(
-        this, this.maxHeight, this.maxWidth, scalarValueType);
+        this, this.kernelHeight, this.maxWidth, scalarValueType);
     line.setInput(bufOut);
-    line.setHeight(constant.var(this.kernelHeight));
-    line.setWidth(this.width);
-    line.setCapacity(this.height * this.width);
+    line.setHeight(constant.var(this.kernelHeight).cast(dfeInt(32)));
+    line.setWidth(this.width.cast(dfeInt(32)));
+    line.setCapacity((this.height * this.width).cast(dfeInt(32)));
     DFEVector<DFEVar> lineOut = line.getOutput();
 
     this.valid <== (this.h >= (this.kernelHeight - 1)) & (this.w >= (this.kernelWidth - 1));
+
     for (int i = 0; i < this.kernelWidth; i ++) {
       int widthOffset = - (this.kernelWidth - i - 1);
-
+      DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
+      if (dbg)
+        debug.simPrintf("outCol - %KObj%\n", outCol);
       for (int j = 0; j < this.kernelHeight; j ++) {
         int idx = j * this.kernelWidth + i;
-        DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
         this.out[idx] <== outCol[j]; 
       }
     }
 
     if (dbg) {
       debug.simPrintf("out - %KObj%\n", out);
+      debug.simPrintf("wgt - %KObj%\n", this.wgt);
+      debug.simPrintf("vld - %KObj%\n", valid);
     }
   }
 
@@ -151,9 +160,10 @@ public class Conv2DInpCacheKernel extends Kernel {
    * @since 26/05/2017
    */
   private void initTypes() {
-    this.indexType = dfeInt(32);
+    this.indexType = dfeUInt(32);
     this.scalarValueType = dfeUInt(32);
     this.vectorValueType = new DFEVectorType<DFEVar>(this.scalarValueType, this.kernelSize);
+    this.wgtType = new DFEVectorType<DFEVar>(this.scalarValueType, this.kernelSize);
   }
 
   /**
@@ -169,9 +179,12 @@ public class Conv2DInpCacheKernel extends Kernel {
   }
 
   private void initStreams() {
-    this.inp = io.input(INP_NAME, this.scalarValueType);
+    this.inp = io.input(INP_NAME, this.scalarValueType, this.f === 0);
     this.out = this.vectorValueType.newInstance(this);
     io.output(OUT_NAME, this.out, this.vectorValueType, this.valid);
+
+    this.wgt = io.input(INP_WGT_NAME, this.wgtType, this.h === 0 & this.w === 0);
+    io.output(OUT_WGT_NAME, this.wgt, this.wgtType, this.valid);
   }
 
   private void initCounters() {

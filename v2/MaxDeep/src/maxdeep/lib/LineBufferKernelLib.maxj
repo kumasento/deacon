@@ -67,7 +67,7 @@ public class LineBufferKernelLib extends KernelLib {
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
     for (int i = 0; i < maxHeight; i ++) {
-      outVec[i] <== getOutputElementAt(i);
+      outVec[i] <== getOutputElementAt(maxHeight - i - 1);
     }
 
     return outVec;
@@ -79,7 +79,7 @@ public class LineBufferKernelLib extends KernelLib {
 
     DFEVar index = constant.var(i).cast(indexType);
     DFEVar offset = index * (- width);
-    int maxOffset = - maxWidth * (maxHeight - 1);
+    int maxOffset = - maxWidth * maxHeight;
     DFEVar readBufByOffset = stream.offset(
         buf,
         offset,

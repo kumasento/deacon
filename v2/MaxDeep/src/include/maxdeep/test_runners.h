@@ -122,14 +122,14 @@ bool run_mult_array_test(bool is_sim, max_file_t *maxfile, max_engine_t *engine)
 
   const int num_iters = 1;
   size_t burst_size = max_get_burst_size(maxfile, NULL);
-  int num_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
+  int num_of_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
 
   int64_t inp_size = 1000;
   // Increase the total size if not in the simulation environment
   if (!is_sim)
     inp_size = inp_size * 1024 * 1024;
 
-  int64_t wgt_size = inp_size * num_pipes;
+  int64_t wgt_size = inp_size * num_of_pipes;
   int64_t out_size = inp_size;
 
   int64_t burst_aligned_inp_size = utils::burst_aligned_size(inp_size, sizeof(uint32_t), burst_size);
@@ -153,7 +153,7 @@ bool run_mult_array_test(bool is_sim, max_file_t *maxfile, max_engine_t *engine)
   for (int i = 0; i < (int) out_size; i++) {
     uint32_t sum = 0;
     uint32_t inp_val = inp[i];
-    for (int j = i * num_pipes; j < (i + 1) * num_pipes; j ++)
+    for (int j = i * num_of_pipes; j < (i + 1) * num_of_pipes; j ++)
       sum += inp_val * wgt[j];
     expected_out[i] = sum;
   }
@@ -233,10 +233,10 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
 
   const int num_iters = (is_sim) ? 1 : 100;
   size_t burst_size = max_get_burst_size(maxfile, NULL);
-  int num_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
+  int num_of_pipes = (int) max_get_constant_uint64t(maxfile, "NUM_PIPES");
   int window_width = (int) max_get_constant_uint64t(maxfile, "ONE_DIM_CONV_WINDOW_WIDTH");
   
-  int64_t num_of_lines = num_pipes * 2;
+  int64_t num_of_lines = num_of_pipes * 2;
   int64_t line_width = 10;
 
   // Increase the total size if not in the simulation environment
@@ -270,9 +270,9 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
   printf("Initializing data ...\n");
   printf("Initializing INP ...\n");
   int inp_idx = 0;
-  for (int i = 0; i < num_of_lines; i += num_pipes) {
+  for (int i = 0; i < num_of_lines; i += num_of_pipes) {
     for (int j = 0; j < line_width; j ++) {
-      for (int k = 0; k < num_pipes; k ++) {
+      for (int k = 0; k < num_of_pipes; k ++) {
         int line_idx = i + k;
         int val = line_idx * line_width + j + 1;
         inp[inp_idx ++] = val;
@@ -288,12 +288,12 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
   // expected output
   printf("Initializing OUT ...\n");
   int out_idx = 0;
-  for (int i = 0; i < (int) num_of_lines; i += num_pipes) {
+  for (int i = 0; i < (int) num_of_lines; i += num_of_pipes) {
     for (int j = 0; j < (int) line_width; j ++) {
       if (j + window_width > line_width)
         break;
 
-      for (int k = 0; k < num_pipes; k ++) {
+      for (int k = 0; k < num_of_pipes; k ++) {
         int line_idx = i + k;
         uint32_t sum = 0;
         for (int w = 0; w < window_width; w ++)
@@ -374,25 +374,37 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
 
 class Conv2DTest {
 public:
-  Conv2DTest(int num_of_windows, bool sim, max_file_t *max_file, max_engine_t *max_engine) {
-    this->num_of_windows = num_of_windows;
+  Conv2DTest(bool sim, max_file_t *max_file, max_engine_t *max_engine) {
     this->sim = sim;
     this->max_file = max_file;
     this->max_engine = max_engine;
 
     size_t burst_size = max_get_burst_size(max_file, NULL);
 
-    num_of_pipes  = (int) max_get_constant_uint64t(max_file, "NUM_PIPES");
-    kernel_height = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
-    kernel_width  = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
+    this->height          = (int) max_get_constant_uint64t(max_file, "MAX_CONV_HEIGHT");
+    this->width           = (int) max_get_constant_uint64t(max_file, "MAX_CONV_WIDTH");
+    this->num_of_channels = (int) max_get_constant_uint64t(max_file, "MAX_CONV_NUM_OF_CHANNELS");
+    this->num_of_filters  = (int) max_get_constant_uint64t(max_file, "MAX_CONV_NUM_OF_FILTERS");
+    this->num_of_pipes    = (int) max_get_constant_uint64t(max_file, "NUM_PIPES");
+    this->kernel_height   = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
+    this->kernel_width    = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
     
-    inp_size = num_of_windows * kernel_height * kernel_width;
-    wgt_size = num_of_windows * num_of_pipes * kernel_height * kernel_width;
-    out_size = num_of_windows * num_of_pipes;
+    int kernel_size = kernel_height * kernel_width;
+    inp_size = height * width * num_of_channels;
+    int out_height = height - kernel_height + 1;
+    int out_width = width - kernel_width + 1;
+    int out_size_per_pipe = out_height * out_width * num_of_channels * num_of_filters;
+
+    wgt_size = num_of_channels * num_of_filters * kernel_height * kernel_width;
+    out_size = out_size_per_pipe * num_of_pipes;
 
     burst_aligned_inp_size = utils::burst_aligned_size(inp_size, sizeof(uint32_t), burst_size);
-    burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, sizeof(uint32_t), burst_size);
+    burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, sizeof(uint32_t), burst_size * kernel_size);
     burst_aligned_out_size = utils::burst_aligned_size(out_size, sizeof(uint32_t), burst_size);
+
+    printf("inp_size: %ld %ld\n", inp_size, burst_aligned_inp_size);
+    printf("wgt_size: %ld %ld\n", wgt_size, burst_aligned_wgt_size);
+    printf("out_size: %ld %ld\n", out_size, burst_aligned_out_size);
   }
 
   /**
@@ -421,8 +433,10 @@ public:
 
     MaxDeep_actions_t actions;
 #if defined(DESIGN_CONV2D)
-    printf("num_of_windows: %d\n", num_of_windows);
-    actions.param_num_of_windows = num_of_windows;
+    actions.param_height = height;
+    actions.param_width = width;
+    actions.param_num_of_channels = num_of_channels;
+    actions.param_num_of_filters = num_of_filters;
 #endif
 
     printf("Writing to DRAM ...\n\n");
@@ -463,7 +477,10 @@ private:
   max_file_t *max_file;
   max_engine_t *max_engine;
 
-  int num_of_windows;
+  int height;
+  int width;
+  int num_of_channels;
+  int num_of_filters;
   int num_of_pipes;
   int kernel_height;
   int kernel_width;
@@ -473,10 +490,10 @@ private:
 
   void alloc_data() {
     printf("Allocating memory ...\n");
-    inp = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_inp_size);
-    wgt = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_wgt_size);
-    out = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_out_size);
-    expected = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
+    this->inp = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_inp_size);
+    this->wgt = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_wgt_size);
+    this->out = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_out_size);
+    this->expected = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
     if (!inp || !wgt || !out || !expected) {
       fprintf(stderr, "Cannot allocat streams\n");
       exit(-1);
@@ -492,27 +509,72 @@ private:
 
   void init_data() {
     printf("Initializing data ...\n");
+    init_inp_data();
+    init_wgt_data();
+    init_out_data();
+    init_expected_data();
+  }
+
+  void init_inp_data() {
     printf("Initializing INP ...\n");
-    for (int i = 0; i < (int) inp_size; i ++)
-      inp[i] = (uint32_t) i + 1;
+    for (int i = 0; i < inp_size; i ++)
+      inp[i] = (uint32_t) (i + 1);
+  }
 
+  void init_wgt_data() {
     printf("Initializing WGT ...\n");
-    for (int i = 0; i < (int) wgt_size; i++)
+    for (int i = 0; i < wgt_size; i ++) {
       wgt[i] = (uint32_t) i + 1;
+    }
+  }
 
+  void init_out_data() {
+    printf("Initializing OUT (to see whether MaxDeep changes the output) ...\n");
+    for (int i = 0; i < out_size; i ++)
+      out[i] = (uint32_t) 1;
+  }
+
+  void init_expected_data() {
     // expected output
-    printf("Initializing OUT ...\n");
-    for (int i = 0; i < (int) num_of_windows; i ++) {
-      for (int j = 0; j < num_of_pipes; j ++) {
-        uint32_t sum = 0;
-        for (int k = 0; k < (int) kernel_height * kernel_width; k ++) {
-          int inp_idx = i * kernel_height * kernel_width + k;
-          int wgt_idx = i * num_of_pipes * kernel_height * kernel_width
-            + j * kernel_height * kernel_width + k;
-          sum += inp[inp_idx] * wgt[wgt_idx];
+    printf("Initializing EXPECTED ...\n");
+    for (int c = 0; c < (int) num_of_channels; c ++) {
+      for (int f = 0; f < (int) num_of_filters; f ++) {
+        int out_height = (height - kernel_height + 1);
+        int out_width = (width - kernel_width + 1);
+        for (int oh = 0; oh < (int) out_height; oh ++) {
+          for (int ow = 0; ow < (int) out_width; ow ++) {
+            int kernel_top_offset = kernel_height / 2;
+            int kernel_bottom_offset = kernel_height - kernel_top_offset - 1;
+            int kernel_left_offset = kernel_width / 2;
+            int kernel_right_offset = kernel_width - kernel_left_offset - 1;
+
+            uint32_t sum = 0;
+            for (int kx = -kernel_top_offset; kx <= kernel_bottom_offset; kx ++) {
+              for (int ky = -kernel_left_offset; ky <= kernel_right_offset; ky ++) {
+                int h = kx + oh + kernel_top_offset;
+                int w = ky + ow + kernel_left_offset;
+                int inp_idx = c * height * width + h * width + w;
+                uint32_t inp_val = inp[inp_idx];
+
+                int wgt_idx =
+                  c * num_of_filters * kernel_height * kernel_width +
+                  f * kernel_height * kernel_width +
+                  (kx + kernel_top_offset) * kernel_width +
+                  (ky + kernel_left_offset);
+                uint32_t wgt_val = wgt[wgt_idx];
+
+                sum += inp_val * wgt_val;
+              }
+            }
+
+            int out_idx =
+              c * num_of_filters * out_height * out_width +
+              f * out_height * out_width +
+              oh * out_width +
+              ow;
+            expected[out_idx] = sum;
+          }
         }
-        int out_idx = i * num_of_pipes + j;
-        expected[out_idx] = sum;
       }
     }
   }
