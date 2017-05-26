@@ -1,0 +1,102 @@
+package maxdeep.lib;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.*;
+import com.maxeler.maxcompiler.v2.utils.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import java.util.*;
+
+public class Conv2DInpBufferKernelLib extends KernelLib {
+
+  private int maxHeight;
+  private int maxWidth;
+
+  private DFEType indexType;
+  private DFEType valueType;
+  private DFEType addrType;
+
+  private DFEVar inp;
+  private DFEVar out;
+  private DFEVar height;
+  private DFEVar width;
+  private DFEVar numOfChannels;
+  private DFEVar h;
+  private DFEVar w;
+  private DFEVar c;
+  
+  private CounterChain chain;
+
+  private Memory<DFEVar> memory;
+  
+  public Conv2DInpBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth,
+      DFEType scalarType, boolean dbg) {
+
+    super(owner);
+
+    initTypes(scalarType);
+    initScalars();
+    initStreams();
+    initCounters();
+    initMemory();
+
+    DFEVar addr = (h * width + w).cast(addrType);
+    DFEVar port = this.memory.port(
+        addr,
+        this.inp,
+        this.c === 0,
+        Mem.RamWriteMode.WRITE_FIRST);
+    this.out <== port;
+  }
+
+  public void setInput(DFEVar inp) {
+    this.inp <== inp;
+  }
+
+  public void setHeight(DFEVar height) {
+    this.height <== height;
+  }
+
+  public void setWidth(DFEVar width) {
+    this.width <== width;
+  }
+
+  public void setNumOfChannels(DFEVar numOfChannels) {
+    this.numOfChannels <== numOfChannels;
+  }
+
+  public DFEVar getOutput() {
+    return this.out;
+  }
+
+  private void initTypes(DFEType scalarType) {
+    indexType = dfeInt(32);
+    valueType = scalarType;
+    addrType = dfeInt(MathUtils.bitsToAddress(maxHeight * maxWidth));
+  }
+
+  private void initScalars() {
+    height = indexType.newInstance(this);
+    width = indexType.newInstance(this);
+    numOfChannels = indexType.newInstance(this);
+  }
+
+  private void initStreams() {
+    inp = valueType.newInstance(this);
+    out = valueType.newInstance(this);
+  }
+
+  private void initCounters() {
+    chain = control.count.makeCounterChain();
+    c = chain.addCounter(numOfChannels, 1).cast(indexType);
+    h = chain.addCounter(height, 1).cast(indexType);
+    w = chain.addCounter(width, 1).cast(indexType);
+  }
+
+  private void initMemory() {
+    this.memory = mem.alloc(this.valueType, this.maxHeight * this.maxWidth);
+  }
+
+}

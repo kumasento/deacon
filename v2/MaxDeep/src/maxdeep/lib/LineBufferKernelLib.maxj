@@ -59,6 +59,7 @@ public class LineBufferKernelLib extends KernelLib {
    */
   public void setCapacity(DFEVar capacity) { this.capacity <== capacity; }
 
+  @Deprecated 
   public DFEVar getValid() { return vld; }
 
   public DFEVector<DFEVar> getOutput() {

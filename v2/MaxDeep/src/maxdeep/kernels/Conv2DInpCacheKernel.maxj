@@ -1,0 +1,188 @@
+package maxdeep.kernels;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.*;
+import com.maxeler.maxcompiler.v2.utils.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import maxdeep.lib.*;
+
+import java.util.*;
+
+/**
+ * Kernel aims at caching INPUT of the current Conv2D layer.
+ *
+ * Streams:
+ * INP - an input stream contains the input feature map.
+ * OUT - an output stream contains the prepared workload for convolution.
+ *
+ * Scalars:
+ * HEIGHT - height of the input feature map
+ * WIDTH - width of the input feature map
+ * NUM_OF_CHANNELS - number of input fmap channels
+ * NUM_OF_FILTERS - number of output fmap channels
+ *
+ * Scalars (NOT YET SUPPORTED):
+ * STRIDE - length of the conv2d stride
+ * PAD - size of padded elements
+ *
+ * How it works:
+ * - This kernel takes one data element in one cycle as input, and after
+ * several cycles, it will starts to generate output.
+ *
+ * Example:
+ *
+ * INP - [ [ 0, 1, 2, 3 ], [ 4, 5, 6, 7 ] ]
+ * OUT - [ ( 0, 1, 4, 5 ), ( 1, 2, 5, 6), ( 2, 3, 6, 7 ) ]
+ *
+ * @author Ruizhe Zhao
+ * @since 26/05/2017
+ */
+public class Conv2DInpCacheKernel extends Kernel {
+
+  public static final String INP_NAME = "CONV2D_INP_CACHE_KERNEL_INP";
+  public static final String OUT_NAME = "CONV2D_INP_CACHE_KERNEL_OUT";
+
+  public static final String SCALAR_HEIGHT_NAME = "CONV2D_INP_CACHE_SCALAR_HEIGHT";
+  public static final String SCALAR_WIDTH_NAME = "CONV2D_INP_CACHE_SCALAR_WIDTH";
+  public static final String SCALAR_NUM_OF_CHANNELS_NAME =
+    "CONV2D_INP_CACHE_SCALAR_NUM_OF_CHANNELS";
+  public static final String SCALAR_NUM_OF_FILTERS_NAME =
+    "CONV2D_INP_CACHE_SCALAR_NUM_OF_FILTERS";
+
+  private DFEVar height;
+  private DFEVar width;
+  private DFEVar numOfChannels;
+  private DFEVar numOfFilters;
+
+  private DFEVar inp;
+  private DFEVector<DFEVar> out;
+
+  private DFEType indexType;
+  private DFEType scalarValueType;
+  private DFEVectorType<DFEVar> vectorValueType;
+
+  private CounterChain chain;
+  private DFEVar h;
+  private DFEVar w;
+  private DFEVar f;
+  private DFEVar c;
+  private DFEVar valid;
+
+  private int maxHeight;
+  private int maxWidth;
+  private int maxNumOfChannels;
+  private int maxNumOfFilters;
+  private int kernelHeight;
+  private int kernelWidth;
+  private int kernelSize;
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 26/05/2017
+   * @param params kernel parameters
+   * @param maxHeight maximum height of the input feature map
+   * @param maxWidth maximum width of the input feature map
+   * @param maxNumOfChannels maximum number of input feature map channels
+   * @param maxNumOfFilters maximum number of output feature map filters
+   * @param kernelHeight height of the kernel
+   * @param kernelWidth width of the kernel
+   * @param dbg debugging flag
+   */
+  public Conv2DInpCacheKernel(KernelParameters params,
+      int maxHeight, int maxWidth, int maxNumOfChannels, int maxNumOfFilters,
+      int kernelHeight, int kernelWidth, boolean dbg) {
+    super(params);
+
+    this.maxHeight = maxHeight;
+    this.maxWidth = maxWidth;
+    this.maxNumOfChannels = maxNumOfChannels;
+    this.maxNumOfFilters = maxNumOfFilters;
+    this.kernelHeight = kernelHeight;
+    this.kernelWidth = kernelWidth;
+    this.kernelSize = kernelHeight * kernelWidth;
+
+    initTypes();
+    initScalars();
+    initRegisters();
+    initStreams();
+    initCounters();
+
+    Conv2DInpBufferKernelLib buffer = new Conv2DInpBufferKernelLib(
+        this, this.maxHeight, this.maxWidth, scalarValueType, dbg);
+    buffer.setInput(this.inp);
+    buffer.setHeight(this.height);
+    buffer.setWidth(this.width);
+    buffer.setNumOfChannels(this.numOfChannels);
+    DFEVar bufOut = buffer.getOutput();
+
+    LineBufferKernelLib line = new LineBufferKernelLib(
+        this, this.maxHeight, this.maxWidth, scalarValueType);
+    line.setInput(bufOut);
+    line.setHeight(constant.var(this.kernelHeight));
+    line.setWidth(this.width);
+    line.setCapacity(this.height * this.width);
+    DFEVector<DFEVar> lineOut = line.getOutput();
+
+    this.valid <== (this.h >= (this.kernelHeight - 1)) & (this.w >= (this.kernelWidth - 1));
+    for (int i = 0; i < this.kernelWidth; i ++) {
+      int widthOffset = - (this.kernelWidth - i - 1);
+
+      for (int j = 0; j < this.kernelHeight; j ++) {
+        int idx = j * this.kernelWidth + i;
+        DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
+        this.out[idx] <== outCol[j]; 
+      }
+    }
+
+    if (dbg) {
+      debug.simPrintf("out - %KObj%\n", out);
+    }
+  }
+
+  /**
+   * Initialize types within this kernel.
+   * @author Ruizhe Zhao
+   * @since 26/05/2017
+   */
+  private void initTypes() {
+    this.indexType = dfeInt(32);
+    this.scalarValueType = dfeUInt(32);
+    this.vectorValueType = new DFEVectorType<DFEVar>(this.scalarValueType, this.kernelSize);
+  }
+
+  /**
+   * Initialize scalars of this kernel.
+   * @author Ruizhe Zhao
+   * @since 26/05/2017
+   */
+  private void initScalars() {
+    this.height = io.scalarInput(SCALAR_HEIGHT_NAME, indexType);
+    this.width = io.scalarInput(SCALAR_WIDTH_NAME, indexType);
+    this.numOfChannels = io.scalarInput(SCALAR_NUM_OF_CHANNELS_NAME, indexType);
+    this.numOfFilters = io.scalarInput(SCALAR_NUM_OF_FILTERS_NAME, indexType);
+  }
+
+  private void initStreams() {
+    this.inp = io.input(INP_NAME, this.scalarValueType);
+    this.out = this.vectorValueType.newInstance(this);
+    io.output(OUT_NAME, this.out, this.vectorValueType, this.valid);
+  }
+
+  private void initCounters() {
+    this.chain = control.count.makeCounterChain();
+    this.c = this.chain.addCounter(this.numOfChannels, 1).cast(this.indexType);
+    this.f = this.chain.addCounter(this.numOfFilters, 1).cast(this.indexType);
+    this.h = this.chain.addCounter(this.height, 1).cast(this.indexType);
+    this.w = this.chain.addCounter(this.width, 1).cast(this.indexType);
+  }
+
+  private void initRegisters() {
+    valid = dfeBool().newInstance(this);
+  }
+}

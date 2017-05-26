@@ -1,4 +1,4 @@
-package maxdeep;
+package maxdeep.kernels;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
@@ -12,6 +12,12 @@ import maxdeep.lib.*;
 
 import java.util.*;
 
+/**
+ * Kernel aims at computing the core 2D convolution.
+ *
+ * @author Ruizhe Zhao
+ * @since 25/05/2017
+ */
 public class Conv2DComputeKernel extends Kernel {
 
   public static final String INP_NAME = "CONV2D_COMPUTE_KERNEL_INP";

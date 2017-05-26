@@ -20,6 +20,7 @@ import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 
 import maxdeep.designs.*;
+import maxdeep.kernels.*;
 
 public class MaxDeepManager extends CustomManager {
 
