@@ -60,8 +60,15 @@ int main(int argc, char *argv[]) {
   else if (design_name == std::string("ONE_DIM_CONV"))
     maxdeep::test_runners::run_one_dim_conv_test(is_sim, maxfile, engine);
   else if (design_name == std::string("CONV2D")) {
-    maxdeep::test_runners::Conv2DTest test(is_sim, maxfile, engine);
-    test.run(num_iters);
+    int bitwidth = (int) max_get_constant_uint64t(maxfile, "BITWIDTH");
+    printf("bitwidth: %d\n", bitwidth);
+    if (bitwidth == 32) {
+      maxdeep::test_runners::Conv2DTest<uint32_t> test(is_sim, maxfile, engine);
+      test.run(num_iters);
+    } else if (bitwidth == 16) {
+      maxdeep::test_runners::Conv2DTest<uint16_t> test(is_sim, maxfile, engine);
+      test.run(num_iters);
+    }
   } else
     throw std::runtime_error("design_name cannot be recognised!");
 

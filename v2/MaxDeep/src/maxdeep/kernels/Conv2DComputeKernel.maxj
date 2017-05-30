@@ -24,7 +24,15 @@ public class Conv2DComputeKernel extends Kernel {
   public static final String WGT_NAME = "CONV2D_COMPUTE_KERNEL_WGT";
   public static final String OUT_NAME = "CONV2D_COMPUTE_KERNEL_OUT";
 
+  public static final String SCALAR_OUT_HEIGHT_NAME =
+    "CONV2D_COMPUTE_SCALAR_OUT_HEIGHT";
+  public static final String SCALAR_OUT_WIDTH_NAME =
+    "CONV2D_COMPUTE_SCALAR_OUT_WIDTH";
+  public static final String SCALAR_NUM_OF_FILTERS_NAME =
+    "CONV2D_COMPUTE_SCALAR_NUM_OF_FILTERS";
+
   private DFEType scalarType;
+  private DFEType indexType;
   private DFEVectorType<DFEVar> inpType;
   private DFEVectorType<DFEVar> wgtType;
   private DFEVectorType<DFEVar> outType;
@@ -34,14 +42,31 @@ public class Conv2DComputeKernel extends Kernel {
   /**
    * Counters.
    */
+  private DFEVar h;
+  private DFEVar w;
+  private DFEVar f;
   private DFEVar p;
 
+  /**
+   * Scalars.
+   */
+  private DFEVar outHeight;
+  private DFEVar outWidth;
+  private DFEVar numOfFilters;
+
+  /**
+   * Constant parameters.
+   */
   private int kernelHeight;
   private int kernelWidth;
   private int kernelSize;
   private int numOfFilterPipes;
   private int numOfFilterPumps;
+  private int bitWidth;
 
+  /**
+   * Streams.
+   */
   private DFEVector<DFEVar> inp;
   private DFEVector<DFEVar> wgt;
   private DFEVector<DFEVar> out;
@@ -59,12 +84,21 @@ public class Conv2DComputeKernel extends Kernel {
    * @param numOfFilterPumps multi-pumping factor
    * @param dbg debugging flag
    */
-  public Conv2DComputeKernel(KernelParameters params,
-      int kernelHeight, int kernelWidth, int numOfFilterPipes,
-      int numOfFilterPumps, boolean dbg) {
-
+  public Conv2DComputeKernel(
+      KernelParameters params,
+      int kernelHeight,
+      int kernelWidth,
+      int numOfFilterPipes,
+      int numOfFilterPumps,
+      int bitWidth,
+      double dspFactor,
+      boolean dbg)
+  {
     super(params);
 
+    optimization.pushDSPFactor(dspFactor);
+
+    this.bitWidth = bitWidth;
     this.kernelHeight = kernelHeight;
     this.kernelWidth = kernelWidth;
     this.kernelSize = kernelHeight * kernelWidth;
@@ -72,6 +106,7 @@ public class Conv2DComputeKernel extends Kernel {
     this.numOfFilterPumps = numOfFilterPumps;
 
     initTypes();
+    initScalars();
     initCounters();
     initStreams();
 
@@ -88,6 +123,8 @@ public class Conv2DComputeKernel extends Kernel {
       }
     }
 
+    optimization.popDSPFactor();
+
     if (dbg) {
       DFEVar t = control.count.simpleCounter(32);
       debug.simPrintf("CONV2D_COMPUTE_KERNEL (%d)\n", t);
@@ -98,7 +135,8 @@ public class Conv2DComputeKernel extends Kernel {
   }
 
   private void initTypes() {
-    this.scalarType = dfeUInt(32);
+    this.indexType = dfeUInt(32);
+    this.scalarType = dfeUInt(this.bitWidth);
     this.inpType = new DFEVectorType<DFEVar>(
         scalarType, this.kernelSize);
     this.wgtType = new DFEVectorType<DFEVar>(
@@ -111,8 +149,19 @@ public class Conv2DComputeKernel extends Kernel {
         scalarType, this.numOfFilterPipes / this.numOfFilterPumps);
   }
 
+  private void initScalars() {
+    this.outHeight    = io.scalarInput(SCALAR_OUT_HEIGHT_NAME, indexType);
+    this.outWidth     = io.scalarInput(SCALAR_OUT_WIDTH_NAME, indexType);
+    this.numOfFilters = io.scalarInput(SCALAR_NUM_OF_FILTERS_NAME, indexType);
+  }
+
   private void initCounters() {
     CounterChain chain = control.count.makeCounterChain();
+    this.f = chain.addCounter(this.numOfFilters, this.numOfFilterPipes)
+      .cast(this.indexType);
+    this.h = chain.addCounter(this.outHeight, 1).cast(this.indexType);
+    this.w = chain.addCounter(this.outWidth, 1).cast(this.indexType);
+    
     if (this.numOfFilterPumps > 1) {
       this.p = chain.addCounter(this.numOfFilterPumps, 1);
       this.p = this.p.cast(dfeUInt(
@@ -124,7 +173,7 @@ public class Conv2DComputeKernel extends Kernel {
 
   private void initStreams() {
     inp = io.input(INP_NAME, this.inpType, this.p === 0);
-    wgt = io.input(WGT_NAME, this.wgtType, this.p === 0);
+    wgt = io.input(WGT_NAME, this.wgtType, this.p === 0 & this.h === 0 & this.w === 0);
     out = this.outType.newInstance(this);
 
     io.output(OUT_NAME, out, this.outType,

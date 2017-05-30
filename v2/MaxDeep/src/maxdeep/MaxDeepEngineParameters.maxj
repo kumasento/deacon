@@ -22,6 +22,17 @@ public class MaxDeepEngineParameters extends EngineParameters {
   private static final int maxFCHeight        = 16;
   private static final int maxFCWidth         = 16;
   private static final int oneDimConvWindowWidth = 1;
+  
+  /**
+   * Hardware build config
+   */
+  private static final int bitWidth = 32;
+  private static final double dspFactor = 1.0;
+
+  /**
+   * Architectural building options
+   */
+  private static final boolean withInpWgt = false;
 
   private static final String designName = "DEFAULT";
 
@@ -50,6 +61,11 @@ public class MaxDeepEngineParameters extends EngineParameters {
     declareParam("numFCColPipes",         DataType.INT,    numFCColPipes);
     declareParam("numMPDPFactor",         DataType.INT,    numMPDPFactor);
     declareParam("dbg",                   DataType.BOOL,   dbg);
+
+    declareParam("bitWidth",              DataType.INT,    bitWidth);
+    declareParam("dspFactor",             DataType.DOUBLE, dspFactor);
+
+    declareParam("withInpWgt",            DataType.BOOL,   withInpWgt);
   }
 
   public String getDesignName()         { return getParam("designName");            }
@@ -60,7 +76,7 @@ public class MaxDeepEngineParameters extends EngineParameters {
   public int getMaxConvWidth()          { return getParam("maxConvWidth");          }
   public int getMaxConvNumChannels()    { return getParam("maxConvNumChannels");    }
   public int getMaxConvNumFilters()     { return getParam("maxConvNumFilters");     }
-  public int getKernelSize()            { return getParam("kernelSize");     }
+  public int getKernelSize()            { return getParam("kernelSize");            }
   public int getMaxConvKernelSize()     { return getParam("maxConvKernelSize");     }
   public int getMaxFCHeight()           { return getParam("maxFCHeight");           }
   public int getMaxFCWidth()            { return getParam("maxFCWidth");            }
@@ -69,6 +85,9 @@ public class MaxDeepEngineParameters extends EngineParameters {
   public int getNumFCColPipes()         { return getParam("numFCColPipes");         }
   public int getNumMPDPFactor()         { return getParam("numMPDPFactor");         }
   public int getOneDimConvWindowWidth() { return getParam("oneDimConvWindowWidth"); }
+  public int getBitWidth()              { return getParam("bitWidth");              }
+  public double getDSPFactor()          { return getParam("dspFactor");             }
+  public boolean getWithInpWgt()        { return getParam("withInpWgt");            }
 
   @Override
   public String getBuildName() {

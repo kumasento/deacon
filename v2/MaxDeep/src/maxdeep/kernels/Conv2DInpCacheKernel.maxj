@@ -85,6 +85,8 @@ public class Conv2DInpCacheKernel extends Kernel {
   private int kernelWidth;
   private int kernelSize;
   private int numOfFilterPipes;
+  private int bitWidth;
+  private boolean withInpWgt;
 
   /**
    * Constructor.
@@ -103,16 +105,19 @@ public class Conv2DInpCacheKernel extends Kernel {
    */
   public Conv2DInpCacheKernel(KernelParameters params,
       int maxHeight, int maxWidth, int maxNumOfChannels, int maxNumOfFilters,
-      int kernelHeight, int kernelWidth, int numOfFilterPipes, boolean dbg) {
+      int kernelHeight, int kernelWidth, int numOfFilterPipes, int bitWidth,
+      boolean withInpWgt, boolean dbg) {
     super(params);
 
-    this.maxHeight = maxHeight;
-    this.maxWidth = maxWidth;
+    this.withInpWgt       = withInpWgt;
+    this.bitWidth         = bitWidth;
+    this.maxHeight        = maxHeight;
+    this.maxWidth         = maxWidth;
     this.maxNumOfChannels = maxNumOfChannels;
-    this.maxNumOfFilters = maxNumOfFilters;
-    this.kernelHeight = kernelHeight;
-    this.kernelWidth = kernelWidth;
-    this.kernelSize = kernelHeight * kernelWidth;
+    this.maxNumOfFilters  = maxNumOfFilters;
+    this.kernelHeight     = kernelHeight;
+    this.kernelWidth      = kernelWidth;
+    this.kernelSize       = kernelHeight * kernelWidth;
     this.numOfFilterPipes = numOfFilterPipes;
 
     initTypes();
@@ -168,7 +173,7 @@ public class Conv2DInpCacheKernel extends Kernel {
    */
   private void initTypes() {
     this.indexType = dfeUInt(32);
-    this.scalarValueType = dfeUInt(32);
+    this.scalarValueType = dfeUInt(this.bitWidth);
 
     this.vectorValueType = new DFEVectorType<DFEVar>(
         this.scalarValueType, this.kernelSize);
@@ -193,8 +198,10 @@ public class Conv2DInpCacheKernel extends Kernel {
     this.out = this.vectorValueType.newInstance(this);
     io.output(OUT_NAME, this.out, this.vectorValueType, this.valid);
 
-    this.wgt = io.input(INP_WGT_NAME, this.wgtType, this.h === 0 & this.w === 0);
-    io.output(OUT_WGT_NAME, this.wgt, this.wgtType, this.valid);
+    if (this.withInpWgt) {
+      this.wgt = io.input(INP_WGT_NAME, this.wgtType, this.h === 0 & this.w === 0);
+      io.output(OUT_WGT_NAME, this.wgt, this.wgtType, this.valid);
+    }
   }
 
   private void initCounters() {

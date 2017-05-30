@@ -35,6 +35,7 @@ public class Conv2DPostProcessKernel extends Kernel {
   private int maxNumOfFilters;
   private int partialResultBufferSize;
   private int numOfFilterPipes;
+  private int bitWidth;
 
   /**
    * Types
@@ -88,10 +89,11 @@ public class Conv2DPostProcessKernel extends Kernel {
   public Conv2DPostProcessKernel(KernelParameters params,
       int maxOutHeight, int maxOutWidth,
       int maxNumOfChannels, int maxNumOfFilters,
-      int numOfFilterPipes,
+      int numOfFilterPipes, int bitWidth,
       boolean dbg) {
     super(params);
 
+    this.bitWidth = bitWidth;
     this.maxOutHeight = maxOutHeight;
     this.maxOutWidth = maxOutWidth;
     this.maxNumOfChannels = maxNumOfChannels;
@@ -129,15 +131,15 @@ public class Conv2DPostProcessKernel extends Kernel {
 
     if (dbg) {
       debug.simPrintf("CONV2D_POST_PROC (%d %d %d %d)\n", c, f, h, w);
-      debug.simPrintf("read: %u %KObj%\n", readAddr.cast(dfeUInt(32)), readValue);
-      debug.simPrintf("write: %u %KObj%\n", writeAddr.cast(dfeUInt(32)), writeValue);
+      debug.simPrintf("read:   %u %KObj%\n", readAddr.cast(dfeUInt(32)), readValue);
+      debug.simPrintf("write:  %u %KObj%\n", writeAddr.cast(dfeUInt(32)), writeValue);
       debug.simPrintf("result: %KObj% + %KObj% = %KObj%\n", inp, readValue, out);
     }
   }
 
   private void initTypes() {
     indexType = dfeUInt(32);
-    valueType = dfeUInt(32);
+    valueType = dfeUInt(this.bitWidth);
     addrType = dfeUInt(MathUtils.bitsToAddress(partialResultBufferSize));
     vectorType = new DFEVectorType<DFEVar>(valueType, numOfFilterPipes);
   }

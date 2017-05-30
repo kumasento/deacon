@@ -372,6 +372,7 @@ bool run_one_dim_conv_test(bool is_sim, max_file_t *maxfile, max_engine_t *engin
   return pass;
 }
 
+template <typename T>
 class Conv2DTest {
 public:
   Conv2DTest(bool sim, max_file_t *max_file, max_engine_t *max_engine) {
@@ -381,6 +382,7 @@ public:
 
     size_t burst_size = max_get_burst_size(max_file, NULL);
 
+    this->bitwidth        = (int) max_get_constant_uint64t(max_file, "BITWIDTH");
     this->height          = (int) max_get_constant_uint64t(max_file, "MAX_CONV_HEIGHT");
     this->width           = (int) max_get_constant_uint64t(max_file, "MAX_CONV_WIDTH");
     this->num_of_channels = (int) max_get_constant_uint64t(max_file, "MAX_CONV_NUM_OF_CHANNELS");
@@ -398,9 +400,9 @@ public:
     wgt_size = num_of_channels * num_of_filters * kernel_height * kernel_width;
     out_size = out_size_per_pipe;
 
-    burst_aligned_inp_size = utils::burst_aligned_size(inp_size, sizeof(uint32_t), burst_size);
-    burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, sizeof(uint32_t), burst_size * kernel_size);
-    burst_aligned_out_size = utils::burst_aligned_size(out_size, sizeof(uint32_t), burst_size);
+    burst_aligned_inp_size = utils::burst_aligned_size(inp_size, bitwidth/8, burst_size);
+    burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, bitwidth/8, burst_size * kernel_size);
+    burst_aligned_out_size = utils::burst_aligned_size(out_size, bitwidth/8, burst_size);
 
     printf("inp_size: %ld %ld\n", inp_size, burst_aligned_inp_size);
     printf("wgt_size: %ld %ld\n", wgt_size, burst_aligned_wgt_size);
@@ -481,6 +483,7 @@ private:
   max_file_t *max_file;
   max_engine_t *max_engine;
 
+  int bitwidth;
   int height;
   int width;
   int num_of_channels;
@@ -490,14 +493,15 @@ private:
   int kernel_width;
   int64_t inp_size, wgt_size, out_size;
   int64_t burst_aligned_inp_size, burst_aligned_wgt_size, burst_aligned_out_size;
-  uint32_t *inp, *wgt, *out, *expected;
+  T *inp, *wgt, *out, *expected;
 
   void alloc_data() {
     printf("Allocating memory ...\n");
-    this->inp = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_inp_size);
-    this->wgt = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_wgt_size);
-    this->out = (uint32_t *) malloc(sizeof(uint32_t) * burst_aligned_out_size);
-    this->expected = (uint32_t *) malloc(sizeof(uint32_t) * out_size);
+    int byte_size = this->bitwidth / 8;
+    this->inp = (T *) malloc(byte_size * burst_aligned_inp_size);
+    this->wgt = (T *) malloc(byte_size * burst_aligned_wgt_size);
+    this->out = (T *) malloc(byte_size * burst_aligned_out_size);
+    this->expected = (T *) malloc(byte_size * out_size);
     if (!inp || !wgt || !out || !expected) {
       fprintf(stderr, "Cannot allocat streams\n");
       exit(-1);
@@ -522,20 +526,20 @@ private:
   void init_inp_data() {
     printf("Initializing INP ...\n");
     for (int i = 0; i < inp_size; i ++)
-      inp[i] = (uint32_t) (i + 1) % (height * width);
+      inp[i] = (T) (i + 1) % (height * width);
   }
 
   void init_wgt_data() {
     printf("Initializing WGT ...\n");
     for (int i = 0; i < wgt_size; i ++) {
-      wgt[i] = (uint32_t) (i + 1) % (kernel_height * kernel_width);
+      wgt[i] = (T) (i + 1) % (kernel_height * kernel_width);
     }
   }
 
   void init_out_data() {
     printf("Initializing OUT (to see whether MaxDeep changes the output) ...\n");
     for (int i = 0; i < out_size; i ++)
-      out[i] = (uint32_t) 1;
+      out[i] = (T) 1;
   }
 
   void init_expected_data() {
@@ -554,20 +558,20 @@ private:
               int kernel_left_offset = kernel_width / 2;
               int kernel_right_offset = kernel_width - kernel_left_offset - 1;
 
-              uint32_t sum = 0;
+              T sum = 0;
               for (int kx = -kernel_top_offset; kx <= kernel_bottom_offset; kx ++) {
                 for (int ky = -kernel_left_offset; ky <= kernel_right_offset; ky ++) {
                   int h = kx + oh + kernel_top_offset;
                   int w = ky + ow + kernel_left_offset;
                   int inp_idx = c * height * width + h * width + w;
-                  uint32_t inp_val = inp[inp_idx];
+                  T inp_val = inp[inp_idx];
 
                   int wgt_idx =
                     c * num_of_filters * kernel_height * kernel_width +
                     f * kernel_height * kernel_width +
                     (kx + kernel_top_offset) * kernel_width +
                     (ky + kernel_left_offset);
-                  uint32_t wgt_val = wgt[wgt_idx];
+                  T wgt_val = wgt[wgt_idx];
 
                   sum += inp_val * wgt_val;
                 }
@@ -607,18 +611,18 @@ private:
     return pass;
   }
 
-  MaxDeep_dramWrite_actions_t create_write_actions(int64_t num_of_elems, int64_t start, uint32_t *ptr) {
+  MaxDeep_dramWrite_actions_t create_write_actions(int64_t num_of_elems, int64_t start, T *ptr) {
     MaxDeep_dramWrite_actions_t write_actions;
-    write_actions.param_size_bytes = num_of_elems * sizeof(uint32_t);
-    write_actions.param_start_bytes = start * sizeof(uint32_t);
+    write_actions.param_size_bytes = num_of_elems * bitwidth/8;
+    write_actions.param_start_bytes = start * bitwidth/8;
     write_actions.instream_fromcpu = (const uint8_t *) ptr;
     return write_actions;
   }
 
-  MaxDeep_dramRead_actions_t create_read_actions(int64_t num_of_elems, int64_t start, uint32_t *ptr) {
+  MaxDeep_dramRead_actions_t create_read_actions(int64_t num_of_elems, int64_t start, T *ptr) {
     MaxDeep_dramRead_actions_t read_actions;
-    read_actions.param_size_bytes = num_of_elems * sizeof(uint32_t);
-    read_actions.param_start_bytes = start * sizeof(uint32_t);
+    read_actions.param_size_bytes = num_of_elems * bitwidth/8;
+    read_actions.param_start_bytes = start * bitwidth/8;
     read_actions.outstream_tocpu = (uint8_t *) ptr;
     return read_actions;
   }
