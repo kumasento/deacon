@@ -27,11 +27,15 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   int c;
+  int num_iters = 1;
   std::string design_name;
-  while ((c = getopt(argc, argv, "n:")) != -1)
+  while ((c = getopt(argc, argv, "n:i:")) != -1)
     switch (c) {
       case 'n':
         design_name = std::string(optarg);
+        break;
+      case 'i':
+        num_iters = atoi(optarg);
         break;
       default:
         fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
@@ -57,7 +61,7 @@ int main(int argc, char *argv[]) {
     maxdeep::test_runners::run_one_dim_conv_test(is_sim, maxfile, engine);
   else if (design_name == std::string("CONV2D")) {
     maxdeep::test_runners::Conv2DTest test(is_sim, maxfile, engine);
-    test.run(100);
+    test.run(num_iters);
   } else
     throw std::runtime_error("design_name cannot be recognised!");
 

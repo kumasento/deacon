@@ -31,6 +31,7 @@ public class MaxDeepManager extends CustomManager {
   protected LMemCommandGroup group;
   protected LMemCommandGroup groupWgt;
   protected LMemCommandGroup groupOut;
+
   public static final String LMEM_INP_NAME = "LMEM_INP";
   public static final String LMEM_WGT_NAME = "LMEM_WGT";
   public static final String LMEM_OUT_NAME = "LMEM_OUT";
@@ -59,6 +60,11 @@ public class MaxDeepManager extends CustomManager {
   public KernelBlock unpadding_inp;
   public KernelBlock unpadding_wgt;
 
+  /**
+   * Designs
+   */
+  public Conv2DDesign conv2d;
+
   public MaxDeepManager(MaxDeepEngineParameters params) {
     super(params);
 
@@ -77,7 +83,8 @@ public class MaxDeepManager extends CustomManager {
     } else if (params.getDesignName().equals("ONE_DIM_CONV")) {
       initializeOneDimConvKernel(params); 
     } else if (params.getDesignName().equals(Conv2DDesign.NAME)) {
-      Conv2DDesign.initializeKernel(this, params);
+      conv2d = new Conv2DDesign(this, params);
+      conv2d.initializeKernel();
     } else {
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
@@ -97,7 +104,7 @@ public class MaxDeepManager extends CustomManager {
     else if (params.getDesignName().equals("ONE_DIM_CONV"))
       initializeEngineInterfaceForOneDimConv(ei, params);
     else if (params.getDesignName().equals(Conv2DDesign.NAME))
-      Conv2DDesign.initializeEngineInterface(ei, this, params);
+      conv2d.initializeEngineInterface(ei);
     else
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
@@ -148,6 +155,11 @@ public class MaxDeepManager extends CustomManager {
     clk = generateStreamClock(DEFAULT_CLK_NAME, params.getFreq());
 
     config.setDefaultStreamClockFrequency(params.getFreq());
+  }
+
+  public ManagerClock getMultipleManagerClock(String name,
+      int multiple, MaxDeepEngineParameters params) {
+    return generateStreamClock(name, params.getFreq() * multiple);
   }
 
   /**

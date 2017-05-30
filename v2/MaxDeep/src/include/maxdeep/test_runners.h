@@ -393,10 +393,10 @@ public:
     inp_size = height * width * num_of_channels;
     int out_height = height - kernel_height + 1;
     int out_width = width - kernel_width + 1;
-    int out_size_per_pipe = out_height * out_width * num_of_channels * num_of_filters;
+    int out_size_per_pipe = out_height * out_width * num_of_filters;
 
     wgt_size = num_of_channels * num_of_filters * kernel_height * kernel_width;
-    out_size = out_size_per_pipe * num_of_pipes;
+    out_size = out_size_per_pipe;
 
     burst_aligned_inp_size = utils::burst_aligned_size(inp_size, sizeof(uint32_t), burst_size);
     burst_aligned_wgt_size = utils::burst_aligned_size(wgt_size, sizeof(uint32_t), burst_size * kernel_size);
@@ -433,35 +433,39 @@ public:
 
     MaxDeep_actions_t actions;
 #if defined(DESIGN_CONV2D)
+    actions.param_num_of_batches = 1;
     actions.param_height = height;
     actions.param_width = width;
     actions.param_num_of_channels = num_of_channels;
     actions.param_num_of_filters = num_of_filters;
 #endif
 
-    printf("Writing to DRAM ...\n\n");
-    MaxDeep_dramWrite_run(max_engine, &inp_write_actions);
-    MaxDeep_dramWrite_run(max_engine, &wgt_write_actions);
+    double elapsed = 0.0;
+    for (int i = 0; i < num_iters; i ++) {
+      printf("Writing to DRAM ... ");
+      MaxDeep_dramWrite_run(max_engine, &inp_write_actions);
+      MaxDeep_dramWrite_run(max_engine, &wgt_write_actions);
 
-    printf("Computing ...\n\n");
+      printf("Computing ... ");
 
-    struct timeval t0, t1;
+      struct timeval t0, t1;
 
-    gettimeofday(&t0, NULL);
-    for (int i = 0; i < num_iters; i ++)
+      gettimeofday(&t0, NULL);
       MaxDeep_run(max_engine, &actions);
-    gettimeofday(&t1, NULL);
-    double elapsed = (t1.tv_sec - t0.tv_sec) + (t1.tv_usec - t0.tv_usec) * 1e-6;
+      gettimeofday(&t1, NULL);
+      elapsed += (t1.tv_sec - t0.tv_sec) + (t1.tv_usec - t0.tv_usec) * 1e-6;
+
+      printf("Reading back ...\n");
+      MaxDeep_dramRead_run(max_engine, &read_actions);
+    }
     elapsed /= num_iters;
 
-    double gop = wgt_size * 2 * 1e-9;
+    double gop = out_size * num_of_channels * kernel_height * kernel_width * 2 * 1e-9;
     double gops = gop / elapsed;
     printf("RUN TIME:  %lf s\n", elapsed);
-    printf("FREQUENCY: %.2f MHz\n", inp_size / (kernel_height * kernel_width) / elapsed * 1e-6);
+    printf("FREQUENCY: %.2f MHz\n", inp_size * num_of_filters / elapsed * 1e-6);
     printf("GOP/s:     %.2f\n", gops); 
 
-    printf("Reading back ...\n\n");
-    MaxDeep_dramRead_run(max_engine, &read_actions);
     for (int i = 0; i < 10; i ++)
       printf("out[%3d] = %u\n", i, out[i]);
 
@@ -518,13 +522,13 @@ private:
   void init_inp_data() {
     printf("Initializing INP ...\n");
     for (int i = 0; i < inp_size; i ++)
-      inp[i] = (uint32_t) (i + 1);
+      inp[i] = (uint32_t) (i + 1) % (height * width);
   }
 
   void init_wgt_data() {
     printf("Initializing WGT ...\n");
     for (int i = 0; i < wgt_size; i ++) {
-      wgt[i] = (uint32_t) i + 1;
+      wgt[i] = (uint32_t) (i + 1) % (kernel_height * kernel_width);
     }
   }
 
@@ -538,41 +542,47 @@ private:
     // expected output
     printf("Initializing EXPECTED ...\n");
     for (int c = 0; c < (int) num_of_channels; c ++) {
-      for (int f = 0; f < (int) num_of_filters; f ++) {
-        int out_height = (height - kernel_height + 1);
-        int out_width = (width - kernel_width + 1);
-        for (int oh = 0; oh < (int) out_height; oh ++) {
-          for (int ow = 0; ow < (int) out_width; ow ++) {
-            int kernel_top_offset = kernel_height / 2;
-            int kernel_bottom_offset = kernel_height - kernel_top_offset - 1;
-            int kernel_left_offset = kernel_width / 2;
-            int kernel_right_offset = kernel_width - kernel_left_offset - 1;
+      for (int fp = 0; fp < (int) num_of_filters; fp += num_of_pipes) {
+        for (int p = 0; p < (int) num_of_pipes; p ++) {
+          int f = fp + p;
+          int out_height = (height - kernel_height + 1);
+          int out_width = (width - kernel_width + 1);
+          for (int oh = 0; oh < (int) out_height; oh ++) {
+            for (int ow = 0; ow < (int) out_width; ow ++) {
+              int kernel_top_offset = kernel_height / 2;
+              int kernel_bottom_offset = kernel_height - kernel_top_offset - 1;
+              int kernel_left_offset = kernel_width / 2;
+              int kernel_right_offset = kernel_width - kernel_left_offset - 1;
 
-            uint32_t sum = 0;
-            for (int kx = -kernel_top_offset; kx <= kernel_bottom_offset; kx ++) {
-              for (int ky = -kernel_left_offset; ky <= kernel_right_offset; ky ++) {
-                int h = kx + oh + kernel_top_offset;
-                int w = ky + ow + kernel_left_offset;
-                int inp_idx = c * height * width + h * width + w;
-                uint32_t inp_val = inp[inp_idx];
+              uint32_t sum = 0;
+              for (int kx = -kernel_top_offset; kx <= kernel_bottom_offset; kx ++) {
+                for (int ky = -kernel_left_offset; ky <= kernel_right_offset; ky ++) {
+                  int h = kx + oh + kernel_top_offset;
+                  int w = ky + ow + kernel_left_offset;
+                  int inp_idx = c * height * width + h * width + w;
+                  uint32_t inp_val = inp[inp_idx];
 
-                int wgt_idx =
-                  c * num_of_filters * kernel_height * kernel_width +
-                  f * kernel_height * kernel_width +
-                  (kx + kernel_top_offset) * kernel_width +
-                  (ky + kernel_left_offset);
-                uint32_t wgt_val = wgt[wgt_idx];
+                  int wgt_idx =
+                    c * num_of_filters * kernel_height * kernel_width +
+                    f * kernel_height * kernel_width +
+                    (kx + kernel_top_offset) * kernel_width +
+                    (ky + kernel_left_offset);
+                  uint32_t wgt_val = wgt[wgt_idx];
 
-                sum += inp_val * wgt_val;
+                  sum += inp_val * wgt_val;
+                }
               }
-            }
 
-            int out_idx =
-              c * num_of_filters * out_height * out_width +
-              f * out_height * out_width +
-              oh * out_width +
-              ow;
-            expected[out_idx] = sum;
+              int out_idx =
+                fp / num_of_pipes * (out_height * out_width * num_of_pipes) +
+                (oh * out_width + ow) * num_of_pipes
+                + p;
+
+              if (c == 0)
+                expected[out_idx] = sum;
+              else
+                expected[out_idx] += sum;
+            }
           }
         }
       }
@@ -587,6 +597,7 @@ private:
             "out[%3d] = %u is different from expected result %u\n",
             i, out[i], expected[i]);
         pass = false;
+        break;
       }
     }
     if (pass)

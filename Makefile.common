@@ -187,7 +187,7 @@ build: $(PRJBUILDNAME)_dfe
 
 
 run:
-	SLIC_CONF=$(SLIC_CONF) LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe -n $(DESIGN_NAME)
+	SLIC_CONF=$(SLIC_CONF) LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe -n $(DESIGN_NAME) -i $(NUM_ITERS)
 
 gdbdfe:
 	DEBUG_FLAGS="-O0 -g" mmke build
@@ -197,6 +197,10 @@ gdbdfe:
 runtest:
 	$(MAXJC) $(JFLAGS) $(TESTENGINEFILES)
 	MAXAPPJCP=.:$(MAXPOWER):$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS="../src:../test" $(MAXJAVARUN) -v -m 8192 $(PRJ)TestRunner
+
+# --- Verbose --
+showusage:
+	cat $(DFEMAXDIR)/../_build.log | grep "\d* / \d*"
 
 # ---- Clean ----
 

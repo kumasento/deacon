@@ -54,8 +54,8 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
     this.out <== port;
 
     if (dbg) {
-      debug.simPrintf("CONV2D_INP_BUFFER\n");
-      debug.simPrintf("%u %u %u\n", addr, this.inp, this.out);
+      // debug.simPrintf("CONV2D_INP_BUFFER\n");
+      // debug.simPrintf("%u %u %u\n", addr, this.inp, this.out);
     }
   }
 

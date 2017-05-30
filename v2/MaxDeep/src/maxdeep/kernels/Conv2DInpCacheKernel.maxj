@@ -84,6 +84,7 @@ public class Conv2DInpCacheKernel extends Kernel {
   private int kernelHeight;
   private int kernelWidth;
   private int kernelSize;
+  private int numOfFilterPipes;
 
   /**
    * Constructor.
@@ -97,11 +98,12 @@ public class Conv2DInpCacheKernel extends Kernel {
    * @param maxNumOfFilters maximum number of output feature map filters
    * @param kernelHeight height of the kernel
    * @param kernelWidth width of the kernel
+   * @param numOfFilterPipes parallel pipes along the filter axis
    * @param dbg debugging flag
    */
   public Conv2DInpCacheKernel(KernelParameters params,
       int maxHeight, int maxWidth, int maxNumOfChannels, int maxNumOfFilters,
-      int kernelHeight, int kernelWidth, boolean dbg) {
+      int kernelHeight, int kernelWidth, int numOfFilterPipes, boolean dbg) {
     super(params);
 
     this.maxHeight = maxHeight;
@@ -111,6 +113,7 @@ public class Conv2DInpCacheKernel extends Kernel {
     this.kernelHeight = kernelHeight;
     this.kernelWidth = kernelWidth;
     this.kernelSize = kernelHeight * kernelWidth;
+    this.numOfFilterPipes = numOfFilterPipes;
 
     initTypes();
     initScalars();
@@ -136,11 +139,15 @@ public class Conv2DInpCacheKernel extends Kernel {
 
     this.valid <== (this.h >= (this.kernelHeight - 1)) & (this.w >= (this.kernelWidth - 1));
 
+    if (dbg)
+      debug.simPrintf("CONV2D_CACHE\n");
+
     for (int i = 0; i < this.kernelWidth; i ++) {
       int widthOffset = - (this.kernelWidth - i - 1);
       DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
       if (dbg)
         debug.simPrintf("outCol - %KObj%\n", outCol);
+
       for (int j = 0; j < this.kernelHeight; j ++) {
         int idx = j * this.kernelWidth + i;
         this.out[idx] <== outCol[j]; 
@@ -162,8 +169,11 @@ public class Conv2DInpCacheKernel extends Kernel {
   private void initTypes() {
     this.indexType = dfeUInt(32);
     this.scalarValueType = dfeUInt(32);
-    this.vectorValueType = new DFEVectorType<DFEVar>(this.scalarValueType, this.kernelSize);
-    this.wgtType = new DFEVectorType<DFEVar>(this.scalarValueType, this.kernelSize);
+
+    this.vectorValueType = new DFEVectorType<DFEVar>(
+        this.scalarValueType, this.kernelSize);
+    this.wgtType = new DFEVectorType<DFEVar>(
+        this.scalarValueType, this.kernelSize * this.numOfFilterPipes);
   }
 
   /**
@@ -190,7 +200,7 @@ public class Conv2DInpCacheKernel extends Kernel {
   private void initCounters() {
     this.chain = control.count.makeCounterChain();
     this.c = this.chain.addCounter(this.numOfChannels, 1).cast(this.indexType);
-    this.f = this.chain.addCounter(this.numOfFilters, 1).cast(this.indexType);
+    this.f = this.chain.addCounter(this.numOfFilters, this.numOfFilterPipes).cast(this.indexType);
     this.h = this.chain.addCounter(this.height, 1).cast(this.indexType);
     this.w = this.chain.addCounter(this.width, 1).cast(this.indexType);
   }
