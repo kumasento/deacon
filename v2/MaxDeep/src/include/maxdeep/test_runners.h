@@ -387,7 +387,9 @@ public:
     this->width           = (int) max_get_constant_uint64t(max_file, "MAX_CONV_WIDTH");
     this->num_of_channels = (int) max_get_constant_uint64t(max_file, "MAX_CONV_NUM_OF_CHANNELS");
     this->num_of_filters  = (int) max_get_constant_uint64t(max_file, "MAX_CONV_NUM_OF_FILTERS");
-    this->num_of_pipes    = (int) max_get_constant_uint64t(max_file, "NUM_PIPES");
+    int num_chnl_pipes    = (int) max_get_constant_uint64t(max_file, "NUM_CONV_CHNL_PIPES");
+    int num_fltr_pipes    = (int) max_get_constant_uint64t(max_file, "NUM_CONV_FLTR_PIPES");
+    this->num_of_pipes    = num_chnl_pipes * num_fltr_pipes;
     this->kernel_height   = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
     this->kernel_width    = (int) max_get_constant_uint64t(max_file, "KERNEL_SIZE");
     
@@ -444,11 +446,11 @@ public:
 
     double elapsed = 0.0;
     for (int i = 0; i < num_iters; i ++) {
-      printf("Writing to DRAM ... ");
+      printf("Writing to DRAM ... \n");
       MaxDeep_dramWrite_run(max_engine, &inp_write_actions);
       MaxDeep_dramWrite_run(max_engine, &wgt_write_actions);
 
-      printf("Computing ... ");
+      printf("Computing ... \n");
 
       struct timeval t0, t1;
 

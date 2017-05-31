@@ -59,8 +59,10 @@ public class Conv2DComputeKernel extends Kernel {
    */
   private int kernelHeight;
   private int kernelWidth;
+  private int kernelWidthPiped;
   private int kernelSize;
-  private int numOfFilterPipes;
+  private int numChnlPipes;
+  private int numFltrPipes;
   private int numOfFilterPumps;
   private int bitWidth;
 
@@ -80,7 +82,7 @@ public class Conv2DComputeKernel extends Kernel {
    * @param params kernel parameters
    * @param kernelHeight height of the kernel
    * @param kernelWidth width of the  kernel
-   * @param numOfFilterPipes pipes along the filter axis
+   * @param numFltrPipes pipes along the filter axis
    * @param numOfFilterPumps multi-pumping factor
    * @param dbg debugging flag
    */
@@ -88,7 +90,8 @@ public class Conv2DComputeKernel extends Kernel {
       KernelParameters params,
       int kernelHeight,
       int kernelWidth,
-      int numOfFilterPipes,
+      int numChnlPipes,
+      int numFltrPipes,
       int numOfFilterPumps,
       int bitWidth,
       double dspFactor,
@@ -98,11 +101,13 @@ public class Conv2DComputeKernel extends Kernel {
 
     optimization.pushDSPFactor(dspFactor);
 
-    this.bitWidth = bitWidth;
-    this.kernelHeight = kernelHeight;
-    this.kernelWidth = kernelWidth;
-    this.kernelSize = kernelHeight * kernelWidth;
-    this.numOfFilterPipes = numOfFilterPipes;
+    this.bitWidth         = bitWidth;
+    this.kernelHeight     = kernelHeight;
+    this.kernelWidth      = kernelWidth;
+    this.kernelWidthPiped = kernelWidth + numChnlPipes - 1;
+    this.kernelSize       = kernelHeight * kernelWidth;
+    this.numChnlPipes     = numChnlPipes;
+    this.numFltrPipes     = numFltrPipes;
     this.numOfFilterPumps = numOfFilterPumps;
 
     initTypes();
@@ -112,7 +117,7 @@ public class Conv2DComputeKernel extends Kernel {
 
     DFEVector<DFEVar> outPartial = this.compute(inp, wgt);
 
-    int outChunkSize = numOfFilterPipes / numOfFilterPumps;
+    int outChunkSize = numFltrPipes * numChnlPipes / numOfFilterPumps;
     for (int i = 0; i < numOfFilterPumps; i ++) {
       DFEVector<DFEVar> currOutPartial =
         stream.offset(outPartial, - (numOfFilterPumps - i - 1));
@@ -138,15 +143,15 @@ public class Conv2DComputeKernel extends Kernel {
     this.indexType = dfeUInt(32);
     this.scalarType = dfeUInt(this.bitWidth);
     this.inpType = new DFEVectorType<DFEVar>(
-        scalarType, this.kernelSize);
+        scalarType, this.kernelHeight * this.kernelWidthPiped);
     this.wgtType = new DFEVectorType<DFEVar>(
-        scalarType, this.kernelSize * this.numOfFilterPipes);
+        scalarType, this.kernelSize * this.numFltrPipes);
     this.wgtPartialType = new DFEVectorType<DFEVar>(
-        scalarType, this.kernelSize * this.numOfFilterPipes / this.numOfFilterPumps);
+        scalarType, this.kernelSize * this.numFltrPipes / this.numOfFilterPumps);
     this.outType = new DFEVectorType<DFEVar>(
-        scalarType, this.numOfFilterPipes);
+        scalarType, this.numFltrPipes * this.numChnlPipes);
     this.outPartialType = new DFEVectorType<DFEVar>(
-        scalarType, this.numOfFilterPipes / this.numOfFilterPumps);
+        scalarType, this.numFltrPipes * this.numChnlPipes / this.numOfFilterPumps);
   }
 
   private void initScalars() {
@@ -157,10 +162,10 @@ public class Conv2DComputeKernel extends Kernel {
 
   private void initCounters() {
     CounterChain chain = control.count.makeCounterChain();
-    this.f = chain.addCounter(this.numOfFilters, this.numOfFilterPipes)
+    this.f = chain.addCounter(this.numOfFilters, this.numFltrPipes)
       .cast(this.indexType);
     this.h = chain.addCounter(this.outHeight, 1).cast(this.indexType);
-    this.w = chain.addCounter(this.outWidth, 1).cast(this.indexType);
+    this.w = chain.addCounter(this.outWidth, this.numChnlPipes).cast(this.indexType);
     
     if (this.numOfFilterPumps > 1) {
       this.p = chain.addCounter(this.numOfFilterPumps, 1);
@@ -188,7 +193,7 @@ public class Conv2DComputeKernel extends Kernel {
         this.wgtPartialType.newInstance(this);
     int chunkSize =
         this.kernelSize *
-        this.numOfFilterPipes / this.numOfFilterPumps;
+        this.numFltrPipes / this.numOfFilterPumps;
 
     for (int i = 0; i < chunkSize; i ++) {
       List<DFEVar> candidates = new ArrayList<DFEVar>();
@@ -217,21 +222,33 @@ public class Conv2DComputeKernel extends Kernel {
     
     DFEVector<DFEVar> out = this.outPartialType.newInstance(this);
     DFEVector<DFEVar> wgtChunk = getCurrWgtChunk();
+    DFEVectorType<DFEVar> inpKnlType = 
+      new DFEVectorType<DFEVar>(this.scalarType, this.kernelSize);
     DFEVectorType<DFEVar> wgtKnlType = 
       new DFEVectorType<DFEVar>(this.scalarType, this.kernelSize);
     
-    for (int i = 0; i < this.numOfFilterPipes / this.numOfFilterPumps; i ++) {
+    for (int i = 0; i < this.numFltrPipes / this.numOfFilterPumps; i ++) {
       DFEVector<DFEVar> wgtKnl = wgtKnlType.newInstance(this);
       for (int j = 0; j < this.kernelSize; j ++)
         wgtKnl[j] <== wgtChunk[i * this.kernelSize + j];
 
-      TwoDimConvKernelLib conv = new TwoDimConvKernelLib(
-          this, this.kernelHeight, this.kernelWidth,
-          this.scalarType);
+      for (int j = 0; j < this.numChnlPipes; j ++) {
+        DFEVector<DFEVar> inpKnl = inpKnlType.newInstance(this);
+        for (int kx = 0; kx < this.kernelHeight; kx ++) {
+          for (int ky = 0; ky < this.kernelWidth; ky ++) {
+            int k = kx * this.kernelWidth + ky;
+            inpKnl[k] <== this.inp[kx * this.kernelWidthPiped + ky + j];
+          }
+        }
 
-      conv.setInput(inp);
-      conv.setWeight(wgtKnl);
-      out[i] <== conv.getOutput();
+        TwoDimConvKernelLib conv = new TwoDimConvKernelLib(
+            this, this.kernelHeight, this.kernelWidth,
+            this.scalarType);
+
+        conv.setInput(inpKnl);
+        conv.setWeight(wgtKnl);
+        out[i * numChnlPipes + j] <== conv.getOutput();
+      }
     }
 
     return out;

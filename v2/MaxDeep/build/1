@@ -1,0 +1,13 @@
+Wed 14:46: WARNING: Transitioning from non-multiple stream widths 1536 to 144 via a stream of width 4608 is suboptimal for performance and resource utilization.  Use Manager.setAllowNonMultipleTransitions(true) or config.setAllowNonMultipleTransitions(true) (in a CustomManager) to allow such transitions.
+Wed 14:46: WARNING: Source='LMEM_WGT.LMEM_WGT' Sink='UNPADDING_WGT_KERNEL.UNPADDING_INP'
+Wed 14:46: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 14:46: WARNING: Unconnected elements in design 'CONV2D_INP_CACHE_KERNEL'
+Wed 14:46: WARNING: details in : /mnt/data/scratch/rz3515/builds/MaxDeep_MAIA_DFE_CONV2D_P_2_2_M_2_K_3_32_32_512_512_B_16_DSP_1_FREQ_100MHz/scratch/CONV2D_INP_CACHE_KERNEL_graph_warnings.txt
+Wed 14:46: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 14:46: WARNING: Unconnected elements in design 'CONV2D_COMPUTE_KERNEL'
+Wed 14:46: WARNING: details in : /mnt/data/scratch/rz3515/builds/MaxDeep_MAIA_DFE_CONV2D_P_2_2_M_2_K_3_32_32_512_512_B_16_DSP_1_FREQ_100MHz/scratch/CONV2D_COMPUTE_KERNEL_graph_warnings.txt
+Wed 14:46: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 14:46: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 14:46: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 14:46: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 14:46: WARNING: to that of a similar bitstream.

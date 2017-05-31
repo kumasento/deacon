@@ -6,7 +6,9 @@ import maxdeep.designs.*;
 
 public class MaxDeepEngineParameters extends EngineParameters {
 
-  private static final int numPipes = 2;
+  private static final int numPipes = 1;
+  private static final int numConvChnlPipes = 1;
+  private static final int numConvFltrPipes = 1;
   private static final int freq = 100;
   private static final int multiPumpingFactor = 2;
   private static final int numMPDPFactor = 1;
@@ -60,34 +62,39 @@ public class MaxDeepEngineParameters extends EngineParameters {
     declareParam("numFCRowPipes",         DataType.INT,    numFCRowPipes);
     declareParam("numFCColPipes",         DataType.INT,    numFCColPipes);
     declareParam("numMPDPFactor",         DataType.INT,    numMPDPFactor);
+    declareParam("numConvChnlPipes",      DataType.INT,    numConvChnlPipes);
+    declareParam("numConvFltrPipes",      DataType.INT,    numConvFltrPipes);
     declareParam("dbg",                   DataType.BOOL,   dbg);
 
     declareParam("bitWidth",              DataType.INT,    bitWidth);
     declareParam("dspFactor",             DataType.DOUBLE, dspFactor);
 
     declareParam("withInpWgt",            DataType.BOOL,   withInpWgt);
+    declareParam("withInpWgt",            DataType.BOOL,   withInpWgt);
   }
 
-  public String getDesignName()         { return getParam("designName");            }
-  public int getNumPipes()              { return getParam("numPipes");              }
-  public int getFreq()                  { return getParam("freq");                  }
-  public int getMultiPumpingFactor()    { return getParam("multiPumpingFactor");    }
-  public int getMaxConvHeight()         { return getParam("maxConvHeight");         }
-  public int getMaxConvWidth()          { return getParam("maxConvWidth");          }
-  public int getMaxConvNumChannels()    { return getParam("maxConvNumChannels");    }
-  public int getMaxConvNumFilters()     { return getParam("maxConvNumFilters");     }
-  public int getKernelSize()            { return getParam("kernelSize");            }
-  public int getMaxConvKernelSize()     { return getParam("maxConvKernelSize");     }
-  public int getMaxFCHeight()           { return getParam("maxFCHeight");           }
-  public int getMaxFCWidth()            { return getParam("maxFCWidth");            }
-  public boolean getDbg()               { return getParam("dbg");                   }
-  public int getNumFCRowPipes()         { return getParam("numFCRowPipes");         }
-  public int getNumFCColPipes()         { return getParam("numFCColPipes");         }
-  public int getNumMPDPFactor()         { return getParam("numMPDPFactor");         }
-  public int getOneDimConvWindowWidth() { return getParam("oneDimConvWindowWidth"); }
-  public int getBitWidth()              { return getParam("bitWidth");              }
-  public double getDSPFactor()          { return getParam("dspFactor");             }
-  public boolean getWithInpWgt()        { return getParam("withInpWgt");            }
+  public String  getDesignName()            { return getParam("designName");            }
+  public int     getNumPipes()              { return getParam("numPipes");              }
+  public int     getFreq()                  { return getParam("freq");                  }
+  public int     getMultiPumpingFactor()    { return getParam("multiPumpingFactor");    }
+  public int     getNumConvChnlPipes()      { return getParam("numConvChnlPipes");      }
+  public int     getNumConvFltrPipes()      { return getParam("numConvFltrPipes");      }
+  public int     getMaxConvHeight()         { return getParam("maxConvHeight");         }
+  public int     getMaxConvWidth()          { return getParam("maxConvWidth");          }
+  public int     getMaxConvNumChannels()    { return getParam("maxConvNumChannels");    }
+  public int     getMaxConvNumFilters()     { return getParam("maxConvNumFilters");     }
+  public int     getKernelSize()            { return getParam("kernelSize");            }
+  public int     getMaxConvKernelSize()     { return getParam("maxConvKernelSize");     }
+  public int     getMaxFCHeight()           { return getParam("maxFCHeight");           }
+  public int     getMaxFCWidth()            { return getParam("maxFCWidth");            }
+  public boolean getDbg()                   { return getParam("dbg");                   }
+  public int     getNumFCRowPipes()         { return getParam("numFCRowPipes");         }
+  public int     getNumFCColPipes()         { return getParam("numFCColPipes");         }
+  public int     getNumMPDPFactor()         { return getParam("numMPDPFactor");         }
+  public int     getOneDimConvWindowWidth() { return getParam("oneDimConvWindowWidth"); }
+  public int     getBitWidth()              { return getParam("bitWidth");              }
+  public double  getDSPFactor()             { return getParam("dspFactor");             }
+  public boolean getWithInpWgt()            { return getParam("withInpWgt");            }
 
   @Override
   public String getBuildName() {

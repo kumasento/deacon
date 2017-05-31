@@ -132,6 +132,8 @@ public class MaxDeepManager extends CustomManager {
 
   private void initializeMaxFileConstants(MaxDeepEngineParameters params) {
     addMaxFileConstant("NUM_PIPES", params.getNumPipes());
+    addMaxFileConstant("NUM_CONV_CHNL_PIPES", params.getNumConvChnlPipes());
+    addMaxFileConstant("NUM_CONV_FLTR_PIPES", params.getNumConvFltrPipes());
     addMaxFileConstant("BITWIDTH", params.getBitWidth());
     addMaxFileConstant("KERNEL_SIZE", params.getKernelSize());
     addMaxFileConstant("MAX_CONV_HEIGHT", params.getMaxConvHeight());
