@@ -21,34 +21,53 @@ public class LineBufferKernelLib extends KernelLib {
 
   private int maxHeight;
   private int maxWidth;
-  private DFEType valueType;
+  private int maxWidthFolded;
+  private int numPipes;
+
+  private DFEType scalarType;
+  private DFEVectorType<DFEVar> valueType;
   private DFEType indexType;
+
   private DFEVar height;
   private DFEVar width;
+  private DFEVar widthFolded;
   private DFEVar capacity;
-  private DFEVar buf;
+  private DFEVar capacityFolded;
+
+  private DFEVector<DFEVar> buf;
   private DFEVar vld;
   private DFEVar idx;
 
-  public LineBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth, DFEType type) {
+  /**
+   * Constructor.
+   *
+   * Folded line buffer: enable multiple elements input and output
+   * in one cycle
+   */
+  public LineBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth, int numPipes, DFEType type) {
     super(owner);
 
+    this.numPipes = numPipes;
     this.maxHeight = maxHeight;
     this.maxWidth = maxWidth;
+    this.maxWidthFolded = maxWidth / numPipes;
 
-    valueType = type;
+    scalarType = type;
+    valueType = new DFEVectorType<DFEVar>(type, numPipes);
     indexType = dfeInt(32);
 
     height = indexType.newInstance(this);
     width = indexType.newInstance(this);
     capacity = indexType.newInstance(this);
+    widthFolded = width / numPipes;
+    capacityFolded = capacity / numPipes;
 
     buf = valueType.newInstance(this);
-    idx = control.count.simpleCounter(32, capacity.cast(dfeUInt(32))).cast(indexType);
-    vld = idx >= (width * (height - 1));
+    idx = control.count.simpleCounter(32, capacityFolded.cast(dfeUInt(32))).cast(indexType);
+    vld = idx >= (widthFolded * (height - 1));
   }
 
-  public void setInput(DFEVar inp) { buf <== inp; }
+  public void setInput(DFEVector<DFEVar> inp) { buf <== inp; }
 
   public void setHeight(DFEVar height) { this.height <== height; }
 
@@ -63,28 +82,32 @@ public class LineBufferKernelLib extends KernelLib {
   public DFEVar getValid() { return vld; }
 
   public DFEVector<DFEVar> getOutput() {
-    DFEVectorType<DFEVar> outVecType = new DFEVectorType<DFEVar>(valueType, maxHeight);
+    DFEVectorType<DFEVar> outVecType =
+      new DFEVectorType<DFEVar>(scalarType, maxHeight * numPipes);
     DFEVector<DFEVar> outVec = outVecType.newInstance(this);
 
-    for (int i = 0; i < maxHeight; i ++) {
-      outVec[i] <== getOutputElementAt(maxHeight - i - 1);
+    for (int j = 0; j < maxHeight; j ++) {
+      DFEVector<DFEVar> outVecRead = getOutputVectorAt(maxHeight - j - 1);
+      for (int i = 0; i < numPipes; i ++) {
+        outVec[i * maxHeight + j] <== outVecRead[i];
+      }
     }
 
     return outVec;
   }
 
-  private DFEVar getOutputElementAt(int i) {
+  private DFEVector<DFEVar> getOutputVectorAt(int i) {
     if (i == 0)
       return buf;
 
     DFEVar index = constant.var(i).cast(indexType);
-    DFEVar offset = index * (- width);
-    int maxOffset = - maxWidth * maxHeight;
-    DFEVar readBufByOffset = stream.offset(
+    DFEVar offset = index * (- widthFolded);
+    int maxOffset = - maxWidthFolded * maxHeight;
+    DFEVector<DFEVar> readBufByOffset = stream.offset(
         buf,
         offset,
         maxOffset,
         0);
-    return (index < height) ? readBufByOffset : constant.var(0).cast(valueType);
+    return readBufByOffset;
   }
 }

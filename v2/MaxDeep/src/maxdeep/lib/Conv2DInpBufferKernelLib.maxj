@@ -13,15 +13,20 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
 
   private int maxHeight;
   private int maxWidth;
+  private int maxWidthFolded;
+  private int numPipes;
 
   private DFEType indexType;
   private DFEType valueType;
+  private DFEVectorType<DFEVar> vectorType;
   private DFEType addrType;
 
-  private DFEVar inp;
-  private DFEVar out;
+  private DFEVector<DFEVar> inp;
+  private DFEVector<DFEVar> out;
+
   private DFEVar height;
   private DFEVar width;
+  private DFEVar widthFolded;
   private DFEVar numOfChannels;
   private DFEVar h;
   private DFEVar w;
@@ -29,15 +34,17 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
   
   private CounterChain chain;
 
-  private Memory<DFEVar> memory;
+  private Memory<DFEVector<DFEVar>> memory;
   
-  public Conv2DInpBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth,
+  public Conv2DInpBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth, int numPipes,
       DFEType scalarType, boolean dbg) {
 
     super(owner);
 
     this.maxHeight = maxHeight;
     this.maxWidth = maxWidth;
+    this.numPipes = numPipes;
+    this.maxWidthFolded = maxWidth / numPipes;
 
     initTypes(scalarType);
     initScalars();
@@ -46,7 +53,7 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
     initMemory();
 
     DFEVar addr = (h * width + w).cast(addrType);
-    DFEVar port = this.memory.port(
+    DFEVector<DFEVar> port = this.memory.port(
         addr,
         this.inp,
         this.c === 0,
@@ -59,7 +66,7 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
     }
   }
 
-  public void setInput(DFEVar inp) {
+  public void setInput(DFEVector<DFEVar> inp) {
     this.inp <== inp;
   }
 
@@ -75,36 +82,38 @@ public class Conv2DInpBufferKernelLib extends KernelLib {
     this.numOfChannels <== numOfChannels;
   }
 
-  public DFEVar getOutput() {
+  public DFEVector<DFEVar> getOutput() {
     return this.out;
   }
 
   private void initTypes(DFEType scalarType) {
     indexType = dfeUInt(32);
     valueType = scalarType;
-    addrType = dfeUInt(MathUtils.bitsToAddress(maxHeight * maxWidth));
+    vectorType = new DFEVectorType<DFEVar>(scalarType, this.numPipes);
+    addrType = dfeUInt(MathUtils.bitsToAddress(maxHeight * maxWidthFolded));
   }
 
   private void initScalars() {
     height = indexType.newInstance(this);
     width = indexType.newInstance(this);
+    widthFolded = width / numPipes;
     numOfChannels = indexType.newInstance(this);
   }
 
   private void initStreams() {
-    inp = valueType.newInstance(this);
-    out = valueType.newInstance(this);
+    inp = vectorType.newInstance(this);
+    out = vectorType.newInstance(this);
   }
 
   private void initCounters() {
     chain = control.count.makeCounterChain();
     c = chain.addCounter(numOfChannels, 1).cast(indexType);
     h = chain.addCounter(height, 1).cast(indexType);
-    w = chain.addCounter(width, 1).cast(indexType);
+    w = chain.addCounter(widthFolded, 1).cast(indexType);
   }
 
   private void initMemory() {
-    this.memory = mem.alloc(this.valueType, this.maxHeight * this.maxWidth);
+    this.memory = mem.alloc(this.vectorType, this.maxHeight * this.maxWidthFolded);
   }
 
 }

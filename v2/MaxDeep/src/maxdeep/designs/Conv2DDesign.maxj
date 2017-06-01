@@ -52,6 +52,7 @@ public class Conv2DDesign {
   private InterfaceParam kernelHeight;
   private InterfaceParam kernelWidth;
   private InterfaceParam numOfPumps;
+  private InterfaceParam numOfPipes;
   private InterfaceParam numChnlPipes;
   private InterfaceParam numFltrPipes;
   // Computed parameters
@@ -97,6 +98,7 @@ public class Conv2DDesign {
           paramKernelWidth,
           paramNumChnlPipes,
           paramNumFltrPipes,
+          paramNumOfPipes,
           paramBitWidth,
           params.getWithInpWgt(),
           params.getDbg()));
@@ -166,10 +168,11 @@ public class Conv2DDesign {
   public static String getBuildName(MaxDeepEngineParameters params, String prefix,
       String suffix) {
     return String.format(
-        "%s_P_%d_%d_M_%d_K_%d_%d_%d_%d_%d_B_%d_DSP_%d_%s",
+        "%s_P_%d_%d_%d_M_%d_K_%d_%d_%d_%d_%d_B_%d_DSP_%d_%s",
         prefix,
         params.getNumConvChnlPipes(),
         params.getNumConvFltrPipes(),
+        params.getNumPipes(),
         params.getMultiPumpingFactor(),
         params.getKernelSize(),
         params.getMaxConvHeight(),
@@ -206,6 +209,7 @@ public class Conv2DDesign {
   private void printVerbose() {
     manager.logMsg("Initializing CONV2D kernel ...");
     manager.logMsg("FREQ:                     %d", paramFreq);
+    manager.logMsg("NUM_PIPES:                %d", paramNumOfPipes);
     manager.logMsg("NUM_CHNL_PIPES:           %d", paramNumChnlPipes);
     manager.logMsg("NUM_FLTR_PIPES:           %d", paramNumFltrPipes);
     manager.logMsg("NUM_PUMPS:                %d", paramNumOfPumps);
@@ -232,6 +236,7 @@ public class Conv2DDesign {
     kernelWidth  = ei.addConstant(params.getKernelSize());
     numChnlPipes = ei.addConstant(params.getNumConvChnlPipes());
     numFltrPipes = ei.addConstant(params.getNumConvFltrPipes());
+    numOfPipes   = ei.addConstant(params.getNumPipes());
     numOfPumps   = ei.addConstant(params.getMultiPumpingFactor());
   }
 
@@ -262,7 +267,7 @@ public class Conv2DDesign {
 
   private void setTicks(EngineInterface ei) {
     ei.setTicks(CONV2D_INP_CACHE_KERNEL_NAME,
-        inpNumOfElems * numOfFilters / numFltrPipes);
+        inpNumOfElems * numOfFilters / numFltrPipes / numOfPipes);
     ei.setTicks(CONV2D_POST_PROC_KERNEL_NAME,
         outNumOfElems * numOfChannels / (numChnlPipes * numFltrPipes));
     ei.setTicks(MaxDeepManager.CONV2D_COMPUTE_KERNEL_NAME,

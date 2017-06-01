@@ -62,14 +62,16 @@ public class Conv2DInpCacheKernel extends Kernel {
   private DFEVar numOfChannels;
   private DFEVar numOfFilters;
 
-  private DFEVar inp;
+  private DFEVector<DFEVar> inp;
   private DFEVector<DFEVar> wgt;
   private DFEVector<DFEVar> out;
 
   private DFEType indexType;
   private DFEType scalarValueType;
   private DFEVectorType<DFEVar> wgtType;
+  private DFEVectorType<DFEVar> inpType;
   private DFEVectorType<DFEVar> vectorValueType;
+  private DFEVectorType<DFEVar> outType;
 
   private CounterChain chain;
   private DFEVar h;
@@ -86,6 +88,7 @@ public class Conv2DInpCacheKernel extends Kernel {
   private int kernelWidth;
   private int kernelWidthPiped;
   private int kernelSize;
+  private int numReadPipes;
   private int numChnlPipes;
   private int numFltrPipes;
   private int bitWidth;
@@ -115,6 +118,7 @@ public class Conv2DInpCacheKernel extends Kernel {
       int kernelWidth,
       int numChnlPipes,
       int numFltrPipes,
+      int numReadPipes,
       int bitWidth,
       boolean withInpWgt,
       boolean dbg) {
@@ -130,6 +134,7 @@ public class Conv2DInpCacheKernel extends Kernel {
     this.kernelWidth      = kernelWidth;
     this.kernelWidthPiped = kernelWidth + numChnlPipes - 1;
     this.kernelSize       = kernelHeight * kernelWidth;
+    this.numReadPipes     = numReadPipes;
     this.numChnlPipes     = numChnlPipes;
     this.numFltrPipes     = numFltrPipes;
 
@@ -140,42 +145,74 @@ public class Conv2DInpCacheKernel extends Kernel {
     initStreams();
 
     Conv2DInpBufferKernelLib buffer = new Conv2DInpBufferKernelLib(
-        this, this.maxHeight, this.maxWidth, scalarValueType, dbg);
+        this, this.maxHeight, this.maxWidth, this.numReadPipes, scalarValueType, dbg);
     buffer.setInput(this.inp);
     buffer.setHeight(this.height);
     buffer.setWidth(this.width);
     buffer.setNumOfChannels(this.numOfFilters);
-    DFEVar bufOut = buffer.getOutput();
+    DFEVector<DFEVar> bufOut = buffer.getOutput();
 
     LineBufferKernelLib line = new LineBufferKernelLib(
-        this, this.kernelHeight, this.maxWidth, scalarValueType);
+        this, this.kernelHeight, this.maxWidth, this.numReadPipes, scalarValueType);
     line.setInput(bufOut);
     line.setHeight(constant.var(this.kernelHeight).cast(dfeInt(32)));
     line.setWidth(this.width.cast(dfeInt(32)));
     line.setCapacity((this.height * this.width).cast(dfeInt(32)));
+
     DFEVector<DFEVar> lineOut = line.getOutput();
+
+    List<DFEVector<DFEVar>> colVecList = new ArrayList<DFEVector<DFEVar>>();
+    DFEVectorType<DFEVar> colVecType =
+      new DFEVectorType<DFEVar>(scalarValueType, this.kernelHeight);
+    for (int i = 0; i < this.maxWidth; i ++)
+      colVecList.add(colVecType.newInstance(this));   
+
+    for (int i = 0; i < this.maxWidth / this.numReadPipes; i ++) {
+      DFEVector<DFEVar> tmpLineOut = stream.offset(
+          lineOut,
+          this.maxWidth/this.numReadPipes - i - 1);
+      for (int j = 0; j < this.numReadPipes; j ++) {
+        for (int k = 0; k < this.kernelHeight; k ++) {
+          colVecList.get(i * this.numReadPipes + j)[k] <==
+            tmpLineOut[j * this.kernelHeight + k];
+        }
+      }
+    }
+
+    int outWidth = this.maxWidth - this.kernelWidth + 1;
+    int numKernelChunks = outWidth / numChnlPipes;
+    int kernelChunkSize = this.kernelHeight * this.kernelWidthPiped;
+    for (int i = 0; i < numKernelChunks; i ++) {
+      int startCol = i * numChnlPipes;
+      for (int j = 0; j < this.kernelWidthPiped; j ++) {
+        for (int k = 0; k < this.kernelHeight; k ++) {
+          out[i * kernelChunkSize + j * this.kernelHeight + k] <==
+            colVecList.get(startCol + j)[k];
+        }
+      }
+    }
 
     this.valid <== (
         (this.h >= (this.kernelHeight - 1)) &
-        (this.w >= (this.kernelWidthPiped - 1)) &
-        (KernelMath.divMod(
-          this.w - this.kernelWidthPiped + 1,
-          constant.var(numChnlPipes)).getRemainder() === 0));
+        (this.w === (this.width - this.numReadPipes)));
+        // (KernelMath.divMod(
+        //   this.w - this.kernelWidthPiped + 1,
+        //   constant.var(numChnlPipes)).getRemainder() === 0));
 
     if (dbg)
       debug.simPrintf("CONV2D_CACHE\n");
 
-    for (int i = 0; i < this.kernelWidthPiped; i ++) {
-      int widthOffset = - (this.kernelWidthPiped - i - 1);
-      DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
-      if (dbg)
-        debug.simPrintf("outCol - %KObj%\n", outCol);
+    //for (int i = 0; i < this.kernelWidthPiped; i ++) {
+    //  int widthOffset = - (this.kernelWidthPiped - i - 1);
+    //  DFEVector<DFEVar> outCol = stream.offset(lineOut, widthOffset);
+    //  if (dbg)
+    //    debug.simPrintf("outCol - %KObj%\n", outCol);
 
-      for (int j = 0; j < this.kernelHeight; j ++) {
-        int idx = j * this.kernelWidthPiped + i;
-        this.out[idx] <== outCol[j]; 
-      }
-    }
+    //  for (int j = 0; j < this.kernelHeight; j ++) {
+    //    int idx = j * this.kernelWidthPiped + i;
+    //    this.out[idx] <== outCol[j]; 
+    //  }
+    //}
 
     if (dbg) {
       debug.simPrintf("out - %KObj%\n", out);
@@ -191,11 +228,16 @@ public class Conv2DInpCacheKernel extends Kernel {
   private void initTypes() {
     this.indexType = dfeUInt(32);
     this.scalarValueType = dfeUInt(this.bitWidth);
-
-    this.vectorValueType = new DFEVectorType<DFEVar>(
-        this.scalarValueType, this.kernelHeight * this.kernelWidthPiped);
+    this.inpType = new DFEVectorType<DFEVar>(
+        this.scalarValueType, this.numReadPipes);
     this.wgtType = new DFEVectorType<DFEVar>(
         this.scalarValueType, this.kernelSize * this.numFltrPipes);
+    this.outType = new DFEVectorType<DFEVar>(
+        this.scalarValueType,
+        (this.kernelHeight * this.kernelWidthPiped) *
+        (this.maxWidth - this.kernelWidth + 1) / this.numChnlPipes);
+    this.vectorValueType = new DFEVectorType<DFEVar>(
+        this.scalarValueType, this.kernelHeight * this.kernelWidthPiped);
   }
 
   /**
@@ -211,9 +253,9 @@ public class Conv2DInpCacheKernel extends Kernel {
   }
 
   private void initStreams() {
-    this.inp = io.input(INP_NAME, this.scalarValueType, this.f === 0);
-    this.out = this.vectorValueType.newInstance(this);
-    io.output(OUT_NAME, this.out, this.vectorValueType, this.valid);
+    this.inp = io.input(INP_NAME, this.inpType, this.f === 0);
+    this.out = this.outType.newInstance(this);
+    io.output(OUT_NAME, this.out, this.outType, this.valid);
 
     // This option is deprecated now
     if (this.withInpWgt) {
@@ -227,7 +269,7 @@ public class Conv2DInpCacheKernel extends Kernel {
     this.c = this.chain.addCounter(this.numOfChannels, 1).cast(this.indexType);
     this.f = this.chain.addCounter(this.numOfFilters, this.numFltrPipes).cast(this.indexType);
     this.h = this.chain.addCounter(this.height, 1).cast(this.indexType);
-    this.w = this.chain.addCounter(this.width, 1).cast(this.indexType);
+    this.w = this.chain.addCounter(this.width, this.numReadPipes).cast(this.indexType);
   }
 
   private void initRegisters() {
