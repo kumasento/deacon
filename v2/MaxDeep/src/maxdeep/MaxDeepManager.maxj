@@ -19,7 +19,10 @@ import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 
-class MaxDeepManager extends CustomManager {
+import maxdeep.designs.*;
+import maxdeep.kernels.*;
+
+public class MaxDeepManager extends CustomManager {
 
   /**
    * LMem related members
@@ -28,6 +31,7 @@ class MaxDeepManager extends CustomManager {
   protected LMemCommandGroup group;
   protected LMemCommandGroup groupWgt;
   protected LMemCommandGroup groupOut;
+
   public static final String LMEM_INP_NAME = "LMEM_INP";
   public static final String LMEM_WGT_NAME = "LMEM_WGT";
   public static final String LMEM_OUT_NAME = "LMEM_OUT";
@@ -36,27 +40,35 @@ class MaxDeepManager extends CustomManager {
    * Manager clocks
    */
   public static final String DEFAULT_CLK_NAME = "DEFAULT_STREAM_CLOCK";
-  private ManagerClock clk;
+  public ManagerClock clk;
 
   /**
    * Kernel instance names
    */
-  public static final String LOOPBACK_KERNEL_NAME      = "LOOPBACK_KERNEL";
-  public static final String MULT_ARRAY_KERNEL_NAME    = "MULT_ARRAY_KERNEL";
-  public static final String ONE_DIM_CONV_KERNEL_NAME  = "ONE_DIM_CONV_KERNEL";
-  public static final String PADDING_KERNEL_NAME       = "PADDING_KERNEL";
-  public static final String UNPADDING_INP_KERNEL_NAME = "UNPADDING_INP_KERNEL";
-  public static final String UNPADDING_WGT_KERNEL_NAME = "UNPADDING_WGT_KERNEL";
+  public static final String LOOPBACK_KERNEL_NAME       = "LOOPBACK_KERNEL";
+  public static final String MULT_ARRAY_KERNEL_NAME     = "MULT_ARRAY_KERNEL";
+  public static final String ONE_DIM_CONV_KERNEL_NAME   = "ONE_DIM_CONV_KERNEL";
+  public static final String CONV2D_COMPUTE_KERNEL_NAME = "CONV2D_COMPUTE_KERNEL";
+  public static final String PADDING_KERNEL_NAME        = "PADDING_KERNEL";
+  public static final String UNPADDING_INP_KERNEL_NAME  = "UNPADDING_INP_KERNEL";
+  public static final String UNPADDING_WGT_KERNEL_NAME  = "UNPADDING_WGT_KERNEL";
 
   /**
    * Shared kernel blocks
    */
-  private KernelBlock padding;
-  private KernelBlock unpadding_inp;
-  private KernelBlock unpadding_wgt;
+  public KernelBlock padding;
+  public KernelBlock unpadding_inp;
+  public KernelBlock unpadding_wgt;
+
+  /**
+   * Designs
+   */
+  public Conv2DDesign conv2d;
 
   public MaxDeepManager(MaxDeepEngineParameters params) {
     super(params);
+
+    config.setAllowNonMultipleTransitions(true);
 
     initializeMaxFileConstants(params);
     initializeManagerClocks(params);
@@ -70,11 +82,36 @@ class MaxDeepManager extends CustomManager {
       initializeMultArrayKernel(params);
     } else if (params.getDesignName().equals("ONE_DIM_CONV")) {
       initializeOneDimConvKernel(params); 
+    } else if (params.getDesignName().equals(Conv2DDesign.NAME)) {
+      conv2d = new Conv2DDesign(this, params);
+      conv2d.initializeKernel();
     } else {
       throw new IllegalArgumentException(
           String.format("Design name \"%s\" cannot be recognized",
             params.getDesignName()));
     }
+  }
+
+  public EngineInterface interfaceDefault(MaxDeepEngineParameters params) {
+    EngineInterface ei = new EngineInterface();
+
+    if (params.getDesignName().equals("LOOPBACK"))
+      initializeEngineInterfaceForLoopback(ei);
+    else if (params.getDesignName().equals("LOOPBACK_PADDED"))
+      initializeEngineInterfaceForLoopbackPadded(ei);
+    else if (params.getDesignName().equals("MULT_ARRAY"))
+      initializeEngineInterfaceForMultArray(ei, params);
+    else if (params.getDesignName().equals("ONE_DIM_CONV"))
+      initializeEngineInterfaceForOneDimConv(ei, params);
+    else if (params.getDesignName().equals(Conv2DDesign.NAME))
+      conv2d.initializeEngineInterface(ei);
+    else
+      throw new IllegalArgumentException(
+          String.format("Design name \"%s\" cannot be recognized",
+            params.getDesignName()));
+
+    ManagerUtils.ignoreLMemStreams(ei);
+    return ei;
   }
 
   /**
@@ -95,6 +132,14 @@ class MaxDeepManager extends CustomManager {
 
   private void initializeMaxFileConstants(MaxDeepEngineParameters params) {
     addMaxFileConstant("NUM_PIPES", params.getNumPipes());
+    addMaxFileConstant("NUM_CONV_CHNL_PIPES", params.getNumConvChnlPipes());
+    addMaxFileConstant("NUM_CONV_FLTR_PIPES", params.getNumConvFltrPipes());
+    addMaxFileConstant("BITWIDTH", params.getBitWidth());
+    addMaxFileConstant("KERNEL_SIZE", params.getKernelSize());
+    addMaxFileConstant("MAX_CONV_HEIGHT", params.getMaxConvHeight());
+    addMaxFileConstant("MAX_CONV_WIDTH", params.getMaxConvWidth());
+    addMaxFileConstant("MAX_CONV_NUM_OF_CHANNELS", params.getMaxConvNumChannels());
+    addMaxFileConstant("MAX_CONV_NUM_OF_FILTERS", params.getMaxConvNumFilters());
     addMaxFileConstant("ONE_DIM_CONV_WINDOW_WIDTH", params.getOneDimConvWindowWidth());
   }
 
@@ -113,6 +158,11 @@ class MaxDeepManager extends CustomManager {
     clk = generateStreamClock(DEFAULT_CLK_NAME, params.getFreq());
 
     config.setDefaultStreamClockFrequency(params.getFreq());
+  }
+
+  public ManagerClock getMultipleManagerClock(String name,
+      int multiple, MaxDeepEngineParameters params) {
+    return generateStreamClock(name, params.getFreq() * multiple);
   }
 
   /**
@@ -237,20 +287,20 @@ class MaxDeepManager extends CustomManager {
    * @author Ruizhe Zhao
    * @since 21/05/2017
    */
-  private void initializePaddingKernels(MaxDeepEngineParameters params,
+  public void initializePaddingKernels(MaxDeepEngineParameters params,
       int inpBitWidth, int wgtBitWidth, int outBitWidth) {
     padding = addKernel(
         new PaddingKernel(
           makeKernelParameters(MaxDeepManager.PADDING_KERNEL_NAME),
-          inpBitWidth, params.getDbg()));
+          outBitWidth, params.getDbg()));
     unpadding_inp = addKernel(
         new UnpaddingKernel(
           makeKernelParameters(MaxDeepManager.UNPADDING_INP_KERNEL_NAME),
-          wgtBitWidth, params.getDbg()));
+          inpBitWidth, params.getDbg()));
     unpadding_wgt = addKernel(
         new UnpaddingKernel(
           makeKernelParameters(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME),
-          outBitWidth, params.getDbg()));
+          wgtBitWidth, params.getDbg()));
 
     ManagerUtils.addLinearStreamFromLMemToKernel(
         group, unpadding_inp, LMEM_INP_NAME, UnpaddingKernel.INP_NAME);
@@ -460,9 +510,9 @@ class MaxDeepManager extends CustomManager {
    * @param ei engine interface to be used
    * @return number of elements in the burst aligned array
    */
-  private InterfaceParam getBurstAlignedNumOfElems(InterfaceParam numOfElems, int sizeInBytes,
-      EngineInterface ei) {
-    InterfaceParam burstSize = ei.addConstant(384);
+  public InterfaceParam getBurstAlignedNumOfElems(InterfaceParam numOfElems, int sizeInBytes,
+      InterfaceParam burstFactor, EngineInterface ei) {
+    InterfaceParam burstSize = ei.addConstant(384) * burstFactor;
     InterfaceParam totalSizeInBytes = numOfElems * sizeInBytes;
     InterfaceParam burstAlignedTotalSizeInBytes =
       InterfaceMath
@@ -475,24 +525,9 @@ class MaxDeepManager extends CustomManager {
     return burstAlignedNumOfElems.cast(CPUTypes.INT64);
   }
 
-  public EngineInterface interfaceDefault(MaxDeepEngineParameters params) {
-    EngineInterface ei = new EngineInterface();
-
-    if (params.getDesignName().equals("LOOPBACK"))
-      initializeEngineInterfaceForLoopback(ei);
-    else if (params.getDesignName().equals("LOOPBACK_PADDED"))
-      initializeEngineInterfaceForLoopbackPadded(ei);
-    else if (params.getDesignName().equals("MULT_ARRAY"))
-      initializeEngineInterfaceForMultArray(ei, params);
-    else if (params.getDesignName().equals("ONE_DIM_CONV"))
-      initializeEngineInterfaceForOneDimConv(ei, params);
-    else
-      throw new IllegalArgumentException(
-          String.format("Design name \"%s\" cannot be recognized",
-            params.getDesignName()));
-
-    ManagerUtils.ignoreLMemStreams(ei);
-    return ei;
+  public InterfaceParam getBurstAlignedNumOfElems(InterfaceParam numOfElems, int sizeInBytes,
+      EngineInterface ei) {
+    return getBurstAlignedNumOfElems(numOfElems, sizeInBytes, ei.addConstant(1), ei);
   }
 
   public static void main(String [] args) {

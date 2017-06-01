@@ -1,0 +1,360 @@
+package maxdeep.designs;
+
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.*;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.*;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.*;
+
+import maxdeep.*;
+import maxdeep.kernels.*;
+
+public class Conv2DDesign {
+
+  public static final String NAME = "CONV2D";
+  public static final String CONV2D_INP_CACHE_KERNEL_NAME = "CONV2D_INP_CACHE_KERNEL";
+  public static final String CONV2D_COMPUTE_KERNEL_NAME = "CONV2D_COMPUTE_KERNEL";
+  public static final String CONV2D_POST_PROC_KERNEL_NAME = "CONV2D_POST_PROC_KERNEL";
+
+  /**
+   * Important components
+   */
+  private MaxDeepManager manager;
+  private MaxDeepEngineParameters params;
+
+  /**
+   * Constants required
+   */
+  private int paramFreq;
+  private int paramNumOfPipes;
+  private int paramNumOfPumps;
+  private int paramNumChnlPipes;
+  private int paramNumFltrPipes;
+  private int paramKernelHeight;
+  private int paramKernelWidth;
+  private int paramKernelSize;
+  private int paramMaxConvHeight;
+  private int paramMaxConvWidth;
+  private int paramMaxConvNumOfChannels;
+  private int paramMaxConvNumOfFilters;
+  private int paramBitWidth;
+
+  /**
+   * Interface parameters
+   */
+  // CPU parameters
+  private InterfaceParam numOfBatches;
+  private InterfaceParam height;
+  private InterfaceParam width;
+  private InterfaceParam numOfChannels;
+  private InterfaceParam numOfFilters; 
+  // Constants
+  private InterfaceParam ZERO;
+  // Design constants
+  private InterfaceParam kernelHeight;
+  private InterfaceParam kernelWidth;
+  private InterfaceParam numOfPumps;
+  private InterfaceParam numOfPipes;
+  private InterfaceParam numChnlPipes;
+  private InterfaceParam numFltrPipes;
+  // Computed parameters
+  private InterfaceParam kernelSize;
+  private InterfaceParam outHeight;
+  private InterfaceParam outWidth;
+  private InterfaceParam inpNumOfElems;
+  private InterfaceParam wgtNumOfElems;
+  private InterfaceParam outNumOfElems;
+  private InterfaceParam burstAlignedInpNumOfElems;
+  private InterfaceParam burstAlignedWgtNumOfElems;
+  private InterfaceParam burstAlignedOutNumOfElems;
+  private InterfaceParam burstAlignedInpSizeInBytes;
+  private InterfaceParam burstAlignedWgtSizeInBytes;
+  private InterfaceParam burstAlignedOutSizeInBytes;
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 27/05/2017
+   */
+  public Conv2DDesign(MaxDeepManager manager, MaxDeepEngineParameters params) {
+    this.manager = manager;
+    this.params = params;
+
+    initConstants();
+    printVerbose();
+  }
+  
+  public void initializeKernel() {
+    manager.initializePaddingKernels(
+        params, paramBitWidth, paramBitWidth * paramKernelSize, paramBitWidth);
+
+    KernelBlock cache = manager.addKernel(
+        new Conv2DInpCacheKernel(
+          manager.makeKernelParameters(CONV2D_INP_CACHE_KERNEL_NAME),
+          paramMaxConvHeight,
+          paramMaxConvWidth,
+          paramMaxConvNumOfChannels,
+          paramMaxConvNumOfFilters,
+          paramKernelHeight,
+          paramKernelWidth,
+          paramNumChnlPipes,
+          paramNumFltrPipes,
+          paramNumOfPipes,
+          paramBitWidth,
+          params.getWithInpWgt(),
+          params.getDbg()));
+
+    KernelBlock conv2d = manager.addKernel(
+        new Conv2DComputeKernel(
+          manager.makeKernelParameters(MaxDeepManager.CONV2D_COMPUTE_KERNEL_NAME),
+          paramKernelHeight,
+          paramKernelWidth,
+          paramNumChnlPipes,
+          paramNumFltrPipes,
+          paramNumOfPumps,
+          paramBitWidth,
+          params.getDSPFactor(),
+          params.getDbg()));
+
+    KernelBlock post = manager.addKernel(
+        new Conv2DPostProcessKernel(
+          manager.makeKernelParameters(CONV2D_POST_PROC_KERNEL_NAME),
+          paramMaxConvHeight - paramKernelHeight + 1,
+          paramMaxConvWidth - paramKernelWidth + 1,
+          paramMaxConvNumOfChannels,
+          paramMaxConvNumOfFilters,
+          paramNumChnlPipes,
+          paramNumFltrPipes,
+          paramBitWidth,
+          params.getDbg()));
+
+    // input cache connections
+    cache.getInput(Conv2DInpCacheKernel.INP_NAME) <==
+      manager.unpadding_inp.getOutput(UnpaddingKernel.OUT_NAME);
+    if (params.getWithInpWgt())
+      cache.getInput(Conv2DInpCacheKernel.INP_WGT_NAME) <==
+        manager.unpadding_wgt.getOutput(UnpaddingKernel.OUT_NAME);
+
+    // conv2d connections
+    conv2d.getInput(Conv2DComputeKernel.INP_NAME) <==
+      cache.getOutput(Conv2DInpCacheKernel.OUT_NAME);
+    conv2d.getInput(Conv2DComputeKernel.WGT_NAME) <==
+      (params.getWithInpWgt()) ?
+      cache.getOutput(Conv2DInpCacheKernel.OUT_WGT_NAME) :
+      manager.unpadding_wgt.getOutput(UnpaddingKernel.OUT_NAME);
+
+    // post connections
+    post.getInput(Conv2DPostProcessKernel.INP_NAME) <==
+      conv2d.getOutput(Conv2DComputeKernel.OUT_NAME);
+    manager.padding.getInput(PaddingKernel.INP_NAME) <==
+      post.getOutput(Conv2DPostProcessKernel.OUT_NAME);
+
+    conv2d.setClock(
+        manager.getMultipleManagerClock(
+          "CONV2D_CLOCK", paramNumOfPumps, params));
+  }
+
+  public void initializeEngineInterface(EngineInterface ei) {
+    initializeConstantInterfaceParams(ei);
+    initializeCPUInterfaceParams(ei);
+
+    computeShapeParams();
+    computeSizeParams(ei);
+
+    setTicks(ei);
+    setScalars(ei);
+    setLMemLinear(ei);
+  }
+
+  public static String getBuildName(MaxDeepEngineParameters params, String prefix,
+      String suffix) {
+    return String.format(
+        "%s_P_%d_%d_%d_M_%d_K_%d_%d_%d_%d_%d_B_%d_DSP_%d_%s",
+        prefix,
+        params.getNumConvChnlPipes(),
+        params.getNumConvFltrPipes(),
+        params.getNumPipes(),
+        params.getMultiPumpingFactor(),
+        params.getKernelSize(),
+        params.getMaxConvHeight(),
+        params.getMaxConvWidth(),
+        params.getMaxConvNumChannels(),
+        params.getMaxConvNumFilters(),
+        params.getBitWidth(),
+        (int) params.getDSPFactor(),
+        suffix);
+  }
+
+  /**
+   * Initialize constants.
+   *
+   * @author Ruizhe Zhao
+   * @since 27/05/2017
+   */
+  private void initConstants() {
+    this.paramFreq                 = this.params.getFreq();
+    this.paramNumOfPipes           = this.params.getNumPipes();
+    this.paramNumOfPumps           = this.params.getMultiPumpingFactor();
+    this.paramKernelHeight         = this.params.getKernelSize();
+    this.paramKernelWidth          = this.params.getKernelSize();
+    this.paramKernelSize           = this.paramKernelHeight * this.paramKernelWidth;
+    this.paramMaxConvHeight        = this.params.getMaxConvHeight();
+    this.paramMaxConvWidth         = this.params.getMaxConvWidth();
+    this.paramMaxConvNumOfChannels = this.params.getMaxConvNumChannels();
+    this.paramMaxConvNumOfFilters  = this.params.getMaxConvNumFilters();
+    this.paramBitWidth             = this.params.getBitWidth();
+    this.paramNumChnlPipes         = this.params.getNumConvChnlPipes();
+    this.paramNumFltrPipes         = this.params.getNumConvFltrPipes();
+  }
+
+  private void printVerbose() {
+    manager.logMsg("Initializing CONV2D kernel ...");
+    manager.logMsg("FREQ:                     %d", paramFreq);
+    manager.logMsg("NUM_PIPES:                %d", paramNumOfPipes);
+    manager.logMsg("NUM_CHNL_PIPES:           %d", paramNumChnlPipes);
+    manager.logMsg("NUM_FLTR_PIPES:           %d", paramNumFltrPipes);
+    manager.logMsg("NUM_PUMPS:                %d", paramNumOfPumps);
+    manager.logMsg("KERNEL_HEIGHT:            %d", paramKernelHeight);
+    manager.logMsg("KERNEL_WIDTH:             %d", paramKernelWidth);
+    manager.logMsg("MAX_CONV_HEIGHT:          %d", paramMaxConvHeight);
+    manager.logMsg("MAX_CONV_WIDTH:           %d", paramMaxConvWidth);
+    manager.logMsg("MAX_CONV_NUM_OF_CHANNELS: %d", paramMaxConvNumOfChannels);
+    manager.logMsg("MAX_CONV_NUM_OF_FILTERS:  %d", paramMaxConvNumOfFilters);
+    manager.logMsg("BITWIDTH:                 %d", paramBitWidth);
+  }
+
+  private void initializeCPUInterfaceParams(EngineInterface ei) {
+    numOfBatches  = ei.addParam("num_of_batches", CPUTypes.INT64, "Number of batches");
+    height        = ei.addParam("height", CPUTypes.INT64, "Height of the input fmap");
+    width         = ei.addParam("width", CPUTypes.INT64, "Width of the input fmap");
+    numOfChannels = ei.addParam("num_of_channels", CPUTypes.INT64, "Number of input fmap channels");
+    numOfFilters  = ei.addParam("num_of_filters", CPUTypes.INT64, "Number of output fmap channels");
+  }
+
+  private void initializeConstantInterfaceParams(EngineInterface ei) {
+    ZERO         = ei.addConstant(0);
+    kernelHeight = ei.addConstant(params.getKernelSize());
+    kernelWidth  = ei.addConstant(params.getKernelSize());
+    numChnlPipes = ei.addConstant(params.getNumConvChnlPipes());
+    numFltrPipes = ei.addConstant(params.getNumConvFltrPipes());
+    numOfPipes   = ei.addConstant(params.getNumPipes());
+    numOfPumps   = ei.addConstant(params.getMultiPumpingFactor());
+  }
+
+  private void computeShapeParams() {
+    kernelSize = kernelHeight * kernelWidth;
+    outHeight  = height - kernelHeight + 1;
+    outWidth   = width - kernelWidth + 1;
+  }
+
+  private void computeSizeParams(EngineInterface ei) {
+    inpNumOfElems = numOfBatches * height * width * numOfChannels;
+    wgtNumOfElems = numOfBatches * numOfChannels * numOfFilters * kernelSize;
+    outNumOfElems = numOfBatches * outHeight * outWidth * numOfFilters;
+
+    int sizeInBytes = paramBitWidth / 8;
+
+    burstAlignedInpNumOfElems =
+      manager.getBurstAlignedNumOfElems(inpNumOfElems, sizeInBytes, ei);
+    burstAlignedWgtNumOfElems =
+      manager.getBurstAlignedNumOfElems(wgtNumOfElems, sizeInBytes, kernelSize, ei);
+    burstAlignedOutNumOfElems =
+      manager.getBurstAlignedNumOfElems(outNumOfElems, sizeInBytes, ei);
+
+    burstAlignedInpSizeInBytes = burstAlignedInpNumOfElems * sizeInBytes;
+    burstAlignedWgtSizeInBytes = burstAlignedWgtNumOfElems * sizeInBytes;
+    burstAlignedOutSizeInBytes = burstAlignedOutNumOfElems * sizeInBytes;
+  }
+
+  private void setTicks(EngineInterface ei) {
+    ei.setTicks(CONV2D_INP_CACHE_KERNEL_NAME,
+        inpNumOfElems * numOfFilters / numFltrPipes / numOfPipes);
+    ei.setTicks(CONV2D_POST_PROC_KERNEL_NAME,
+        outNumOfElems * numOfChannels / (numChnlPipes * numFltrPipes));
+    ei.setTicks(MaxDeepManager.CONV2D_COMPUTE_KERNEL_NAME,
+        outNumOfElems * numOfChannels / (numFltrPipes * numChnlPipes) * numOfPumps);
+
+    ei.setTicks(MaxDeepManager.UNPADDING_INP_KERNEL_NAME,
+        burstAlignedInpNumOfElems);
+    ei.setTicks(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME,
+        burstAlignedWgtNumOfElems / (kernelSize));
+    ei.setTicks(MaxDeepManager.PADDING_KERNEL_NAME,
+        burstAlignedOutNumOfElems);
+  }
+
+  private void setScalars(EngineInterface ei) {
+    setCacheScalars(ei);
+    setComputeScalars(ei);
+    setPostProcScalars(ei);
+
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME,
+        PaddingKernel.SCALAR_NUM_INP,
+        outNumOfElems);
+    ei.setScalar(MaxDeepManager.PADDING_KERNEL_NAME,
+        PaddingKernel.SCALAR_TOTAL_CYCLES,
+        burstAlignedOutNumOfElems);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME,
+        UnpaddingKernel.SCALAR_NUM_INP,
+        inpNumOfElems);
+    ei.setScalar(MaxDeepManager.UNPADDING_INP_KERNEL_NAME,
+        UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+        burstAlignedInpNumOfElems);
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME,
+        UnpaddingKernel.SCALAR_NUM_INP,
+        wgtNumOfElems / (kernelSize));
+    ei.setScalar(MaxDeepManager.UNPADDING_WGT_KERNEL_NAME,
+        UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+        burstAlignedWgtNumOfElems / (kernelSize));
+  }
+
+  private void setCacheScalars(EngineInterface ei) {
+    ei.setScalar(CONV2D_INP_CACHE_KERNEL_NAME,
+        Conv2DInpCacheKernel.SCALAR_HEIGHT_NAME,
+        height);
+    ei.setScalar(CONV2D_INP_CACHE_KERNEL_NAME,
+        Conv2DInpCacheKernel.SCALAR_WIDTH_NAME,
+        width);
+    ei.setScalar(CONV2D_INP_CACHE_KERNEL_NAME,
+        Conv2DInpCacheKernel.SCALAR_NUM_OF_CHANNELS_NAME,
+        numOfChannels);
+    ei.setScalar(CONV2D_INP_CACHE_KERNEL_NAME,
+        Conv2DInpCacheKernel.SCALAR_NUM_OF_FILTERS_NAME,
+        numOfFilters);
+  }
+
+  private void setComputeScalars(EngineInterface ei) {
+    ei.setScalar(CONV2D_COMPUTE_KERNEL_NAME,
+        Conv2DComputeKernel.SCALAR_OUT_HEIGHT_NAME,
+        outHeight);
+    ei.setScalar(CONV2D_COMPUTE_KERNEL_NAME,
+        Conv2DComputeKernel.SCALAR_OUT_WIDTH_NAME,
+        outWidth);
+    ei.setScalar(CONV2D_COMPUTE_KERNEL_NAME,
+        Conv2DComputeKernel.SCALAR_NUM_OF_FILTERS_NAME,
+        numOfFilters);
+  }
+
+  private void setPostProcScalars(EngineInterface ei) {
+    ei.setScalar(CONV2D_POST_PROC_KERNEL_NAME,
+        Conv2DPostProcessKernel.SCALAR_OUT_HEIGHT_NAME,
+        outHeight);
+    ei.setScalar(CONV2D_POST_PROC_KERNEL_NAME,
+        Conv2DPostProcessKernel.SCALAR_OUT_WIDTH_NAME,
+        outWidth);
+    ei.setScalar(CONV2D_POST_PROC_KERNEL_NAME,
+        Conv2DPostProcessKernel.SCALAR_NUM_OF_CHANNELS_NAME,
+        numOfChannels);
+    ei.setScalar(CONV2D_POST_PROC_KERNEL_NAME,
+        Conv2DPostProcessKernel.SCALAR_NUM_OF_FILTERS_NAME,
+        numOfFilters);
+  }
+
+  private void setLMemLinear(EngineInterface ei) {
+    ei.setLMemLinear(MaxDeepManager.LMEM_INP_NAME, ZERO, burstAlignedInpSizeInBytes);
+    ei.setLMemLinear(MaxDeepManager.LMEM_WGT_NAME,
+        burstAlignedInpSizeInBytes,
+        burstAlignedWgtSizeInBytes);
+    ei.setLMemLinear(MaxDeepManager.LMEM_OUT_NAME,
+        burstAlignedInpSizeInBytes + burstAlignedWgtSizeInBytes,
+        burstAlignedOutSizeInBytes);
+  }
+}

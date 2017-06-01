@@ -1,0 +1,201 @@
+package maxdeep.kernels;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.*;
+import com.maxeler.maxcompiler.v2.utils.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import maxdeep.lib.*;
+
+import java.util.*;
+
+public class Conv2DPostProcessKernel extends Kernel {
+
+  public static final String INP_NAME = "CONV2D_POST_PROC_KERNEL_INP";
+  public static final String OUT_NAME = "CONV2D_POST_PROC_KERNEL_OUT";
+
+  public static final String SCALAR_OUT_HEIGHT_NAME =
+    "CONV2D_POST_PROC_KERNEL_SCALAR_OUT_HEIGHT";
+  public static final String SCALAR_OUT_WIDTH_NAME =
+    "CONV2D_POST_PROC_KERNEL_SCALAR_OUT_WIDTH";
+  public static final String SCALAR_NUM_OF_CHANNELS_NAME =
+    "CONV2D_POST_PROC_KERNEL_SCALAR_NUM_OF_CHANNELS";
+  public static final String SCALAR_NUM_OF_FILTERS_NAME =
+    "CONV2D_POST_PROC_KERNEL_SCALAR_NUM_OF_FILTERS";
+
+  /**
+   * Constants
+   */
+  private int maxOutHeight;
+  private int maxOutWidth;
+  private int maxNumOfChannels;
+  private int maxNumOfFilters;
+  private int partialResultBufferSize;
+  private int numChnlPipes;
+  private int numFltrPipes;
+  private int bitWidth;
+
+  /**
+   * Types
+   */
+  private DFEType indexType;
+  private DFEType valueType;
+  private DFEType addrType;
+  private DFEVectorType<DFEVar> vectorType;
+  private DFEVectorType<DFEVar> portType;
+
+  /**
+   * Scalars
+   */
+  private DFEVar outHeight;
+  private DFEVar outWidth;
+  private DFEVar numOfChannels;
+  private DFEVar numOfFilters;
+
+  /**
+   * Counters
+   */
+  private DFEVar h;
+  private DFEVar w;
+  private DFEVar f;
+  private DFEVar c;
+  private DFEVar t;
+
+  /**
+   * Streams
+   */
+  private DFEVector<DFEVar> inp;
+  private DFEVector<DFEVar> out;
+
+  /**
+   * Memory
+   */
+  private List<Memory<DFEVector<DFEVar>>> partialResultBuffers;
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 28/05/2017
+   *
+   * @param params kernel parameter
+   * @param maxOutHeight maximum output fmap height
+   * @param maxOutWidth maximum output fmap width
+   * @param maxNumOfChannels maximum input fmap channel number
+   * @param maxNumOfFilters maximum output fmap filter number
+   * @param numFltrPipes number of pipes along filters
+   */
+  public Conv2DPostProcessKernel(KernelParameters params,
+      int maxOutHeight,
+      int maxOutWidth,
+      int maxNumOfChannels,
+      int maxNumOfFilters,
+      int numChnlPipes,
+      int numFltrPipes,
+      int bitWidth,
+      boolean dbg) {
+    super(params);
+
+    this.bitWidth         = bitWidth;
+    this.maxOutHeight     = maxOutHeight;
+    this.maxOutWidth      = maxOutWidth;
+    this.maxNumOfChannels = maxNumOfChannels;
+    this.maxNumOfFilters  = maxNumOfFilters;
+    this.numChnlPipes     = numChnlPipes;
+    this.numFltrPipes     = numFltrPipes;
+
+    this.partialResultBufferSize =
+      (maxNumOfFilters * maxOutHeight * maxOutWidth) /
+      (numFltrPipes * numChnlPipes);
+
+    // logMsg("Partial Result Buffer Size: %d (%d)", this.partialResultBufferSize,
+    //     MathUtils.bitsToAddress(this.partialResultBufferSize));
+
+    initTypes();
+    initScalars();
+    initCounters();
+    initStreams();
+    initBuffer();
+
+    DFEVar outSize = this.outHeight * this.outWidth;
+
+    DFEVar readAddr = (
+        this.f * outSize / this.numChnlPipes +
+        this.h * this.outWidth / this.numChnlPipes +
+        this.w).cast(this.addrType);
+    DFEVector<DFEVar> readValue = this.vectorType.newInstance(this);
+    for (int i = 0; i < this.numFltrPipes; i ++) {
+      DFEVector<DFEVar> tmpReadValue =
+        this.partialResultBuffers.get(i).read(readAddr);
+
+      for (int j = 0; j < this.numChnlPipes; j ++)
+        readValue[i * numChnlPipes + j] <== tmpReadValue[j];
+    }
+    
+    DFEVector<DFEVar> result = readValue + this.inp;
+    this.out <== result;
+
+    int writeLatency = 3;
+    DFEVar writeAddr = stream.offset(readAddr, -writeLatency);
+    DFEVector<DFEVar> writeValue = stream.offset(result, -writeLatency);
+    for (int i = 0; i < numFltrPipes; i ++) {
+      DFEVector<DFEVar> tmpWriteValue = this.portType.newInstance(this);
+      for (int j = 0; j < numChnlPipes; j ++)
+        tmpWriteValue[j] <== writeValue[i * numChnlPipes + j];
+
+      this.partialResultBuffers[i].write(
+          writeAddr, tmpWriteValue, this.t >= writeLatency);
+    }
+
+    if (dbg) {
+      debug.simPrintf("CONV2D_POST_PROC (%d %d %d %d)\n", c, f, h, w);
+      debug.simPrintf("read:   %u %KObj%\n", readAddr.cast(dfeUInt(32)), readValue);
+      debug.simPrintf("write:  %u %KObj%\n", writeAddr.cast(dfeUInt(32)), writeValue);
+      debug.simPrintf("result: %KObj% + %KObj% = %KObj%\n", inp, readValue, out);
+    }
+  }
+
+  private void initTypes() {
+    indexType = dfeUInt(32);
+    valueType = dfeUInt(this.bitWidth);
+
+    addrType = dfeUInt(MathUtils.bitsToAddress(partialResultBufferSize));
+    portType = new DFEVectorType<DFEVar>(valueType, numChnlPipes);
+    vectorType = new DFEVectorType<DFEVar>(valueType, numFltrPipes * numChnlPipes);
+  }
+
+  private void initScalars() {
+    this.outHeight     = io.scalarInput(SCALAR_OUT_HEIGHT_NAME, indexType);
+    this.outWidth      = io.scalarInput(SCALAR_OUT_WIDTH_NAME, indexType);
+    this.numOfChannels = io.scalarInput(SCALAR_NUM_OF_CHANNELS_NAME, indexType);
+    this.numOfFilters  = io.scalarInput(SCALAR_NUM_OF_FILTERS_NAME, indexType);
+  }
+
+  private void initCounters() {
+    CounterChain chain = control.count.makeCounterChain();
+    this.c = chain.addCounter(this.numOfChannels, 1).cast(indexType);
+    this.f = chain.addCounter(this.numOfFilters / this.numFltrPipes, 1).cast(indexType);
+    this.h = chain.addCounter(this.outHeight, 1).cast(indexType);
+    this.w = chain.addCounter(this.outWidth / this.numChnlPipes, 1).cast(indexType);
+
+    this.t = control.count.simpleCounter(32);
+  }
+
+  private void initStreams() {
+    this.inp = io.input(INP_NAME, vectorType);
+    this.out = vectorType.newInstance(this);
+
+    io.output(OUT_NAME, this.out, vectorType, this.c === this.numOfChannels - 1);
+  }
+
+  private void initBuffer() {
+    this.partialResultBuffers = new ArrayList<Memory<DFEVector<DFEVar>>>();
+    for (int i = 0; i < this.numFltrPipes; i ++)
+      this.partialResultBuffers.add(
+          mem.alloc(portType, partialResultBufferSize));
+  }
+
+}

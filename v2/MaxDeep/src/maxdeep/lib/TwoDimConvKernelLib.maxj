@@ -1,0 +1,157 @@
+/**
+ * TwoDimConvKernelLib.maxj
+ *
+ * This file contains a class definition of TwoDimConvKernelLib, which
+ * will be further used in convolution layer's implementation
+ *
+ * @author Ruizhe Zhao
+ * @since 24/05/2017
+ */
+
+package maxdeep.lib;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.*;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+
+import maxpower.kernel.KernelBinaryOp.*;
+import maxpower.utils.TreeReduce;
+
+import java.util.*;
+
+/**
+ * A kernel lib that performs two-dimensional convolution.
+ *
+ *
+ * @author Ruizhe Zhao
+ * @since 25/05/2017
+ */
+public class TwoDimConvKernelLib extends KernelLib {
+
+  // configurations
+  private int kernelHeight;
+  private int kernelWidth;
+  private int kernelSize;
+
+  // types
+  private DFEType scalarType;
+  private DFEVectorType<DFEVar> rowVecType;
+  private DFEVectorType<DFEVar> colVecType;
+  private DFEVectorType<DFEVar> inpType;
+  private DFEVectorType<DFEVar> wgtType;
+  private DFEType outType;
+
+  // registers
+  private DFEVector<DFEVar> inp;
+  private DFEVector<DFEVar> wgt;
+  private DFEVar out;
+
+  /**
+   * Constructor.
+   *
+   * @author Ruizhe Zhao
+   * @since 25/05/2017
+   *
+   * @param owner parent kernellib
+   * @param kernelHeight the height of the convolution kernel
+   * @param kernelWidth the width of the convolution kernel
+   * @param type the type of the data
+   */
+  public TwoDimConvKernelLib(KernelLib owner, int kernelHeight, int kernelWidth,
+      DFEType type) {
+    super(owner);
+
+    // initialization
+    this.kernelHeight = kernelHeight;
+    this.kernelWidth = kernelWidth;
+    this.kernelSize = kernelHeight * kernelWidth;
+
+    this.scalarType = type;
+
+    this.rowVecType = new DFEVectorType<DFEVar>(scalarType, kernelWidth);
+    this.colVecType = new DFEVectorType<DFEVar>(scalarType, kernelHeight);
+    this.inpType = new DFEVectorType<DFEVar>(scalarType, kernelSize);
+    this.wgtType = new DFEVectorType<DFEVar>(scalarType, kernelSize);
+    this.outType = this.scalarType;
+
+    this.inp = inpType.newInstance(this);
+    this.wgt = wgtType.newInstance(this);
+    this.out = compute(inp, wgt);
+  }
+
+  public void setInput(DFEVector<DFEVar> inp) {
+    this.inp <== inp;
+  }
+
+  public void setWeight(DFEVector<DFEVar> wgt) {
+    this.wgt <== wgt;
+  }
+
+  public DFEVar getOutput() {
+    return out;
+  }
+
+  /**
+   * Compute 2D convolution.
+   *
+   * @author Ruizhe Zhao
+   * @since 25/05/2017
+   *
+   * @param inp input stream
+   * @param wgt weight stream
+   * @return output value of the 2D convolution
+   */
+  private DFEVar compute(DFEVector<DFEVar> inp, DFEVector<DFEVar> wgt) {
+    List<DFEVector<DFEVar>> inpWindowList = createWindowList(inp);
+    List<DFEVector<DFEVar>> wgtWindowList = createWindowList(wgt);
+
+    DFEVector<DFEVar> preOut = this.colVecType.newInstance(this);
+    for (int i = 0; i < kernelHeight; i ++) {
+      DotProductKernelLib dotProduct = new DotProductKernelLib(this, kernelWidth, scalarType);
+      dotProduct.setInput(inpWindowList[i]);
+      dotProduct.setWeight(wgtWindowList[i]);
+      preOut[i] <== dotProduct.getOutput();
+    }
+
+    return TreeReduce.reduce(
+        new Add(), preOut.getElementsAsList());
+  }
+
+  /**
+   * Helper function to split a vector input to a 2D list of vectors.
+   *
+   * @author Ruizhe Zhao
+   * @since 25/05/2017
+   *
+   * @param src source 1D vector input
+   * @return transformed 2D list of vectors
+   */
+  private List<DFEVector<DFEVar>> createWindowList(DFEVector<DFEVar> src) {
+    List<DFEVector<DFEVar>> windowList = new ArrayList<DFEVector<DFEVar>>();
+
+    /**
+     * The orgnaisation of each window.
+     * 
+     * Suppose kernelHeight = kernelWidth = 3
+     *
+     * inp:
+     * [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+     * inpWindowList:
+     * [0]: [ 0, 1, 2 ]
+     * [1]: [ 3, 4, 5 ]
+     * [2]: [ 6, 7, 8 ]
+     */
+    for (int i = 0; i < kernelHeight; i ++) {
+      DFEVector<DFEVar> window = this.rowVecType.newInstance(this);
+
+      for (int j = 0; j < kernelWidth; j ++)
+        window[j] <== src[i * kernelWidth + j];
+
+      windowList.add(window);
+    }
+
+    return windowList;
+  }
+}

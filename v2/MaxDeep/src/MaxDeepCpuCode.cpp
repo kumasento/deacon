@@ -27,11 +27,15 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   int c;
+  int num_iters = 1;
   std::string design_name;
-  while ((c = getopt(argc, argv, "n:")) != -1)
+  while ((c = getopt(argc, argv, "n:i:")) != -1)
     switch (c) {
       case 'n':
         design_name = std::string(optarg);
+        break;
+      case 'i':
+        num_iters = atoi(optarg);
         break;
       default:
         fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
@@ -55,7 +59,17 @@ int main(int argc, char *argv[]) {
     maxdeep::test_runners::run_mult_array_test(is_sim, maxfile, engine);
   else if (design_name == std::string("ONE_DIM_CONV"))
     maxdeep::test_runners::run_one_dim_conv_test(is_sim, maxfile, engine);
-  else
+  else if (design_name == std::string("CONV2D")) {
+    int bitwidth = (int) max_get_constant_uint64t(maxfile, "BITWIDTH");
+    printf("bitwidth: %d\n", bitwidth);
+    if (bitwidth == 32) {
+      maxdeep::test_runners::Conv2DTest<uint32_t> test(is_sim, maxfile, engine);
+      test.run(num_iters);
+    } else if (bitwidth == 16) {
+      maxdeep::test_runners::Conv2DTest<uint16_t> test(is_sim, maxfile, engine);
+      test.run(num_iters);
+    }
+  } else
     throw std::runtime_error("design_name cannot be recognised!");
 
   max_file_free(maxfile);
