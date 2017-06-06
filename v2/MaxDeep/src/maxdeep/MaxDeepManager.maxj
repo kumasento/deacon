@@ -553,9 +553,11 @@ public class MaxDeepManager extends CustomManager {
      * bottleneck at the memory controller.
      */
     ManagerUtils.setDRAMFreq(manager, params, 400);
-    if (params.getFreq() > 150 || params.getMultiPumpingFactor() > 1)
+    if (params.getFreq() > 150 ||
+        params.getMultiPumpingFactor() > 1)
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.HIGH, 6, 6);
-    else if (params.getFreq() >= 120)
+    else if (params.getFreq() >= 120 ||
+             params.getNumConvChnlPipes() * params.getNumConvFltrPipes() * params.getNumPipes() > 3 * 128 * 4)
       ManagerUtils.setFullBuild(manager, BuildConfig.Effort.MEDIUM, 4, 4);
     else
       // to LOW effort, and remain at least two CTs,

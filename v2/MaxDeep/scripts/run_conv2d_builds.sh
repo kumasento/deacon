@@ -73,12 +73,9 @@ run_conv2d_large_builds() {
 }
 
 run_conv2d_very_large_builds() {
-  run_conv2d_build 1 256 1 100 1
-  run_conv2d_build 1 256 1 100 2
-  run_conv2d_build 1 256 1 150 1
-  run_conv2d_build 1 256 1 150 2
-  run_conv2d_build 1 256 1 200 1
-  run_conv2d_build 1 256 1 200 2
+  run_conv2d_build 3  128 4 100 1 &
+  run_conv2d_build 5  128 8 100 1 &
+  run_conv2d_build 6  128 8 100 1
 }
 
 run_conv2d_chnl_builds() {
