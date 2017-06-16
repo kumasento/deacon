@@ -1,0 +1,151 @@
+package com.custom_computing_ic.maxdeep.kernel.lib;
+
+import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * This is a kernel for integrating line buffer with your design.
+ *
+ * It allows you to write in parallel.
+ *
+ * +--------- maxWidth (width) -------------+
+ * |<-- numPipes -->                        |
+ * |                                        |
+ * maxHeight                                |
+ * |                                        |
+ * |                                        |
+ * +----------------------------------------+
+ *
+ * @author Ruizhe Zhao
+ * @since 24/04/2017
+ */
+public class LineBufferKernelLib extends KernelLib {
+
+  private final int maxHeight;
+  private final int maxWidth;
+  private final int maxWidthFolded;
+  private final int numPipes;
+
+  private final DFEType scalarType;
+  private final DFEVectorType<DFEVar> valueType;
+  private final DFEType indexType;
+
+  private DFEVar height;
+  private DFEVar width;
+  private final DFEVar widthFolded;
+  private DFEVar capacity;
+  private final DFEVar capacityFolded;
+
+  private DFEVector<DFEVar> buf;
+  private final DFEVar vld;
+  private final DFEVar idx;
+
+  private static final int DEFAULT_INDEX_COUNTER_BITS = 64;
+  
+  /**
+   * Constructor.
+   *
+   * Folded line buffer: enable multiple elements input and output
+   * in one cycle.
+   *
+   * @param owner The parent kernel of this kernel.
+   * @param maxHeight maximum height of the line buffer.
+   * @param maxWidth maximum width of the line buffer.
+   * @param numPipes number of parallel write pipes.
+   * @param type data type
+   *
+   * @author Ruizhe Zhao
+   * @since 24/04/2017
+   */
+  public LineBufferKernelLib(KernelLib owner, int maxHeight, int maxWidth, int numPipes, DFEType type) {
+    super(owner);
+
+    if (maxHeight <= 0)
+      throw new MaxCompilerAPIError("maxHeight (%d) should be larger than 0", maxHeight);
+    if (maxWidth <= 0)
+      throw new MaxCompilerAPIError("maxWidth (%d) should be larger than 0", maxWidth);
+    if (numPipes <= 0)
+      throw new MaxCompilerAPIError("numPipes (%d) should be larger than 0", numPipes);
+    if (maxWidth % numPipes != 0)
+      throw new MaxCompilerAPIError(
+          "maxWidth (%d) should be a integer multiple of numPipes (%d)", maxWidth, numPipes);
+
+    this.numPipes = numPipes;
+    this.maxHeight = maxHeight;
+    this.maxWidth = maxWidth;
+    this.maxWidthFolded = maxWidth / numPipes;
+
+    scalarType = type;
+    valueType = new DFEVectorType<DFEVar>(type, numPipes);
+    indexType = dfeInt(32);
+
+    height = indexType.newInstance(this);
+    width = indexType.newInstance(this);
+    capacity = indexType.newInstance(this);
+    widthFolded = width / numPipes;
+    capacityFolded = capacity / numPipes;
+
+    buf = valueType.newInstance(this);
+    idx = control.count.simpleCounter(
+        DEFAULT_INDEX_COUNTER_BITS,
+        capacityFolded.cast(dfeUInt(DEFAULT_INDEX_COUNTER_BITS)))
+        .cast(indexType);
+    vld = idx >= (widthFolded * (height - 1));
+  }
+
+  public void setInput(DFEVector<DFEVar> inp) {
+    if (inp.getSize() != this.buf.getSize())
+      throw new MaxCompilerAPIError(
+          "inp should have length [%d] equals to buf's length [%d]",
+          inp.getSize(),
+          this.buf.getSize());
+   
+    buf <== inp;
+  }
+
+  public void setHeight(DFEVar height) { this.height <== height; }
+
+  public void setWidth(DFEVar width) { this.width <== width; }
+
+  /**
+   * Capacity should not be smaller than height * width
+   */
+  public void setCapacity(DFEVar capacity) { this.capacity <== capacity; }
+
+  @Deprecated
+  public DFEVar getValid() { return vld; }
+
+  public DFEVector<DFEVar> getOutput() {
+    DFEVectorType<DFEVar> outVecType =
+      new DFEVectorType<DFEVar>(scalarType, maxHeight * numPipes);
+    DFEVector<DFEVar> outVec = outVecType.newInstance(this);
+
+    for (int j = 0; j < maxHeight; j ++) {
+      DFEVector<DFEVar> outVecRead = getOutputVectorAt(maxHeight - j - 1);
+      for (int i = 0; i < numPipes; i ++) {
+        outVec[i * maxHeight + j] <== outVecRead[i];
+      }
+    }
+
+    return outVec;
+  }
+
+  private DFEVector<DFEVar> getOutputVectorAt(int i) {
+    if (i == 0)
+      return buf;
+
+    DFEVar index = constant.var(i).cast(indexType);
+    DFEVar offset = index * (- widthFolded);
+    int maxOffset = - maxWidthFolded * maxHeight;
+    DFEVector<DFEVar> readBufByOffset = stream.offset(
+        buf,
+        offset,
+        maxOffset,
+        0);
+    return readBufByOffset;
+  }
+}
