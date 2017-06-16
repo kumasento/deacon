@@ -107,6 +107,14 @@ public class Conv2DParameter {
     return mode;
   }
 
+  public int getMaxOutHeight() {
+    return this.maxInpHeight + this.maxPadHeight - this.knlHeight + 1;
+  }
+
+  public int getMaxOutWidth() {
+    return this.maxInpWidth + this.maxPadWidth - this.knlWidth + 1;
+  }
+
   public void setNumChnlPipes(int numChnlPipes) {
     if (numChnlPipes <= 0)
       throw new IllegalArgumentException("numChnlPipes should be larger than 0");
