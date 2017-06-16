@@ -1,3 +1,4 @@
+bin/
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -29,3 +30,6 @@ MaxDeep/build/*
 
 # generated data
 *.bin
+
+# eclipse
+.settings/
