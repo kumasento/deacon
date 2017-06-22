@@ -1,0 +1,121 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.Conv2DParameter.Mode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.managers.standard.SimulationManager;
+import com.maxeler.maxcompiler.v2.utils.Bits;
+
+public class Conv2DPointwiseProcessEngineKernelComponentTest {
+
+  private class Conv2DPointwiseProcessEngineTestKernel extends Kernel {
+
+    public Conv2DPointwiseProcessEngineTestKernel(KernelParameters params,
+        int bitWidth, int maxHeight, int maxWidth, int minHeight, int minWidth,
+        Mode mode) {
+      super(params);
+
+      DFEVar height = io.scalarInput("height", dfeInt(32));
+      DFEVar width = io.scalarInput("width", dfeInt(32));
+      DFEVar numChnl = io.scalarInput("numChnl", dfeInt(32));
+
+      DFEType type = dfeUInt(bitWidth);
+      DFEVar inp = io.input("ifmap", type);
+      DFEVar wgt = io.input("coeff", type);
+
+      Conv2DPointwiseProcessEngineKernelComponent pointwise_conv2d = new Conv2DPointwiseProcessEngineKernelComponent(
+          this, type, maxHeight, maxWidth, minHeight, minWidth, mode);
+      pointwise_conv2d.setInput(inp);
+      pointwise_conv2d.setWidth(width);
+      pointwise_conv2d.setHeight(height);
+      pointwise_conv2d.setNumChnl(numChnl);
+      pointwise_conv2d.setWeight(wgt);
+      io.output(
+          "ofmap",
+          pointwise_conv2d.getOutput(),
+          type,
+          pointwise_conv2d.getOutputValid());
+    }
+  }
+
+  private class Conv2DPointwiseProcessEngineTestData {
+
+    final Bits[] ifmap;
+    final Bits[] coeff;
+    final Bits[] ofmap;
+
+    public Conv2DPointwiseProcessEngineTestData(int height, int width,
+        int numChnl, int numFltr, int bitWidth) {
+      ifmap = new Bits[height * width * numChnl * numFltr];
+      coeff = new Bits[height * width * numChnl * numFltr];
+      ofmap = new Bits[height * width * numFltr];
+      for (int f = 0; f < numFltr; f++)
+        for (int i = 0; i < height * width * numChnl; i++)
+          ifmap[f * height * width * numChnl + i] = new Bits(bitWidth, i);
+      for (int i = 0; i < height * width * numChnl * numFltr; i++)
+        coeff[i] = new Bits(bitWidth, i);
+      for (int i = 0; i < height * width; i++) {
+        for (int f = 0; f < numFltr; f++) {
+          long result = 0;
+          for (int c = 0; c < numChnl; c++) {
+            result += (c * height * width + i)
+                * (f * numChnl * height * width + c * height * width + i);
+            ofmap[f * height * width + i] = new Bits(bitWidth, result);
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testOneChnlOneFltr() {
+    test(3, 3, 1, 1, 8);
+  }
+
+  @Test
+  public void testOneChnlTwoFltr() {
+    test(3, 3, 1, 2, 8);
+  }
+
+  @Test
+  public void testTwoChnlTwoFltr() {
+    test(3, 3, 2, 2, 8);
+  }
+
+  @Test
+  public void testTwoChnlThreeFltr() {
+    test(3, 3, 2, 3, 8);
+  }
+
+  private void test(int height, int width, int numChnl, int numFltr,
+      int bitWidth) {
+    SimulationManager mgr = new SimulationManager(String.format(
+        "Conv2DPointwiseProcessEngineTestManager_%d_%d_%d_%d_%d",
+        height,
+        width,
+        numChnl,
+        numFltr,
+        bitWidth));
+    Conv2DPointwiseProcessEngineTestKernel knl = new Conv2DPointwiseProcessEngineTestKernel(
+        mgr.makeKernelParameters(), bitWidth, height, width, height, width,
+        Mode.FLTR_MAJOR);
+    Conv2DPointwiseProcessEngineTestData data = new Conv2DPointwiseProcessEngineTestData(
+        height, width, numChnl, numFltr, bitWidth);
+    mgr.setKernel(knl);
+    mgr.setKernelCycles(height * width * numChnl * numFltr);
+    mgr.setInputDataRaw("ifmap", data.ifmap);
+    mgr.setInputDataRaw("coeff", data.coeff);
+    mgr.setScalarInput("height", height);
+    mgr.setScalarInput("width", width);
+    mgr.setScalarInput("numChnl", numChnl);
+    mgr.runTest();
+
+    Bits[] ofmap = mgr.getOutputDataRawArray("ofmap");
+    Assert.assertArrayEquals(data.ofmap, ofmap);
+  }
+}
