@@ -31,7 +31,7 @@ public class DotProductKernelComponent extends KernelComponent {
    * @param vecSize size of the vectors to be computed
    * @param type data type.s
    */
-  protected DotProductKernelComponent(KernelBase<?> owner, int vecSize,
+  public DotProductKernelComponent(KernelBase<?> owner, int vecSize,
       DFEType type) {
     super(owner);
 
