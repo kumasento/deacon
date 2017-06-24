@@ -4,12 +4,15 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.Conv2DParameter.Mode;
+import com.custom_computing_ic.maxdeep.utils.AdderTree;
 import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * This class implements the pointwise convolution process engine.
@@ -29,13 +32,17 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
   private final DFEVar  height;
   private final DFEVar  width;
   private final DFEVar  numChnl;
-  private final DFEVar  inp;
-  private final DFEVar  wgt;
-  private final DFEVar  out;
+  private final DFEVector<DFEVar>  inp;
+  private final DFEVector<DFEVar>  wgt;
+  private final DFEVector<DFEVar>  out;
   private final DFEVar  outVld;
   private DFEVar        cntChnl;
+  @SuppressWarnings("unused")
   private DFEVar        cntIdx;
   private final Mode    mode;
+  
+  private final int numParaChnl;
+  private final int numParaFltr;
   
   private boolean hasHeight = false;
   private boolean hasWidth = false;
@@ -49,7 +56,7 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
    * @param owner
    */
   public Conv2DPointwiseProcessEngineKernelComponent(KernelBase<?> owner,
-      DFEType type, int maxHeight, int maxWidth, int minHeight, int minWidth, Mode mode) {
+      DFEType type, int maxHeight, int maxWidth, int minHeight, int minWidth, Mode mode, int numParaChnl, int numParaFltr) {
     super(owner);
 
     if (maxHeight <= 0)
@@ -75,20 +82,25 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
     this.width = indexType.newInstance(owner);
     this.numChnl = indexType.newInstance(owner);
     this.mode = mode;
-
-    inp = type.newInstance(owner);
-    wgt = type.newInstance(owner);
-    out = type.newInstance(owner);
+    this.numParaChnl = numParaChnl;
+    this.numParaFltr = numParaFltr;
+    
+    DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(type, numParaChnl);
+    DFEVectorType<DFEVar> wgtT = new DFEVectorType<DFEVar>(type, numParaChnl * numParaFltr);
+    DFEVectorType<DFEVar> outT = new DFEVectorType<DFEVar>(type, numParaFltr);
+    inp = vecT.newInstance(owner);
+    wgt = wgtT.newInstance(owner);
+    out = outT.newInstance(owner);
     outVld = dfeBool().newInstance(owner);
 
     compute();
     
-    // debug.simPrintf("%d %d %d %d\n", inp, wgt, out, outVld);
+    debug.simPrintf("%KObj% %KObj% %KObj% %d\n", inp, wgt, out, outVld);
   }
   
-  public void setInput(DFEVar inp) {this.hasInput = true; this.inp <== inp; }
+  public void setInput(DFEVector<DFEVar> inp) { this.hasInput = true; this.inp <== inp; }
   
-  public void setWeight(DFEVar wgt) { this.hasWeight = true; this.wgt <== wgt; }
+  public void setWeight(DFEVector<DFEVar> wgt) { this.hasWeight = true; this.wgt <== wgt; }
   
   public void setHeight(DFEVar height) { this.hasHeight = true; this.height <== height; }
   
@@ -96,7 +108,7 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
   
   public void setNumChnl(DFEVar numChnl) { this.hasNumChnl = true; this.numChnl <== numChnl; }
 
-  public DFEVar getOutput() { return out; }
+  public DFEVector<DFEVar> getOutput() { return out; }
   
   public DFEVar getOutputValid() { return outVld; }
 
@@ -112,21 +124,30 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
 
   private void computeByFltrMajor() {
     CounterChain chain = getOwner().control.count.makeCounterChain();
-    cntChnl = chain.addCounter(numChnl.cast(dfeUInt(32)), 1).cast(indexType);
+    cntChnl = chain.addCounter(numChnl.cast(dfeUInt(32)), numParaChnl).cast(indexType);
     cntIdx = chain.addCounter((height * width).cast(dfeUInt(32)), 1).cast(indexType);
-
-    DFEVar product = inp * wgt;
-    DFEVar carriedSum = type.newInstance(getOwner());
-    DFEVar sum = cntChnl === 0 ? 0 : carriedSum;
-    DFEVar newSum = sum + product;
     
-    DFEVar offset = -(height * width);
-    int minOffset = -(maxHeight * maxWidth);
-    int maxOffset = -(minHeight * minWidth);
-    carriedSum <== stream.offset(newSum, offset, minOffset, maxOffset);
+    for (int f = 0; f < numParaFltr; f ++) {
+      DFEVectorType<DFEVar> tmpT = new DFEVectorType<DFEVar>(type, numParaChnl);
+      DFEVector<DFEVar> tmp = tmpT.newInstance(getOwner());
+      for (int c = 0; c < numParaChnl; c ++) {
+      
+        DFEVar product = inp[c] * wgt[f * numParaChnl + c];
+        DFEVar carriedSum = type.newInstance(getOwner());
+        DFEVar sum = cntChnl === 0 ? 0 : carriedSum;
+        DFEVar newSum = sum + product;
+        
+        DFEVar offset = -(height * width);
+        int minOffset = -(maxHeight * maxWidth);
+        int maxOffset = -(minHeight * minWidth);
+        carriedSum <== stream.offset(newSum, offset, minOffset, maxOffset);
+        
+        tmp[c] <== newSum;
+      }
+      out[f] <== AdderTree.reduce(tmp.getElementsAsList());
+    }
     
-    out <== newSum;
-    outVld <== cntChnl === numChnl - 1;
+    outVld <== cntChnl === numChnl - numParaChnl;
   }
   
   @Override
