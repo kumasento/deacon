@@ -1,0 +1,144 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.managers.standard.SimulationManager;
+import com.maxeler.maxcompiler.v2.utils.Bits;
+
+public class Conv2DDepthwiseProcessEngineTest {
+
+  private class Conv2DDepthwiseProcessEngineTestKernel extends Kernel {
+    Conv2DDepthwiseProcessEngineTestKernel(KernelParameters params,
+        Conv2DProcessEngineParameters conv2dParams, int bitWidth) {
+      super(params);
+
+      DFEType scalarT = dfeUInt(bitWidth);
+      Conv2DDepthwiseProcessEngine conv2d = new Conv2DDepthwiseProcessEngine(
+          getKernel(), conv2dParams, scalarT);
+      conv2d.setIfmap(io.input("ifmap", conv2d.getIfmapVecT()));
+      conv2d.setCoeff(io.input("coeff", conv2d.getCoeffVecT()));
+      io.output("ofmap", conv2d.getOfmapVecT(), conv2d.getOfmapValid()) <== conv2d.getOfmap();
+    }
+  }
+
+  private class Conv2DDepthwiseProcessEngineTestData {
+    final Bits[] ifmap, coeff, ofmap;
+    
+    public Conv2DDepthwiseProcessEngineTestData(Conv2DProcessEngineParameters params, int bitWidth) {
+      ifmap = new Bits[getNumCycles(params)];
+      coeff = new Bits[getNumCycles(params)];
+      ofmap = new Bits[getNumCycles(params)];
+      
+      int[] ifmapData = new int[getIfmapNumElems(params)];
+      int[] coeffData = new int[getCoeffNumElems(params)];
+      int[] ofmapData = new int[getOfmapNumElems(params)];
+      
+      for (int i = 0; i < ifmapData.length; i ++)
+        ifmapData[i] = i;
+      for (int i = 0; i < coeffData.length; i ++)
+        coeffData[i] = i;      
+      
+      for (int c = 0; c < params.getMaxNumChnl(); c ++) {
+        for (int i = 0; i < getOfmapHeight(params); i ++) {
+          for (int j = 0; j < getOfmapWidth(params); j ++) {
+            int sum = 0;
+            for (int kh = 0; kh < params.getMaxKnlHeight(); kh ++)
+              for (int kw = 0; kw < params.getMaxKnlWidth(); kw ++)
+                sum +=
+                  ifmapData[c * params.getMaxHeight() * params.getMaxWidth() + (i + kh) * params.getMaxWidth() + (j + kw)] *
+                  coeffData[c * params.getMaxKnlSize() + kh * params.getMaxKnlWidth() + kw];
+            ofmapData[c * getOfmapHeight(params) * getOfmapWidth(params) + i * getOfmapWidth(params) + j] = sum;
+          }
+        }
+      }
+      
+      int idx = 0;
+      for (int c = 0; c < params.getMaxNumChnl(); c += params.getNumParaChnl()) {
+        for (int i = 0; i < getOfmapHeight(params); i ++) {
+          for (int j = 0; j < getOfmapWidth(params); j ++) {
+            int[] ifmapValues = new int[params.getNumParaChnl() * params.getMaxKnlSize()];
+            int[] coeffValues = new int[params.getNumParaChnl() * params.getMaxKnlSize()];
+            int[] ofmapValues = new int[params.getNumParaChnl()];
+            
+            for (int p = 0; p < params.getNumParaChnl(); p ++) {
+              for (int kh = 0; kh < params.getMaxKnlHeight(); kh ++)
+                for (int kw = 0; kw < params.getMaxKnlWidth(); kw ++) {
+                  ifmapValues[p * params.getMaxKnlSize() + kh * params.getMaxKnlWidth() + kw] =
+                    ifmapData[(c + p) * params.getMaxHeight() * params.getMaxWidth() + (i + kh) * params.getMaxWidth() + (j + kw)];
+                  coeffValues[p * params.getMaxKnlSize() + kh * params.getMaxKnlWidth() + kw] =
+                    coeffData[(c + p) * params.getMaxKnlSize() + kh * params.getMaxKnlWidth() + kw];
+                }
+              ofmapValues[p] = ofmapData[(c + p) * getOfmapHeight(params) * getOfmapWidth(params) + i * getOfmapWidth(params) + j];
+            }
+            
+            ifmap[idx] = pack(bitWidth, ifmapValues);
+            coeff[idx] = pack(bitWidth, coeffValues);
+            ofmap[idx] = pack(bitWidth, ofmapValues);
+            
+            idx ++;
+          }
+        }
+      }
+    }
+    
+    private Bits pack(int bitWidth, int[] values) {
+      Bits bits = new Bits(bitWidth, values[values.length - 1]);
+      for (int i = values.length - 2; i >= 0; i--)
+        bits = bits.cat(new Bits(bitWidth, values[i]));
+      return bits;
+    }
+    
+    public int getNumCycles(Conv2DProcessEngineParameters params) {
+      return getOfmapHeight(params) * getOfmapWidth(params) * params.getMaxNumChnl() / params.getNumParaChnl();
+    }
+    
+    public int getIfmapNumElems(Conv2DProcessEngineParameters params) {
+      return params.getMaxHeight() * params.getMaxWidth() * params.getMaxNumChnl();
+    }
+    
+    public int getCoeffNumElems(Conv2DProcessEngineParameters params) {
+      return params.getMaxKnlSize() * params.getMaxNumChnl();
+    }
+    
+    public int getOfmapHeight(Conv2DProcessEngineParameters params) {
+      return params.getMaxHeight() - params.getMaxKnlHeight() + 1;
+    }
+    
+    public int getOfmapWidth(Conv2DProcessEngineParameters params) {
+      return params.getMaxWidth() - params.getMaxKnlWidth() + 1;
+    }
+    
+    public int getOfmapNumElems(Conv2DProcessEngineParameters params) {
+      return getOfmapHeight(params) * getOfmapWidth(params) * params.getMaxNumChnl();
+    }
+  }
+  
+  @Test public void testSimple() { test(2, 2, 8); }
+  
+  @Test public void testComplex() { test(4, 2, 8); }
+
+  private void test(int numChnl, int numParaChnl, int bitWidth) {
+    Conv2DProcessEngineParameters params = new Conv2DProcessEngineParameters(5, 5, 5, 5, numChnl, 1, 3, 3, numParaChnl, 1);
+    SimulationManager mgr = new SimulationManager(
+        String.format("Conv2DDepthwiseProcessEngineTestManager_%d_%d_%d_%d_%d_%d",
+            params.getMaxHeight(),
+            params.getMaxWidth(),
+            params.getMaxNumChnl(),
+            params.getMaxKnlHeight(),
+            params.getMaxKnlWidth(),
+            params.getNumParaChnl()));
+    Conv2DDepthwiseProcessEngineTestData data =  new Conv2DDepthwiseProcessEngineTestData(params, bitWidth);
+    mgr.setKernel(new Conv2DDepthwiseProcessEngineTestKernel(mgr.makeKernelParameters(), params, bitWidth));
+    mgr.setKernelCycles(data.getNumCycles(params));
+    mgr.setInputDataRaw("ifmap", data.ifmap);
+    mgr.setInputDataRaw("coeff", data.coeff);
+    mgr.runTest();
+
+    Bits[] ofmap = mgr.getOutputDataRawArray("ofmap");
+    Assert.assertArrayEquals(data.ofmap, ofmap);
+  }
+}
