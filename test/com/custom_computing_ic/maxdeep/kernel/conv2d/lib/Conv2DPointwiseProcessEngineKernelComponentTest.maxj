@@ -34,7 +34,7 @@ public class Conv2DPointwiseProcessEngineKernelComponentTest {
       DFEVector<DFEVar> inp = io.input("ifmap", vecT);
       DFEVector<DFEVar> wgt = io.input("coeff", wgtT);
 
-      Conv2DPointwiseProcessEngineKernelComponent pointwise_conv2d = new Conv2DPointwiseProcessEngineKernelComponent(
+      Conv2DPointwiseProcessEngine pointwise_conv2d = new Conv2DPointwiseProcessEngine(
           this, type, maxHeight, maxWidth, minHeight, minWidth, mode,
           numParaChnl, numParaFltr);
       pointwise_conv2d.setInput(inp);

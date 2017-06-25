@@ -1,0 +1,126 @@
+/**
+ * 
+ */
+package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * @author Ruizhe Zhao
+ * 
+ */
+public class Conv2DFactorizedModule extends KernelComponent {
+
+  private final Conv2DProcessEngineParameters conv2dParams;
+  private final DFEType                       scalarT;
+  private final DFEType                       indexT;
+  private final DFEVectorType<DFEVar>         ifmapVecT;
+  private final DFEVectorType<DFEVar>         depthCoeffVecT;
+  private final DFEVectorType<DFEVar>         pointCoeffVecT;
+  private final DFEVectorType<DFEVar>         ofmapVecT;
+
+  private final DFEVector<DFEVar>             ifmap;
+  private final DFEVector<DFEVar>             depthCoeff;
+  private final DFEVector<DFEVar>             pointCoeff;
+  private final DFEVector<DFEVar>             ofmap;
+  private final DFEVar                        ofmapValid;
+  private final DFEVar                        height;
+  private final DFEVar                        width;
+  private final DFEVar                        numChnl;
+  private final DFEVar                        numFltr;
+
+  /**
+   * @param owner
+   */
+  public Conv2DFactorizedModule(KernelBase<?> owner,
+      Conv2DProcessEngineParameters conv2dParams, DFEType scalarT) {
+    super(owner);
+
+    this.conv2dParams = conv2dParams;
+    this.scalarT = scalarT;
+    this.indexT = dfeInt(32);
+
+    this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT,
+        getIfmapVecSize(conv2dParams));
+    this.depthCoeffVecT = new DFEVectorType<DFEVar>(scalarT,
+        getDepthCoeffVecSize(conv2dParams));
+    this.pointCoeffVecT = new DFEVectorType<DFEVar>(scalarT,
+        getPointCoeffVecSize(conv2dParams));
+    this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT,
+        getOfmapVecSize(conv2dParams));
+
+    this.ifmap = ifmapVecT.newInstance(owner);
+    this.depthCoeff = depthCoeffVecT.newInstance(owner);
+    this.pointCoeff = pointCoeffVecT.newInstance(owner);
+    this.ofmap = ofmapVecT.newInstance(owner);
+    this.ofmapValid = dfeBool().newInstance(owner);
+    
+    this.height = indexT.newInstance(owner);
+    this.width = indexT.newInstance(owner);
+    this.numChnl = indexT.newInstance(owner);
+    this.numFltr = indexT.newInstance(owner);
+    
+    Conv2DProcessEngineParameters depthwiseParams = getDepthwiseParameters(conv2dParams);
+    Conv2DProcessEngineParameters pointwiseParams = getPointwiseParameters(conv2dParams);
+
+    Conv2DDepthwiseProcessEngine depthwise = new Conv2DDepthwiseProcessEngine(
+        owner, depthwiseParams, scalarT);
+    Conv2DPointwiseProcessEngine pointwise = new Conv2DPointwiseProcessEngine(
+        owner, pointwiseParams, scalarT);
+
+    depthwise.setIfmap(ifmap);
+    depthwise.setCoeff(depthCoeff);
+    
+    pointwise.setIfmap(depthwise.getOfmap());
+    pointwise.setCoeff(pointCoeff);
+    pointwise.setHeight(height);
+    pointwise.setWidth(width);
+    pointwise.setNumChnl(numChnl);
+    this.ofmap <== pointwise.getOfmap();
+    this.ofmapValid <== pointwise.getOfmapValid();
+  }
+
+  private Conv2DProcessEngineParameters getDepthwiseParameters(
+      Conv2DProcessEngineParameters params) {
+    return new Conv2DProcessEngineParameters(params.getMaxHeight(),
+        params.getMaxWidth(), params.getMinHeight(), params.getMinWidth(),
+        params.getMaxNumChnl(), params.getMaxNumFltr(),
+        params.getMaxKnlHeight(), params.getMaxKnlWidth(),
+        params.getNumParaChnl(), params.getNumParaFltr());
+  }
+
+  private Conv2DProcessEngineParameters getPointwiseParameters(
+      Conv2DProcessEngineParameters params) {
+    return new Conv2DProcessEngineParameters(params.getMaxOutHeight(),
+        params.getMaxOutWidth(), params.getMinOutHeight(),
+        params.getMinOutWidth(), params.getMaxNumChnl(),
+        params.getNumParaFltr(), params.getMaxKnlHeight(),
+        params.getMaxKnlWidth(), params.getNumParaChnl(),
+        params.getNumParaFltr());
+  }
+
+  public int getIfmapVecSize(Conv2DProcessEngineParameters params) {
+    return params.getMaxKnlSize() * params.getNumParaChnl();
+  }
+
+  public int getDepthCoeffVecSize(Conv2DProcessEngineParameters params) {
+    return params.getMaxKnlSize() * params.getNumParaChnl();
+  }
+
+  public int getPointCoeffVecSize(Conv2DProcessEngineParameters params) {
+    return params.getNumParaChnl() * params.getNumParaFltr();
+  }
+
+  public int getOfmapVecSize(Conv2DProcessEngineParameters params) {
+    return params.getNumParaFltr();
+  }
+  
+  public DFEVector<DFEVar> getOfmap() { return ofmap; }
+  
+  public DFEVar getOfmapValid() { return ofmapValid; }
+}

@@ -20,7 +20,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  * @author Ruizhe Zhao
  * @since 22/06/2017
  */
-public final class Conv2DPointwiseProcessEngineKernelComponent extends
+public final class Conv2DPointwiseProcessEngine extends
     KernelComponent {
 
   private final DFEType type;
@@ -50,27 +50,40 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
   private boolean hasInput = false;
   private boolean hasWeight = false;
 
+  public Conv2DPointwiseProcessEngine(KernelBase<?> owner, DFEType type,
+      Conv2DProcessEngineParameters conv2dParams) {
+    this(owner,
+        type,
+        conv2dParams.getMaxHeight(),
+        conv2dParams.getMaxWidth(),
+        conv2dParams.getMinHeight(),
+        conv2dParams.getMinWidth(),
+        conv2dParams.getMode(),
+        conv2dParams.getNumParaChnl(),
+        conv2dParams.getNumParaFltr());
+  }
+  
+  public Conv2DPointwiseProcessEngine(KernelBase<?> owner,
+      Conv2DProcessEngineParameters conv2dParams, DFEType type) {
+    this(owner,
+        type,
+        conv2dParams.getMaxHeight(),
+        conv2dParams.getMaxWidth(),
+        conv2dParams.getMinHeight(),
+        conv2dParams.getMinWidth(),
+        conv2dParams.getMode(),
+        conv2dParams.getNumParaChnl(),
+        conv2dParams.getNumParaFltr());
+  }
+  
   /**
    * Constructor.
    * 
    * @param owner
    */
-  public Conv2DPointwiseProcessEngineKernelComponent(KernelBase<?> owner,
+  public Conv2DPointwiseProcessEngine(KernelBase<?> owner,
       DFEType type, int maxHeight, int maxWidth, int minHeight, int minWidth, Mode mode, int numParaChnl, int numParaFltr) {
     super(owner);
-
-    if (maxHeight <= 0)
-      throw new IllegalArgumentException("maxHeight should be larger than 0");
-    if (maxWidth <= 0)
-      throw new IllegalArgumentException("maxWidth should be larger than 0");
-    if (minHeight <= 0)
-      throw new IllegalArgumentException("minHeight should be larger than 0");
-    if (minWidth <= 0)
-      throw new IllegalArgumentException("minWidth should be larger than 0");
-    if (minHeight > maxHeight)
-      throw new IllegalArgumentException("minHeight should not be larger than maxHeight");
-    if (minWidth > minHeight)
-      throw new IllegalArgumentException("minWidth should not be larger than maxWidth");
     
     this.maxHeight = maxHeight;
     this.maxWidth = maxWidth;
@@ -100,7 +113,11 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
   
   public void setInput(DFEVector<DFEVar> inp) { this.hasInput = true; this.inp <== inp; }
   
+  public void setIfmap(DFEVector<DFEVar> ifmap) { setInput(ifmap); }
+  
   public void setWeight(DFEVector<DFEVar> wgt) { this.hasWeight = true; this.wgt <== wgt; }
+  
+  public void setCoeff(DFEVector<DFEVar> coeff) { setInput(coeff); }
   
   public void setHeight(DFEVar height) { this.hasHeight = true; this.height <== height; }
   
@@ -110,7 +127,11 @@ public final class Conv2DPointwiseProcessEngineKernelComponent extends
 
   public DFEVector<DFEVar> getOutput() { return out; }
   
+  public DFEVector<DFEVar> getOfmap() { return getOutput(); }
+  
   public DFEVar getOutputValid() { return outVld; }
+  
+  public DFEVar getOfmapValid() { return outVld; }
 
   private void compute() {
     if (mode == Mode.CHNL_MAJOR)
