@@ -120,6 +120,36 @@ public class Conv2DFactorizedModule extends KernelComponent {
     return params.getNumParaFltr();
   }
   
+  public DFEVectorType<DFEVar> getIfmapVecT() {
+    return ifmapVecT;
+  }
+
+  public DFEVectorType<DFEVar> getDepthCoeffVecT() {
+    return depthCoeffVecT;
+  }
+
+  public DFEVectorType<DFEVar> getPointCoeffVecT() {
+    return pointCoeffVecT;
+  }
+
+  public DFEVectorType<DFEVar> getOfmapVecT() {
+    return ofmapVecT;
+  }
+
+  public void setIfmap(DFEVector<DFEVar> ifmap) { this.ifmap <== ifmap; }
+  
+  public void setDepthCoeff(DFEVector<DFEVar> depthCoeff) { this.depthCoeff <== depthCoeff; }
+  
+  public void setPointCoeff(DFEVector<DFEVar> pointCoeff) { this.pointCoeff <== pointCoeff; }
+  
+  public void setHeight(DFEVar height) { this.height <== height; }
+  
+  public void setWidth(DFEVar width) { this.width <== width; }
+  
+  public void setNumChnl(DFEVar numChnl) { this.numChnl <== numChnl; }
+  
+  public void setNumFltr(DFEVar numFltr) { this.numFltr <== numFltr; }
+  
   public DFEVector<DFEVar> getOfmap() { return ofmap; }
   
   public DFEVar getOfmapValid() { return ofmapValid; }

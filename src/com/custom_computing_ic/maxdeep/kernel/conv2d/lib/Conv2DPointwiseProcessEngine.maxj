@@ -117,7 +117,7 @@ public final class Conv2DPointwiseProcessEngine extends
   
   public void setWeight(DFEVector<DFEVar> wgt) { this.hasWeight = true; this.wgt <== wgt; }
   
-  public void setCoeff(DFEVector<DFEVar> coeff) { setInput(coeff); }
+  public void setCoeff(DFEVector<DFEVar> coeff) { setWeight(coeff); }
   
   public void setHeight(DFEVar height) { this.hasHeight = true; this.height <== height; }
   

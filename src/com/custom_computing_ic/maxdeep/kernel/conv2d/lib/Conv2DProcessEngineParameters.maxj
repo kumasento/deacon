@@ -64,7 +64,7 @@ public final class Conv2DProcessEngineParameters {
     this.minKnlWidth = maxKnlWidth;
     this.numParaChnl = numParaChnl;
     this.numParaFltr = numParaFltr;
-    this.mode = Mode.CHNL_MAJOR;
+    this.mode = Mode.FLTR_MAJOR;
   }
 
   public Mode getMode() {
