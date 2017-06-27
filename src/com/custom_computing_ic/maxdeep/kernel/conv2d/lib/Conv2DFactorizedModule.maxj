@@ -5,6 +5,7 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -33,7 +34,8 @@ public class Conv2DFactorizedModule extends KernelComponent {
   private final DFEVar                        width;
   private final DFEVar                        numChnl;
   private final DFEVar                        numFltr;
-
+  private final DFEVar                        f;
+  
   /**
    * @param owner
    */
@@ -65,6 +67,11 @@ public class Conv2DFactorizedModule extends KernelComponent {
     this.numChnl = indexT.newInstance(owner);
     this.numFltr = indexT.newInstance(owner);
     
+    CounterChain chain = getOwner().control.count.makeCounterChain();
+    f = chain.addCounter(conv2dParams.getMaxNumFltr(), conv2dParams.getNumParaFltr());
+    DFEVar c = chain.addCounter(conv2dParams.getMaxNumChnl(), conv2dParams.getNumParaChnl());
+    DFEVar i = chain.addCounter(conv2dParams.getMaxOutHeight() * conv2dParams.getMaxOutWidth(), 1);
+    
     Conv2DProcessEngineParameters depthwiseParams = getDepthwiseParameters(conv2dParams);
     Conv2DProcessEngineParameters pointwiseParams = getPointwiseParameters(conv2dParams);
 
@@ -72,17 +79,24 @@ public class Conv2DFactorizedModule extends KernelComponent {
         owner, depthwiseParams, scalarT);
     Conv2DPointwiseProcessEngine pointwise = new Conv2DPointwiseProcessEngine(
         owner, pointwiseParams, scalarT);
+    Conv2DFactorizedModuleCache cache = new Conv2DFactorizedModuleCache(owner, conv2dParams, scalarT);
 
     depthwise.setIfmap(ifmap);
     depthwise.setCoeff(depthCoeff);
+    cache.setInput(depthwise.getOfmap());
+    cache.setWriteEnable(f === 0);
     
-    pointwise.setIfmap(depthwise.getOfmap());
+    pointwise.setIfmap(cache.getOutput());
     pointwise.setCoeff(pointCoeff);
     pointwise.setHeight(height);
     pointwise.setWidth(width);
     pointwise.setNumChnl(numChnl);
     this.ofmap <== pointwise.getOfmap();
     this.ofmapValid <== pointwise.getOfmapValid();
+  }
+  
+  public DFEVar getIfmapEnable() {
+    return f === 0;
   }
 
   private Conv2DProcessEngineParameters getDepthwiseParameters(

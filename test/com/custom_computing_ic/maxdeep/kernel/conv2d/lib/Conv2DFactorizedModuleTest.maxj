@@ -20,7 +20,7 @@ public class Conv2DFactorizedModuleTest {
       DFEType indexT = dfeInt(32);
       Conv2DFactorizedModule module = new Conv2DFactorizedModule(getKernel(),
           conv2dParams, scalarT);
-      module.setIfmap(io.input("ifmap", module.getIfmapVecT()));
+      module.setIfmap(io.input("ifmap", module.getIfmapVecT(), module.getIfmapEnable()));
       module.setDepthCoeff(io.input("depth_coeff", module.getDepthCoeffVecT()));
       module.setPointCoeff(io.input("point_coeff", module.getPointCoeffVecT()));
       module.setHeight(constant.var(conv2dParams.getMaxHeight() - conv2dParams.getMaxKnlHeight() + 1).cast(indexT));
@@ -54,7 +54,7 @@ public class Conv2DFactorizedModuleTest {
       this.ofmapHeight = ifmapHeight - knlHeight + 1;
       this.ofmapWidth = ifmapWidth - knlWidth + 1;
       
-      this.ifmap = new Bits [getNumCycles()];
+      this.ifmap = new Bits [getNumCycles() / (ofmapNumChnl / numParaFltr)];
       this.depthCoeff = new Bits[getNumCycles()];
       this.pointCoeff = new Bits[getNumCycles()];
       this.ofmap = new Bits [getNumCycles() / (ifmapNumChnl / numParaChnl)];
@@ -112,7 +112,8 @@ public class Conv2DFactorizedModuleTest {
                   pointValues[pf * numParaChnl + pc] =
                     pointCoeffData[(f + pf) * ifmapNumChnl + (c + pc)];
               
-              ifmap[idx] = pack(bitWidth, ifmapValues);
+              if (f == 0)
+                ifmap[idx] = pack(bitWidth, ifmapValues);
               depthCoeff[idx] = pack(bitWidth, depthValues);
               pointCoeff[idx] = pack(bitWidth, pointValues);
               idx += 1;
