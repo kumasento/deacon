@@ -23,10 +23,6 @@ public class Conv2DFactorizedModuleTest {
       module.setIfmap(io.input("ifmap", module.getIfmapVecT(), module.getIfmapEnable()));
       module.setDepthCoeff(io.input("depth_coeff", module.getDepthCoeffVecT()));
       module.setPointCoeff(io.input("point_coeff", module.getPointCoeffVecT()));
-      module.setHeight(constant.var(conv2dParams.getIfmapHeight() - conv2dParams.getKnlHeight() + 1).cast(indexT));
-      module.setWidth(constant.var(conv2dParams.getIfmapWidth() - conv2dParams.getKnlWidth() + 1).cast(indexT));
-      module.setNumChnl(constant.var(conv2dParams.getIfmapNumChnl()).cast(indexT));
-      module.setNumFltr(constant.var(conv2dParams.getOfmapNumChnl()).cast(indexT));
       io.output("ofmap", module.getOfmapVecT(), module.getOfmapValid()) <== module.getOfmap();
     }
   }

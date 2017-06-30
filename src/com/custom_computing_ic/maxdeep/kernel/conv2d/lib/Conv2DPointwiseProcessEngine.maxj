@@ -4,6 +4,7 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.Conv2DParameter.Mode;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DFactorizedModuleParameter.ShapeMode;
 import com.custom_computing_ic.maxdeep.utils.AdderTree;
 import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
@@ -50,6 +51,12 @@ public final class Conv2DPointwiseProcessEngine extends
   private boolean hasInput = false;
   private boolean hasWeight = false;
 
+  /**
+   * The only pointwise constructor you should use.
+   * @param owner
+   * @param conv2dParams
+   * @param type
+   */
   public Conv2DPointwiseProcessEngine(KernelBase<?> owner,
       Conv2DFactorizedModuleParameter conv2dParams, DFEType type) {
     this(owner,
@@ -61,6 +68,14 @@ public final class Conv2DPointwiseProcessEngine extends
         Mode.FLTR_MAJOR,
         conv2dParams.getIfmapNumParaChnl(),
         conv2dParams.getOfmapNumParaChnl());
+    
+    if (conv2dParams.getShapeMode() != ShapeMode.STATIC)
+      throw new IllegalArgumentException("shape mode can only support STATIC in pointwise conv2d");
+    
+    this.setHeight(constant.var(conv2dParams.getOfmapHeight()).cast(indexType));
+    this.setWidth(constant.var(conv2dParams.getOfmapWidth()).cast(indexType));
+    this.setNumChnl(constant.var(conv2dParams.getIfmapNumChnl()).cast(indexType));
+    // this.setNumFltr(constant.var(conv2dParams.getOfmapNumChnl()).cast(indexType));
   }
   
   @Deprecated
