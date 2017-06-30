@@ -13,7 +13,7 @@ public class Conv2DFactorizedModuleTest {
 
   private class TestKernel extends Kernel {
     public TestKernel(KernelParameters parameters,
-        Conv2DProcessEngineParameters conv2dParams, int bitWidth) {
+        Conv2DFactorizedModuleParameter conv2dParams, int bitWidth) {
       super(parameters);
       
       DFEType scalarT = dfeUInt(bitWidth);
@@ -23,10 +23,10 @@ public class Conv2DFactorizedModuleTest {
       module.setIfmap(io.input("ifmap", module.getIfmapVecT(), module.getIfmapEnable()));
       module.setDepthCoeff(io.input("depth_coeff", module.getDepthCoeffVecT()));
       module.setPointCoeff(io.input("point_coeff", module.getPointCoeffVecT()));
-      module.setHeight(constant.var(conv2dParams.getMaxHeight() - conv2dParams.getMaxKnlHeight() + 1).cast(indexT));
-      module.setWidth(constant.var(conv2dParams.getMaxWidth() - conv2dParams.getMaxKnlWidth() + 1).cast(indexT));
-      module.setNumChnl(constant.var(conv2dParams.getMaxNumChnl()).cast(indexT));
-      module.setNumFltr(constant.var(conv2dParams.getMaxNumFltr()).cast(indexT));
+      module.setHeight(constant.var(conv2dParams.getIfmapHeight() - conv2dParams.getKnlHeight() + 1).cast(indexT));
+      module.setWidth(constant.var(conv2dParams.getIfmapWidth() - conv2dParams.getKnlWidth() + 1).cast(indexT));
+      module.setNumChnl(constant.var(conv2dParams.getIfmapNumChnl()).cast(indexT));
+      module.setNumFltr(constant.var(conv2dParams.getOfmapNumChnl()).cast(indexT));
       io.output("ofmap", module.getOfmapVecT(), module.getOfmapValid()) <== module.getOfmap();
     }
   }
@@ -42,15 +42,15 @@ public class Conv2DFactorizedModuleTest {
     private final int ofmapHeight, ofmapWidth;
     private final int numParaChnl, numParaFltr;
     
-    TestData(Conv2DProcessEngineParameters conv2dParams, int bitWidth) {
-      this.ifmapHeight = conv2dParams.getMaxHeight();
-      this.ifmapWidth = conv2dParams.getMaxWidth();
-      this.ifmapNumChnl = conv2dParams.getMaxNumChnl();
-      this.ofmapNumChnl = conv2dParams.getMaxNumFltr();
-      this.knlHeight = conv2dParams.getMaxKnlHeight();
-      this.knlWidth = conv2dParams.getMaxKnlWidth();
-      this.numParaChnl = conv2dParams.getNumParaChnl();
-      this.numParaFltr = conv2dParams.getNumParaFltr();
+    TestData(Conv2DFactorizedModuleParameter conv2dParams, int bitWidth) {
+      this.ifmapHeight = conv2dParams.getIfmapHeight();
+      this.ifmapWidth = conv2dParams.getIfmapWidth();
+      this.ifmapNumChnl = conv2dParams.getIfmapNumChnl();
+      this.ofmapNumChnl = conv2dParams.getOfmapNumChnl();
+      this.knlHeight = conv2dParams.getKnlHeight();
+      this.knlWidth = conv2dParams.getKnlWidth();
+      this.numParaChnl = conv2dParams.getIfmapNumParaChnl();
+      this.numParaFltr = conv2dParams.getOfmapNumParaChnl();
       this.ofmapHeight = ifmapHeight - knlHeight + 1;
       this.ofmapWidth = ifmapWidth - knlWidth + 1;
       
@@ -158,8 +158,14 @@ public class Conv2DFactorizedModuleTest {
   @Test public void testParaFullComplex() { test(10, 10, 2, 2, 8); }
 
   private void test(int ifmapNumChnl, int ofmapNumChnl, int numParaChnl, int numParaFltr, int bitWidth) {
-    Conv2DProcessEngineParameters conv2dParams =
-      new Conv2DProcessEngineParameters(5, 5, 5, 5, ifmapNumChnl, ofmapNumChnl, 3, 3, numParaChnl, numParaFltr);
+    Conv2DFactorizedModuleParameter conv2dParams =
+      new Conv2DFactorizedModuleParameter
+        .StaticBuilder(5, 5, ifmapNumChnl, ofmapNumChnl)
+        .knlShape(3)
+        .ifmapNumParaChnl(numParaChnl)
+        .ofmapNumParaChnl(numParaChnl)
+        .build();
+    
     SimulationManager mgr = new SimulationManager(
         String.format("Conv2DFactorizedModuleTestManager_%d_%d_%d_%d_%d",
             ifmapNumChnl, ofmapNumChnl, numParaChnl, numParaFltr, bitWidth));

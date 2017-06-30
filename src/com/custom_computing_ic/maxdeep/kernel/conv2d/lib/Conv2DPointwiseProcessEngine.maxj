@@ -50,19 +50,20 @@ public final class Conv2DPointwiseProcessEngine extends
   private boolean hasInput = false;
   private boolean hasWeight = false;
 
-  public Conv2DPointwiseProcessEngine(KernelBase<?> owner, DFEType type,
-      Conv2DProcessEngineParameters conv2dParams) {
+  public Conv2DPointwiseProcessEngine(KernelBase<?> owner,
+      Conv2DFactorizedModuleParameter conv2dParams, DFEType type) {
     this(owner,
         type,
-        conv2dParams.getMaxHeight(),
-        conv2dParams.getMaxWidth(),
-        conv2dParams.getMinHeight(),
-        conv2dParams.getMinWidth(),
-        conv2dParams.getMode(),
-        conv2dParams.getNumParaChnl(),
-        conv2dParams.getNumParaFltr());
+        conv2dParams.getOfmapHeight(),
+        conv2dParams.getOfmapWidth(),
+        conv2dParams.getOfmapHeight(),
+        conv2dParams.getOfmapWidth(),
+        Mode.FLTR_MAJOR,
+        conv2dParams.getIfmapNumParaChnl(),
+        conv2dParams.getOfmapNumParaChnl());
   }
   
+  @Deprecated
   public Conv2DPointwiseProcessEngine(KernelBase<?> owner,
       Conv2DProcessEngineParameters conv2dParams, DFEType type) {
     this(owner,

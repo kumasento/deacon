@@ -43,10 +43,10 @@ public class Conv2DFactorizedModuleCache extends KernelComponent {
     if (params.getShapeMode() != ShapeMode.STATIC)
       throw new RuntimeException("shape modes other than STATIC are not supported.");
     
-    this.memSize = params.getCacheTotalSize() / params.getNumParaIfmapChnl();
+    this.memSize = params.getCacheTotalSize() / params.getIfmapNumParaChnl();
     this.scalarT = scalarT;
     this.vectorT = new DFEVectorType<DFEVar>(scalarT,
-        params.getNumParaIfmapChnl());
+        params.getIfmapNumParaChnl());
     
     Memory<DFEVector<DFEVar>> mem = new Memory<DFEVector<DFEVar>>(getOwner(),
         memSize, vectorT);
@@ -73,8 +73,8 @@ public class Conv2DFactorizedModuleCache extends KernelComponent {
           .StaticBuilder(params.getMaxHeight(), params.getMaxWidth(), params.getMaxNumChnl(), params.getMaxNumFltr())
           .knlHeight(params.getMaxKnlHeight())
           .knlWidth(params.getMaxKnlWidth())
-          .numParaIfmapChnl(params.getNumParaChnl())
-          .numParaOfmapChnl(params.getNumParaFltr()).build(),
+          .ifmapNumParaChnl(params.getNumParaChnl())
+          .ofmapNumParaChnl(params.getNumParaFltr()).build(),
         scalarT);
   }
   
