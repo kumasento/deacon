@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
@@ -14,7 +14,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * @author Ruizhe Zhao
- * 
+ *
  */
 public class Conv2DDepthwiseProcessEngine extends KernelComponent {
 
@@ -41,7 +41,7 @@ public class Conv2DDepthwiseProcessEngine extends KernelComponent {
   public Conv2DDepthwiseProcessEngine(KernelBase<?> owner,
       Conv2DFactorizedModuleParameter conv2dParams, DFEType scalarT) {
     super(owner);
-    
+
     if (conv2dParams.getShapeMode() != ShapeMode.STATIC)
       throw new IllegalArgumentException("shape mode should be STATIC");
 
@@ -74,20 +74,20 @@ public class Conv2DDepthwiseProcessEngine extends KernelComponent {
         ifmapVec[i] <== ifmap[p * conv2dParams.getKnlSize() +  i];
         coeffVec[i] <== coeff[p * conv2dParams.getKnlSize() +  i];
       }
-      
+
       DotProductKernelComponent dotProd = new DotProductKernelComponent(owner,
           conv2dParams.getKnlSize(), scalarT);
       dotProd.setInputs(ifmapVec, coeffVec);
       this.ofmap[p] <== dotProd.getOutput();
     }
-    
-    debug.simPrintf("%KObj% %KObj% %KObj%\n", ifmap, coeff, ofmap);
+
+    debug.simPrintf("depth - %KObj% %KObj% %KObj%\n", ifmap, coeff, ofmap);
   }
-  
+
   public DFEVectorType<DFEVar> getIfmapVecT() {
     return ifmapVecT;
   }
-  
+
   public DFEVectorType<DFEVar> getCoeffVecT() {
     return coeffVecT;
   }
@@ -107,13 +107,13 @@ public class Conv2DDepthwiseProcessEngine extends KernelComponent {
   public int getOfmapVecSize(Conv2DFactorizedModuleParameter params) {
     return params.getIfmapNumParaChnl();
   }
-  
+
   public void setIfmap(DFEVector<DFEVar> ifmap) { this.ifmap <== ifmap; }
-  
+
   public void setCoeff(DFEVector<DFEVar> coeff) { this.coeff <== coeff; }
-  
+
   public DFEVector<DFEVar> getOfmap() { return ofmap; }
-  
+
   public DFEVar getOfmapValid() { return constant.var(1).cast(dfeBool()); }
 
 }
