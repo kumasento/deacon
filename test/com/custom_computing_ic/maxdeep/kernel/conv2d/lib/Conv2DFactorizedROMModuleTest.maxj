@@ -174,8 +174,8 @@ public class Conv2DFactorizedROMModuleTest {
     mgr.setKernel(new TestKernel(mgr.makeKernelParameters(), conv2dParams, bitWidth));
     mgr.setKernelCycles(data.getNumCycles());
     mgr.setInputDataRaw("ifmap", data.ifmap);
-    mgr.setMappedRom("depth_coeff", data.depthCoeff);
-    mgr.setMappedRom("point_coeff", data.pointCoeff);
+    // mgr.setMappedRom("depth_coeff", data.depthCoeff);
+    // mgr.setMappedRom("point_coeff", data.pointCoeff);
 
 		// mgr.setInputDataRaw("depth_coeff", data.depthCoeff);
     // mgr.setInputDataRaw("point_coeff", data.pointCoeff);

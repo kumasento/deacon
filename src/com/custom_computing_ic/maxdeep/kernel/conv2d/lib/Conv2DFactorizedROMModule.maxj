@@ -1,8 +1,8 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
+import com.custom_computing_ic.maxdeep.utils.ArbitraryLengthPortROM;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -23,7 +23,7 @@ public class Conv2DFactorizedROMModule extends KernelComponent {
   private final Conv2DFactorizedModuleParameter conv2dParams;
   private final DFEVector<DFEVar>               ifmap;
   private final DFEVectorType<DFEVar>           depthVecT, pointVecT;
-  private final Memory<DFEVector<DFEVar>>       depthROM, pointROM;
+  private final ArbitraryLengthPortROM          depthROM, pointROM;
 
   public Conv2DFactorizedROMModule(KernelBase<?> owner,
       Conv2DFactorizedModuleParameter conv2dParams, DFEType scalarT) {
@@ -44,10 +44,10 @@ public class Conv2DFactorizedROMModule extends KernelComponent {
     this.pointVecT = core.getPointCoeffVecT();
 
     // initialize ROM
-    this.depthROM = new Memory<DFEVector<DFEVar>>(getOwner(),
-        getDepthROMNumElems(), this.depthVecT);
-    this.pointROM = new Memory<DFEVector<DFEVar>>(getOwner(),
-        getPointROMNumElems(), this.pointVecT);
+    this.depthROM = new ArbitraryLengthPortROM(getOwner(),
+        this.depthVecT.getSize(), getDepthROMNumElems(), scalarT);
+    this.pointROM = new ArbitraryLengthPortROM(getOwner(),
+        this.pointVecT.getSize(), getPointROMNumElems(), scalarT);
     // setup ROM read for the core module
     core.setDepthCoeff(depthROM.read(getDepthROMAddr()));
     core.setPointCoeff(pointROM.read(getPointROMAddr()));
