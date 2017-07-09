@@ -24,6 +24,7 @@ public class ArbitraryLengthPortROM extends KernelComponent {
   public static final int MAX_LENGTH_IN_BITS = 64;
 
   private final List<Memory<DFEVector<DFEVar>>> romList;
+  private final List<DFEVectorType<DFEVar>> romVecTList;
 
   private final int numElems;
   private final int depth;
@@ -49,6 +50,8 @@ public class ArbitraryLengthPortROM extends KernelComponent {
     int numROM = (int) Math.ceil((double)lengthInBits / MAX_LENGTH_IN_BITS);
     getOwner().getManager().logMsg("numROM: %d\n", numROM);
     romList = new ArrayList<Memory<DFEVector<DFEVar>>>();
+    romVecTList = new ArrayList<DFEVectorType<DFEVar>>();
+
     for (int i = 0; i < numROM; i ++) {
       int currentLengthInBits = (i != numROM - 1)
 	      ? MAX_LENGTH_IN_BITS
@@ -57,6 +60,7 @@ public class ArbitraryLengthPortROM extends KernelComponent {
 
       DFEVectorType<DFEVar> vecT =
         new DFEVectorType<DFEVar>(scalarT, currentNumElems);
+      romVecTList.add(vecT);
       Memory<DFEVector<DFEVar>> mem =
         new Memory<DFEVector<DFEVar>>(getOwner(), depth, vecT);
       romList.add(mem);
@@ -89,4 +93,11 @@ public class ArbitraryLengthPortROM extends KernelComponent {
       romList[i].mapToCPU(String.format("%s_%d", prefix, i));
   }
 
+  public int getROMPortWitdh(int index) {
+    return romVecTList.get(index).getTotalBits();
+  }
+
+  public int getNumROMs() {
+    return romList.size();
+  }
 }

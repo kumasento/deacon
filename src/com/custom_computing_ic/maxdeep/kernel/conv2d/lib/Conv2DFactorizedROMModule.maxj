@@ -65,6 +65,23 @@ public class Conv2DFactorizedROMModule extends KernelComponent {
     this.pointROM.mapToCPU(name);
   }
 
+  public int getDepthROMPortWidth(int index) {
+    return this.depthROM.getROMPortWitdh(index);
+  }
+
+  public int getNumDepthROMs() {
+    return this.depthROM.getNumROMs();
+  }
+
+  public int getNumPointROMs() {
+    return this.pointROM.getNumROMs();
+  }
+
+  public int getPointROMPortWidth(int index) {
+    return this.pointROM.getROMPortWitdh(index);
+  }
+
+
   public void setIfmap(DFEVector<DFEVar> ifmap) { this.ifmap <== ifmap; }
 
   public DFEVector<DFEVar> getOfmap() {

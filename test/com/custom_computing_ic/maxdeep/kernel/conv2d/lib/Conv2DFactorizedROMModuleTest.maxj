@@ -12,13 +12,15 @@ import com.maxeler.maxcompiler.v2.utils.Bits;
 public class Conv2DFactorizedROMModuleTest {
 
   private class TestKernel extends Kernel {
+    public final Conv2DFactorizedROMModule module;
+
     public TestKernel(KernelParameters parameters,
         Conv2DFactorizedModuleParameter conv2dParams, int bitWidth) {
       super(parameters);
 
       DFEType scalarT = dfeUInt(bitWidth);
       DFEType indexT = dfeInt(32);
-      Conv2DFactorizedROMModule module = new Conv2DFactorizedROMModule(
+      module = new Conv2DFactorizedROMModule(
           getKernel(), conv2dParams, scalarT);
       module.setIfmap(io.input("ifmap", module.getIfmapVecT(), module.getIfmapEnable()));
 			// module.setDepthCoeff(io.input("depth_coeff", module.getDepthCoeffVecT(), module.getIfmapEnable()));
@@ -62,6 +64,7 @@ public class Conv2DFactorizedROMModuleTest {
       int [] pointCoeffData = new int [ifmapNumChnl * ofmapNumChnl];
       int [] ofmapData = new int[ofmapHeight * ofmapWidth * ofmapNumChnl];
 
+      // compute
       for (int i = 0; i < ifmapData.length; i++)
         ifmapData[i] = i % 3;
       for (int i = 0; i < depthCoeffData.length; i++)
@@ -86,6 +89,7 @@ public class Conv2DFactorizedROMModuleTest {
         }
       }
 
+      // prepare data
       int idx = 0;
       int ofmapIdx = 0;
       for (int f = 0; f < ofmapNumChnl; f += numParaFltr) {
@@ -158,6 +162,32 @@ public class Conv2DFactorizedROMModuleTest {
   @Test public void testParaFltrComplex() { test(10, 10, 1, 2, 4); }
   @Test public void testParaFullComplex() { test(10, 10, 2, 2, 4); }
 
+  private void setMappedRom(SimulationManager mgr, TestKernel knl, boolean isDepth, Bits[] data) {
+    int numROMs =
+      (isDepth) ? knl.module.getNumDepthROMs() : knl.module.getNumPointROMs();
+
+    Bits[][] splitData = new Bits[numROMs][data.length];
+    for (int i = 0; i < data.length; i ++) {
+      int idx = 0;
+      for (int j = 0; j < numROMs; j ++) {
+        int width = (isDepth)
+          ? knl.module.getDepthROMPortWidth(j)
+          : knl.module.getPointROMPortWidth(j);
+        splitData[j][i] = new Bits(width);
+        for (int k = 0; k < width; k ++) {
+          splitData[j][i].setBit(k, data[i].getBit(k + idx));
+        }
+
+        idx += width;
+      }
+    }
+
+    for (int i = 0; i < numROMs; i ++)
+	    mgr.setMappedRom(
+	        String.format("%s_%d", (isDepth) ? "depth_coeff" : "point_coeff", i),
+	        splitData[i]);
+  }
+
   private void test(int ifmapNumChnl, int ofmapNumChnl, int numParaChnl, int numParaFltr, int bitWidth) {
     Conv2DFactorizedModuleParameter conv2dParams =
       new Conv2DFactorizedModuleParameter
@@ -171,11 +201,14 @@ public class Conv2DFactorizedROMModuleTest {
         String.format("Conv2DFactorizedModuleTestManager_%d_%d_%d_%d_%d",
             ifmapNumChnl, ofmapNumChnl, numParaChnl, numParaFltr, bitWidth));
     TestData data = new TestData(conv2dParams, bitWidth);
-    mgr.setKernel(new TestKernel(mgr.makeKernelParameters(), conv2dParams, bitWidth));
+    TestKernel knl = new TestKernel(mgr.makeKernelParameters(), conv2dParams, bitWidth);
+    mgr.setKernel(knl);
     mgr.setKernelCycles(data.getNumCycles());
     mgr.setInputDataRaw("ifmap", data.ifmap);
     // mgr.setMappedRom("depth_coeff", data.depthCoeff);
     // mgr.setMappedRom("point_coeff", data.pointCoeff);
+    setMappedRom(mgr, knl, true, data.depthCoeff);
+    setMappedRom(mgr, knl, false, data.pointCoeff);
 
 		// mgr.setInputDataRaw("depth_coeff", data.depthCoeff);
     // mgr.setInputDataRaw("point_coeff", data.pointCoeff);
