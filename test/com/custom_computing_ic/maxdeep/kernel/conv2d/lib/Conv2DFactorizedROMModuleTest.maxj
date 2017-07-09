@@ -157,10 +157,15 @@ public class Conv2DFactorizedROMModuleTest {
   @Test public void testParaFltrSimple() { test(4, 4, 1, 2, 4); }
   @Test public void testParaFullSimple() { test(4, 4, 2, 2, 4); }
 
-  @Test public void testComplex() { test(6, 6, 1, 1, 4); }
+  @Test public void testComplex() { test(10, 10, 1, 1, 4); }
   @Test public void testParaChnlComplex() { test(10, 10, 2, 1, 4); }
   @Test public void testParaFltrComplex() { test(10, 10, 1, 2, 4); }
   @Test public void testParaFullComplex() { test(10, 10, 2, 2, 4); }
+
+  @Test public void testLongComplex() { test(10, 10, 1, 1, 8); }
+  @Test public void testLongParaChnlComplex() { test(10, 10, 2, 1, 8); }
+  @Test public void testLongParaFltrComplex() { test(10, 10, 1, 2, 8); }
+  @Test public void testLongParaFullComplex() { test(10, 10, 2, 2, 8); }
 
   private void setMappedRom(SimulationManager mgr, TestKernel knl, boolean isDepth, Bits[] data) {
     int numROMs =
