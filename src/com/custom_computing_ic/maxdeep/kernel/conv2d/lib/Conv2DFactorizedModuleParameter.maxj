@@ -15,7 +15,7 @@ public class Conv2DFactorizedModuleParameter {
     private int       ofmapNumParaChnl;
     private int       knlHeight, knlWidth;
 
-    StaticBuilder(int ifmapHeight, int ifmapWidth, int ifmapNumChnl,
+    public StaticBuilder(int ifmapHeight, int ifmapWidth, int ifmapNumChnl,
         int ofmapNumChnl) {
       this.ifmapHeight = ifmapHeight;
       this.ifmapWidth = ifmapWidth;
@@ -42,12 +42,12 @@ public class Conv2DFactorizedModuleParameter {
       this.knlWidth = knlWidth;
       return this;
     }
-    
+
     public StaticBuilder ifmapNumParaChnl(int ifmapNumParaChnl) {
       this.ifmapNumParaChnl = ifmapNumParaChnl;
       return this;
     }
-    
+
     @Deprecated
     public StaticBuilder numParaIfmapChnl(int numParaIfmapChnl) {
       this.ifmapNumParaChnl = numParaIfmapChnl;
@@ -58,7 +58,7 @@ public class Conv2DFactorizedModuleParameter {
       this.ofmapNumParaChnl = ofmapNumParaChnl;
       return this;
     }
-    
+
     @Deprecated
     public StaticBuilder numParaOfmapChnl(int numParaOfmapChnl) {
       this.ofmapNumParaChnl = numParaOfmapChnl;
@@ -95,15 +95,15 @@ public class Conv2DFactorizedModuleParameter {
   public int getKnlHeight() {
     return knlHeight;
   }
-  
+
   public int getKnlWidth() {
     return knlWidth;
   }
-  
+
   public int getKnlSize() {
     return knlHeight * knlWidth;
   }
-  
+
   public ShapeMode getShapeMode() {
     return shapeMode;
   }
@@ -123,11 +123,11 @@ public class Conv2DFactorizedModuleParameter {
   public int getOfmapNumChnl() {
     return ofmapNumChnl;
   }
-  
+
   public int getIfmapHeight() {
     return ifmapHeight;
   }
-  
+
   public int getIfmapWidth() {
     return ifmapWidth;
   }
@@ -135,11 +135,11 @@ public class Conv2DFactorizedModuleParameter {
   public int getIfmapNumChnl() {
     return ifmapNumChnl;
   }
-  
+
   public int getOfmapNumParaChnl() {
     return ofmapNumParaChnl;
   }
-  
+
   @Deprecated
   public int getNumParaOfmapChnl() {
     return ofmapNumParaChnl;
@@ -152,14 +152,18 @@ public class Conv2DFactorizedModuleParameter {
   public int getCacheTotalSize() {
     return getOfmapSize() * ifmapNumChnl;
   }
-  
+
   public int getIfmapNumParaChnl() {
     return ifmapNumParaChnl;
+  }
+
+  public int getNumCycles() {
+    return getOfmapHeight() * getOfmapWidth() * ifmapNumChnl / getIfmapNumParaChnl() * ofmapNumChnl / getOfmapNumParaChnl();
   }
 
   @Deprecated
   public int getNumParaIfmapChnl() {
     return ifmapNumParaChnl;
   }
-  
+
 }
