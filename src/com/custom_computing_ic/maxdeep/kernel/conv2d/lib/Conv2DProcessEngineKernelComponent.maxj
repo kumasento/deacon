@@ -1,6 +1,6 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
-import com.custom_computing_ic.maxdeep.lib.DotProductKernelComponent;
+import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -36,7 +36,7 @@ public class Conv2DProcessEngineKernelComponent extends KernelComponent {
     wgt = vecType.newInstance(owner);
     out = vecType.newInstance(owner); // worst case
 
-    DotProductKernelComponent dotProd = new DotProductKernelComponent(owner,
+    DotProductKernel dotProd = new DotProductKernel(owner,
         maxKnlSize, type);
     dotProd.setInputs(inp, wgt);
     out[0] <== dotProd.getOutput();
