@@ -1,0 +1,41 @@
+package dotprod;
+
+import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * Kernel for generating DotProd with different parameters
+ * 
+ * @author rz3515
+ * 
+ */
+public class DotProdKernel extends Kernel {
+
+  public static final String INPUT_NAME = "input_stream";
+  public static final String OUTPUT_NAME = "output_stream";
+
+  public DotProdKernel(KernelParameters parameters, int vecSize, int bitWidth, DFEType cpuT) {
+    super(parameters);
+
+    DFEVectorType<DFEVar> cpuVecT = new DFEVectorType<DFEVar>(cpuT, vecSize); 
+    DFEVector<DFEVar> cpuVec = io.input(INPUT_NAME, cpuVecT);
+    
+    DFEType scalarT = dfeFix(0, bitWidth, SignMode.UNSIGNED);
+    
+    DotProductKernel dotProd = new DotProductKernel(this, vecSize, scalarT);
+    
+    DFEVector<DFEVar> inputVec = dotProd.getInputVecT().newInstance(this);
+    for (int i = 0; i < inputVec.getSize(); i ++)
+      inputVec[i] <== cpuVec[i].cast(scalarT);
+    
+    dotProd.setInputs(inputVec, inputVec);
+    io.output(OUTPUT_NAME, cpuT) <== dotProd.getOutput().cast(cpuT);
+  }
+
+}

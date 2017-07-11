@@ -1,0 +1,56 @@
+package dotprod;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+
+public final class DotProdManager extends CustomManager {
+
+  private final DFEType dfeT = DFETypeFactory.dfeUInt(32);
+  private final CPUTypes cpuT = CPUTypes.UINT32;
+  private final String KERNEL_NAME = "DOT_PROD_KERNEL";
+  private final int VEC_SIZE = 3;
+
+  public DotProdManager(DotProdEngineParameters params) {
+    super(params);
+    
+    config.setAllowNonMultipleTransitions(true);
+
+    KernelBlock blk = addKernel(
+        new DotProdKernel(
+            makeKernelParameters(KERNEL_NAME),
+            VEC_SIZE,
+            params.getBitWidth(),
+            dfeT));
+    
+    DFELink x = addStreamFromCPU("x");
+    DFELink y = addStreamToCPU("y");
+    blk.getInput(DotProdKernel.INPUT_NAME) <== x;
+    y <== blk.getOutput(DotProdKernel.OUTPUT_NAME);
+  }
+  
+  public EngineInterface interfaceDefault() {
+    EngineInterface ei = new EngineInterface();
+    
+    InterfaceParam N = ei.addParam("N", CPUTypes.INT64);
+    ei.setTicks(KERNEL_NAME, N);
+    ei.setStream("x", cpuT, cpuT.sizeInBytes() * N * VEC_SIZE);
+    ei.setStream("y", cpuT, cpuT.sizeInBytes() * N);
+    
+    return ei;
+  }
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    DotProdEngineParameters params = new DotProdEngineParameters(args);
+    DotProdManager mgr = new DotProdManager(params);
+    mgr.build();
+  }
+}

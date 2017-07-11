@@ -1,0 +1,38 @@
+package dotprod;
+
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+
+public class DotProdEngineParameters extends EngineParameters {
+
+  private static final String BIT_WIDTH_NAME = "bitWidth";
+  private static final int BIT_WIDTH = 32;
+
+  public DotProdEngineParameters(String[] args) {
+    super(args);
+  }
+
+  @Override
+  protected void declarations() {
+    declareParam(BIT_WIDTH_NAME, DataType.INT);
+  }
+
+  public int getBitWidth() {
+    return getParam(BIT_WIDTH_NAME);
+  }
+
+  @Override
+  protected void validate() {
+    if (getBitWidth() <= 0)
+      throw new IllegalArgumentException("bitWidth should be larger than 0.");
+  }
+
+  @Override
+  public String getBuildName() {
+    return String.format(
+        "%s_%s_%s_b%d",
+        getMaxFileName(),
+        getDFEModel(),
+        getTarget(),
+        getBitWidth());
+  }
+}
