@@ -28,3 +28,7 @@ Please cite the following paper(s) if you use this framework, cheers!
 1. Import this project folder into your workspace
 2. Add `MaxCompiler.jar` to your project's dependencies
 3. Check whether it works by running JUnit tests
+
+## Experiment Results
+
+Please see the [evaluation](evaluation) folder.

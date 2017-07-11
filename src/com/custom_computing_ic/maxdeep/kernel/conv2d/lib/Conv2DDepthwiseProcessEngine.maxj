@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DFactorizedModuleParameter;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DFactorizedModuleParameter.ShapeMode;
 import com.custom_computing_ic.maxdeep.lib.DotProductKernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
