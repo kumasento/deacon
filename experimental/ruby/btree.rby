@@ -1,0 +1,5 @@
+INCLUDE "prelude.rby".
+
+btree n R = IF (n $eq 1) THEN R
+            ELSE (half (2 $exp (n-1)) ;
+            [btree (n-1) R, btree (n-1) R] ; R) .

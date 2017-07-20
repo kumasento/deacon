@@ -1,0 +1,312 @@
+
+# There are many examples in this file. To test eg3 for instance,
+# follow these steps:
+#
+# (1) Save this message in a file called egs.rby. Delete everything
+#     above the line 'INCLUDE "prelude.rby".'
+# (2) Redefine the variable 'current' at the end of the file to
+#     be 'eg3'.
+# (3) Exit the editor and type 'rc egs.rby' to compile the file.
+#     This produces the file 'current.rbs'.
+# (4) Have a look at the compiled file 'current.rbs' if you wish,
+#     but you don't have to.
+# (5) Provide test data to the evaluator by typing the line
+#     below the definition of eg8: 're "2;3;x"'.
+#     You should see the same simulation result as that below
+#     the simulation command 're "2;3;x"'.
+#
+# I assume that your current directory contains the 'prelude.rby' file.
+#
+# Have fun,
+# Wayne  
+
+INCLUDE "prelude.rby".
+
+# eg1 is probably the simplest design: it takes an input x from the
+# domain and doubles it and outputs the result (`add` <x,x> = x+x)
+# at the range.
+
+eg1 = VAR x . x $rel (`add` <x,x>).
+
+# Simulation command and result for eg1: here input at cycle 1 is 2,
+# input at cycle 2 is 4.5, input at cycle 3 is the symbol xx.
+# (remember ~ separates domain data from range data)
+#
+# re "2;4.5;xx"
+#   0 - 2 ~ 4
+#   1 - 4.5 ~ 9
+#   2 - xx ~ (xx + xx)
+
+##############################################
+# eg2 is a more concise way of producing the same result as eg1.
+# It uses the prelude definition 'fork' to replicate the input 
+# to an adder.
+
+eg2 = fork ; add.
+
+# The same simulation command for eg1 can be used for eg2, which
+# should produce the same result.
+
+##############################################
+# eg3 is identical to the definition
+# 'inc2 = inc;inc.' or 'inc2 = inc^2.'
+
+inc2 = VAR x . x $rel (`inc` (`inc` x)).
+eg3  = inc2.
+
+# simulation command and result for eg3:
+# re "2;3;x"
+#    0 - 2 ~ 4
+#    1 - 3 ~ 5
+#    2 - x ~ (inc (inc x))
+
+##############################################
+# eg4 consists of a component with signals flowing 
+# both from left to right and from right to left.
+
+incLR = VAR x y . <x,`inc` y> $rel <`inc`x, y>.
+eg4   = incLR.
+
+# simulation command and result for eg4:
+# re "1 2;3 4;x y"
+#    0 - <1,3> ~ <2,2>
+#    1 - <3,5> ~ <4,4>
+#    2 - <x,(inc y)> ~ <(inc x),y>
+
+##############################################
+# eg5: compute volume of a cylinder. Notice that the definition
+# of 'volume' is the same as 'mult'.
+pi           = 3.1416.
+areaofcircle = VAR r   . r $rel (`mult` <pi, `mult` <r,r>>).
+volume       = VAR h a . <h,a> $rel (`mult` <h,a>).
+cylinderV    = snd areaofcircle ; volume.
+eg5          = cylinderV.
+
+# Let us first compile areaofcircle first to see if it works:
+# current = areaofcircle.
+# simulation command and result for 'current = areaofcircle.'
+# note that the numerical values must be real numbers.
+# re "1.0;4.0;a"
+# 0 - 1 ~ 3.1416
+# 1 - 4 ~ 50.2656
+# 2 - a ~ (3.1416 * (a * a))
+#
+# Now set 'current' to eg5 and simulate:
+# re "1.0 3.0;3.0 4.0;h r"
+#    0 - <1,3> ~ 28.2744
+#    1 - <3,4> ~ 150.7968
+#    2 - <h,r> ~ (h * (3.1416 * (r * r)))
+
+##############################################
+# eg6 is the same as eg5 except that the height h of the cylinder
+# is given at compile time. Note that you could also have 
+# 'vol = VAR a . a $rel (`mult` <a,h>).'. 
+h       = 3.2.
+vol     = pi1^~1 ; snd h ; mult.
+cyV     = areaofcircle ; vol.
+eg6     = cyV.
+
+# simulation command and result for eg6:
+# re "1.1;2.2;r"
+#    0 - 1.1 ~ 12.1642752
+#    1 - 2.2 ~ 48.6571008
+#    2 - r ~ ((3.1416 * (r * r)) * 3.2)
+
+##############################################
+# eg7 demonstrates the use of a higher-order function.
+
+twice f = fork ; f.
+eg7     = VAR in . <in, `twice mult ; inc` in> $rel (`twice add` in).
+
+# simulation command and result for eg7:
+# re "1;2;3;4.6;x"
+#    0 - <1,2> ~ 2
+#    1 - <2,5> ~ 4
+#    2 - <3,10> ~ 6
+#    3 - <4.6,22.16> ~ 9.2
+#    4 - <x,(inc (x * x))> ~ (x + x)
+
+##############################################
+# eg8 demonstrates the higher-order function rdr which is the same
+# as the Miranda function foldr: for example, sum x = foldr (+) 0 x. 
+# Note that 'rdr n R' expects the domain to be in the form
+# <<x1,x2,...,xn>,c>, so if I want to initialise c to be zero,
+# I use the expression 'pi1^~1 ; snd 0'. 
+
+eg8 = pi1^~1 ; snd 0 ; rdr 5 add. 
+
+# simulation command and result for eg8:
+# re "0 1 2 3 4;a b c d e"
+#    0 - <0,1,2,3,4> ~ 10
+#    1 - <a,b,c,d,e> ~ (a + (b + (c + (d + (e + 0)))))
+
+##############################################
+# eg9 contains a circuit to compute the parity of a number.
+# It consists of an array of exclusive-or gates, wired together
+# in the form of a left-reduction (i.e. foldl in Miranda terms).
+# This design will return true (T) if a given bit pattern contains
+# an odd number of T's, and false (F) otherwise. So for example
+# the parity of <F,F,F> is F, and similarly for <F,T,T,T,T>.
+# You should get a T for both <T,F,F,F> and <F,T,T,T,F>.  
+# This circuit is commonly used for detecting transmission
+# errors in data communications.
+#
+# Note that the function 'uint2bit' is used to convert
+# the integers supplied by the user into bits for the circuit. 
+# Since m = 8, the circuit tests the numbers n the range 0 to 255.
+
+m      = 8.
+parity = uint2bit m ; (apl (m-1))^~1 ; rdl (m-1) xor.
+eg9    = parity.
+
+# simulation command and result for eg9:
+# re "0;1;2;3;4;5;254;255"
+#    0 - 0 ~ F
+#    1 - 1 ~ T
+#    2 - 2 ~ T
+#    3 - 3 ~ F
+#    4 - 4 ~ T
+#    5 - 5 ~ F
+#    6 - 254 ~ T
+#    7 - 255 ~ F
+
+##############################################
+# eg10 shows how to define a convolver using left reduction.
+
+madd = VAR x y w . <<y,x>,w> $rel <`add` <y, `mult` <w,x>>, `D` x>.
+
+# current = madd.
+# re "a b c;p q r"
+#    0 - <<a,b>,c> ~ <(a + (c * b)),?>
+#    1 - <<p,q>,r> ~ <(p + (r * q)),b>
+
+n    = 4.
+eg10 = fst (pi2^~1 ; fst 0) ; rdl n madd ; pi1.
+
+# simulation command and result for eg10:
+# re "x0 w0 w1 w2 w3;x1 w0 w1 w2 w3;x2 w0 w1 w2 w3;x3 w0 w1 w2 w3;
+# x4 w0 w1 w2 w3"
+#
+# 0 - <x0,<w0,w1,w2,w3>>
+#      ~ ((((0 + (w0 * x0)) + (w1 * ?)) + (w2 * ?)) + (w3 * ?))
+# 1 - <x1,<w0,w1,w2,w3>>
+#      ~ ((((0 + (w0 * x1)) + (w1 * x0)) + (w2 * ?)) + (w3 * ?))
+# 2 - <x2,<w0,w1,w2,w3>>
+#      ~ ((((0 + (w0 * x2)) + (w1 * x1)) + (w2 * x0)) + (w3 * ?))
+# 3 - <x3,<w0,w1,w2,w3>>
+#      ~ ((((0 + (w0 * x3)) + (w1 * x2)) + (w2 * x1)) + (w3 * x0))
+# 4 - <x4,<w0,w1,w2,w3>>
+#      ~ ((((0 + (w0 * x4)) + (w1 * x3)) + (w2 * x2)) + (w3 * x1))
+
+##############################################
+# eg11 models a counter but without overflow for large counts - unrealistic.
+
+eg11 = loop (add ; DI 0 ; fork).
+
+# simulation command and result for eg11:
+# re "1;1;1;1;1;1;1;1;1;1"
+#    0 - 1 ~ 0
+#    1 - 1 ~ 1
+#    2 - 1 ~ 2
+#    3 - 1 ~ 3
+#    4 - 1 ~ 4
+#    5 - 1 ~ 5
+#    6 - 1 ~ 6
+#    7 - 1 ~ 7
+#    8 - 1 ~ 8
+#    9 - 1 ~ 9
+
+##############################################
+# eg12 models an log2 m-bit counter; resets itself when overflow
+
+# m      = 8.
+modadd = add ; pi1^~1 ; snd m ; mod.
+eg12   = loop (modadd ; DI 0 ; fork).
+
+# simulation command and result for eg12:
+# re "1;1;1;1;1;1;1;1;1;1"
+#    0 - 1 ~ 0
+#    1 - 1 ~ 1
+#    2 - 1 ~ 2
+#    3 - 1 ~ 3
+#    4 - 1 ~ 4
+#    5 - 1 ~ 5
+#    6 - 1 ~ 6
+#    7 - 1 ~ 7
+#    8 - 1 ~ 0
+#    9 - 1 ~ 1
+
+##############################################
+# eg13 demonstrates the 'insert' function: insert x [] = [x],
+# insert x (h:t) = x:(h:t), if x < h, = h:(insert x h), otherwise.
+# We use 'insert' to insert a number into an ordered list of
+# numbers to give an ordered list.
+# The Ruby version uses a component 'sort2' to sort two numbers,
+# and the 'row' higher-order function to capture the recursion
+# pattern in the Miranda code. The 'apr n' is used to produce
+# a single list <x0,x1,...,x(n-1),x(n)> from the range of row,
+# which is in the form <<x0,x1,...,x(n-1)>,x(n)>.
+# Remeber to have n=5.
+
+# n    = 5.
+s2     = fork ; [min,max].
+insert = row n s2 ; apr n.
+eg13   = insert.
+
+# simulation command and result for eg13:
+# re "3 0 1 2 6 7;6 4 7 8 8 9;8 2 2 3 5 9"
+#    0 - <3,<0,1,2,6,7>> ~ <0,1,2,3,6,7>
+#    1 - <6,<4,7,8,8,9>> ~ <4,6,7,8,8,9>
+#    2 - <8,<2,2,3,5,9>> ~ <2,2,3,5,8,9>
+
+##############################################
+# eg14 is an (inefficient) insertion sorter.
+# Note that the registers have to be initialised
+# to infinity (approximated by 100 here), and
+# minus infinity (approximated by 0 here) is needed
+# to extract the result.
+
+k      = 4.
+Dmax   = DI 100.
+eg14   = loop (row k s2 ; fst (map k Dmax)).
+
+# simulation command and result for eg14:
+# re "1;5;3;4;0;0;0;0"
+#    0 - 1 ~ 100
+#    1 - 5 ~ 100
+#    2 - 3 ~ 100
+#    3 - 4 ~ 100
+#    4 - 0 ~ 5
+#    5 - 0 ~ 4
+#    6 - 0 ~ 3
+#    7 - 0 ~ 1
+
+##############################################
+# eg15 is a more regular version of eg14, obtained
+# by applying the state distribution theorem to eg14:
+# loop (row k R) = (loop R)^k. 
+
+eg15 = (loop (s2 ; fst Dmax))^k.   # same behaviour as eg14.
+
+##############################################
+# eg16 is a pipelined/systolic version -- notice that it takes
+# a few more cycles to start extracting the sorted result.
+
+eg16 = (loop (s2 ; fst Dmax) ; Dmax)^k.
+
+# simulation command and result for eg16:
+# re "1;5;3;4;0;0;0;0;0;0;0;0"
+#    0 - 1 ~ 100
+#    1 - 5 ~ 100
+#    2 - 3 ~ 100
+#    3 - 4 ~ 100
+#    4 - 0 ~ 100
+#    5 - 0 ~ 100
+#    6 - 0 ~ 100
+#    7 - 0 ~ 100
+#    8 - 0 ~ 5
+#    9 - 0 ~ 4
+#   10 - 0 ~ 3
+#   11 - 0 ~ 1
+
+current = eg1.

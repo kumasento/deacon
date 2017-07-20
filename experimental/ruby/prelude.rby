@@ -1,0 +1,362 @@
+
+        #################################
+        #################################
+        ###                           ###
+        ###   Rebecca Prelude 2.1a    ###
+        ###       October 1994        ###
+        ###                           ###
+        #################################
+        #################################
+
+        ##########################
+        ###                    ###
+        ### Wiring primitives: ###
+        ###                    ###
+        ##########################
+
+#######################################################
+
+id              = x $wire x.
+
+[-]             = x $wire <x>.
+
+pi1             = <x,y> $wire x.
+pi2             = <x,y> $wire y.
+
+lsh             = <<a,b>,z> $wire <a,<b,z>>.
+rsh             = <a,<b,z>> $wire <<a,b>,z>.
+
+mid             = <<x,y>,<a,b>> $wire <x,<y,a>,b>.
+
+swap            = <x,y> $wire <y,x>.
+
+fork            = x $wire <x,x>.
+
+#######################################################
+###
+### n-way fork:
+### x (mfork n) <x,x,..,x>      (product of n x's)
+
+mfork n         = IF (n $eq 0) THEN ( x $wire <> )
+                               ELSE ( fork ;
+                                      snd (mfork (n-1)) ;
+                                      apl (n-1) ).
+
+#######################################################
+###
+### append:
+### <a,<x1,..,xn>> (apl n) <a,x1,..,xn>
+### <<x1,..,xn>,a> (apr n) <x1,..,xn,a>
+
+apl n           = fst [-] ; append 1 n.
+apr n           = snd [-] ; append n 1.
+
+#######################################################
+###
+### <<x1,x2,..,xn>,<y1,y2,..,yn>> (zip n) <<x1,y1>,<x2,y2>,..,<xn,yn>>
+
+zip n           = snd (flatl n)^~1 ;
+                  col n (<x,<y,z>> $wire <y,<x,z>>) ;
+                  pi2.
+
+#######################################################
+###
+### <<x11,x12,..,x1n>,                 <<x11,x21,..,xm1>,
+###  <x21,x22,..,x2n>,   (tran m n)     <x12,x22,..,xm2>,
+###  ...                                ...
+###  <xm1,xm2,..,xmn>>                  <x1n,x2n,..,xmn>>
+
+tran m n        = IF (m $eq 0) THEN ( [] ; mfork n )
+                               ELSE ( (apl (m-1))^~1 ;
+                                       snd (tran (m-1) n) ;
+                                       zip n ;
+                                       map n (apl (m-1)) ).
+
+#######################################################
+###
+### distribute:
+### <x,<y1,y2,..,yn>> (dstl n) <<x,y1>,<x,y2>,..,<x,yn>>
+### <<y1,y2,..,yn>,x> (dstr n) <<y1,x>,<y2,x>,..,<yn,x>>
+
+dstl n          = row n (<x,y> $wire <<x,y>,x>) ; pi1.
+dstr n          = col n (<x,y> $wire <y,<x,y>>) ; pi2.
+
+#######################################################
+###
+### reverse:
+### <x1,x2,..,xn> (rev n) <xn,xn-1,..,x1>
+
+rev n           = IF (n $eq 0) THEN   []
+                               ELSE ( (apl (n-1))^~1 ;
+                                      snd (rev (n-1)) ;
+                                      swap ;
+                                      apr (n-1) ).
+
+#######################################################
+###
+### <x11,x12,..,x1n,                 <<x11,x12,..,x1n>,
+###  x21,x22,..,x2n,   (group m n)    <x21,x22,..,x2n>,
+###  ...                              ...
+###  xm1,xm2,..,xmn>                  <xm1,xm2,..,xmn>>
+
+group m n       = IF (m $eq 0) THEN []
+                               ELSE ( (append n (n*(m-1)))^~1 ;
+                                      snd (group (m-1) n) ;
+                                      apl (m-1) ).
+
+#######################################################
+###
+### <x1,x2,x3,x4,..,x2n> (pair n) <<x1,x2>,<x3,x4>,..,<x2n-1,x2n>>
+
+pair n          = group n 2.
+
+#######################################################
+###
+### <x1,x2,x3,x4,..,x2n> (half n) <<x1,x2,..,xn>,<xn+1,xn+2,..,x2n>>
+
+half n          = (append n n)^~1.
+
+#######################################################
+###
+### <x1,x2,x3,x4,..,x2n> (riffle n) <x1,xn+1,x2,xn+2,..,xn,x2n>
+
+riffle n = half n ; zip n ; (pair n)^~1.
+
+
+#######################################################
+###
+### <x1,<x2,<x3,..,<xn,<>>>>> (flatr n) <x1,x2,x3,..,xn>
+
+flatr n         = IF (n $eq 0) THEN []
+                               ELSE ( snd (flatr (n-1)) ; apl (n-1) ).
+
+#######################################################
+###
+### <<<<>,x1>,x2>,x3>,..,xn> (flatl n) <x1,x2,x3,..,xn>
+
+flatl n         = IF (n $eq 0) THEN []
+                               ELSE ( fst (flatl (n-1)) ; apr (n-1) ).
+
+#######################################################
+###
+### <x1,x2,..,xn> (take m n) <x1,x2,..,xm>
+### <x1,x2,..,xn> (drop m n) <xm+1,xm+2,..,xn>
+
+take m n = LET s = m $min n IN (append s (n-s))^~1 ; pi1 END.
+drop m n = LET s = m $min n IN (append s (n-s))^~1 ; pi2 END.
+
+        ##########################
+        ###                    ###
+        ### Device primitives: ###
+        ###                    ###
+        ##########################
+
+#######################################################
+###
+### <x,y> hadd <s,c> where x+y = 2*c+s (x,y,s,c are booleans)
+
+hadd    = fork ; [xor, and].
+
+### <x,<y,z>> fadd <s,c> where x+y+z = 2*c+s (x,y,z,s,c are booleans)
+
+fadd    = (hadd;swap) <-> (hadd;swap) ; fst or ; swap.
+
+#######################################################
+###
+### multiplexor with inputs swapped:
+
+muxl n  = swap ; muxr n.
+
+        ##########################
+        ###                    ###
+        ### Serial primitives: ###
+        ###                    ###
+        ##########################
+
+bundle     n = sdpr n.
+inv_bundle n = pdsr n.
+ev         n = bundle n ; apl (n-1)^~1 ; pi1.
+inv_ev     n = pi1^~1 ; snd ("?" ; mfork (n - 1)) ; apl (n-1) ; inv_bundle n.
+cmx        n = map 2 (bundle n ; apl (n-1)^~1) ; [pi1,pi2] ; apl (n-1) ;
+               inv_bundle n.
+
+        ##############################
+        ###                        ###
+        ### Arithmetic primitives: ###
+        ###                        ###
+        ##############################
+
+#######################################################
+###
+### integral and real exponentiation and log (to base n):
+
+x $exp n        = IF (n $eq 0) THEN  1
+                               ELSE  ( x * (x $exp (n-1)) ).
+
+x $rexp       n = IF        (n $ltn 0) THEN (1.0 / (x $rexp (~ n)))
+                  ELSE ( IF (n $eq  0) THEN 1.0
+                  ELSE                      (x * (x $rexp (n-1))) ).
+
+x $log   n      = log' 0 1 n x.
+log' p q n x    = IF (q $geq x) THEN p
+                                ELSE ( log' (p+1) (2*q) n x ).
+ 
+        ####################
+        ###              ###
+        ### Combinators: ###
+        ###              ###
+        ####################
+
+#######################################################
+###
+###     <x,y> (fst R) <z,y>   <=>   x R z
+###     <x,y> (snd R) <x,z>   <=>   y R z
+
+fst R   = [R, id].
+snd R   = [id, R].
+
+#######################################################
+###
+### converse:
+### x (R^~1) y   <=>   y R x
+
+R ^~1   = x $wire <y,y,x> ;
+          [id, R, id] ;
+          <x,y,y> $wire x.
+
+#######################################################
+###
+### vertical and horizontal reflection:
+### <x,y> (R^V) <x',y'>   <=>   <y',y> R <x',x>
+### <x,y> (R^H) <x',y'>   <=>   <x,x'> R <y,y'>
+
+R ^V    = <x,y> $wire <x,<t,y>,t>;
+          [id, R, id] ;
+          <x,<z,x>,t> $wire <z,t>.
+       
+R ^H    = <x,y> $wire <y,<x,z>,z>;
+          [id, R, id] ;
+          <y,<y,t>,z> $wire <z,t>.
+
+#######################################################
+###
+### binary parallel composition:
+### <x,y> (R||S) <x',y'>   <=>   (x R x') & (y S y')
+
+R || S = [R, S].
+
+#######################################################
+###
+### repeated relational composition:
+### R^n = R;R;..;R (composed with itself n times)
+       
+R ^ n   = IF (n $eq 0) THEN id ELSE ( R ; R^(n-1) ).
+
+#######################################################
+###
+### conjugation:
+### R\\[S,T] = [T^~1,S^~1] ; R ; [S,T]
+
+R \ S   = S^~1 ; R ; S.
+
+R \\ S  = swap ; S^~1 ; swap ; R ; S.
+
+#######################################################
+###
+### repeated parallel composition:
+### map n R = [R,R,..,R] (composed with itself n times)
+       
+map n R = IF (n $eq 0) THEN [] ELSE ( [R, map (n-1) R] \ (apl (n-1)) ).
+
+pmap n R = map n R \ (pair n)^~1.
+
+#######################################################
+###
+### triangle:
+### /\ n R  = [R^0,R^1,R^2,..,R^(n-1)]
+### /\~ n R = [R^(n-1),R^(n-2),..,R^0]
+       
+/\ n R  = IF (n $eq 0) THEN [] ELSE ( [/\ (n-1) R, R^(n-1)] \ apr (n-1) ).
+
+/\~ n R = IF (n $eq 0) THEN [] ELSE ( [R^(n-1), /\~ (n-1) R] \ apl (n-1) ).
+
+#######################################################
+###
+### beside:
+### <a,<b,c>> (R<->S) <<d,e>,f>
+###             <=>
+### (<a,b> R <d,x>) & (<x,c> S <e,f>) for some x
+
+R <-> S = rsh ; fst R ; lsh ; snd S ; rsh.
+
+fsth  R = R <-> swap.
+sndh  R = swap <-> R.
+
+#######################################################
+###
+### below:
+### <<a,b>,c> (R<|>S) <d,<e,f>>
+###             <=>
+### (<a,x> R <d,e>) & (<b,c> S <x,f>) for some x
+
+R <|> S = lsh ; snd S ; rsh ; fst R ; lsh.
+
+fstv  R = R <|> swap.
+sndv  R = swap <|> R.
+
+#######################################################
+###
+### repeated beside:
+
+row n R = IF (n $eq 0) THEN ( <x,<>> $wire <<>,x> )
+                       ELSE ( (R <-> (row (n-1) R)) \\ fst (apl (n-1)) ).
+
+#######################################################
+###
+### repeated below:
+
+col n R = IF (n $eq 0) THEN ( <<>,x> $wire <x,<>> )
+                       ELSE ( (R <|> (col (n-1) R)) \\ snd (apl (n-1)) ).
+
+#######################################################
+###
+### rectangular grid:
+
+grid m n R = row m (col n R).
+
+#######################################################
+###
+### left reduction:
+
+rdl n R = row n (R ; pi2^~1 ) ; pi2.
+
+#######################################################
+###
+### horizontally-reflected left reduction:
+
+rdlh n R = pi1^~1 ; row n (pi1 ; R).
+
+#######################################################
+###
+### right reduction:
+
+rdr n R = col n (R ; pi1^~1 ) ; pi1.
+
+#######################################################
+###
+### vertically-reflected right reduction:
+
+rdrv n R = pi2^~1 ; col n (pi2 ; R).
+
+#######################################################
+###
+### x (loop R) y   <=>   <x,s> R <s,y> for some s
+
+loop R  = x $wire <<x,y>,y> ; fst R ; <<x,y>,x> $wire y.
+
+#######################################################
+###
+### <a,b> (vloop R) <c,d>   <=>   <<a,s>,b> R <c,<d,s>> for some s
+
+vloop R = <x,y> $wire <<<x,z>,y>,z> ; fst R ; <<x,<y,z>>,z> $wire <x,y>.
+
