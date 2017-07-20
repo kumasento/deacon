@@ -3,8 +3,9 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DFactorizedModuleParameter;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DFactorizedModuleParameter.ShapeMode;
-import com.custom_computing_ic.maxdeep.lib.DotProductKernelComponent;
+import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -75,7 +76,7 @@ public class Conv2DDepthwiseProcessEngine extends KernelComponent {
         coeffVec[i] <== coeff[p * conv2dParams.getKnlSize() +  i];
       }
 
-      DotProductKernelComponent dotProd = new DotProductKernelComponent(owner,
+      DotProductKernel dotProd = new DotProductKernel(owner,
           conv2dParams.getKnlSize(), scalarT);
       dotProd.setInputs(ifmapVec, coeffVec);
       this.ofmap[p] <== dotProd.getOutput();

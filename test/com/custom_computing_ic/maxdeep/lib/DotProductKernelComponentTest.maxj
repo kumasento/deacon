@@ -27,7 +27,7 @@ public class DotProductKernelComponentTest {
 //      debug.simPrintf("vecA = %KObj%\n", vecA);
 //      debug.simPrintf("vecB = %KObj%\n", vecB);
       
-      DotProductKernelComponent dotProd = new DotProductKernelComponent(this,
+      DotProductKernel dotProd = new DotProductKernel(this,
           vecSize, type);
       dotProd.setInputs(vecA, vecB);
       io.output("output", type) <== dotProd.getOutput();

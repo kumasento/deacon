@@ -22,29 +22,21 @@
 
 # ---- Project settings ----
 
-WHEREISROOT=../
+MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
+WHEREISROOT=
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=MaxDeep
-APPPKG=maxdeep
-KERNEL=$(PRJ)Kernel
+PRJ=
 MANAGER=$(PRJ)Manager
+APPPKG=
+DEVICE=
 
-FREQ?=100
-DEBUG?=0
-
-BUILD_PARAMS:=\
-	freq=$(FREQ)
-	# dbg=$(DEBUG)
-
-BUILD_NAME_OPTION:=_FREQ_$(FREQ)MHz
+BUILD_PARAMS:=
+BUILD_NAME_OPTION:=
 
 # Using known hardware settings
-include $(WHEREISROOT)/Makefile.Max3.hardware
-# include $(WHEREISROOT)/Makefile.Maia.hardware
+include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware
+
 
 # Using common compillation targets and compiler settings
-include $(WHEREISROOT)/Makefile.common
-
-# Using utilities Makefile
-# include Makefile.utils
+include $(WHEREISROOT)/make/Makefile.common

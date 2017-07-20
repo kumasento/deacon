@@ -22,22 +22,22 @@
 
 # ---- Project settings ----
 
-WHEREISROOT=../..
+MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
+WHEREISROOT=../../..
+SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=
-KERNEL=$(PRJ)Kernel
+PRJ=DotProd
 MANAGER=$(PRJ)Manager
+APPPKG=dotprod
+DEVICE=Maia
 
-BUILD_PARAMS:=
-BUILD_NAME_OPTION:=
+BUILD_PARAMS:=bitWidth=$(BIT_WIDTH)
+BUILD_NAME_OPTION:=_b$(BIT_WIDTH)
 
 # Using known hardware settings
-include $(WHEREISROOT)/Makefile.Max3.hardware
+include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware
 
 
 # Using common compillation targets and compiler settings
-include $(WHEREISROOT)/Makefile.common
-
-# Using utilities Makefile
-# include Makefile.utils
+include $(WHEREISROOT)/make/Makefile.common

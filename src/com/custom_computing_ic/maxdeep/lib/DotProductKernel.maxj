@@ -18,11 +18,12 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  * @since 18/06/2017
  * 
  */
-public class DotProductKernelComponent extends KernelComponent {
+public class DotProductKernel extends KernelComponent {
 
   private final DFEVector<DFEVar> vecA;
   private final DFEVector<DFEVar> vecB;
   private final DFEVar            out;
+  private final DFEVectorType<DFEVar> vecT;
 
   /**
    * Constructor for the DotProductKernelComponent.
@@ -31,16 +32,17 @@ public class DotProductKernelComponent extends KernelComponent {
    * @param vecSize size of the vectors to be computed
    * @param type data type.s
    */
-  public DotProductKernelComponent(KernelBase<?> owner, int vecSize,
+  public DotProductKernel(KernelBase<?> owner, int vecSize,
       DFEType type) {
     super(owner);
 
     if (vecSize <= 0)
       throw new IllegalArgumentException("vecSize should be larger than 0");
 
-    DFEVectorType<DFEVar> vecType = new DFEVectorType<DFEVar>(type, vecSize);
-    vecA = vecType.newInstance(owner);
-    vecB = vecType.newInstance(owner);
+    vecT = new DFEVectorType<DFEVar>(type, vecSize);
+   
+    vecA = vecT.newInstance(owner);
+    vecB = vecT.newInstance(owner);
     
     DFEVector<DFEVar> vecC = vecA * vecB;
     
@@ -52,5 +54,9 @@ public class DotProductKernelComponent extends KernelComponent {
     this.vecB <== vecB;
   }
   
+  public DFEVectorType<DFEVar> getInputVecT() { return vecT; }
+  
   public DFEVar getOutput() { return out; }
+  
+  public DFEType getOutputT() { return out.getType(); }
 }
