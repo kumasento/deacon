@@ -1,0 +1,9 @@
+INCLUDE "prelude.rby".
+INCLUDE "btree.rby".
+INCLUDE "radd.rby".
+
+fdp n = map n mult; btree (n/2) add .
+
+dp n = fdp n; radd .
+
+current = dp 4 .

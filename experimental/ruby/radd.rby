@@ -1,0 +1,3 @@
+INCLUDE "prelude.rby".
+
+radd = loop (add; DI 0; fork) .
