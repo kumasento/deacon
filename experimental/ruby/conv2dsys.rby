@@ -1,0 +1,14 @@
+INCLUDE "prelude.rby".
+INCLUDE "btree.rby".
+
+R = lsh;
+    snd (fst fork; lsh; snd mult; swap);
+    rsh;
+    [add, D].
+
+conv1dsys K = rdl K R; pi1 .
+
+conv2dsys K = map K (conv1dsys K); btree (K/2) add .
+
+current = conv2dsys 4.
+
