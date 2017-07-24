@@ -5,14 +5,53 @@ INCLUDE "prelude.rby".
 #             ELSE (half (2 $exp (n-1)) ;
 #             [btree (n-1) R, btree (n-1) R] ; R) .
 
+# updated version
+# btree n R = IF (n $eq 1) THEN id
+#             ELSE (
+#               LET m = n / 2 IN (
+#                 (append m (n - m))^~1;
+#                 [btree m R, btree (n - m) R];
+#                 append 1 1;
+#                 R;
+#                 [-]
+#               )
+#               END
+#             ) .
+
+# bin:
+# if n % 2 != 0
+# <x1, x2, ..., xn> (bin n) <<x1, x2>, ..., <xn>>
+# else
+# <x1, x2, ..., xn> (bin n) <<x1, x2>, ..., <xn-1,  xn>>
+#
+# Examples:
+# <x1, x2> (bin 2) <<x1, x2>>
+# <x1, x2, x3> (bin 3) <<x1>, <x2, x3>>
+bin n = IF (n $eq 1) THEN [-]
+        ELSE (
+          LET m = n / 2 IN (
+            IF ((n $mod 2) $eq 0) THEN (pair m)
+            ELSE (
+              (apl (n-1))^~1;
+              [[-], bin (n-1)];
+              (apl m)
+            )
+          )
+          END
+        ) .
+
+# use bin
 btree n R = IF (n $eq 1) THEN id
             ELSE (
               LET m = n / 2 IN (
-                (append m (n - m))^~1;
-                [btree m R, btree (n - m) R];
-                append 1 1;
-                R;
-                [-]
+                IF ((n $mod 2) $eq 0)
+                THEN (pair m; map m (R; D); btree m R)
+                ELSE (
+                  (apl (n-1))^~1;
+                  [D, pair m; map m (R; D)];
+                  (apl m);
+                  (btree (m + 1) R)
+                )
               )
               END
             ) .
