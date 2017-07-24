@@ -1,5 +1,32 @@
 INCLUDE "prelude.rby".
 
-btree n R = IF (n $eq 1) THEN R
-            ELSE (half (2 $exp (n-1)) ;
-            [btree (n-1) R, btree (n-1) R] ; R) .
+# original version
+# btree n R = IF (n $eq 1) THEN R
+#             ELSE (half (2 $exp (n-1)) ;
+#             [btree (n-1) R, btree (n-1) R] ; R) .
+
+btree n R = IF (n $eq 1) THEN id
+            ELSE (
+              LET m = n / 2 IN (
+                (append m (n - m))^~1;
+                [btree m R, btree (n - m) R];
+                append 1 1;
+                R;
+                [-]
+              )
+              END
+            ) .
+
+# pipelined version
+# btree n R = IF (n $eq 1) THEN ((D) \ [-])
+#             ELSE (
+#               LET m = n / 2 IN (
+#                 (append m (n - m))^~1;
+#                 [btree m R, btree (n - m) R];
+#                 append 1 1;
+#                 R;
+#                 D;
+#                 [-]
+#               )
+#               END
+#             ) .

@@ -1,0 +1,4 @@
+INCLUDE "prelude.rby" .
+INCLUDE "dp.rby" .
+
+conv2dstd K V = dp V .

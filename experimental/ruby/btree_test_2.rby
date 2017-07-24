@@ -1,0 +1,4 @@
+INCLUDE "btree.rby".
+INCLUDE "prelude.rby".
+
+current = btree 2 add .

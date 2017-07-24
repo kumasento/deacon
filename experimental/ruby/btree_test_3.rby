@@ -1,0 +1,8 @@
+INCLUDE "btree.rby".
+
+# current = (append 1 2)^~1 .
+
+# current = (append 1 2)^~1; [btree 1 add, btree 2 add] .
+
+current = btree 3 add .
+

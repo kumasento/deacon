@@ -10,5 +10,4 @@ conv1dsys K = rdl K R; pi1 .
 
 conv2dsys K = map K (conv1dsys K); btree (K/2) add .
 
-current = conv2dsys 4.
-
+current = conv2dsys 4 .

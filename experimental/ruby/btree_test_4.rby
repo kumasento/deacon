@@ -1,0 +1,4 @@
+INCLUDE "btree.rby".
+
+current = btree 4 add .
+
