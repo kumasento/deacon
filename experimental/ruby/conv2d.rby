@@ -2,3 +2,13 @@ INCLUDE "prelude.rby" .
 INCLUDE "dp.rby" .
 
 conv2dstd K V = dp V .
+
+conv1dsys_R =
+  lsh;
+  snd (fst fork; lsh; snd mult; swap);
+  rsh;
+  [add, D].
+
+conv1dsys K = rdl K conv1dsys_R; pi1 .
+
+conv2dsys K = map K (conv1dsys K); btree (K/2) add .
