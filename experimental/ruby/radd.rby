@@ -1,3 +1,4 @@
 INCLUDE "prelude.rby".
 
-radd = loop (add; DI 0; fork) .
+# radd: <X> ~ <X>
+radd = [-]^~1; loop (add; DI 0; fork); [-].

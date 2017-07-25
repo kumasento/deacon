@@ -45,10 +45,10 @@ btree n R = IF (n $eq 1) THEN id
             ELSE (
               LET m = n / 2 IN (
                 IF ((n $mod 2) $eq 0)
-                THEN (pair m; map m (R; D); btree m R)
+                THEN (pair m; map m (R; (DI 0)); btree m R)
                 ELSE (
                   (apl (n-1))^~1;
-                  [D, pair m; map m (R; D)];
+                  [D, pair m; map m (R; (DI 0))];
                   (apl m);
                   (btree (m + 1) R)
                 )

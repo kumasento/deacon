@@ -1,0 +1,4 @@
+INCLUDE "prelude.rby".
+INCLUDE "dp.rby".
+
+current = dp 4 .
