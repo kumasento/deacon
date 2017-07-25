@@ -1,3 +1,15 @@
 INCLUDE "prelude.rby".
 INCLUDE "btree.rby".
-INCLUDE "conv2dsys.rby".
+INCLUDE "conv2d.rby".
+
+conv Pc Pf Pk K =
+  zip (Pf * Pc);
+  group Pf Pc;
+  map Pf (
+    map Pc (
+      (conv2dstd K (K * K));
+      [-]^~1
+    );
+    btree Pc add;
+    radd
+  ) .
