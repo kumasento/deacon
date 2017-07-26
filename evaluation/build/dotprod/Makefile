@@ -22,7 +22,7 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
+MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
