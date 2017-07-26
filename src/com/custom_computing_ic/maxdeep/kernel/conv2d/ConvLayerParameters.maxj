@@ -1,0 +1,90 @@
+/**
+ *
+ */
+package com.custom_computing_ic.maxdeep.kernel.conv2d;
+
+/**
+ * Parameters used for building a convolution layer.
+ * 
+ * @author Ruizhe Zhao
+ * 
+ */
+public class ConvLayerParameters {
+
+  private final int ifmapHeight;
+  private final int ifmapWidth;
+  private final int ifmapNumChnl;
+  private final int ofmapNumChnl;
+  private final int kernelSize;
+
+  public ConvLayerParameters(Builder builder) {
+    this.ifmapHeight = builder.ifmapHeight;
+    this.ifmapWidth = builder.ifmapWidth;
+    this.ifmapNumChnl = builder.ifmapNumChnl;
+    this.ofmapNumChnl = builder.ofmapNumChnl;
+    this.kernelSize = builder.kernelSize;
+  }
+
+  public int getIfmapHeight() {
+    return ifmapHeight;
+  }
+
+  public int getIfmapWidth() {
+    return ifmapWidth;
+  }
+
+  public int getIfmapNumChnl() {
+    return ifmapNumChnl;
+  }
+
+  public int getOfmapNumChnl() {
+    return ofmapNumChnl;
+  }
+
+  public int getKernelSize() {
+    return kernelSize;
+  }
+
+  /**
+   * Builder class for ConvLayerParameters
+   * 
+   * @author Ruizhe Zhao
+   * 
+   */
+  public static class Builder {
+    private final int ifmapHeight;
+    private final int ifmapWidth;
+    private final int ifmapNumChnl;
+    private final int ofmapNumChnl;
+    private final int kernelSize;
+
+    public Builder(int ifmapHeight, int ifmapWidth, int ifmapNumChnl,
+        int ofmapNumChnl, int kernelSize) {
+
+      if (ifmapHeight <= 0)
+        throw new IllegalArgumentException(
+            "ifmapHeight should be larger than 0");
+      if (ifmapWidth <= 0)
+        throw new IllegalArgumentException("ifmapWidth should be larger than 0");
+      if (ifmapNumChnl <= 0)
+        throw new IllegalArgumentException(
+            "ifmapNumChnl should be larger than 0");
+      if (ofmapNumChnl <= 0)
+        throw new IllegalArgumentException(
+            "ofmapNumChnl should be larger than 0");
+      if (kernelSize <= 0)
+        throw new IllegalArgumentException("kernelSize should be larger than 0");
+
+      this.ifmapHeight = ifmapHeight;
+      this.ifmapWidth = ifmapWidth;
+      this.ifmapNumChnl = ifmapNumChnl;
+      this.ofmapNumChnl = ofmapNumChnl;
+      this.kernelSize = kernelSize;
+    }
+
+    public ConvLayerParameters build() {
+      return new ConvLayerParameters(this);
+    }
+  }
+
+}

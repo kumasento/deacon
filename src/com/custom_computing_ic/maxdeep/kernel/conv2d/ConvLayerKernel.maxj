@@ -1,0 +1,52 @@
+/**
+ *
+ */
+package com.custom_computing_ic.maxdeep.kernel.conv2d;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * This kernel implements a full convolution layer.
+ * 
+ * @author Ruizhe Zhao
+ * 
+ */
+public class ConvLayerKernel extends Kernel {
+
+  private final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
+  private final DFEType               scalarT;
+  private final DFEVector<DFEVar>     ifmap, coeff, ofmap;
+  private final ConvLayerParameters   convParams;
+
+  /**
+   * constructor
+   * 
+   * @param params
+   *          kernel parameters
+   * @param convParams
+   *          parameters for convolution layer
+   * @param scalarT
+   *          data type
+   */
+  public ConvLayerKernel(KernelParameters params,
+      ConvLayerParameters convParams, DFEType scalarT) {
+    super(params);
+
+    this.convParams = convParams;
+
+    this.scalarT = scalarT;
+    this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
+    this.coeffVecT = new DFEVectorType<DFEVar>(scalarT,
+        convParams.getKernelSize() * convParams.getKernelSize());
+    this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
+
+    this.ifmap = ifmapVecT.newInstance(this);
+    this.coeff = coeffVecT.newInstance(this);
+    this.ofmap = ofmapVecT.newInstance(this);
+  }
+}

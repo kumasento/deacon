@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.custom_computing_ic.maxdeep.lib;
 
@@ -13,10 +13,10 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * A kernel component responsible for creating dot-product logic.
- * 
+ *
  * @author Ruizhe Zhao
  * @since 18/06/2017
- * 
+ *
  */
 public class DotProductKernel extends KernelComponent {
 
@@ -27,7 +27,7 @@ public class DotProductKernel extends KernelComponent {
 
   /**
    * Constructor for the DotProductKernelComponent.
-   * 
+   *
    * @param owner owner design of this component
    * @param vecSize size of the vectors to be computed
    * @param type data type.s
@@ -40,23 +40,24 @@ public class DotProductKernel extends KernelComponent {
       throw new IllegalArgumentException("vecSize should be larger than 0");
 
     vecT = new DFEVectorType<DFEVar>(type, vecSize);
-   
+
     vecA = vecT.newInstance(owner);
     vecB = vecT.newInstance(owner);
-    
+
     DFEVector<DFEVar> vecC = vecA * vecB;
-    
+
+    // Output is the result of an adder-tree based reduction
     out = AdderTree.reduce(vecC.getElementsAsList());
   }
-  
+
   public void setInputs(DFEVector<DFEVar> vecA, DFEVector<DFEVar> vecB) {
     this.vecA <== vecA;
     this.vecB <== vecB;
   }
-  
+
   public DFEVectorType<DFEVar> getInputVecT() { return vecT; }
-  
+
   public DFEVar getOutput() { return out; }
-  
+
   public DFEType getOutputT() { return out.getType(); }
 }
