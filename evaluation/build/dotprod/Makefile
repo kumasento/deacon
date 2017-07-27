@@ -32,8 +32,8 @@ MANAGER=$(PRJ)Manager
 APPPKG=dotprod
 DEVICE=Maia
 
-BUILD_PARAMS:=bitWidth=$(BIT_WIDTH)
-BUILD_NAME_OPTION:=_b$(BIT_WIDTH)
+BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) vecSize=$(VEC_SIZE)
+BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_n$(VEC_SIZE)
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

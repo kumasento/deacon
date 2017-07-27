@@ -14,17 +14,19 @@ public final class DotProdManager extends CustomManager {
   private final DFEType dfeT = DFETypeFactory.dfeUInt(32);
   private final CPUTypes cpuT = CPUTypes.UINT32;
   private final String KERNEL_NAME = "DOT_PROD_KERNEL";
-  private final int VEC_SIZE = 3;
+  private final int vecSize;
 
   public DotProdManager(DotProdEngineParameters params) {
     super(params);
     
     config.setAllowNonMultipleTransitions(true);
+    
+    this.vecSize = params.getVecSize();
 
     KernelBlock blk = addKernel(
         new DotProdKernel(
             makeKernelParameters(KERNEL_NAME),
-            VEC_SIZE,
+            params.getVecSize(),
             params.getBitWidth(),
             dfeT));
     
@@ -39,7 +41,7 @@ public final class DotProdManager extends CustomManager {
     
     InterfaceParam N = ei.addParam("N", CPUTypes.INT64);
     ei.setTicks(KERNEL_NAME, N);
-    ei.setStream("x", cpuT, cpuT.sizeInBytes() * N * VEC_SIZE);
+    ei.setStream("x", cpuT, cpuT.sizeInBytes() * N * vecSize);
     ei.setStream("y", cpuT, cpuT.sizeInBytes() * N);
     
     return ei;
