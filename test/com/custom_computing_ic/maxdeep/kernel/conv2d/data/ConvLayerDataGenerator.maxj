@@ -1,0 +1,63 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.data;
+
+import java.util.Random;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+
+/**
+ * Generate data for convolution layer
+ * 
+ * @author Ruizhe Zhao
+ * 
+ */
+public class ConvLayerDataGenerator {
+
+  public long[] ifmap;
+  public long[] coeff;
+  public long[] ofmap;
+
+  public ConvLayerDataGenerator(ConvLayerParameters params) {
+    int H = params.H;
+    int W = params.W;
+    int C = params.C;
+    int F = params.F;
+    int K = params.K;
+
+    int ifmapSize = H * W * C;
+    int coeffSize = C * F * K * K;
+    int ofmapSize = (H - K + 1) * (W - K + 1) * F;
+
+    ifmap = new long[ifmapSize];
+    coeff = new long[coeffSize];
+    ofmap = new long[ofmapSize];
+
+    Random rand = new Random(42);
+
+    for (int i = 0; i < ifmapSize; i++)
+      ifmap[i] = rand.nextInt() % 100;
+    for (int i = 0; i < coeffSize; i++)
+      coeff[i] = rand.nextInt() % 100;
+
+    for (int f = 0; f < F; f++) {
+      for (int h = 0; h < H - K + 1; h++) {
+        for (int w = 0; w < W - K + 1; w++) {
+          for (int c = 0; c < C; c++) {
+            long sum = 0;
+
+            int ofmapIndex = (f * (H - K + 1) * (W - K + 1) + h * (W - K + 1) + w);
+
+            for (int kx = 0; kx < K; kx++) {
+              for (int ky = 0; ky < K; ky++) {
+                int ifmapIndex = (c * H * W + (h + kx) * W + (w + ky));
+                int coeffIndex = (f * C * K * K + c * K * K + kx * K + ky);
+                sum += ifmap[ifmapIndex] * coeff[coeffIndex];
+              }
+            }
+
+            ofmap[ofmapIndex] += sum;
+          }
+        }
+      }
+    }
+  }
+}
