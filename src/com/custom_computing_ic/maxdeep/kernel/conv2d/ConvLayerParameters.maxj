@@ -82,6 +82,8 @@ public class ConvLayerParameters {
     public Builder PF(int PF) {
       if (PF <= 0)
         throw new IllegalArgumentException("PF should be larger than 0");
+      if (F % PF != 0)
+        throw new IllegalArgumentException("F % PF should equal 0");
       this.PF = PF;
       return this;
     }
@@ -89,6 +91,9 @@ public class ConvLayerParameters {
     public Builder PK(int PK) {
       if (PK <= 0)
         throw new IllegalArgumentException("PK should be larger than 0");
+      // TODO: we need to verify whether it is a good condition
+      if ((W - K + 1) % PK != 0)
+        throw new IllegalArgumentException("OW % PK should equal 0");
       this.PK = PK;
       return this;
     }
@@ -96,6 +101,8 @@ public class ConvLayerParameters {
     public Builder PC(int PC) {
       if (PC <= 0)
         throw new IllegalArgumentException("PC should be larger than 0");
+      if (C % PC != 0)
+        throw new IllegalArgumentException("C % PC should equal 0");
       this.PC = PC;
       return this;
     }

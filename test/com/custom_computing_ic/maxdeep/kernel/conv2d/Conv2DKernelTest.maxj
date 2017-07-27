@@ -69,6 +69,17 @@ public class Conv2DKernelTest {
   @Test
   public void testWithKernelParallel() { test(2, 4, 2, 2, 2); }
   
+  /**
+   * Generate test manager and kernel.
+   * 
+   * TODO: because the data generator can only generate final results, C/PC should equal 1 to make sure the computation terminates in 1 cycle.
+   * 
+   * @param C
+   * @param F
+   * @param PC
+   * @param PF
+   * @param PK
+   */
   private void test(int C, int F, int PC, int PF, int PK) {
     ConvLayerParameters convParams = new ConvLayerParameters.Builder(
         10, 10, C, F, 3).PC(PC).PF(PF).PK(PK).build();
