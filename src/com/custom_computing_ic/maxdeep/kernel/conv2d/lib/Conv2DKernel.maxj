@@ -65,7 +65,7 @@ public class Conv2DKernel extends KernelComponent {
     int PF = convParams.PF;
     int PK = convParams.PK;
     
-    int ifmapVecSize = (K * (K + PK - 1)) * PC * PF;
+    int ifmapVecSize = (K * (K + PK - 1)) * PC;
     int coeffVecSize = K * K * PC * PF;
     int ofmapVecSize = PK * PF;
 
@@ -103,9 +103,15 @@ public class Conv2DKernel extends KernelComponent {
     
     for (int pf = 0; pf < PF; pf ++) {
       List<DFEVar> tmpResults = new ArrayList<DFEVar>(PK * PC);
+      // TODO: initialise an ArrayList in this way might be silly
+      for (int i = 0; i < PC * PK; i ++)
+        tmpResults.add(null);
       
       for (int pc = 0; pc < PC; pc ++) {
-        List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pf, pc);
+        // create a new vector instance
+        List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc);
+        
+        // coefficient chunk
         DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc);
         
         for (int pk = 0; pk < PK; pk ++) {
@@ -147,16 +153,21 @@ public class Conv2DKernel extends KernelComponent {
   public DFEVector<DFEVar> getOfmap() { return ofmap; }
   
   /**
-   * Get ifmap data chunk at (pf, pc)
+   * Get ifmap data chunk at (pc)
    * 
-   * @param pf
+   * TODO: Each time you call this function, a new vector will be created,
+   * might need caching in the future.
+   * 
    * @param pc
    * @return
    */
-  private List<DFEVector<DFEVar>> getIfmapChunksAt(int pf, int pc) {
+  private List<DFEVector<DFEVar>> getIfmapChunksAt(int pc) {
     int K = convParams.K;
     int PC = convParams.PC;
     int PK = convParams.PK;
+    
+    if (pc >= PC)
+      throw new IllegalArgumentException("pc should be smaller than PC");
     
     int ifmapPackedChunkSize = K * (K + PK - 1);
     
@@ -167,9 +178,7 @@ public class Conv2DKernel extends KernelComponent {
     
     // create packed chunk
     for (int i = 0; i < ifmapPackedChunkSize; i ++)
-      ifmapPackedChunk[i] <== ifmap[pf * PC * ifmapPackedChunkSize +
-                                    pc * ifmapPackedChunkSize +
-                                    i];
+      ifmapPackedChunk[i] <== ifmap[pc * ifmapPackedChunkSize + i];
     
     // unpack
     return unpackIfmapChunk(ifmapPackedChunk, convParams);
@@ -214,12 +223,12 @@ public class Conv2DKernel extends KernelComponent {
       new ArrayList<DFEVector<DFEVar>>(PK);
     
     for (int p = 0; p < PK; p++) {
-      ifmapChunks.set(p, ifmapChunkT.newInstance(getOwner()));
+      ifmapChunks.add(p, ifmapChunkT.newInstance(getOwner()));
       
       for (int kx = 0; kx < K; kx++) {
         for (int ky = 0; ky < K; ky++) {
           int srcIdx = kx * (K + PK - 1) + (ky + p);
-          int dstIdx = p * K * K + kx * K + ky;
+          int dstIdx = kx * K + ky;
           ifmapChunks.get(p)[dstIdx] <== src[srcIdx];
         }
       }

@@ -1,22 +1,31 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.maxeler.maxcompiler.v2.utils.Bits;
 
 /**
  * Generate data for convolution layer
+ * 
+ * TODO: currently only pixel-major sequence is supported.
  * 
  * @author Ruizhe Zhao
  * 
  */
 public class ConvLayerDataGenerator {
 
-  public long[] ifmap;
-  public long[] coeff;
-  public long[] ofmap;
+  private final ConvLayerParameters params;
+
+  public long[]                     ifmap;
+  public long[]                     coeff;
+  public long[]                     ofmap;
 
   public ConvLayerDataGenerator(ConvLayerParameters params) {
+    this.params = params;
+
     int H = params.H;
     int W = params.W;
     int C = params.C;
@@ -59,5 +68,135 @@ public class ConvLayerDataGenerator {
         }
       }
     }
+  }
+
+  /**
+   * Generate input feature map list
+   * 
+   * @return
+   */
+  public List<Bits> generateIfmap() {
+    int C = params.C;
+    int F = params.F;
+    int H = params.H;
+    int W = params.W;
+    int K = params.K;
+    int PC = params.PC;
+    int PF = params.PF;
+    int PK = params.PK;
+    int BW = params.BW;
+
+    List<Bits> result = new ArrayList<Bits>();
+
+    for (int f = 0; f < F; f += PF) {
+      for (int h = 0; h < H - K + 1; h++) {
+        for (int w = 0; w < W - K + 1; w += PK) {
+          for (int c = 0; c < C; c += PC) {
+            long[] payload = new long[PC * K * (K + PK - 1)];
+
+            for (int p = 0; p < PC; p++) {
+              for (int x = 0; x < K; x++) {
+                for (int y = 0; y < K + PK - 1; y++) {
+                  int dstIdx = (p * K * (K + PK - 1) + x * (K + PK - 1) + y);
+                  int srcIdx = (c + p) * H * W + (h + x) * W + (w + y);
+
+                  payload[dstIdx] = ifmap[srcIdx];
+                }
+              }
+            }
+
+            result.add(ConvLayerDataUtils.pack(BW, payload));
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Generate coefficient list
+   * 
+   * @return
+   */
+  public List<Bits> generateCoeff() {
+    int C = params.C;
+    int F = params.F;
+    int H = params.H;
+    int W = params.W;
+    int K = params.K;
+    int PC = params.PC;
+    int PF = params.PF;
+    int PK = params.PK;
+    int BW = params.BW;
+
+    List<Bits> result = new ArrayList<Bits>();
+
+    for (int f = 0; f < F; f += PF) {
+      for (int h = 0; h < H - K + 1; h++) {
+        for (int w = 0; w < W - K + 1; w += PK) {
+          for (int c = 0; c < C; c += PC) {
+            long[] payload = new long[PF * PC * K * K];
+
+            for (int pf = 0; pf < PF; pf++) {
+              for (int pc = 0; pc < PC; pc++) {
+                for (int kx = 0; kx < K; kx++) {
+                  for (int ky = 0; ky < K; ky++) {
+                    int srcIdx = ((f + pf) * C * K * K + (c + pc) * K * K + kx
+                        * K + ky);
+                    int dstIdx = (pf * PC * K * K + pc * K * K + kx * K + ky);
+
+                    payload[dstIdx] = coeff[srcIdx];
+                  }
+                }
+              }
+            }
+
+            result.add(ConvLayerDataUtils.pack(BW, payload));
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Generate output feature map list
+   * 
+   * @return
+   */
+  public List<Bits> generateOfmap() {
+    int F = params.F;
+    int H = params.H;
+    int W = params.W;
+    int K = params.K;
+    int PF = params.PF;
+    int PK = params.PK;
+    int BW = params.BW;
+
+    List<Bits> result = new ArrayList<Bits>();
+
+    for (int f = 0; f < F; f += PF) {
+      for (int h = 0; h < H - K + 1; h++) {
+        for (int w = 0; w < W - K + 1; w += PK) {
+          long[] payload = new long[PF * PK];
+
+          for (int pf = 0; pf < PF; pf++) {
+            for (int pk = 0; pk < PK; pk++) {
+              int srcIdx = ((f + pf) * (H - K + 1) * (W - K + 1) + h
+                  * (W - K + 1) + (w + pk));
+              int dstIdx = pf * PK + pk;
+
+              payload[dstIdx] = ofmap[srcIdx];
+            }
+          }
+
+          result.add(ConvLayerDataUtils.pack(BW, payload));
+        }
+      }
+    }
+
+    return result;
   }
 }

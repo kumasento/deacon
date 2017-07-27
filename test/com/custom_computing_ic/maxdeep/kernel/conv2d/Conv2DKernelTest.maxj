@@ -1,5 +1,11 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.data.ConvLayerDataGenerator;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
@@ -31,13 +37,17 @@ public class Conv2DKernelTest {
   private class TestData {
     private final ConvLayerParameters params;
     
-    public Bits[] ifmap;
-    public Bits[] coeff;
-    public Bits[] ofmap;
+    public List<Bits> ifmap;
+    public List<Bits> coeff;
+    public List<Bits> ofmap;
 
     TestData(ConvLayerParameters params) {
       this.params = params;
       
+      ConvLayerDataGenerator gen = new ConvLayerDataGenerator(params);
+      this.ifmap = gen.generateIfmap();
+      this.coeff = gen.generateCoeff();
+      this.ofmap = gen.generateOfmap();
     }
 
     public long getNumCycles() {
@@ -46,16 +56,34 @@ public class Conv2DKernelTest {
       return totalCycles / (params.PC * params.PF * params.PK);
     }
   }
+  
+  @Test
+  public void testWithoutParallel() { test(1, 4, 1, 1, 1); }
+  
+  @Test
+  public void testWithFilterParallel() { test(1, 4, 1, 2, 1); }
+  
+  @Test
+  public void testWithChannelParallel() { test(2, 4, 2, 2, 1); }
 
-  private void test(int PC, int PF, int PK) {
+  @Test
+  public void testWithKernelParallel() { test(2, 4, 2, 2, 2); }
+  
+  private void test(int C, int F, int PC, int PF, int PK) {
     ConvLayerParameters convParams = new ConvLayerParameters.Builder(
-        10, 10, 4, 4, 3).PC(PC).PF(PF).PK(PK).build();
+        10, 10, C, F, 3).PC(PC).PF(PF).PK(PK).build();
     SimulationManager mgr = new SimulationManager(String.format(
-        "Conv2DTest_%d_%d_%d", PC, PF, PK));
+        "Conv2DTest_%d_%d_%d_%d_%d", C, F, PC, PF, PK));
     TestKernel knl = new TestKernel(mgr.makeKernelParameters(), convParams);
     TestData data = new TestData(convParams);
     
     mgr.setKernel(knl);
     mgr.setKernelCycles(data.getNumCycles());
+    mgr.setInputDataRaw("ifmap", data.ifmap);
+    mgr.setInputDataRaw("coeff", data.coeff);
+    mgr.runTest();
+    
+    List<Bits> ofmap = mgr.getOutputDataRaw("ofmap");
+    Assert.assertArrayEquals(data.ofmap.toArray(), ofmap.toArray());
   }
 }
