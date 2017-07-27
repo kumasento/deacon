@@ -41,8 +41,8 @@ public class ConvLayerKernel extends Kernel {
 
     this.scalarT = scalarT;
     this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
-    this.coeffVecT = new DFEVectorType<DFEVar>(scalarT,
-        convParams.getKernelSize() * convParams.getKernelSize());
+    this.coeffVecT = new DFEVectorType<DFEVar>(scalarT, convParams.K
+        * convParams.K);
     this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
 
     this.ifmap = ifmapVecT.newInstance(this);

@@ -11,38 +11,22 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d;
  */
 public class ConvLayerParameters {
 
-  private final int ifmapHeight;
-  private final int ifmapWidth;
-  private final int ifmapNumChnl;
-  private final int ofmapNumChnl;
-  private final int kernelSize;
+  public final int H;
+  public final int W;
+  public final int C;
+  public final int F;
+  public final int K;
+  public final int PC, PF, PK;
 
   public ConvLayerParameters(Builder builder) {
-    this.ifmapHeight = builder.ifmapHeight;
-    this.ifmapWidth = builder.ifmapWidth;
-    this.ifmapNumChnl = builder.ifmapNumChnl;
-    this.ofmapNumChnl = builder.ofmapNumChnl;
-    this.kernelSize = builder.kernelSize;
-  }
-
-  public int getIfmapHeight() {
-    return ifmapHeight;
-  }
-
-  public int getIfmapWidth() {
-    return ifmapWidth;
-  }
-
-  public int getIfmapNumChnl() {
-    return ifmapNumChnl;
-  }
-
-  public int getOfmapNumChnl() {
-    return ofmapNumChnl;
-  }
-
-  public int getKernelSize() {
-    return kernelSize;
+    this.H = builder.H;
+    this.W = builder.W;
+    this.C = builder.C;
+    this.F = builder.F;
+    this.K = builder.K;
+    this.PC = builder.PC;
+    this.PF = builder.PF;
+    this.PK = builder.PK;
   }
 
   /**
@@ -52,34 +36,57 @@ public class ConvLayerParameters {
    * 
    */
   public static class Builder {
-    private final int ifmapHeight;
-    private final int ifmapWidth;
-    private final int ifmapNumChnl;
-    private final int ofmapNumChnl;
-    private final int kernelSize;
+    private final int H;
+    private final int W;
+    private final int C;
+    private final int F;
+    private final int K;
+    private int       PC;
+    private int       PF;
+    private int       PK;
 
-    public Builder(int ifmapHeight, int ifmapWidth, int ifmapNumChnl,
-        int ofmapNumChnl, int kernelSize) {
+    public Builder(int H, int W, int C, int F, int K) {
 
-      if (ifmapHeight <= 0)
-        throw new IllegalArgumentException(
-            "ifmapHeight should be larger than 0");
-      if (ifmapWidth <= 0)
-        throw new IllegalArgumentException("ifmapWidth should be larger than 0");
-      if (ifmapNumChnl <= 0)
-        throw new IllegalArgumentException(
-            "ifmapNumChnl should be larger than 0");
-      if (ofmapNumChnl <= 0)
-        throw new IllegalArgumentException(
-            "ofmapNumChnl should be larger than 0");
-      if (kernelSize <= 0)
-        throw new IllegalArgumentException("kernelSize should be larger than 0");
+      if (H <= 0)
+        throw new IllegalArgumentException("H should be larger than 0");
+      if (W <= 0)
+        throw new IllegalArgumentException("W should be larger than 0");
+      if (C <= 0)
+        throw new IllegalArgumentException("C should be larger than 0");
+      if (F <= 0)
+        throw new IllegalArgumentException("F should be larger than 0");
+      if (K <= 0)
+        throw new IllegalArgumentException("K should be larger than 0");
 
-      this.ifmapHeight = ifmapHeight;
-      this.ifmapWidth = ifmapWidth;
-      this.ifmapNumChnl = ifmapNumChnl;
-      this.ofmapNumChnl = ofmapNumChnl;
-      this.kernelSize = kernelSize;
+      this.H = H;
+      this.W = W;
+      this.C = C;
+      this.F = F;
+      this.K = K;
+      this.PF = 1;
+      this.PC = 1;
+      this.PK = 1;
+    }
+
+    public Builder PF(int PF) {
+      if (PF <= 0)
+        throw new IllegalArgumentException("PF should be larger than 0");
+      this.PF = PF;
+      return this;
+    }
+
+    public Builder PK(int PK) {
+      if (PK <= 0)
+        throw new IllegalArgumentException("PK should be larger than 0");
+      this.PK = PK;
+      return this;
+    }
+
+    public Builder PC(int PC) {
+      if (PC <= 0)
+        throw new IllegalArgumentException("PC should be larger than 0");
+      this.PC = PC;
+      return this;
     }
 
     public ConvLayerParameters build() {

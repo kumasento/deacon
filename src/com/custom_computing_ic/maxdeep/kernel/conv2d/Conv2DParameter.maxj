@@ -1,5 +1,6 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+@Deprecated
 public class Conv2DParameter {
 
   public enum Mode {
