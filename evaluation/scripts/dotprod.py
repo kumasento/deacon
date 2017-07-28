@@ -15,7 +15,7 @@ BUILD_PARAMS = [
 if __name__ == '__main__':
 
   with open('data/dotprod.csv', 'w') as csvfile:
-    csvwriter = csv.writer(csvfile, delimiter=' ')
+    csvwriter = csv.writer(csvfile)
     csvwriter.writerow(['bit_width', 'vec_size', 'LUT', 'FF', 'BRAM', 'DSP'])
 
     for build_param in BUILD_PARAMS:
