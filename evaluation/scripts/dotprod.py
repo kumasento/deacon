@@ -5,12 +5,15 @@ from __future__ import print_function
 import os
 import csv
 
-BUILD_PARAMS = [
-  [ 9,  32 ], [ 16, 32 ], [ 25, 32 ], [ 36, 32 ], [ 49, 32 ],
-  [ 9,  16 ], [ 16, 16 ], [ 25, 16 ], [ 36, 16 ], [ 49, 16 ],
-  [ 9,  8  ], [ 16, 8  ], [ 25, 8  ], [ 36, 8  ], [ 49, 8  ],
-  [ 9,  4  ], [ 16, 4  ], [ 25, 4  ], [ 36, 4  ], [ 49, 4  ],
-]
+VEC_SIZE_LIST = [ 9, 16, 25, 36, 49, 64, 81, 100, 121 ]
+
+BIT_WIDTH_LIST = [ 32, 16, 8, 4 ]
+
+BUILD_PARAMS = [ ]
+
+for b in BIT_WIDTH_LIST:
+  for v in VEC_SIZE_LIST:
+    BUILD_PARAMS.append([v, b])
 
 if __name__ == '__main__':
 
