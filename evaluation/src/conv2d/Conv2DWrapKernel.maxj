@@ -5,6 +5,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 
@@ -28,7 +29,7 @@ public class Conv2DWrapKernel extends Kernel {
 
     this.convParams = convParams;
 
-    DFEType scalarT = dfeUInt(convParams.BW);
+    DFEType scalarT = dfeFix(0, convParams.BW, SignMode.UNSIGNED);
 
     Conv2DKernel conv2d = new Conv2DKernel(getKernel(), convParams, scalarT);
     DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv2d.getIfmapT());

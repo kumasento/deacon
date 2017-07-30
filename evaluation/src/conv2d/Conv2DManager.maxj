@@ -40,33 +40,33 @@ public class Conv2DManager extends CustomManager {
     addStreamToCPU("ofmap") <== knl.getOutput(Conv2DWrapKernel.OFMAP_NAME);
   }
   
-  public EngineInterface interfaceDefault(ConvLayerParameters convParams) {
-    EngineInterface ei = new EngineInterface();
-    
-    Conv2DKernelTest.TestData data = new Conv2DKernelTest.TestData(convParams);
-    ei.setTicks(KERNEL_NAME, data.getNumCycles());
-    ei.setStream(
-        "ifmap",
-        CPUTypes.UINT8,
-        CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getIfmapWidth());
-    ei.setStream(
-        "coeff",
-        CPUTypes.UINT8,
-        CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getCoeffWidth());
-    ei.setStream(
-        "ofmap",
-        CPUTypes.UINT8,
-        CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getOfmapWidth());
-    
-    return ei;
-  }
+  // public EngineInterface interfaceDefault(ConvLayerParameters convParams) {
+  //   EngineInterface ei = new EngineInterface();
+  //   
+  //   Conv2DKernelTest.TestData data = new Conv2DKernelTest.TestData(convParams);
+  //   ei.setTicks(KERNEL_NAME, data.getNumCycles());
+  //   ei.setStream(
+  //       "ifmap",
+  //       CPUTypes.UINT8,
+  //       CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getIfmapWidth());
+  //   ei.setStream(
+  //       "coeff",
+  //       CPUTypes.UINT8,
+  //       CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getCoeffWidth());
+  //   ei.setStream(
+  //       "ofmap",
+  //       CPUTypes.UINT8,
+  //       CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getOfmapWidth());
+  //   
+  //   return ei;
+  // }
   
   public static void main(String[] args) {
     Conv2DEngineParameters params = new Conv2DEngineParameters(args);
     ConvLayerParameters convParams = new ConvLayerParameters.Builder(H, W, C,
         F, K).PC(params.getPC()).PF(params.getPF()).PK(params.getPK()).build();
     Conv2DManager mgr = new Conv2DManager(params, convParams);
-    mgr.createSlicInterface(mgr.interfaceDefault(convParams));
+    // mgr.createSlicInterface(mgr.interfaceDefault(convParams));
     mgr.build();
   }
 
