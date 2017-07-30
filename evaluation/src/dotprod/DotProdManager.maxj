@@ -9,6 +9,9 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
+import dotprod.DotProdEngineParameters;
+import dotprod.DotProdKernel;
+
 public final class DotProdManager extends CustomManager {
 
   private final DFEType dfeT = DFETypeFactory.dfeUInt(32);
