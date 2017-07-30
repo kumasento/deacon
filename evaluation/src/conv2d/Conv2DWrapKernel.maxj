@@ -3,9 +3,11 @@ package conv2d;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration.OptimizationOptions.DSPMulAddChainBehaviour;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 
@@ -26,6 +28,10 @@ public class Conv2DWrapKernel extends Kernel {
   public Conv2DWrapKernel(KernelParameters params,
       ConvLayerParameters convParams) {
     super(params);
+    
+    // TODO: remove muladd optimisation for now
+    KernelConfiguration config = getKernelConfig();
+    config.optimization.setDSPMulAddChainBehavior(DSPMulAddChainBehaviour.IGNORE);
 
     this.convParams = convParams;
 
