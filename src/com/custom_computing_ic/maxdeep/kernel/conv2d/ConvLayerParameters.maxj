@@ -92,6 +92,8 @@ public class ConvLayerParameters {
       if (PK <= 0)
         throw new IllegalArgumentException("PK should be larger than 0");
       // TODO: we need to verify whether it is a good condition
+      if (W % PK != 0)
+        throw new IllegalArgumentException("W % PK should equal 0");
       if ((W - K + 1) % PK != 0)
         throw new IllegalArgumentException("OW % PK should equal 0");
       if ((K + PK - 1) % PK != 0)
