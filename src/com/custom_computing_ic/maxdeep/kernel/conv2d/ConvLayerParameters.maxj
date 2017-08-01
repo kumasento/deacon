@@ -94,6 +94,8 @@ public class ConvLayerParameters {
       // TODO: we need to verify whether it is a good condition
       if ((W - K + 1) % PK != 0)
         throw new IllegalArgumentException("OW % PK should equal 0");
+      if ((K + PK - 1) % PK != 0)
+        throw new IllegalArgumentException("(K + PK - 1) % PK should equal 0");
       this.PK = PK;
       return this;
     }
