@@ -34,20 +34,43 @@ public class Conv2DKernelTest {
     }
   }
 
-  private class TestData {
+  public static class TestData {
     private final ConvLayerParameters params;
     
     public List<Bits> ifmap;
     public List<Bits> coeff;
     public List<Bits> ofmap;
 
-    TestData(ConvLayerParameters params) {
+    public TestData(ConvLayerParameters params) {
       this.params = params;
       
       ConvLayerDataGenerator gen = new ConvLayerDataGenerator(params);
       this.ifmap = gen.generateIfmap();
       this.coeff = gen.generateCoeff();
       this.ofmap = gen.generateOfmap();
+    }
+    
+    public int getIfmapWidth() {
+      int PC = params.PC;
+      int PK = params.PK;
+      int K = params.K;
+      
+      return PC * K * (K + PK - 1);
+    }
+    
+    public int getCoeffWidth() {
+      int PC = params.PC;
+      int PF = params.PF;
+      int K = params.K;
+      
+      return PF * PC * K * K;
+    }
+    
+    public int getOfmapWidth() {
+      int PF = params.PF;
+      int PK = params.PK;
+      
+      return PF * PK;
     }
 
     public long getNumCycles() {
