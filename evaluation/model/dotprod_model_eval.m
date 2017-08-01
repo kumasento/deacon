@@ -2,7 +2,7 @@
 
 filename = fullfile('..', 'data', 'dotprod.csv');
 data = csvread(filename, 1);
-data32b = data(1:5, :);
+data32b = data(1:9, :);
 Ua32b = [0 32 0 0];
 Um32b = [0 1 0 2];
 V = data32b(:, 2);
