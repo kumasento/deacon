@@ -14,6 +14,8 @@ public class ConvLayerParameters {
   public final int     PC, PF, PK; // level of parallelisation
   public final int     H;         // height
   public final int     W;         // width
+  public final int     OH;
+  public final int     OW;
   public final int     C;         // number of channels
   public final int     F;         // number of filters
   public final int     K;         // kernel size
@@ -36,6 +38,8 @@ public class ConvLayerParameters {
     this.C = builder.C;
     this.F = builder.F;
     this.K = builder.K;
+    this.OH = H - K + 1;
+    this.OW = W - K + 1;
     this.BW = builder.BW;
     this.PC = builder.PC;
     this.PF = builder.PF;

@@ -4,7 +4,10 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
@@ -33,6 +36,10 @@ public class ConvLayerKernel extends KernelComponent {
   private DFEVar f;
   
   private final ConvLayerIfmapBuffer ibuf; 
+  
+  private final ConvLayerLineBuffer lbuf;
+  
+  private final ConvLayerOfmapBuffer obuf;
 
   public ConvLayerKernel(KernelBase<?> owner,
       ConvLayerParameters convParams, DFEType scalarT) {
@@ -60,6 +67,60 @@ public class ConvLayerKernel extends KernelComponent {
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, scalarT);
     DFEVector<DFEVar> ifmapBufVec =
       ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
+    
+    /* line buffer */
+    lbuf = new ConvLayerLineBuffer(getOwner(), cp, scalarT);
+    lbuf.setInput(ifmapBufVec);
+    DFEVector<DFEVar> lineBufVec = lbuf.getOutputVec();
+    
+    /* conv2d */
+    Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, scalarT);
+    conv2d.setInputs(lineBufVec, coeff);
+    DFEVector<DFEVar> conv2dOfmap = conv2d.getOfmap();
+    
+    /* output buffer */
+    obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT);
+    this.ofmap <==
+      obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+  }
+  
+  public DFEVar getOfmapEn() {
+    switch (cp.seq) {
+      case CHANNEL_MAJOR:
+        return c === cp.C / cp.PC - 1;
+      default:
+	      throw new IllegalArgumentException(
+	          String.format(
+	              "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+  
+  public DFEVar getOfmapBufferWriteEn() {
+    switch (cp.seq) {
+      case CHANNEL_MAJOR:
+        return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
+      default:
+	      throw new IllegalArgumentException(
+	          String.format(
+	              "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+  
+  public DFEVar getOfmapBufferAddr() {
+    switch (cp.seq) {
+      case CHANNEL_MAJOR:
+        DFEVar oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
+        DFEVar ow = (w * cp.PK <= (cp.K - 1))
+	        ? constant.var(0)
+          : (w - 1) * cp.PK + 1 - cp.K;
+	      return (f * (cp.OH * cp.OW / cp.PK) +
+	              oh * cp.OW / cp.PK +
+	              ow).cast(obuf.getAddrT());
+      default:
+	      throw new IllegalArgumentException(
+	          String.format(
+	              "Computation sequence %s has not been supported yet", cp.seq));
+    }
   }
   
   public DFEVar getIfmapEn() {
