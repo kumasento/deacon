@@ -1,0 +1,81 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+public class ConvLayerIfmapBuffer extends KernelComponent {
+
+  private final ConvLayerParameters       cp;
+
+  private final DFEType                   scalarT;
+  private final DFEVectorType<DFEVar>     portVecT;
+  private final DFEType                   addrT;
+
+  private final Memory<DFEVector<DFEVar>> mem;
+  private final DFEVector<DFEVar>         port;
+  private final DFEVar                    addr;
+  private final DFEVector<DFEVar>         data;
+  private final DFEVar                    writeEn;
+
+  public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
+      DFEType scalarT) {
+    super(owner);
+
+    this.cp = params;
+    this.scalarT = scalarT;
+
+    int width = getWidth();
+    int depth = getDepth();
+
+    this.addrT = dfeUInt(MathUtils.bitsToAddress(depth));
+    this.portVecT = new DFEVectorType<DFEVar>(scalarT, width);
+
+    this.mem = owner.mem.alloc(portVecT, depth);
+    this.addr = addrT.newInstance(owner);
+    this.data = portVecT.newInstance(owner);
+    this.writeEn = dfeBool().newInstance(owner);
+    this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+  }
+  
+  public DFEType getAddrT() {
+    return addrT;
+  }
+
+  public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
+    this.data <== data;
+    this.addr <== addr;
+    this.writeEn <== writeEn;
+    return this.port;
+  }
+
+  public DFEVectorType<DFEVar> getPortVecT() {
+    return portVecT;
+  }
+
+  public int getWidth() {
+    if (cp.seq == CompSeq.CHANNEL_MAJOR) {
+      return cp.PK * cp.PC;
+    } else {
+      throw new IllegalArgumentException(String.format(
+          "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+
+  public int getDepth() {
+    if (cp.seq == CompSeq.CHANNEL_MAJOR) {
+      return cp.H * (cp.W / cp.PK) / cp.PC;
+    } else {
+      throw new IllegalArgumentException(String.format(
+          "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+}

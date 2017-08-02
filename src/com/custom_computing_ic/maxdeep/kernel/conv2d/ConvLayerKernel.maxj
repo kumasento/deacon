@@ -3,8 +3,10 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
-import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
-import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -16,37 +18,87 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  * @author Ruizhe Zhao
  * 
  */
-public class ConvLayerKernel extends Kernel {
+public class ConvLayerKernel extends KernelComponent {
 
   private final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
   private final DFEType               scalarT;
   private final DFEVector<DFEVar>     ifmap, coeff, ofmap;
-  private final ConvLayerParameters   convParams;
+  private final ConvLayerParameters   cp;
+  
+  /* counters */
+  private DFEVar h;
+  private DFEVar w;
+  private DFEVar c;
+  private DFEVar f;
 
-  /**
-   * constructor
-   * 
-   * @param params
-   *          kernel parameters
-   * @param convParams
-   *          parameters for convolution layer
-   * @param scalarT
-   *          data type
-   */
-  public ConvLayerKernel(KernelParameters params,
+  public ConvLayerKernel(KernelBase<?> owner,
       ConvLayerParameters convParams, DFEType scalarT) {
-    super(params);
+    super(owner);
 
-    this.convParams = convParams;
+    this.cp = convParams;
 
+    /* scalar type */
     this.scalarT = scalarT;
-    this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
-    this.coeffVecT = new DFEVectorType<DFEVar>(scalarT, convParams.K
-        * convParams.K);
-    this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, 1);
 
-    this.ifmap = ifmapVecT.newInstance(this);
-    this.coeff = coeffVecT.newInstance(this);
-    this.ofmap = ofmapVecT.newInstance(this);
+    /* vector type */
+    this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, getIfmapVecSize());
+    this.coeffVecT = new DFEVectorType<DFEVar>(scalarT, getCoeffVecSize());
+    this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, getOfmapVecSize());
+
+    /* streams */
+    this.ifmap = ifmapVecT.newInstance(owner);
+    this.coeff = coeffVecT.newInstance(owner);
+    this.ofmap = ofmapVecT.newInstance(owner);
+    
+    /* counters */
+    initCounters();
+  }
+
+  public int getIfmapVecSize() {
+    return cp.PC * cp.PK;
+  }
+
+  public int getCoeffVecSize() {
+    return cp.PF * cp.PK * cp.K;
+  }
+
+  public int getOfmapVecSize() {
+    return cp.PF * cp.PK;
+  }
+
+  public DFEVectorType<DFEVar> getIfmapVecT() {
+    return this.ifmapVecT;
+  }
+
+  public DFEVectorType<DFEVar> getCoeffVecT() {
+    return coeffVecT;
+  }
+
+  public DFEVectorType<DFEVar> getOfmapVecT() {
+    return ofmapVecT;
+  }
+  
+  public void setInputs(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
+    this.ifmap <== ifmap;
+    this.coeff <== coeff;
+  }
+  
+  public DFEVector<DFEVar> getOfmap() {
+    return this.ofmap;
+  }
+  
+  private void initCounters() {
+    CounterChain chain = getOwner().control.count.makeCounterChain();
+    
+    if (cp.seq == CompSeq.CHANNEL_MAJOR) {
+      c = chain.addCounter(cp.C, cp.PC);
+      f = chain.addCounter(cp.F, cp.PF);
+      h = chain.addCounter(cp.H, 1);
+      w = chain.addCounter(cp.W, cp.PK);
+    } else {
+      throw new IllegalArgumentException(
+          String.format(
+              "Computation sequence %s has not been supported yet", cp.seq));
+    }
   }
 }
