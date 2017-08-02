@@ -12,6 +12,19 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
+/**
+ * Buffer for input feature map stream.
+ * 
+ * HOW TO USE:
+ * <pre>
+ * ConvLayerParameters cp = ...;
+ * ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(getKernel(), cp, scalarT);
+ * dataOut <== ibuf.port(data, addr, writeEn);
+ * </pre>
+ * 
+ * @author Ruizhe Zhao
+ *
+ */
 public class ConvLayerIfmapBuffer extends KernelComponent {
 
   private final ConvLayerParameters       cp;
