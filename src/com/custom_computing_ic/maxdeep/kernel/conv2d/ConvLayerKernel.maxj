@@ -4,6 +4,7 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
@@ -30,6 +31,8 @@ public class ConvLayerKernel extends KernelComponent {
   private DFEVar w;
   private DFEVar c;
   private DFEVar f;
+  
+  private final ConvLayerIfmapBuffer ibuf; 
 
   public ConvLayerKernel(KernelBase<?> owner,
       ConvLayerParameters convParams, DFEType scalarT) {
@@ -52,6 +55,26 @@ public class ConvLayerKernel extends KernelComponent {
     
     /* counters */
     initCounters();
+    
+    /* ifmap buffer */
+    ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, scalarT);
+    DFEVector<DFEVar> ifmapBufVec =
+      ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
+  }
+  
+  public DFEVar getIfmapEn() {
+    return getIfmapBufferWriteEn();
+  }
+  
+  public DFEVar getCoeffEn() {
+    switch (cp.seq) {
+      case CHANNEL_MAJOR:
+        return (h === 0) & (w === 0);
+      default:
+	      throw new IllegalArgumentException(
+	          String.format(
+	              "Computation sequence %s has not been supported yet", cp.seq));
+    }
   }
 
   public int getIfmapVecSize() {
@@ -94,11 +117,34 @@ public class ConvLayerKernel extends KernelComponent {
       c = chain.addCounter(cp.C, cp.PC);
       f = chain.addCounter(cp.F, cp.PF);
       h = chain.addCounter(cp.H, 1);
-      w = chain.addCounter(cp.W, cp.PK);
+      w = chain.addCounter(cp.W / cp.PK, 1);
     } else {
       throw new IllegalArgumentException(
           String.format(
               "Computation sequence %s has not been supported yet", cp.seq));
     }
   }
+  
+  private DFEVar getIfmapBufferAddr() {
+    if (cp.seq == CompSeq.CHANNEL_MAJOR) {
+      DFEVar addr = h * (cp.W / cp.PK) + w;
+      return addr.cast(ibuf.getAddrT());
+    } else {
+      throw new IllegalArgumentException(
+          String.format(
+              "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+  
+  private DFEVar getIfmapBufferWriteEn() {
+    switch (cp.seq) {
+      case CHANNEL_MAJOR:
+        return f === 0;
+	    default:
+	      throw new IllegalArgumentException(
+	          String.format(
+	              "Computation sequence %s has not been supported yet", cp.seq));
+    }
+  }
+  
 }

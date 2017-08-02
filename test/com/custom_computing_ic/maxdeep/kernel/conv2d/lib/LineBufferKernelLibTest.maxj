@@ -7,7 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.LineBufferKernelLib;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.LineBufferKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -39,7 +39,7 @@ public class LineBufferKernelLibTest {
       DFEVar width = io.scalarInput("width", dfeInt(32));
       DFEVar capacity = io.scalarInput("capacity", dfeInt(32));
 
-      LineBufferKernelLib knl = new LineBufferKernelLib(this, maxHeight,
+      LineBufferKernel knl = new LineBufferKernel(this, maxHeight,
           maxWidth, numPipes, type);
       knl.setInput(inp);
       knl.setHeight(height);
