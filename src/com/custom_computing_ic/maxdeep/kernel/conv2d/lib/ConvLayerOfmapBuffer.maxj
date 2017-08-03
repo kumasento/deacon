@@ -14,6 +14,14 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 /**
  * Buffer for output feature map stream.
  * 
+ * HOW TO USE:
+ * 
+ * <pre>
+ * {@link ConvLayerOfmapBuffer} obuf =
+ *   new {@link ConvLayerOfmapBuffer}(getKernel(), cp, scalarT);
+ * data <== obuf.port(addr, dataIn, writeEn);
+ * </pre>
+ * 
  * @author Ruizhe Zhao
  * @since 03/08/2017
  *
@@ -31,9 +39,16 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
   private final DFEVar                    addr;
   private final DFEVector<DFEVar>         data;
   private final DFEVar                    writeEn;
+  private final DFEVector<DFEVar>         result;
   
   private final int WRITE_LATENCY = 3;
 
+  /**
+   * 
+   * @param owner
+   * @param params
+   * @param scalarT
+   */
   public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
       DFEType scalarT) {
     super(owner);
@@ -52,12 +67,16 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
     this.port = mem.read(addr); // mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+    this.result = data + port;
     
     /* TODO: we assume the read result of an unwritten address is 0 */
     mem.write(
         stream.offset(addr, - WRITE_LATENCY),
-        stream.offset(data + port, - WRITE_LATENCY),
+        stream.offset(result, - WRITE_LATENCY),
         stream.offset(writeEn, - WRITE_LATENCY));
+    
+    debug.simPrintf("input = %KObj%\n", data);
+    debug.simPrintf("output = %KObj%\n", result);
   }
   
   public DFEType getAddrT() {
@@ -68,7 +87,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     this.data <== data;
     this.addr <== addr;
     this.writeEn <== writeEn;
-    return this.port;
+    return this.result;
   }
 
   public DFEVectorType<DFEVar> getPortVecT() {
