@@ -43,9 +43,9 @@ public class ConvLayerDataGenerator {
     Random rand = new Random(42);
 
     for (int i = 0; i < ifmapSize; i++)
-      ifmap[i] = rand.nextInt() % 100;
+      ifmap[i] = rand.nextInt() % 10;
     for (int i = 0; i < coeffSize; i++)
-      coeff[i] = rand.nextInt() % 100;
+      coeff[i] = rand.nextInt() % 10;
 
     for (int f = 0; f < F; f++) {
       for (int h = 0; h < H - K + 1; h++) {
@@ -55,18 +55,29 @@ public class ConvLayerDataGenerator {
 
             int ofmapIndex = (f * (H - K + 1) * (W - K + 1) + h * (W - K + 1) + w);
 
+            System.out.printf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
             for (int kx = 0; kx < K; kx++) {
               for (int ky = 0; ky < K; ky++) {
                 int ifmapIndex = (c * H * W + (h + kx) * W + (w + ky));
                 int coeffIndex = (f * C * K * K + c * K * K + kx * K + ky);
+
+                System.out.printf(
+                    "ifmap[%d][%d] = %d\n", kx, ky, ifmap[ifmapIndex]);
+                System.out.printf(
+                    "coeff[%d][%d] = %d\n", kx, ky, coeff[coeffIndex]);
                 sum += ifmap[ifmapIndex] * coeff[coeffIndex];
               }
             }
 
+            System.out.printf("sum = %d\n", sum);
             ofmap[ofmapIndex] += sum;
           }
         }
       }
+    }
+
+    for (int i = 0; i < ofmap.length; i++) {
+      System.out.printf("ofmap[%d] = %d\n", i, ofmap[i]);
     }
   }
 
@@ -107,6 +118,41 @@ public class ConvLayerDataGenerator {
 
             result.add(ConvLayerDataUtils.pack(BW, payload));
           }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  public List<Bits> generateIfmapOrigin() {
+    int C = params.C;
+    int F = params.F;
+    int H = params.H;
+    int W = params.W;
+    int K = params.K;
+    int PC = params.PC;
+    int PF = params.PF;
+    int PK = params.PK;
+    int BW = params.BW;
+
+    List<Bits> result = new ArrayList<Bits>();
+
+    for (int c = 0; c < C; c += PC) {
+      for (int h = 0; h < H; h++) {
+        for (int w = 0; w < W; w += PK) {
+          long[] payload = new long[PC * PK];
+
+          for (int pc = 0; pc < PC; pc++) {
+            for (int pk = 0; pk < PK; pk++) {
+              int dstIdx = pc * PK + pk;
+              int srcIdx = (c + pc) * H * W + h * W + (w + pk);
+
+              payload[dstIdx] = ifmap[srcIdx];
+            }
+          }
+
+          result.add(ConvLayerDataUtils.pack(BW, payload));
         }
       }
     }
@@ -161,6 +207,44 @@ public class ConvLayerDataGenerator {
     return result;
   }
 
+  public List<Bits> generateCoeffOrigin() {
+    int C = params.C;
+    int F = params.F;
+    int H = params.H;
+    int W = params.W;
+    int K = params.K;
+    int PC = params.PC;
+    int PF = params.PF;
+    int PK = params.PK;
+    int BW = params.BW;
+
+    List<Bits> result = new ArrayList<Bits>();
+
+    /* TODO: only works for CHANNEL_MAJOR */
+    for (int c = 0; c < C; c += PC) {
+      for (int f = 0; f < F; f += PF) {
+        long[] payload = new long[PF * PC * K * K];
+
+        for (int pf = 0; pf < PF; pf++) {
+          for (int pc = 0; pc < PC; pc++) {
+            for (int kx = 0; kx < K; kx++) {
+              for (int ky = 0; ky < K; ky++) {
+                int srcIdx = ((f + pf) * C * K * K + (c + pc) * K * K + kx * K + ky);
+                int dstIdx = (pf * PC * K * K + pc * K * K + kx * K + ky);
+
+                payload[dstIdx] = coeff[srcIdx];
+              }
+            }
+          }
+        }
+
+        result.add(ConvLayerDataUtils.pack(BW, payload));
+      }
+    }
+
+    return result;
+  }
+
   /**
    * Generate output feature map list
    * 
@@ -199,4 +283,10 @@ public class ConvLayerDataGenerator {
 
     return result;
   }
+
+  public long getNumCycles() {
+    long totalCycles = params.C * params.F * params.H * params.W;
+    return totalCycles / (params.PC * params.PF * params.PK);
+  }
+
 }

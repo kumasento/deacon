@@ -57,6 +57,9 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
     this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+    
+    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
+    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
   }
   
   public DFEType getAddrT() {
@@ -85,7 +88,7 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
 
   public int getDepth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-      return cp.H * (cp.W / cp.PK) / cp.PC;
+      return cp.H * (cp.W / cp.PK);
     } else {
       throw new IllegalArgumentException(String.format(
           "Computation sequence %s has not been supported yet", cp.seq));

@@ -83,6 +83,10 @@ public class Conv2DKernel extends KernelComponent {
      * computation
      */
     compute(ifmap, coeff, ofmap);
+    
+    debug.simPrintf("[Conv2DKernel] ifmap = %KObj%\n", ifmap);
+    debug.simPrintf("[Conv2DKernel] coeff = %KObj%\n", coeff);
+    debug.simPrintf("[Conv2DKernel] ofmap = %KObj%\n", ofmap);
   }
   
   /**
@@ -146,8 +150,8 @@ public class Conv2DKernel extends KernelComponent {
   }
   
   public void setInputs(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
-    this.ifmap <== ifmap;
-    this.coeff <== coeff;
+    this.ifmap.connect(ifmap);
+    this.coeff.connect(coeff);
   }
   
   public DFEVector<DFEVar> getOfmap() { return ofmap; }

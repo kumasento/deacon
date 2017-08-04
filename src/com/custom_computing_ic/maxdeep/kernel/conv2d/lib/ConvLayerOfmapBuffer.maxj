@@ -75,8 +75,11 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
         stream.offset(result, - WRITE_LATENCY),
         stream.offset(writeEn, - WRITE_LATENCY));
     
-    debug.simPrintf("input = %KObj%\n", data);
-    debug.simPrintf("output = %KObj%\n", result);
+    debug.simPrintf("[ConvLayerOfmapBuffer] input = %KObj%\n", data);
+    debug.simPrintf("[ConvLayerOfmapBuffer] read = %KObj%\n", port);
+    debug.simPrintf("[ConvLayerOfmapBuffer] output = %KObj%\n", result);
+    debug.simPrintf("[ConvLayerOfmapBuffer] writeEn = %KObj%\n", writeEn);
+    debug.simPrintf("[ConvLayerOfmapBuffer] addr = %KObj%\n", addr);
   }
   
   public DFEType getAddrT() {
@@ -105,7 +108,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
 
   public int getDepth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-      return cp.OH * cp.OW / cp.PK;
+      return cp.F * cp.OH * cp.OW / cp.PK;
     } else {
       throw new IllegalArgumentException(String.format(
           "Computation sequence %s has not been supported yet", cp.seq));

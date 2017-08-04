@@ -82,12 +82,14 @@ public class ConvLayerKernel extends KernelComponent {
     obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT);
     this.ofmap <==
       obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+    
+    debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
   }
   
   public DFEVar getOfmapEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        return c === cp.C / cp.PC - 1;
+        return c.eq(cp.C / cp.PC - 1) & getOfmapBufferWriteEn();
       default:
 	      throw new IllegalArgumentException(
 	          String.format(
@@ -110,9 +112,14 @@ public class ConvLayerKernel extends KernelComponent {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         DFEVar oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
-        DFEVar ow = (w * cp.PK <= (cp.K - 1))
+        DFEVar ow = (w * cp.PK < (cp.K - 1))
 	        ? constant.var(0)
-          : (w - 1) * cp.PK + 1 - cp.K;
+          : (w * cp.PK + 1 - cp.K) / cp.PK;
+	      oh = oh.cast(f.getType());
+	      ow = ow.cast(f.getType());
+	      debug.simPrintf("addr = %KObj%\n", f * (cp.OH * cp.OW / cp.PK) +
+	              oh * cp.OW / cp.PK +
+	              ow);
 	      return (f * (cp.OH * cp.OW / cp.PK) +
 	              oh * cp.OW / cp.PK +
 	              ow).cast(obuf.getAddrT());
@@ -130,7 +137,7 @@ public class ConvLayerKernel extends KernelComponent {
   public DFEVar getCoeffEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        return (h === 0) & (w === 0);
+        return (h.eq(0)) & (w.eq(0));
       default:
 	      throw new IllegalArgumentException(
 	          String.format(
@@ -143,7 +150,7 @@ public class ConvLayerKernel extends KernelComponent {
   }
 
   public int getCoeffVecSize() {
-    return cp.PF * cp.PK * cp.K;
+    return cp.PF * cp.PC * cp.K * cp.K;
   }
 
   public int getOfmapVecSize() {
@@ -175,10 +182,10 @@ public class ConvLayerKernel extends KernelComponent {
     CounterChain chain = getOwner().control.count.makeCounterChain();
     
     if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-      c = chain.addCounter(cp.C, cp.PC);
-      f = chain.addCounter(cp.F, cp.PF);
-      h = chain.addCounter(cp.H, 1);
-      w = chain.addCounter(cp.W / cp.PK, 1);
+      c = chain.addCounter(cp.C / cp.PC, 1).cast(dfeInt(32));
+      f = chain.addCounter(cp.F / cp.PF, 1).cast(dfeInt(32));
+      h = chain.addCounter(cp.H, 1).cast(dfeInt(32));
+      w = chain.addCounter(cp.W / cp.PK, 1).cast(dfeInt(32));
     } else {
       throw new IllegalArgumentException(
           String.format(
@@ -200,7 +207,7 @@ public class ConvLayerKernel extends KernelComponent {
   private DFEVar getIfmapBufferWriteEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        return f === 0;
+        return f.eq(0);
 	    default:
 	      throw new IllegalArgumentException(
 	          String.format(
