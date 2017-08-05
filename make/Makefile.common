@@ -35,7 +35,8 @@ MAXDEEP?=$(WHEREISROOT)/src
 MAXDEEPTEST?=$(WHEREISROOT)/test
 
 # ---- Source files ----
-ENGINEFILES=$(wildcard $(SRCROOT)/$(APPPKG)/*.maxj $(SRCROOT)/$(APPPKG)/**/*.maxj $(MAXDEEP) $(MAXDEEPTEST))
+MAXDEEPFILES=$(shell find $(MAXDEEP)/ -type f -name '*.maxj')
+ENGINEFILES=$(wildcard $(SRCROOT)/$(APPPKG)/*.maxj $(SRCROOT)/$(APPPKG)/**/*.maxj $(MAXDEEPFILES))
 CPUFILES=$(wildcard $(SRCROOT)/*.c $(SRCROOT)/$(APPPKG)/*.cpp $(SRCROOT)/$(APPPKG)/include/**/*.h)
 # TESTENGINEFILES=$(wildcard ../test/maxdeep/*.maxj) $(ENGINEFILES)
 
