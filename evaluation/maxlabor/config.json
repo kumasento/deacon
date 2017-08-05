@@ -1,11 +1,22 @@
 {
   "conv2d": {
     "params": {
-      "bitWidth": [ 32 ],
-      "PF": [ 1, 2 ],
-      "PK": [ 1, 2 ],
-      "PC": [ 1, 2 ],
-      "MAXCOMPILER_BUILD_DIR": ["/mnt/data/scratch/rz3515/builds"]
+      "bitWidth": [32],
+      "PF": [1, 2],
+      "PK": [1, 2],
+      "PC": [1, 2]
+    },
+    "buildParams": {
+      "MAXCOMPILER_BUILD_DIR": "/mnt/data/scratch/rz3515/builds"
+    },
+    "config": {
+      "files": [
+        {
+          "name": "Conv2DKernel",
+          "path": "Conv2D_MAIA_DFE_b{0}_f{1}_c{3}_k{2}/src_annotated_Conv2DWrapKernel/conv2d/Conv2DWrapKernel.maxja",
+          "lineNumber": 46
+        }
+      ]
     }
   }
 }
