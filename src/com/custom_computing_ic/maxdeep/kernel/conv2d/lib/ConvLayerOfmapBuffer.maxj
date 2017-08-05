@@ -4,6 +4,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -41,7 +42,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
   private final DFEVar                    writeEn;
   private final DFEVector<DFEVar>         result;
   
-  private final int WRITE_LATENCY = 3;
+  private final int MAX_WRITE_LATENCY = 10;
 
   /**
    * 
@@ -70,10 +71,11 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     this.result = data + port;
     
     /* TODO: we assume the read result of an unwritten address is 0 */
+    OffsetExpr writeLatency = stream.makeOffsetAutoLoop("WRITE_LATENCY");
     mem.write(
-        stream.offset(addr, - WRITE_LATENCY),
-        stream.offset(result, - WRITE_LATENCY),
-        stream.offset(writeEn, - WRITE_LATENCY));
+        stream.offset(addr, - writeLatency),
+        stream.offset(result, - writeLatency),
+        stream.offset(writeEn, - writeLatency));
     
     debug.simPrintf("[ConvLayerOfmapBuffer] input = %KObj%\n", data);
     debug.simPrintf("[ConvLayerOfmapBuffer] read = %KObj%\n", port);
