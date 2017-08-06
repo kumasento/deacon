@@ -21,12 +21,13 @@ public class ConvLayerManager extends CustomManager {
   public static final int C           = 32;
   public static final int F           = 32;
   public static final int K           = 3;
-  private final String    KERNEL_NAME = "Conv2DWrapKernel";
+  private final String    KERNEL_NAME = "ConvLayerWrapKernel";
 
   public ConvLayerManager(ConvLayerEngineParameters params,
       ConvLayerParameters convParams) {
     super(params);
 
+    getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
     KernelBlock knl = addKernel(new ConvLayerWrapKernel(

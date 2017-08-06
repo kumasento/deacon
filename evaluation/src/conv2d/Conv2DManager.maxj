@@ -27,6 +27,7 @@ public class Conv2DManager extends CustomManager {
   public Conv2DManager(Conv2DEngineParameters params, ConvLayerParameters convParams) {
     super(params);
 
+    getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
     KernelBlock knl = addKernel(new Conv2DWrapKernel(

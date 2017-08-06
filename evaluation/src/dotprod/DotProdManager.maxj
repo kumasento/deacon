@@ -2,15 +2,14 @@ package dotprod;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
-
-import dotprod.DotProdEngineParameters;
-import dotprod.DotProdKernel;
 
 public final class DotProdManager extends CustomManager {
 
@@ -22,6 +21,7 @@ public final class DotProdManager extends CustomManager {
   public DotProdManager(DotProdEngineParameters params) {
     super(params);
     
+    getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
     
     this.vecSize = params.getVecSize();
@@ -56,6 +56,12 @@ public final class DotProdManager extends CustomManager {
   public static void main(String[] args) {
     DotProdEngineParameters params = new DotProdEngineParameters(args);
     DotProdManager mgr = new DotProdManager(params);
+    
+    BuildConfig buildConfig = mgr.getBuildConfig();
+    buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.setMPPRCostTableSearchRange(1, 4);
+    buildConfig.setMPPRParallelism(4);
+    
     mgr.build();
   }
 }
