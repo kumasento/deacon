@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.maxeler.maxcompiler.v2.utils.Bits;
 
 /**
@@ -221,24 +222,49 @@ public class ConvLayerDataGenerator {
     List<Bits> result = new ArrayList<Bits>();
 
     /* TODO: only works for CHANNEL_MAJOR */
-    for (int c = 0; c < C; c += PC) {
-      for (int f = 0; f < F; f += PF) {
-        long[] payload = new long[PF * PC * K * K];
+    if (params.seq == CompSeq.CHANNEL_MAJOR) {
+      for (int c = 0; c < C; c += PC) {
+        for (int f = 0; f < F; f += PF) {
+          long[] payload = new long[PF * PC * K * K];
 
-        for (int pf = 0; pf < PF; pf++) {
-          for (int pc = 0; pc < PC; pc++) {
-            for (int kx = 0; kx < K; kx++) {
-              for (int ky = 0; ky < K; ky++) {
-                int srcIdx = ((f + pf) * C * K * K + (c + pc) * K * K + kx * K + ky);
-                int dstIdx = (pf * PC * K * K + pc * K * K + kx * K + ky);
+          for (int pf = 0; pf < PF; pf++) {
+            for (int pc = 0; pc < PC; pc++) {
+              for (int kx = 0; kx < K; kx++) {
+                for (int ky = 0; ky < K; ky++) {
+                  int srcIdx = ((f + pf) * C * K * K + (c + pc) * K * K + kx
+                      * K + ky);
+                  int dstIdx = (pf * PC * K * K + pc * K * K + kx * K + ky);
 
-                payload[dstIdx] = coeff[srcIdx];
+                  payload[dstIdx] = coeff[srcIdx];
+                }
               }
             }
           }
-        }
 
-        result.add(ConvLayerDataUtils.pack(BW, payload));
+          result.add(ConvLayerDataUtils.pack(BW, payload));
+        }
+      }
+    } else if (params.seq == CompSeq.FILTER_MAJOR) {
+      for (int f = 0; f < F; f += PF) {
+        for (int c = 0; c < C; c += PC) {
+          long[] payload = new long[PF * PC * K * K];
+
+          for (int pf = 0; pf < PF; pf++) {
+            for (int pc = 0; pc < PC; pc++) {
+              for (int kx = 0; kx < K; kx++) {
+                for (int ky = 0; ky < K; ky++) {
+                  int srcIdx = ((f + pf) * C * K * K + (c + pc) * K * K + kx
+                      * K + ky);
+                  int dstIdx = (pf * PC * K * K + pc * K * K + kx * K + ky);
+
+                  payload[dstIdx] = coeff[srcIdx];
+                }
+              }
+            }
+          }
+
+          result.add(ConvLayerDataUtils.pack(BW, payload));
+        }
       }
     }
 

@@ -97,6 +97,8 @@ public class ConvLayerLineBuffer extends KernelComponent {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return cp.PC * cp.K * (cp.K + cp.PK - 1);
+      case FILTER_MAJOR:
+        return cp.PC * cp.K * (cp.K + cp.PK - 1);
       default:
         throw new IllegalArgumentException(String.format(
             "Computation sequence %s has not been supported yet", cp.seq));
@@ -114,6 +116,8 @@ public class ConvLayerLineBuffer extends KernelComponent {
   public int getInputVecSize() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
+        return cp.PC * cp.PK;
+      case FILTER_MAJOR:
         return cp.PC * cp.PK;
       default:
         throw new IllegalArgumentException(String.format(
