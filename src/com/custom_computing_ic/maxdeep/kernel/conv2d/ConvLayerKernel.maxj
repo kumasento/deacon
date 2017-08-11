@@ -42,6 +42,11 @@ public class ConvLayerKernel extends KernelComponent {
 
   public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams,
       DFEType scalarT) {
+    this(owner, convParams, scalarT, convParams.name);
+  }
+
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams,
+      DFEType scalarT, String prefix) {
     super(owner);
 
     this.cp = convParams;
@@ -78,7 +83,7 @@ public class ConvLayerKernel extends KernelComponent {
     DFEVector<DFEVar> conv2dOfmap = conv2d.getOfmap();
 
     /* output buffer */
-    obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT);
+    obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT, prefix);
     obuf.setReset(getOfmapReset());
     this.ofmap.connect(obuf.port(
         conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn()));
@@ -230,6 +235,10 @@ public class ConvLayerKernel extends KernelComponent {
         return addr.cast(ibuf.getAddrT());
 
       case FILTER_MAJOR:
+        addr = c * cp.H * (cp.W / cp.PK) + h * (cp.W / cp.PK) + w;
+        return addr.cast(ibuf.getAddrT());
+
+      case PIXEL_MAJOR:
         addr = c * cp.H * (cp.W / cp.PK) + h * (cp.W / cp.PK) + w;
         return addr.cast(ibuf.getAddrT());
 

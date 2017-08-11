@@ -45,6 +45,11 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
 
   private final int                       MAX_WRITE_LATENCY = 10;
 
+  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
+      DFEType scalarT) {
+    this(owner, params, scalarT, "");
+  }
+
   /**
    * 
    * @param owner
@@ -52,7 +57,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
    * @param scalarT
    */
   public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
-      DFEType scalarT) {
+      DFEType scalarT, String prefix) {
     super(owner);
 
     this.cp = params;
@@ -80,7 +85,8 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     }
 
     /* TODO: we assume the read result of an unwritten address is 0 */
-    OffsetExpr writeLatency = stream.makeOffsetAutoLoop("WRITE_LATENCY");
+    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
+        + "WRITE_LATENCY");
     mem.write(
         stream.offset(addr, -writeLatency),
         stream.offset(result, -writeLatency),

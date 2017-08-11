@@ -1,0 +1,95 @@
+package conv_twolayers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+
+/**
+ * 
+ */
+
+/**
+ * @author Ruizhe Zhao
+ * 
+ */
+public class ConvTwoLayersManager extends CustomManager {
+
+  public static final int H           = 32;
+  public static final int W           = 32;
+  public static final int C           = 32;
+  public static final int F           = 32;
+  public static final int K           = 3;
+  private final String    KERNEL_NAME = "ConvLayerWrapKernel";
+
+  public ConvTwoLayersManager(ConvTwoLayersEngineParameters params,
+      List<ConvLayerParameters> cps) {
+    super(params);
+
+    getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
+    config.setAllowNonMultipleTransitions(true);
+
+    KernelBlock knl0 = addKernel(new ConvLayerWrapKernel(
+        makeKernelParameters(cps.get(0).name), cps.get(0)));
+    KernelBlock knl1 = addKernel(new ConvLayerWrapKernel(
+        makeKernelParameters(cps.get(1).name), cps.get(1)));
+
+    knl0.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
+        addStreamFromCPU("ifmap"));
+    knl0.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
+        addStreamFromCPU("coeff_0"));
+    knl1.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
+        knl0.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+    knl1.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
+        addStreamFromCPU("coeff_1"));
+    addStreamToCPU("ofmap").connect(
+        knl1.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+  }
+
+  // public EngineInterface interfaceDefault(ConvLayerParameters convParams) {
+  // EngineInterface ei = new EngineInterface();
+  //
+  // Conv2DKernelTest.TestData data = new Conv2DKernelTest.TestData(convParams);
+  // ei.setTicks(KERNEL_NAME, data.getNumCycles());
+  // ei.setStream(
+  // "ifmap",
+  // CPUTypes.UINT8,
+  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getIfmapWidth());
+  // ei.setStream(
+  // "coeff",
+  // CPUTypes.UINT8,
+  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getCoeffWidth());
+  // ei.setStream(
+  // "ofmap",
+  // CPUTypes.UINT8,
+  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getOfmapWidth());
+  //
+  // return ei;
+  // }
+
+  public static void main(String[] args) {
+    ConvTwoLayersEngineParameters params = new ConvTwoLayersEngineParameters(
+        args);
+    List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(
+        0,
+        new ConvLayerParameters.Builder(H, W, C, F, K)
+            .BW(params.getBitWidth()).name("conv0").build());
+    cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+        .BW(params.getBitWidth()).name("conv1").build());
+
+    ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
+
+    // mgr.createSlicInterface(mgr.interfaceDefault(convParams));
+    BuildConfig buildConfig = mgr.getBuildConfig();
+    buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.setMPPRCostTableSearchRange(1, 4);
+    buildConfig.setMPPRParallelism(4);
+    mgr.build();
+  }
+
+}

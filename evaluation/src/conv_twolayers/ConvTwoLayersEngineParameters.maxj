@@ -1,8 +1,8 @@
-package conv;
+package conv_twolayers;
 
 import com.maxeler.maxcompiler.v2.build.EngineParameters;
 
-public class ConvLayerEngineParameters extends EngineParameters {
+public class ConvTwoLayersEngineParameters extends EngineParameters {
 
   private static final String BIT_WIDTH_NAME = "bitWidth";
   private static final int    BIT_WIDTH      = 32;
@@ -14,7 +14,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
   private static final String PK_NAME        = "PK";
   private static final int    PK             = 1;
 
-  public ConvLayerEngineParameters(String[] args) {
+  public ConvTwoLayersEngineParameters(String[] args) {
     super(args);
   }
 

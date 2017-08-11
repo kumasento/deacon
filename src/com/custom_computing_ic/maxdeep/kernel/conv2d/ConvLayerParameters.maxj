@@ -21,6 +21,7 @@ public class ConvLayerParameters {
   public final int     K;         // kernel size
   public final int     BW;        // bit width
   public final CompSeq seq;       // computation sequence
+  public final String  name;
 
   /**
    * Computation sequence
@@ -45,6 +46,7 @@ public class ConvLayerParameters {
     this.PF = builder.PF;
     this.PK = builder.PK;
     this.seq = builder.seq;
+    this.name = builder.name;
   }
 
   /**
@@ -59,11 +61,12 @@ public class ConvLayerParameters {
     private final int C;
     private final int F;
     private final int K;
-    private int       BW; /* bit width */
+    private int       BW;  /* bit width */
     private int       PC;
     private int       PF;
     private int       PK;
     private CompSeq   seq;
+    private String    name;
 
     public Builder(int H, int W, int C, int F, int K) {
 
@@ -126,6 +129,12 @@ public class ConvLayerParameters {
       if (C % PC != 0)
         throw new IllegalArgumentException("C % PC should equal 0");
       this.PC = PC;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+
       return this;
     }
 
