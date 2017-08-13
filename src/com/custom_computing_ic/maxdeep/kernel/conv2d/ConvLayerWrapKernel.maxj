@@ -1,12 +1,9 @@
-package conv_twolayers;
+package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernel;
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration.OptimizationOptions.DSPMulAddChainBehaviour;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -36,7 +33,7 @@ public class ConvLayerWrapKernel extends Kernel {
 
     this.cp = convParams;
 
-    DFEType scalarT = dfeFix(0, convParams.BW, SignMode.UNSIGNED);
+    DFEType scalarT = dfeInt(cp.BW);
 
     ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
     DFEVector<DFEVar> ifmap = io.input(

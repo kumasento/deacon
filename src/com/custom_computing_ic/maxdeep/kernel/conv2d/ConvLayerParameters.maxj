@@ -3,6 +3,8 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+
 /**
  * Parameters used for building a convolution layer.
  * 
@@ -47,6 +49,38 @@ public class ConvLayerParameters {
     this.PK = builder.PK;
     this.seq = builder.seq;
     this.name = builder.name;
+  }
+
+  public CPUTypes getCPUTypes() {
+    switch (BW) {
+      case 8:
+        return CPUTypes.INT8;
+      case 16:
+        return CPUTypes.INT16;
+      case 32:
+        return CPUTypes.INT32;
+      default:
+        throw new IllegalArgumentException("BW (" + BW + ") is not supported");
+    }
+  }
+
+  public int getNumCycles() {
+    return (H * W * C * F) / (PC * PF * PK);
+  }
+
+  public long getIfmapStreamSize() {
+    long sizeInBytes = getCPUTypes().sizeInBytes();
+    return sizeInBytes * C * H * W;
+  }
+
+  public long getCoeffStreamSize() {
+    long sizeInBytes = getCPUTypes().sizeInBytes();
+    return sizeInBytes * C * F * K * K;
+  }
+
+  public long getOfmapStreamSize() {
+    long sizeInBytes = getCPUTypes().sizeInBytes();
+    return sizeInBytes * F * OH * OW;
   }
 
   /**
