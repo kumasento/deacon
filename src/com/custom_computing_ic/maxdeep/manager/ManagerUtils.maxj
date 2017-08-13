@@ -8,6 +8,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 public class ManagerUtils {
 
@@ -16,16 +17,19 @@ public class ManagerUtils {
   public static final String COEFF_PREFIX = "coeff";
 
   public static void setupStreams(EngineInterface ei,
-      List<ConvLayerParameters> cps) {
+      List<ConvLayerParameters> cps, InterfaceParam numBatches) {
 
     ConvLayerParameters cp = null;
     for (int i = 0; i < cps.size(); i++) {
       cp = cps.get(i);
       if (i == 0)
-        ei.setStream("ifmap", cp.getCPUTypes(), cp.getIfmapStreamSize());
-      ei.setStream("coeff_" + i, cp.getCPUTypes(), cp.getCoeffStreamSize());
+        ei.setStream("ifmap", cp.getCPUTypes(), cp.getIfmapStreamSize()
+            * numBatches);
+      ei.setStream("coeff_" + i, cp.getCPUTypes(), cp.getCoeffStreamSize()
+          * numBatches);
     }
-    ei.setStream("ofmap", cp.getCPUTypes(), cp.getOfmapStreamSize());
+    ei.setStream("ofmap", cp.getCPUTypes(), cp.getOfmapStreamSize()
+        * numBatches);
   }
 
   /**
@@ -65,13 +69,13 @@ public class ManagerUtils {
   }
 
   public static void setupKernelTicks(EngineInterface ei,
-      List<ConvLayerParameters> cps) {
+      List<ConvLayerParameters> cps, InterfaceParam numBatches) {
 
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
       String knlName = getKernelName(cp);
 
-      ei.setTicks(knlName, cp.getNumCycles());
+      ei.setTicks(knlName, cp.getNumCycles() * numBatches);
     }
 
   }
