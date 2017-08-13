@@ -8,7 +8,9 @@ import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 /**
  * 
@@ -40,8 +42,10 @@ public class ConvTwoLayersManager extends CustomManager {
   public EngineInterface interfaceDefault(List<ConvLayerParameters> cps) {
     EngineInterface ei = new EngineInterface();
 
-    ManagerUtils.setupStreams(ei, cps);
-    ManagerUtils.setupKernelTicks(ei, cps);
+    InterfaceParam numBatches = ei.addParam("num_batches", CPUTypes.UINT64);
+
+    ManagerUtils.setupStreams(ei, cps, numBatches);
+    ManagerUtils.setupKernelTicks(ei, cps, numBatches);
 
     return ei;
   }
@@ -59,7 +63,7 @@ public class ConvTwoLayersManager extends CustomManager {
 
     ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
 
-    mgr.createSlicInterface(mgr.interfaceDefault(cps));
+    mgr.createSLiCinterface(mgr.interfaceDefault(cps));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
