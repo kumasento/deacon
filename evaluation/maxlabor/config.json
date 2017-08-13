@@ -2,9 +2,9 @@
   "conv2d": {
     "params": {
       "bitWidth": [32, 16, 8, 4, 2],
-      "PF": [1, 2],
+      "PF": [1, 2, 4, 8, 16, 32],
       "PK": [1, 2],
-      "PC": [1, 2]
+      "PC": [1, 2, 4, 8, 16, 32]
     },
     "buildParams": {
       "MAXCOMPILER_BUILD_DIR": "/mnt/data/scratch/rz3515/builds"
@@ -23,9 +23,9 @@
   "conv": {
     "params": {
       "bitWidth": [32, 16, 8, 4, 2],
-      "PF": [1, 2],
+      "PF": [1, 2, 4, 8, 16, 32],
       "PK": [1, 2],
-      "PC": [1, 2]
+      "PC": [1, 2, 4, 8, 16, 32]
     },
     "buildParams": {
       "MAXCOMPILER_BUILD_DIR": "/mnt/data/scratch/rz3515/builds"
