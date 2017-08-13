@@ -80,6 +80,8 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   public int getWidth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR) {
       return cp.PK * cp.PC;
+    } else if (cp.seq == CompSeq.FILTER_MAJOR) {
+      return cp.PK * cp.PC;
     } else {
       throw new IllegalArgumentException(String.format(
           "Computation sequence %s has not been supported yet", cp.seq));
@@ -89,6 +91,8 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   public int getDepth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR) {
       return cp.H * (cp.W / cp.PK);
+    } else if (cp.seq == CompSeq.FILTER_MAJOR) {
+      return (cp.C / cp.PC) * cp.H * (cp.W / cp.PK);
     } else {
       throw new IllegalArgumentException(String.format(
           "Computation sequence %s has not been supported yet", cp.seq));

@@ -3,6 +3,7 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.data.ConvLayerDataGenerator;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
@@ -35,50 +36,90 @@ public class ConvLayerKernelTest {
 
   @Test
   public void test111() {
-    test(1, 1, 1);
+    test(1, 1, 1, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test112() {
-    test(1, 1, 2);
+    test(1, 1, 2, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test121() {
-    test(1, 2, 1);
+    test(1, 2, 1, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test122() {
-    test(1, 2, 2);
+    test(1, 2, 2, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test211() {
-    test(2, 1, 1);
+    test(2, 1, 1, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test212() {
-    test(2, 1, 2);
+    test(2, 1, 2, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test221() {
-    test(2, 2, 1);
+    test(2, 2, 1, CompSeq.CHANNEL_MAJOR);
   }
 
   @Test
   public void test222() {
-    test(2, 2, 2);
+    test(2, 2, 2, CompSeq.CHANNEL_MAJOR);
   }
 
-  public void test(int PC, int PF, int PK) {
-    SimulationManager mgr = new SimulationManager(String.format(
-        "ConvLayerKernelTest_f%d_c%d_k%d", PF, PC, PK));
+  @Test
+  public void test111f() {
+    test(1, 1, 1, CompSeq.FILTER_MAJOR);
+  }
 
-    ConvLayerParameters cp = new ConvLayerParameters.Builder(10, 10, 4, 4, 3)
-        .PK(PK).PF(PF).PC(PC).BW(32).build();
+  @Test
+  public void test112f() {
+    test(1, 1, 2, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test121f() {
+    test(1, 2, 1, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test122f() {
+    test(1, 2, 2, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test211f() {
+    test(2, 1, 1, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test212f() {
+    test(2, 1, 2, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test221f() {
+    test(2, 2, 1, CompSeq.FILTER_MAJOR);
+  }
+
+  @Test
+  public void test222f() {
+    test(2, 2, 2, CompSeq.FILTER_MAJOR);
+  }
+
+  public void test(int PC, int PF, int PK, CompSeq seq) {
+    SimulationManager mgr = new SimulationManager(String.format(
+        "ConvLayerKernelTest_f%d_c%d_k%d_m%s", PF, PC, PK, seq.name()));
+
+    ConvLayerParameters cp = new ConvLayerParameters.Builder(4, 4, 4, 4, 3)
+        .PK(PK).PF(PF).PC(PC).BW(32).seq(seq).build();
     TestKernel knl = new TestKernel(mgr.makeKernelParameters(), cp);
     ConvLayerDataGenerator gen = new ConvLayerDataGenerator(cp);
     mgr.setKernel(knl);
