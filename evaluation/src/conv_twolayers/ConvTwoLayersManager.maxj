@@ -59,7 +59,7 @@ public class ConvTwoLayersManager extends CustomManager {
 
     ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
 
-    mgr.createSlicInterface(mgr.interfaceDefault(cps));
+    mgr.createSLiCinterface(mgr.interfaceDefault(cps));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
