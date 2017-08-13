@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <chrono>
+#include <ctime>
 
 #include "Maxfiles.h"
 
@@ -47,7 +49,19 @@ int main(int argc, char *argv[]) {
   actions.instream_ifmap = (const int32_t *) ifmap;
   actions.outstream_ofmap = ofmap;
 
-  ConvTwoLayers_run(engine, &actions);
+  printf("Running ...\n");
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
+  for (int i = 0; i < 10; i ++)
+    ConvTwoLayers_run(engine, &actions);
+  end = std::chrono::system_clock::now();
+  printf("Done\n");
+
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  std::cout << "elapsed time: " << elapsed_seconds.count() / 10 << "s\n";
+  uint64_t num_ops = conv1_H * conv1_W * conv0_C * conv0_F * conv0_K * conv0_K * 2;
+  num_ops += (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_C * conv1_F * conv1_K * conv1_K * 2;
+  std::cout << "GOP/s: " << num_ops * 1e-9 / elapsed_seconds.count() * 10 << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);

@@ -50,7 +50,7 @@ ifneq ($(findstring cpp, $(CPUFILES)), )
 
     # Assuming CXX points to g++/c++ by default
     COMPILER_CFLAGS = -fopenmp -lrt
-    OPT_FLAGS = -O3 #-std=c++11 -march=native 
+    OPT_FLAGS = -O3 -std=c++11 #-march=native 
 
     ifeq ($(CXX), icpc)
       COMPILER_CFLAGS = -openmp
