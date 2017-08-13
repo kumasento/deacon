@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
-import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 
 /**
  * 
@@ -19,12 +20,11 @@ import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
  */
 public class ConvTwoLayersManager extends CustomManager {
 
-  public static final int H           = 32;
-  public static final int W           = 32;
-  public static final int C           = 32;
-  public static final int F           = 32;
-  public static final int K           = 3;
-  private final String    KERNEL_NAME = "ConvLayerWrapKernel";
+  public static final int H = 32;
+  public static final int W = 32;
+  public static final int C = 512;
+  public static final int F = 512;
+  public static final int K = 3;
 
   public ConvTwoLayersManager(ConvTwoLayersEngineParameters params,
       List<ConvLayerParameters> cps) {
@@ -33,43 +33,18 @@ public class ConvTwoLayersManager extends CustomManager {
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
-    KernelBlock knl0 = addKernel(new ConvLayerWrapKernel(
-        makeKernelParameters(cps.get(0).name), cps.get(0)));
-    KernelBlock knl1 = addKernel(new ConvLayerWrapKernel(
-        makeKernelParameters(cps.get(1).name), cps.get(1)));
-
-    knl0.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
-        addStreamFromCPU("ifmap"));
-    knl0.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
-        addStreamFromCPU("coeff_0"));
-    knl1.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
-        knl0.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
-    knl1.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
-        addStreamFromCPU("coeff_1"));
-    addStreamToCPU("ofmap").connect(
-        knl1.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+    ManagerUtils.createKernelBlocks(this, cps);
+    ManagerUtils.setupConstants(this, cps);
   }
 
-  // public EngineInterface interfaceDefault(ConvLayerParameters convParams) {
-  // EngineInterface ei = new EngineInterface();
-  //
-  // Conv2DKernelTest.TestData data = new Conv2DKernelTest.TestData(convParams);
-  // ei.setTicks(KERNEL_NAME, data.getNumCycles());
-  // ei.setStream(
-  // "ifmap",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getIfmapWidth());
-  // ei.setStream(
-  // "coeff",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getCoeffWidth());
-  // ei.setStream(
-  // "ofmap",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getOfmapWidth());
-  //
-  // return ei;
-  // }
+  public EngineInterface interfaceDefault(List<ConvLayerParameters> cps) {
+    EngineInterface ei = new EngineInterface();
+
+    ManagerUtils.setupStreams(ei, cps);
+    ManagerUtils.setupKernelTicks(ei, cps);
+
+    return ei;
+  }
 
   public static void main(String[] args) {
     ConvTwoLayersEngineParameters params = new ConvTwoLayersEngineParameters(
@@ -84,7 +59,8 @@ public class ConvTwoLayersManager extends CustomManager {
 
     ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
 
-    // mgr.createSlicInterface(mgr.interfaceDefault(convParams));
+    mgr.createSlicInterface(mgr.interfaceDefault(cps));
+
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
     buildConfig.setMPPRCostTableSearchRange(1, 4);
