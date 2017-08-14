@@ -26,10 +26,12 @@ int main(int argc, char *argv[]) {
   uint64_t conv1_F = max_get_constant_uint64t(max_file, "conv1_F");
   uint64_t conv1_K = max_get_constant_uint64t(max_file, "conv1_K");
 
-  uint64_t ifmap_num_elems = conv0_H * conv0_W * conv0_C;
-  uint64_t coeff_0_num_elems = conv0_F * conv0_C * conv0_K * conv0_K;
-  uint64_t coeff_1_num_elems = conv1_F * conv1_C * conv1_K * conv1_K;
-  uint64_t ofmap_num_elems = (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_F;
+  uint64_t num_batches = 2;
+
+  uint64_t ifmap_num_elems = conv0_H * conv0_W * conv0_C * num_batches;
+  uint64_t coeff_0_num_elems = conv0_F * conv0_C * conv0_K * conv0_K * num_batches;
+  uint64_t coeff_1_num_elems = conv1_F * conv1_C * conv1_K * conv1_K * num_batches;
+  uint64_t ofmap_num_elems = (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_F * num_batches;
 
   int32_t *ifmap = (int32_t *) malloc(sizeof(int32_t) * ifmap_num_elems);
   int32_t *coeff_0 = (int32_t *) malloc(sizeof(int32_t) * coeff_0_num_elems);
@@ -44,6 +46,7 @@ int main(int argc, char *argv[]) {
     coeff_1[i] = (rand() % 10) - 5;
 
   ConvTwoLayers_actions_t actions;
+  actions.param_num_batches = num_batches;
   actions.instream_coeff_0 = (const int32_t *) coeff_0;
   actions.instream_coeff_1 = (const int32_t *) coeff_1;
   actions.instream_ifmap = (const int32_t *) ifmap;
@@ -61,7 +64,7 @@ int main(int argc, char *argv[]) {
   std::cout << "elapsed time: " << elapsed_seconds.count() / 10 << "s\n";
   uint64_t num_ops = conv1_H * conv1_W * conv0_C * conv0_F * conv0_K * conv0_K * 2;
   num_ops += (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_C * conv1_F * conv1_K * conv1_K * 2;
-  std::cout << "GOP/s: " << num_ops * 1e-9 / elapsed_seconds.count() * 10 << std::endl;
+  std::cout << "GOP/s: " << num_ops * num_batches * 1e-9 / elapsed_seconds.count() * 10 << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);
