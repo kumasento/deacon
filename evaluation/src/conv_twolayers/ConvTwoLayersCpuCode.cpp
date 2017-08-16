@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   uint64_t conv1_F = max_get_constant_uint64t(max_file, "conv1_F");
   uint64_t conv1_K = max_get_constant_uint64t(max_file, "conv1_K");
 
-  uint64_t num_batches = 2;
+  uint64_t num_batches = 10;
 
   uint64_t ifmap_num_elems = conv0_H * conv0_W * conv0_C * num_batches;
   uint64_t coeff_0_num_elems = conv0_F * conv0_C * conv0_K * conv0_K * num_batches;
@@ -55,16 +55,16 @@ int main(int argc, char *argv[]) {
   printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
-  for (int i = 0; i < 10; i ++)
+  for (int i = 0; i < 1; i ++)
     ConvTwoLayers_run(engine, &actions);
   end = std::chrono::system_clock::now();
   printf("Done\n");
 
   std::chrono::duration<double> elapsed_seconds = end-start;
-  std::cout << "elapsed time: " << elapsed_seconds.count() / 10 << "s\n";
+  std::cout << "elapsed time: " << elapsed_seconds.count() / 1 << "s\n";
   uint64_t num_ops = conv1_H * conv1_W * conv0_C * conv0_F * conv0_K * conv0_K * 2;
   num_ops += (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_C * conv1_F * conv1_K * conv1_K * 2;
-  std::cout << "GOP/s: " << num_ops * num_batches * 1e-9 / elapsed_seconds.count() * 10 << std::endl;
+  std::cout << "GOP/s: " << num_ops * num_batches * 1e-9 / elapsed_seconds.count() * 1 << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);

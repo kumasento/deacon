@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
@@ -54,12 +55,14 @@ public class ConvTwoLayersManager extends CustomManager {
     ConvTwoLayersEngineParameters params = new ConvTwoLayersEngineParameters(
         args);
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(0, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+        .BW(params.getBitWidth()).seq(CompSeq.FILTER_MAJOR).name("conv1").build());
     cps.add(
-        0,
+        1,
         new ConvLayerParameters.Builder(H, W, C, F, K)
             .BW(params.getBitWidth()).name("conv0").build());
-    cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
-        .BW(params.getBitWidth()).name("conv1").build());
+    // cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+    //     .BW(params.getBitWidth()).seq(CompSeq.FILTER_MAJOR).name("conv1").build());
 
     ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
 
