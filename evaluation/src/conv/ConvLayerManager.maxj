@@ -1,10 +1,13 @@
 package conv;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
-import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 /**
  * 
@@ -16,64 +19,48 @@ import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
  */
 public class ConvLayerManager extends CustomManager {
 
-  public static final int H           = 32;
-  public static final int W           = 32;
-  public static final int C           = 32;
-  public static final int F           = 32;
-  public static final int K           = 3;
-  private final String    KERNEL_NAME = "ConvLayerWrapKernel";
+  public static final int H = 32;
+  public static final int W = 32;
+  public static final int C = 32;
+  public static final int F = 32;
+  public static final int K = 3;
 
   public ConvLayerManager(ConvLayerEngineParameters params,
-      ConvLayerParameters convParams) {
+      ConvLayerParameters cp) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
-    KernelBlock knl = addKernel(new ConvLayerWrapKernel(
-        makeKernelParameters(KERNEL_NAME), convParams));
-    knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
-        addStreamFromCPU("ifmap"));
-    knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
-        addStreamFromCPU("coeff"));
-    addStreamToCPU("ofmap").connect(
-        knl.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+    ManagerUtils.createKernelBlocks(this, cp);
+    ManagerUtils.setupConstants(this, cp);
   }
 
-  // public EngineInterface interfaceDefault(ConvLayerParameters convParams) {
-  // EngineInterface ei = new EngineInterface();
-  //
-  // Conv2DKernelTest.TestData data = new Conv2DKernelTest.TestData(convParams);
-  // ei.setTicks(KERNEL_NAME, data.getNumCycles());
-  // ei.setStream(
-  // "ifmap",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getIfmapWidth());
-  // ei.setStream(
-  // "coeff",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getCoeffWidth());
-  // ei.setStream(
-  // "ofmap",
-  // CPUTypes.UINT8,
-  // CPUTypes.UINT8.sizeInBytes() * data.getNumCycles() * data.getOfmapWidth());
-  //
-  // return ei;
-  // }
+  public EngineInterface interfaceDefault(ConvLayerParameters cp) {
+    EngineInterface ei = new EngineInterface();
 
+    InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
+
+    ManagerUtils.setupStreams(ei, cp, batchSize);
+    ManagerUtils.setupKernelTicks(ei, cp, batchSize);
+
+    return ei;
+  }
+
+  @SuppressWarnings("deprecation")
   public static void main(String[] args) {
     ConvLayerEngineParameters params = new ConvLayerEngineParameters(args);
-    ConvLayerParameters convParams = new ConvLayerParameters.Builder(H, W, C,
-        F, K)
-        .PC(params.getPC()).PF(params.getPF()).PK(params.getPK())
+    ConvLayerParameters cp = new ConvLayerParameters.Builder(H, W, C, F, K)
+        .name("conv").PC(params.getPC()).PF(params.getPF()).PK(params.getPK())
         .BW(params.getBitWidth()).build();
-    ConvLayerManager mgr = new ConvLayerManager(params, convParams);
-    // mgr.createSlicInterface(mgr.interfaceDefault(convParams));
+
+    ConvLayerManager mgr = new ConvLayerManager(params, cp);
+    mgr.createSLiCinterface(mgr.interfaceDefault(cp));
+
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
     buildConfig.setMPPRCostTableSearchRange(1, 4);
     buildConfig.setMPPRParallelism(4);
     mgr.build();
   }
-
 }

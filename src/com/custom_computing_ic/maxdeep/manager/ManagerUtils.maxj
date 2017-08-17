@@ -16,6 +16,14 @@ public class ManagerUtils {
   public static final String OFMAP_NAME   = "ofmap";
   public static final String COEFF_PREFIX = "coeff";
 
+  public static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
+      InterfaceParam batchSize) {
+    List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(cp);
+
+    setupStreams(ei, cps, batchSize);
+  }
+
   public static void setupStreams(EngineInterface ei,
       List<ConvLayerParameters> cps, InterfaceParam numBatches) {
 
@@ -30,6 +38,14 @@ public class ManagerUtils {
     }
     ei.setStream("ofmap", cp.getCPUTypes(), cp.getOfmapStreamSize()
         * numBatches);
+  }
+
+  public static List<KernelBlock> createKernelBlocks(CustomManager mgr,
+      ConvLayerParameters cp) {
+    List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(cp);
+
+    return createKernelBlocks(mgr, cps);
   }
 
   /**
@@ -69,6 +85,14 @@ public class ManagerUtils {
   }
 
   public static void setupKernelTicks(EngineInterface ei,
+      ConvLayerParameters cp, InterfaceParam batchSize) {
+    List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(cp);
+
+    setupKernelTicks(ei, cps, batchSize);
+  }
+
+  public static void setupKernelTicks(EngineInterface ei,
       List<ConvLayerParameters> cps, InterfaceParam numBatches) {
 
     for (int i = 0; i < cps.size(); i++) {
@@ -77,7 +101,13 @@ public class ManagerUtils {
 
       ei.setTicks(knlName, cp.getNumCycles() * numBatches);
     }
+  }
 
+  public static void setupConstants(CustomManager mgr, ConvLayerParameters cp) {
+    List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
+    cps.add(cp);
+
+    setupConstants(mgr, cps);
   }
 
   public static void setupConstants(CustomManager mgr,
