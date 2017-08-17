@@ -19,32 +19,22 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 /**
  * This kernel implements the conv2d block.
  * 
- * INTERFACE:
- * *described in ruby*
- * <
- * <<X(1 ,1), X(1 ,2), ..., X(1 ,K*(K+PK))>,
- *  <X(2 ,1), X(2 ,2), ..., X(2 ,K*(K+PK))>,
- *  ...,
- *  <X(PC,1), X(PC,2), ..., X(PC,K*(K+PK))>>_PF,
- * <<W(1 ,1), W(1 ,2), ..., W(1 ,K*K)>,
- *  <W(2 ,1), W(2 ,2), ..., W(2 ,K*K)>,
- *  ...,
- *  <W(PC,1), W(PC,2), ..., W(PC,K*K)>>_PF
- * >
- * ~
- * <<Y(1 ,1), Y(1 ,2), ..., Y(1 ,PK)>,
- *  <Y(2 ,1), Y(2 ,2), ..., Y(2 ,PK)>,
- *  ...,
- *  <Y(PF,1), Y(PF,2), ..., Y(PF,PK)>> 
+ * INTERFACE: *described in ruby* < <<X(1 ,1), X(1 ,2), ..., X(1 ,K*(K+PK))>,
+ * <X(2 ,1), X(2 ,2), ..., X(2 ,K*(K+PK))>, ..., <X(PC,1), X(PC,2), ...,
+ * X(PC,K*(K+PK))>>_PF, <<W(1 ,1), W(1 ,2), ..., W(1 ,K*K)>, <W(2 ,1), W(2 ,2),
+ * ..., W(2 ,K*K)>, ..., <W(PC,1), W(PC,2), ..., W(PC,K*K)>>_PF > ~ <<Y(1 ,1),
+ * Y(1 ,2), ..., Y(1 ,PK)>, <Y(2 ,1), Y(2 ,2), ..., Y(2 ,PK)>, ..., <Y(PF,1),
+ * Y(PF,2), ..., Y(PF,PK)>>
  * 
  * @author Ruizhe Zhao
  * 
  */
 public class Conv2DKernel extends KernelComponent {
 
+  protected final ConvLayerParameters cp;
+
   private final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
   private final DFEVector<DFEVar>     ifmap, coeff, ofmap;
-  private final ConvLayerParameters   convParams;
   private final DFEType               scalarT;
 
   /**
@@ -58,13 +48,13 @@ public class Conv2DKernel extends KernelComponent {
       DFEType scalarT) {
     super(owner);
 
-    this.convParams = convParams;
+    this.cp = convParams;
 
     int K = convParams.K;
     int PC = convParams.PC;
     int PF = convParams.PF;
     int PK = convParams.PK;
-    
+
     int ifmapVecSize = (K * (K + PK - 1)) * PC;
     int coeffVecSize = K * K * PC * PF;
     int ofmapVecSize = PK * PF;
@@ -78,134 +68,138 @@ public class Conv2DKernel extends KernelComponent {
     this.ifmap = ifmapVecT.newInstance(owner);
     this.coeff = coeffVecT.newInstance(owner);
     this.ofmap = ofmapVecT.newInstance(owner);
-    
+
     /**
      * computation
      */
     compute(ifmap, coeff, ofmap);
-    
+
     debug.simPrintf("[Conv2DKernel] ifmap = %KObj%\n", ifmap);
     debug.simPrintf("[Conv2DKernel] coeff = %KObj%\n", coeff);
     debug.simPrintf("[Conv2DKernel] ofmap = %KObj%\n", ofmap);
   }
-  
+
   /**
    * core computation, based on dot-product.
+   * 
    * @param ifmap
    * @param coeff
    * @param ofmap
    */
-  public void compute(
-      DFEVector<DFEVar> ifmap,
-      DFEVector<DFEVar> coeff,
-      DFEVector<DFEVar> ofmap)
-  {
-    int K = convParams.K;
-    int PC = convParams.PC;
-    int PF = convParams.PF;
-    int PK = convParams.PK;
-    
-    for (int pf = 0; pf < PF; pf ++) {
+  public void compute(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,
+      DFEVector<DFEVar> ofmap) {
+    int K = cp.K;
+    int PC = cp.PC;
+    int PF = cp.PF;
+    int PK = cp.PK;
+
+    for (int pf = 0; pf < PF; pf++) {
       List<DFEVar> tmpResults = new ArrayList<DFEVar>(PK * PC);
       // TODO: initialise an ArrayList in this way might be silly
-      for (int i = 0; i < PC * PK; i ++)
+      for (int i = 0; i < PC * PK; i++)
         tmpResults.add(null);
-      
-      for (int pc = 0; pc < PC; pc ++) {
+
+      for (int pc = 0; pc < PC; pc++) {
         // create a new vector instance
         List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc);
-        
+
         // coefficient chunk
         DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc);
-        
-        for (int pk = 0; pk < PK; pk ++) {
+
+        for (int pk = 0; pk < PK; pk++) {
           DFEVector<DFEVar> ifmapChunk = ifmapChunks.get(pk);
-          
-			    DotProductKernel dp =
-			      new DotProductKernel(this.getOwner(), K * K, scalarT);
-			    dp.setInputs(ifmapChunk, coeffChunk);
-			    
-			    tmpResults.set(pk * PC + pc, dp.getOutput());
+
+          tmpResults.set(pk * PC + pc, dotprod(ifmapChunk, coeffChunk));
         }
       }
-      
-      for (int pk = 0; pk < PK; pk ++)
-        ofmap[pf * PK + pk] <==
-          AdderTree.reduce(
-              tmpResults.subList(pk * PC, (pk + 1) * PC));
+
+      for (int pk = 0; pk < PK; pk++)
+        ofmap[pf * PK + pk].connect(AdderTree.reduce(tmpResults.subList(
+            pk * PC,
+            (pk + 1) * PC)));
     }
-    
+
   }
-  
+
+  public DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
+    DotProductKernel dp = new DotProductKernel(this.getOwner(), cp.K * cp.K,
+        scalarT);
+    dp.setInputs(ifmap, coeff);
+
+    return dp.getOutput();
+  }
+
   public DFEVectorType<DFEVar> getIfmapT() {
     return ifmapVecT;
   }
-  
+
   public DFEVectorType<DFEVar> getCoeffT() {
     return coeffVecT;
   }
-  
+
   public DFEVectorType<DFEVar> getOfmapT() {
     return ofmapVecT;
   }
-  
+
   public void setInputs(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
     this.ifmap.connect(ifmap);
     this.coeff.connect(coeff);
   }
-  
-  public DFEVector<DFEVar> getOfmap() { return ofmap; }
-  
+
+  public DFEVector<DFEVar> getOfmap() {
+    return ofmap;
+  }
+
   /**
    * Get ifmap data chunk at (pc)
    * 
-   * TODO: Each time you call this function, a new vector will be created,
-   * might need caching in the future.
+   * TODO: Each time you call this function, a new vector will be created, might
+   * need caching in the future.
    * 
    * @param pc
    * @return
    */
   private List<DFEVector<DFEVar>> getIfmapChunksAt(int pc) {
-    int K = convParams.K;
-    int PC = convParams.PC;
-    int PK = convParams.PK;
-    
+    int K = cp.K;
+    int PC = cp.PC;
+    int PK = cp.PK;
+
     if (pc >= PC)
       throw new IllegalArgumentException("pc should be smaller than PC");
-    
+
     int ifmapPackedChunkSize = K * (K + PK - 1);
-    
-    DFEVectorType<DFEVar> ifmapPackedChunkT =
-      new DFEVectorType<DFEVar>(scalarT, ifmapPackedChunkSize);
-    
-    DFEVector<DFEVar> ifmapPackedChunk = ifmapPackedChunkT.newInstance(getOwner());
-    
+
+    DFEVectorType<DFEVar> ifmapPackedChunkT = new DFEVectorType<DFEVar>(
+        scalarT, ifmapPackedChunkSize);
+
+    DFEVector<DFEVar> ifmapPackedChunk = ifmapPackedChunkT
+        .newInstance(getOwner());
+
     // create packed chunk
-    for (int i = 0; i < ifmapPackedChunkSize; i ++)
-      ifmapPackedChunk[i] <== ifmap[pc * ifmapPackedChunkSize + i];
-    
+    for (int i = 0; i < ifmapPackedChunkSize; i++)
+      ifmapPackedChunk[i].connect(ifmap[pc * ifmapPackedChunkSize + i]);
+
     // unpack
-    return unpackIfmapChunk(ifmapPackedChunk, convParams);
+    return unpackIfmapChunk(ifmapPackedChunk, cp);
   }
-  
+
   private DFEVector<DFEVar> getCoeffChunkAt(int pf, int pc) {
-    int K = convParams.K;
-    int PC = convParams.PC;
-    
+    int K = cp.K;
+    int PC = cp.PC;
+
     int coeffChunkSize = K * K;
-    
-    DFEVectorType<DFEVar> coeffChunkT =
-      new DFEVectorType<DFEVar>(scalarT, coeffChunkSize);
+
+    DFEVectorType<DFEVar> coeffChunkT = new DFEVectorType<DFEVar>(scalarT,
+        coeffChunkSize);
     DFEVector<DFEVar> coeffChunk = coeffChunkT.newInstance(getOwner());
-    
-    for (int i = 0; i < coeffChunkSize; i ++)
-      coeffChunk[i] <== coeff[pf * PC * coeffChunkSize +
-                              pc * coeffChunkSize +
-                              i];
-    
+
+    for (int i = 0; i < coeffChunkSize; i++)
+      coeffChunk[i].connect(coeff[pf * PC * coeffChunkSize + pc
+          * coeffChunkSize + i]);
+
     return coeffChunk;
   }
-  
+
   /**
    * Convert vector from (K, K + PK -1) to (PK, K, K)
    * 
@@ -219,25 +213,24 @@ public class Conv2DKernel extends KernelComponent {
       ConvLayerParameters convParams) {
     int K = convParams.K;
     int PK = convParams.PK;
-    
+
     int ifmapChunkSize = K * K;
-    DFEVectorType<DFEVar> ifmapChunkT =
-      new DFEVectorType<DFEVar>(scalarT, ifmapChunkSize);
-    List<DFEVector<DFEVar>> ifmapChunks =
-      new ArrayList<DFEVector<DFEVar>>(PK);
-    
+    DFEVectorType<DFEVar> ifmapChunkT = new DFEVectorType<DFEVar>(scalarT,
+        ifmapChunkSize);
+    List<DFEVector<DFEVar>> ifmapChunks = new ArrayList<DFEVector<DFEVar>>(PK);
+
     for (int p = 0; p < PK; p++) {
       ifmapChunks.add(p, ifmapChunkT.newInstance(getOwner()));
-      
+
       for (int kx = 0; kx < K; kx++) {
         for (int ky = 0; ky < K; ky++) {
           int srcIdx = kx * (K + PK - 1) + (ky + p);
           int dstIdx = kx * K + ky;
-          ifmapChunks.get(p)[dstIdx] <== src[srcIdx];
+          ifmapChunks.get(p)[dstIdx].connect(src[srcIdx]);
         }
       }
     }
-    
+
     return ifmapChunks;
   }
 }
