@@ -23,22 +23,25 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public class ConvLayerKernel extends KernelComponent {
 
-  private final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
-  private final DFEType               scalarT;
-  private final DFEVector<DFEVar>     ifmap, coeff, ofmap;
-  private final ConvLayerParameters   cp;
+  protected DFEVectorType<DFEVar>     ifmapVecT, coeffVecT, ofmapVecT;
+  @SuppressWarnings("unused")
+  protected final DFEType             scalarT;
+  protected DFEVector<DFEVar>         ifmap;
+  protected DFEVector<DFEVar>         coeff;
+  protected DFEVector<DFEVar>         ofmap;
+  protected final ConvLayerParameters cp;
+  protected final String              prefix;
 
   /* counters */
-  private DFEVar                      h;
-  private DFEVar                      w;
-  private DFEVar                      c;
-  private DFEVar                      f;
+  protected DFEVar                    h;
+  protected DFEVar                    w;
+  protected DFEVar                    c;
+  protected DFEVar                    f;
+  protected DFEVar                    oh, ow;
 
-  private final ConvLayerIfmapBuffer  ibuf;
-
-  private final ConvLayerLineBuffer   lbuf;
-
-  private final ConvLayerOfmapBuffer  obuf;
+  protected ConvLayerIfmapBuffer      ibuf;
+  protected ConvLayerLineBuffer       lbuf;
+  protected ConvLayerOfmapBuffer      obuf;
 
   public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams,
       DFEType scalarT) {
@@ -51,26 +54,40 @@ public class ConvLayerKernel extends KernelComponent {
 
     this.cp = convParams;
 
+    this.prefix = prefix;
+
     /* scalar type */
     this.scalarT = scalarT;
 
+    /* streams */
+    initStreams();
+
+    /* counters */
+    initCounters();
+
+    /* compute */
+    initConvLayer();
+  }
+
+  public void initStreams() {
     /* vector type */
     this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, getIfmapVecSize());
     this.coeffVecT = new DFEVectorType<DFEVar>(scalarT, getCoeffVecSize());
     this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, getOfmapVecSize());
 
     /* streams */
-    this.ifmap = ifmapVecT.newInstance(owner);
-    this.coeff = coeffVecT.newInstance(owner);
-    this.ofmap = ofmapVecT.newInstance(owner);
+    this.ifmap = ifmapVecT.newInstance(getOwner());
+    this.coeff = coeffVecT.newInstance(getOwner());
+    this.ofmap = ofmapVecT.newInstance(getOwner());
+  }
 
-    /* counters */
-    initCounters();
-
+  public void initConvLayer() {
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, scalarT);
     DFEVector<DFEVar> ifmapBufVec = ibuf.port(
-        ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
+        ifmap,
+        getIfmapBufferAddr(),
+        getIfmapBufferWriteEn());
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, scalarT);
@@ -86,7 +103,9 @@ public class ConvLayerKernel extends KernelComponent {
     obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT, prefix);
     obuf.setReset(getOfmapReset());
     this.ofmap.connect(obuf.port(
-        conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn()));
+        conv2dOfmap,
+        getOfmapBufferAddr(),
+        getOfmapBufferWriteEn()));
 
     debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
   }
@@ -99,7 +118,8 @@ public class ConvLayerKernel extends KernelComponent {
         return c.eq(0);
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
@@ -111,7 +131,8 @@ public class ConvLayerKernel extends KernelComponent {
         return c.eq(cp.C / cp.PC - 1) & getOfmapBufferWriteEn();
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
@@ -125,30 +146,29 @@ public class ConvLayerKernel extends KernelComponent {
 
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
   public DFEVar getOfmapBufferAddr() {
-    DFEVar oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
-    DFEVar ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0)
-        : (w * cp.PK + 1 - cp.K) / cp.PK;
-    oh = oh.cast(dfeInt(32));
-    ow = ow.cast(dfeInt(32));
+    return getOfmapBufferAddr(obuf.getAddrT());
+  }
 
-    debug.simPrintf("ofmap buffer addr = %KObj%\n", oh * cp.OW / cp.PK + ow);
+  public DFEVar getOfmapBufferAddr(DFEType addrT) {
 
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return (f * (cp.OH * cp.OW / cp.PK) + oh * cp.OW / cp.PK + ow)
-            .cast(obuf.getAddrT());
+            .cast(addrT);
 
       case FILTER_MAJOR:
-        return (oh * cp.OW / cp.PK + ow).cast(obuf.getAddrT());
+        return (oh * cp.OW / cp.PK + ow).cast(addrT);
 
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
@@ -164,7 +184,8 @@ public class ConvLayerKernel extends KernelComponent {
         return (h.eq(0)) & (w.eq(0));
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
@@ -222,11 +243,26 @@ public class ConvLayerKernel extends KernelComponent {
 
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
+
+    debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
+    debug.simPrintf("ifmapEn = %d\n", getIfmapEn());
+    debug.simPrintf("ofmapEn = %d\n", getOfmapEn());
+
+    // counters for the output fmap
+    oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
+    oh = oh.cast(countT);
+
+    ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0) : (w * cp.PK + 1 - cp.K)
+        / cp.PK;
+    ow = ow.cast(countT);
+
+    debug.simPrintf("ofmap buffer addr = %KObj%\n", oh * cp.OW / cp.PK + ow);
   }
 
-  private DFEVar getIfmapBufferAddr() {
+  protected DFEVar getIfmapBufferAddr() {
     DFEVar addr;
 
     switch (cp.seq) {
@@ -244,11 +280,12 @@ public class ConvLayerKernel extends KernelComponent {
 
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
-  private DFEVar getIfmapBufferWriteEn() {
+  protected DFEVar getIfmapBufferWriteEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return f.eq(0);
@@ -258,7 +295,8 @@ public class ConvLayerKernel extends KernelComponent {
 
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 

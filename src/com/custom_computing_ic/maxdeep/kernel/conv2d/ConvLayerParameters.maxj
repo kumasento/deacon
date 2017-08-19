@@ -25,15 +25,26 @@ public class ConvLayerParameters {
   public final CompSeq seq;       // computation sequence
   public final String  name;
   public final boolean dbg;
+  public final Type    type;
 
   /**
    * Computation sequence
    * 
-   * @author
+   * @author Ruizhe Zhao
    * 
    */
   public enum CompSeq {
     FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR
+  }
+
+  /**
+   * Type of convolution computation
+   * 
+   * @author Ruizhe Zhao
+   * 
+   */
+  public enum Type {
+    STANDARD, DEPTHWISE_SEPARABLE
   }
 
   public ConvLayerParameters(Builder builder) {
@@ -51,6 +62,20 @@ public class ConvLayerParameters {
     this.seq = builder.seq;
     this.name = builder.name;
     this.dbg = false;
+    this.type = builder.type;
+  }
+
+  public ConvLayerParameters createDepthwiseParameters() {
+    /**
+     * TODO: One thing not clear - PC is actually not sensible here However, we
+     * still need it to specify correct number of line buffers.
+     */
+    return new ConvLayerParameters.Builder(H, W, 1, 1, K).BW(BW).PK(PK).build();
+  }
+
+  public ConvLayerParameters createPointwiseParameters() {
+    return new ConvLayerParameters.Builder(OH, OW, C, F, 1)
+        .BW(BW).PC(PC).PF(PF).PK(PK).seq(CompSeq.FILTER_MAJOR).build();
   }
 
   public CPUTypes getCPUTypes() {
@@ -78,6 +103,14 @@ public class ConvLayerParameters {
     return C * F * K * K;
   }
 
+  public long getDepthwiseCoeffStreamNumElems() {
+    return C * K * K;
+  }
+
+  public long getPointwiseCoeffStreamNumElems() {
+    return C * F;
+  }
+
   public long getOfmapStreamNumElems() {
     return F * OH * OW;
   }
@@ -92,6 +125,16 @@ public class ConvLayerParameters {
     return sizeInBytes * getCoeffStreamNumElems();
   }
 
+  public long getDepthwiseCoeffStreamSize() {
+    long sizeInBytes = getCPUTypes().sizeInBytes();
+    return sizeInBytes * getDepthwiseCoeffStreamNumElems();
+  }
+
+  public long getPointwiseCoeffStreamSize() {
+    long sizeInBytes = getCPUTypes().sizeInBytes();
+    return sizeInBytes * getPointwiseCoeffStreamNumElems();
+  }
+
   public long getOfmapStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getOfmapStreamNumElems();
@@ -99,6 +142,14 @@ public class ConvLayerParameters {
 
   public int getCoeffStreamBitWidth() {
     return K * K * PC * PF * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getDepthwiseCoeffStreamBitWidth() {
+    return K * K * PC * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getPointwiseCoeffStreamBitWidth() {
+    return PC * PF * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getIfmapStreamBitWidth() {
@@ -127,6 +178,7 @@ public class ConvLayerParameters {
     private int       PK;
     private CompSeq   seq;
     private String    name;
+    private Type      type;
 
     public Builder(int H, int W, int C, int F, int K) {
 
@@ -151,6 +203,7 @@ public class ConvLayerParameters {
       this.PC = 1;
       this.PK = 1;
       this.seq = CompSeq.CHANNEL_MAJOR;
+      this.type = Type.STANDARD;
     }
 
     public Builder BW(int BW) {
@@ -200,6 +253,13 @@ public class ConvLayerParameters {
 
     public Builder seq(CompSeq seq) {
       this.seq = seq;
+
+      return this;
+    }
+
+    public Builder type(Type type) {
+      this.type = type;
+
       return this;
     }
 

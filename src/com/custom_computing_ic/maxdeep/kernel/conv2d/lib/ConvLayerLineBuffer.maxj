@@ -82,7 +82,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
 	          outputVec[i * (cp.K * (cp.K + cp.PK - 1)) +
 	                    k * (cp.K + cp.PK - 1) +
 	                    j * cp.PK +
-	                    p] <== lbufOutputChunk[p * cp.K + k];
+	                    p].connect(lbufOutputChunk[p * cp.K + k]);
 	        }
         }
         
@@ -130,6 +130,6 @@ public class ConvLayerLineBuffer extends KernelComponent {
   }
   
   public void setInput(DFEVector<DFEVar> inputVec) {
-    this.inputVec <== inputVec;
+    this.inputVec.connect(inputVec);
   }
 }

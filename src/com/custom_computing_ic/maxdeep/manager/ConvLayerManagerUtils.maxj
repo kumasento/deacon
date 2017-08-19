@@ -9,6 +9,7 @@ import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
@@ -21,9 +22,11 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 public class ConvLayerManagerUtils {
 
-  public static final String IFMAP_NAME   = "ifmap";
-  public static final String OFMAP_NAME   = "ofmap";
-  public static final String COEFF_PREFIX = "coeff";
+  public static final String IFMAP_NAME             = "ifmap";
+  public static final String OFMAP_NAME             = "ofmap";
+  public static final String COEFF_PREFIX           = "coeff";
+  public static final String DEPTHWISE_COEFF_PREFIX = "depthwise_coeff";
+  public static final String POINTWISE_COEFF_PREFIX = "pointwise_coeff";
 
   public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
       int sizeInBytes, InterfaceParam burstFactor, EngineInterface ei) {
@@ -94,9 +97,27 @@ public class ConvLayerManagerUtils {
       }
 
       // connect coeff
-      KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
-      knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
-          coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+      if (cp.type == Type.STANDARD) {
+
+        KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
+        knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
+            coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+
+      } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+
+        KernelBlock depthCoeffUnpadKnl = padKnls
+            .get(getDepthwiseCoeffUnpadKernelName(cp));
+        knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME).connect(
+            depthCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+
+        KernelBlock pointCoeffUnpadKnl = padKnls
+            .get(getPointwiseCoeffUnpadKernelName(cp));
+        knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME).connect(
+            pointCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+
+      } else {
+        throw new IllegalArgumentException("type is not supported");
+      }
 
       // knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
       // mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
@@ -123,10 +144,33 @@ public class ConvLayerManagerUtils {
     // create unpadding kernels for coefficients
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
-      String knlName = getCoeffUnpadKernelName(cp);
-      KernelBlock knl = mgr.addKernel(new UnpaddingKernel(mgr
-          .makeKernelParameters(knlName), cp.getCoeffStreamBitWidth(), cp.dbg));
-      knls.put(knlName, knl);
+
+      if (cp.type == Type.STANDARD) {
+
+        String knlName = getCoeffUnpadKernelName(cp);
+        KernelBlock knl = mgr
+            .addKernel(new UnpaddingKernel(mgr.makeKernelParameters(knlName),
+                cp.getCoeffStreamBitWidth(), cp.dbg));
+        knls.put(knlName, knl);
+
+      } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+
+        String depthwiseKnlName = getDepthwiseCoeffUnpadKernelName(cp);
+        String pointwiseKnlName = getPointwiseCoeffUnpadKernelName(cp);
+
+        KernelBlock depthwiseKnl = mgr.addKernel(new UnpaddingKernel(mgr
+            .makeKernelParameters(depthwiseKnlName), cp
+            .getDepthwiseCoeffStreamBitWidth(), cp.dbg));
+        knls.put(depthwiseKnlName, depthwiseKnl);
+
+        KernelBlock pointwiseKnl = mgr.addKernel(new UnpaddingKernel(mgr
+            .makeKernelParameters(pointwiseKnlName), cp
+            .getPointwiseCoeffStreamBitWidth(), cp.dbg));
+        knls.put(pointwiseKnlName, pointwiseKnl);
+
+      } else {
+        throw new IllegalArgumentException("type is not supported");
+      }
     }
 
     ConvLayerParameters cpf = cps.get(0);
@@ -149,9 +193,6 @@ public class ConvLayerManagerUtils {
     LMemCommandGroup groupIfmap = iface.addCommandGroup(
         "GROUP_IFMAP",
         LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
-    LMemCommandGroup groupCoeff = iface.addCommandGroup(
-        "GROUP_COEFF",
-        LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
     LMemCommandGroup groupOfmap = iface.addCommandGroup(
         "GROUP_OFMAP",
         LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
@@ -159,14 +200,47 @@ public class ConvLayerManagerUtils {
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
 
-      String coeffUnpadKnlName = getCoeffUnpadKernelName(cp);
-      KernelBlock coeffUnpadKnl = knls.get(coeffUnpadKnlName);
+      if (cp.type == Type.STANDARD) {
+        LMemCommandGroup groupCoeff = iface.addCommandGroup(
+            "GROUP_COEFF",
+            LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+        String coeffUnpadKnlName = getCoeffUnpadKernelName(cp);
+        KernelBlock coeffUnpadKnl = knls.get(coeffUnpadKnlName);
 
-      ManagerUtils.addLinearStreamFromLMemToKernel(
-          groupCoeff,
-          coeffUnpadKnl,
-          COEFF_PREFIX + "_" + i,
-          UnpaddingKernel.INP_NAME);
+        ManagerUtils.addLinearStreamFromLMemToKernel(
+            groupCoeff,
+            coeffUnpadKnl,
+            COEFF_PREFIX + "_" + i,
+            UnpaddingKernel.INP_NAME);
+
+      } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+
+        LMemCommandGroup groupDepthCoeff = iface.addCommandGroup(
+            "GROUP_DEPTH_COEFF",
+            LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+        String depthwiseKnlName = getDepthwiseCoeffUnpadKernelName(cp);
+        KernelBlock depthwiseCoeffUnpadKnl = knls.get(depthwiseKnlName);
+
+        ManagerUtils.addLinearStreamFromLMemToKernel(
+            groupDepthCoeff,
+            depthwiseCoeffUnpadKnl,
+            DEPTHWISE_COEFF_PREFIX + "_" + i,
+            UnpaddingKernel.INP_NAME);
+
+        LMemCommandGroup groupPointCoeff = iface.addCommandGroup(
+            "GROUP_POINT_COEFF",
+            LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
+        String pointwiseKnlName = getPointwiseCoeffUnpadKernelName(cp);
+        KernelBlock pointwiseCoeffUnpadKnl = knls.get(pointwiseKnlName);
+
+        ManagerUtils.addLinearStreamFromLMemToKernel(
+            groupPointCoeff,
+            pointwiseCoeffUnpadKnl,
+            POINTWISE_COEFF_PREFIX + "_" + i,
+            UnpaddingKernel.INP_NAME);
+      } else {
+        throw new IllegalArgumentException("type is not supported");
+      }
     }
 
     ManagerUtils.addLinearStreamFromLMemToKernel(
@@ -181,6 +255,14 @@ public class ConvLayerManagerUtils {
         OFMAP_NAME);
 
     return knls;
+  }
+
+  public static String getDepthwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
+    return String.format("%s_depthwise_coeff_unpad", getKernelName(cp));
+  }
+
+  public static String getPointwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
+    return String.format("%s_pointwise_coeff_unpad", getKernelName(cp));
   }
 
   public static String getCoeffUnpadKernelName(ConvLayerParameters cp) {
@@ -219,7 +301,26 @@ public class ConvLayerManagerUtils {
 
       ei.setTicks(getKernelName(cp), cp.getNumCycles() * batchSize);
 
-      baseAddr = setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr);
+      if (cp.type == Type.STANDARD)
+        baseAddr = setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr);
+      else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+        baseAddr = setupCoeffStream(
+            ei,
+            cps.get(i),
+            i,
+            batchSize,
+            baseAddr,
+            true);
+        baseAddr = setupCoeffStream(
+            ei,
+            cps.get(i),
+            i,
+            batchSize,
+            baseAddr,
+            false);
+      } else {
+        throw new IllegalArgumentException("type is not supported");
+      }
     }
 
     setupOfmapStream(ei, cps.get(cps.size() - 1), batchSize, baseAddr);
@@ -233,7 +334,8 @@ public class ConvLayerManagerUtils {
         .addConstant(cp.getIfmapStreamNumElems()).cast(CPUTypes.INT64);
     ifmapNumElems *= batchSize;
 
-    InterfaceParam burstFactor = ei.addConstant(1).cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(cp.PC * cp.PK).cast(
+        CPUTypes.INT64);
     InterfaceParam burstAlignedIfmapNumElems = getBurstAlignedNumElems(
         ifmapNumElems,
         cp.getCPUTypes().sizeInBytes(),
@@ -251,13 +353,57 @@ public class ConvLayerManagerUtils {
         UnpaddingKernel.SCALAR_TOTAL_CYCLES,
         burstAlignedIfmapNumElems);
 
-    ei.setTicks(ifmapUnpadKnlName, burstAlignedIfmapNumElems / burstFactor
-        / (cp.PC * cp.PC));
+    ei.setTicks(ifmapUnpadKnlName, burstAlignedIfmapNumElems / burstFactor);
 
     InterfaceParam ZERO = ei.addConstant(0).cast(CPUTypes.INT64);
     ei.setLMemLinear(IFMAP_NAME, ZERO, burstAlignedIfmapSize);
 
     return burstAlignedIfmapSize;
+  }
+
+  public static InterfaceParam setupCoeffStream(EngineInterface ei,
+      ConvLayerParameters cp, int index, InterfaceParam batchSize,
+      InterfaceParam baseAddr, boolean isDepthwise) {
+
+    String knlName = (isDepthwise)
+        ? getDepthwiseCoeffUnpadKernelName(cp)
+        : getPointwiseCoeffUnpadKernelName(cp);
+    long numElemsValue = (isDepthwise)
+        ? cp.getDepthwiseCoeffStreamNumElems()
+        : cp.getPointwiseCoeffStreamNumElems();
+    InterfaceParam numElems = ei
+        .addConstant(numElemsValue).cast(CPUTypes.INT64);
+    numElems *= batchSize;
+
+    int burstFactorSize = (isDepthwise)
+        ? (cp.PC * cp.K * cp.K)
+        : (cp.PC * cp.PF);
+    InterfaceParam burstFactor = ei.addConstant(burstFactorSize).cast(
+        CPUTypes.INT64);
+
+    InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(numElems, cp
+        .getCPUTypes().sizeInBytes(), burstFactor, ei);
+    InterfaceParam burstAlignedSize = burstAlignedNumElems
+        * cp.getCPUTypes().sizeInBytes();
+
+    ei.setScalar(knlName, UnpaddingKernel.SCALAR_NUM_INP, numElems
+        / burstFactor);
+    ei.setScalar(
+        knlName,
+        UnpaddingKernel.SCALAR_TOTAL_CYCLES,
+        burstAlignedNumElems / burstFactor);
+
+    InterfaceParam numTicks = (isDepthwise)
+        ? (burstAlignedNumElems / burstFactor)
+        : (burstAlignedNumElems / burstFactor);
+    ei.setTicks(knlName, numTicks);
+
+    String prefix = (isDepthwise)
+        ? DEPTHWISE_COEFF_PREFIX
+        : POINTWISE_COEFF_PREFIX;
+    ei.setLMemLinear(prefix + "_" + index, baseAddr, burstAlignedSize);
+
+    return baseAddr + burstAlignedSize;
   }
 
   public static InterfaceParam setupCoeffStream(EngineInterface ei,
@@ -283,7 +429,7 @@ public class ConvLayerManagerUtils {
         UnpaddingKernel.SCALAR_TOTAL_CYCLES,
         burstAlignedNumElems / burstFactor);
 
-    ei.setTicks(knlName, burstAlignedNumElems / burstFactor / (cp.PF * cp.PC));
+    ei.setTicks(knlName, burstAlignedNumElems / burstFactor);
 
     ei.setLMemLinear(COEFF_PREFIX + "_" + index, baseAddr, burstAlignedSize);
 
@@ -297,7 +443,8 @@ public class ConvLayerManagerUtils {
         CPUTypes.INT64);
     numElems *= batchSize;
 
-    InterfaceParam burstFactor = ei.addConstant(1).cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(cp.PF * cp.PK).cast(
+        CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(numElems, cp
         .getCPUTypes().sizeInBytes(), burstFactor, ei);
     InterfaceParam burstAlignedSize = burstAlignedNumElems
@@ -309,7 +456,7 @@ public class ConvLayerManagerUtils {
         PaddingKernel.SCALAR_TOTAL_CYCLES,
         burstAlignedNumElems / burstFactor);
 
-    ei.setTicks(knlName, burstAlignedNumElems / burstFactor / (cp.PF * cp.PK));
+    ei.setTicks(knlName, burstAlignedNumElems / burstFactor);
 
     ei.setLMemLinear(OFMAP_NAME, baseAddr, burstAlignedSize);
 

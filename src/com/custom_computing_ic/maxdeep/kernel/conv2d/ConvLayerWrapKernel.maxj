@@ -1,5 +1,6 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration.OptimizationOptions.DSPMulAddChainBehaviour;
@@ -16,9 +17,11 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
  */
 public class ConvLayerWrapKernel extends Kernel {
 
-  public static final String        IFMAP_NAME = "ifmap";
-  public static final String        COEFF_NAME = "coeff";
-  public static final String        OFMAP_NAME = "ofmap";
+  public static final String        IFMAP_NAME           = "ifmap";
+  public static final String        COEFF_NAME           = "coeff";
+  public static final String        DEPTHWISE_COEFF_NAME = "depthwise_coeff";
+  public static final String        POINTWISE_COEFF_NAME = "pointwise_coeff";
+  public static final String        OFMAP_NAME           = "ofmap";
 
   private final ConvLayerParameters cp;
 
@@ -35,13 +38,50 @@ public class ConvLayerWrapKernel extends Kernel {
 
     DFEType scalarT = dfeInt(cp.BW);
 
-    ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
-    DFEVector<DFEVar> ifmap = io.input(
-        IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
-    DFEVector<DFEVar> coeff = io.input(
-        COEFF_NAME, conv.getCoeffVecT(), conv.getCoeffEn());
-    conv.setInputs(ifmap, coeff);
-    io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(
-        conv.getOfmap());
+    /**
+     * TODO: what is the proper way to initialise conv and cast the type?
+     */
+    if (cp.type == Type.STANDARD) {
+      ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
+
+      DFEVector<DFEVar> ifmap = io.input(
+          IFMAP_NAME,
+          conv.getIfmapVecT(),
+          conv.getIfmapEn());
+      DFEVector<DFEVar> coeff = io.input(
+          COEFF_NAME,
+          conv.getCoeffVecT(),
+          conv.getCoeffEn());
+
+      conv.setInputs(ifmap, coeff);
+      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(
+          conv.getOfmap());
+
+    } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+
+      DepthwiseSeparableConvLayerKernel conv = new DepthwiseSeparableConvLayerKernel(
+          getKernel(), cp, scalarT);
+
+      DFEVector<DFEVar> ifmap = io.input(
+          IFMAP_NAME,
+          conv.getIfmapVecT(),
+          conv.getIfmapEn());
+      DFEVector<DFEVar> depthwiseCoeff = io.input(
+          DEPTHWISE_COEFF_NAME,
+          conv.getDepthwiseCoeffVecT(),
+          conv.getDepthwiseCoeffEn());
+      DFEVector<DFEVar> pointwiseCoeff = io.input(
+          POINTWISE_COEFF_NAME,
+          conv.getPointwiseCoeffVecT(),
+          conv.getPointwiseCoeffEn());
+
+      conv.setInputs(ifmap, depthwiseCoeff, pointwiseCoeff);
+      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(
+          conv.getOfmap());
+
+    } else {
+      throw new IllegalArgumentException("type has no been supported");
+    }
+
   }
 }
