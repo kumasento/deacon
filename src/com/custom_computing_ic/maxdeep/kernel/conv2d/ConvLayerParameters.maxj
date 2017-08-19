@@ -24,6 +24,7 @@ public class ConvLayerParameters {
   public final int     BW;        // bit width
   public final CompSeq seq;       // computation sequence
   public final String  name;
+  public final boolean dbg;
 
   /**
    * Computation sequence
@@ -49,6 +50,7 @@ public class ConvLayerParameters {
     this.PK = builder.PK;
     this.seq = builder.seq;
     this.name = builder.name;
+    this.dbg = false;
   }
 
   public CPUTypes getCPUTypes() {
@@ -68,19 +70,43 @@ public class ConvLayerParameters {
     return (H * W * C * F) / (PC * PF * PK);
   }
 
+  public long getIfmapStreamNumElems() {
+    return C * H * W;
+  }
+
+  public long getCoeffStreamNumElems() {
+    return C * F * K * K;
+  }
+
+  public long getOfmapStreamNumElems() {
+    return F * OH * OW;
+  }
+
   public long getIfmapStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
-    return sizeInBytes * C * H * W;
+    return sizeInBytes * getIfmapStreamNumElems();
   }
 
   public long getCoeffStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
-    return sizeInBytes * C * F * K * K;
+    return sizeInBytes * getCoeffStreamNumElems();
   }
 
   public long getOfmapStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
-    return sizeInBytes * F * OH * OW;
+    return sizeInBytes * getOfmapStreamNumElems();
+  }
+
+  public int getCoeffStreamBitWidth() {
+    return K * K * PC * PF * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getIfmapStreamBitWidth() {
+    return PC * PK * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getOfmapStreamBitWidth() {
+    return PF * PK * getCPUTypes().sizeInBytes() * 8;
   }
 
   /**

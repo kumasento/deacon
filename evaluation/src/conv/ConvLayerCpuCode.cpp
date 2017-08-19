@@ -35,9 +35,9 @@ int main(int argc, char *argv[]) {
 
   ConvLayer_actions_t actions;
   actions.param_batch_size = batch_size;
-  actions.instream_ifmap = (const int32_t *) ifmap;
-  actions.instream_coeff_0 = (const int32_t *) coeff_0;
-  actions.outstream_ofmap = ofmap;
+  // actions.instream_ifmap = (const int32_t *) ifmap;
+  // actions.instream_coeff_0 = (const int32_t *) coeff_0;
+  // actions.outstream_ofmap = ofmap;
 
   printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;

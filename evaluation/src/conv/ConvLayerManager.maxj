@@ -1,7 +1,7 @@
 package conv;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
-import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
@@ -32,8 +32,8 @@ public class ConvLayerManager extends CustomManager {
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
-    ManagerUtils.createKernelBlocks(this, cp);
-    ManagerUtils.setupConstants(this, cp);
+    ConvLayerManagerUtils.createKernelBlocks(this, cp);
+    ConvLayerManagerUtils.setupConstants(this, cp);
   }
 
   public EngineInterface interfaceDefault(ConvLayerParameters cp) {
@@ -41,8 +41,8 @@ public class ConvLayerManager extends CustomManager {
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
-    ManagerUtils.setupStreams(ei, cp, batchSize);
-    ManagerUtils.setupKernelTicks(ei, cp, batchSize);
+    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize);
+    // ConvLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
 
     return ei;
   }

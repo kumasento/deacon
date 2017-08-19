@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
-import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
@@ -36,8 +36,8 @@ public class ConvTwoLayersManager extends CustomManager {
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
-    ManagerUtils.createKernelBlocks(this, cps);
-    ManagerUtils.setupConstants(this, cps);
+    ConvLayerManagerUtils.createKernelBlocks(this, cps);
+    ConvLayerManagerUtils.setupConstants(this, cps);
   }
 
   public EngineInterface interfaceDefault(List<ConvLayerParameters> cps) {
@@ -45,8 +45,8 @@ public class ConvTwoLayersManager extends CustomManager {
 
     InterfaceParam numBatches = ei.addParam("num_batches", CPUTypes.UINT64);
 
-    ManagerUtils.setupStreams(ei, cps, numBatches);
-    ManagerUtils.setupKernelTicks(ei, cps, numBatches);
+    ConvLayerManagerUtils.setupStreams(ei, cps, numBatches);
+    ConvLayerManagerUtils.setupKernelTicks(ei, cps, numBatches);
 
     return ei;
   }
