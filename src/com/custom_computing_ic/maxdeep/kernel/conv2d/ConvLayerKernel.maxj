@@ -107,7 +107,8 @@ public class ConvLayerKernel extends KernelComponent {
         getOfmapBufferAddr(),
         getOfmapBufferWriteEn()));
 
-    debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
+    if (cp.dbg)
+      debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
   }
 
   public DFEVar getOfmapReset() {
@@ -247,9 +248,11 @@ public class ConvLayerKernel extends KernelComponent {
             cp.seq));
     }
 
-    debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
-    debug.simPrintf("ifmapEn = %d\n", getIfmapEn());
-    debug.simPrintf("ofmapEn = %d\n", getOfmapEn());
+    if (cp.dbg) {
+      debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
+      debug.simPrintf("ifmapEn = %d\n", getIfmapEn());
+      debug.simPrintf("ofmapEn = %d\n", getOfmapEn());
+    }
 
     // counters for the output fmap
     oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
@@ -259,7 +262,9 @@ public class ConvLayerKernel extends KernelComponent {
         / cp.PK;
     ow = ow.cast(countT);
 
-    debug.simPrintf("ofmap buffer addr = %KObj%\n", oh * cp.OW / cp.PK + ow);
+    if (cp.dbg) {
+      debug.simPrintf("ofmap buffer addr = %KObj%\n", oh * cp.OW / cp.PK + ow);
+    }
   }
 
   protected DFEVar getIfmapBufferAddr() {

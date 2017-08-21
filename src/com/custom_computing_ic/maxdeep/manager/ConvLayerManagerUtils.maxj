@@ -334,7 +334,7 @@ public class ConvLayerManagerUtils {
         .addConstant(cp.getIfmapStreamNumElems()).cast(CPUTypes.INT64);
     ifmapNumElems *= batchSize;
 
-    InterfaceParam burstFactor = ei.addConstant(cp.PC * cp.PK).cast(
+    InterfaceParam burstFactor = ei.addConstant(cp.getIfmapVecSize()).cast(
         CPUTypes.INT64);
     InterfaceParam burstAlignedIfmapNumElems = getBurstAlignedNumElems(
         ifmapNumElems,
@@ -347,11 +347,11 @@ public class ConvLayerManagerUtils {
     ei.setScalar(
         ifmapUnpadKnlName,
         UnpaddingKernel.SCALAR_NUM_INP,
-        ifmapNumElems);
+        ifmapNumElems / burstFactor);
     ei.setScalar(
         ifmapUnpadKnlName,
         UnpaddingKernel.SCALAR_TOTAL_CYCLES,
-        burstAlignedIfmapNumElems);
+        burstAlignedIfmapNumElems / burstFactor);
 
     ei.setTicks(ifmapUnpadKnlName, burstAlignedIfmapNumElems / burstFactor);
 
@@ -415,7 +415,7 @@ public class ConvLayerManagerUtils {
         CPUTypes.INT64);
     numElems *= batchSize;
 
-    InterfaceParam burstFactor = ei.addConstant(cp.K * cp.K).cast(
+    InterfaceParam burstFactor = ei.addConstant(cp.getCoeffVecSize()).cast(
         CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(numElems, cp
         .getCPUTypes().sizeInBytes(), burstFactor, ei);
@@ -443,7 +443,7 @@ public class ConvLayerManagerUtils {
         CPUTypes.INT64);
     numElems *= batchSize;
 
-    InterfaceParam burstFactor = ei.addConstant(cp.PF * cp.PK).cast(
+    InterfaceParam burstFactor = ei.addConstant(cp.getOfmapVecSize()).cast(
         CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(numElems, cp
         .getCPUTypes().sizeInBytes(), burstFactor, ei);

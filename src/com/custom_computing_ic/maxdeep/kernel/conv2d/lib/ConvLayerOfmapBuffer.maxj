@@ -79,7 +79,8 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
 
     this.result = portVecT.newInstance(owner);
     for (int i = 0; i < portVecT.getSize(); i++) {
-      DFEVar prevData = (reset.eq(true)) ? constant.var(0).cast(scalarT)
+      DFEVar prevData = (reset.eq(true))
+          ? constant.var(0).cast(scalarT)
           : port[i];
       this.result[i].connect(data[i] + prevData);
     }
@@ -92,11 +93,13 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
         stream.offset(result, -writeLatency),
         stream.offset(writeEn, -writeLatency));
 
-    debug.simPrintf("[ConvLayerOfmapBuffer] input = %KObj%\n", data);
-    debug.simPrintf("[ConvLayerOfmapBuffer] read = %KObj%\n", port);
-    debug.simPrintf("[ConvLayerOfmapBuffer] output = %KObj%\n", result);
-    debug.simPrintf("[ConvLayerOfmapBuffer] writeEn = %KObj%\n", writeEn);
-    debug.simPrintf("[ConvLayerOfmapBuffer] addr = %KObj%\n", addr);
+    if (cp.dbg) {
+      debug.simPrintf("[ConvLayerOfmapBuffer] input = %KObj%\n", data);
+      debug.simPrintf("[ConvLayerOfmapBuffer] read = %KObj%\n", port);
+      debug.simPrintf("[ConvLayerOfmapBuffer] output = %KObj%\n", result);
+      debug.simPrintf("[ConvLayerOfmapBuffer] writeEn = %KObj%\n", writeEn);
+      debug.simPrintf("[ConvLayerOfmapBuffer] addr = %KObj%\n", addr);
+    }
   }
 
   public DFEType getAddrT() {
@@ -126,7 +129,8 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
       return cp.PK * cp.PF;
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet", cp.seq));
+          "Computation sequence %s has not been supported yet",
+          cp.seq));
     }
   }
 
@@ -137,7 +141,8 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
       return cp.OH * cp.OW / cp.PK;
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet", cp.seq));
+          "Computation sequence %s has not been supported yet",
+          cp.seq));
     }
   }
 }

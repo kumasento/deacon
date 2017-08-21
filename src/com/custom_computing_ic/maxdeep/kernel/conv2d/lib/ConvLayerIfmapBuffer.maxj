@@ -58,8 +58,10 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.writeEn = dfeBool().newInstance(owner);
     this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
     
-    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
-    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
+    if (cp.dbg) {
+	    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
+	    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
+    }
   }
   
   public DFEType getAddrT() {

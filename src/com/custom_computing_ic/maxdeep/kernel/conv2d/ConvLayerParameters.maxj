@@ -99,20 +99,40 @@ public class ConvLayerParameters {
     return C * H * W;
   }
 
+  public int getIfmapVecSize() {
+    return PC * PK;
+  }
+
   public long getCoeffStreamNumElems() {
     return C * F * K * K;
+  }
+
+  public int getCoeffVecSize() {
+    return PC * PF * K * K;
   }
 
   public long getDepthwiseCoeffStreamNumElems() {
     return C * K * K;
   }
 
+  public int getDepthwiseCoeffVecSize() {
+    return PC * K * K;
+  }
+
   public long getPointwiseCoeffStreamNumElems() {
     return C * F;
   }
 
+  public int getPointwiseCoeffVecSize() {
+    return PC * PF;
+  }
+
   public long getOfmapStreamNumElems() {
     return F * OH * OW;
+  }
+
+  public int getOfmapVecSize() {
+    return PK * PF;
   }
 
   public long getIfmapStreamSize() {
@@ -141,23 +161,23 @@ public class ConvLayerParameters {
   }
 
   public int getCoeffStreamBitWidth() {
-    return K * K * PC * PF * getCPUTypes().sizeInBytes() * 8;
+    return getCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getDepthwiseCoeffStreamBitWidth() {
-    return K * K * PC * getCPUTypes().sizeInBytes() * 8;
+    return getDepthwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getPointwiseCoeffStreamBitWidth() {
-    return PC * PF * getCPUTypes().sizeInBytes() * 8;
+    return getPointwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getIfmapStreamBitWidth() {
-    return PC * PK * getCPUTypes().sizeInBytes() * 8;
+    return getIfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getOfmapStreamBitWidth() {
-    return PF * PK * getCPUTypes().sizeInBytes() * 8;
+    return getOfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   /**

@@ -74,9 +74,11 @@ public class Conv2DKernel extends KernelComponent {
      */
     compute(ifmap, coeff, ofmap);
 
-    debug.simPrintf("[Conv2DKernel] ifmap = %KObj%\n", ifmap);
-    debug.simPrintf("[Conv2DKernel] coeff = %KObj%\n", coeff);
-    debug.simPrintf("[Conv2DKernel] ofmap = %KObj%\n", ofmap);
+    if (cp.dbg) {
+      debug.simPrintf("[Conv2DKernel] ifmap = %KObj%\n", ifmap);
+      debug.simPrintf("[Conv2DKernel] coeff = %KObj%\n", coeff);
+      debug.simPrintf("[Conv2DKernel] ofmap = %KObj%\n", ofmap);
+    }
   }
 
   /**

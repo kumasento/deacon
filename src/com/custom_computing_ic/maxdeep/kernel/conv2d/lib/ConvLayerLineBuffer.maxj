@@ -24,7 +24,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
   private final DFEVectorType<DFEVar> outputVecT;
 
   private final DFEVector<DFEVar>     inputVec;
-  private final DFEVector<DFEVar> outputVec;
+  private final DFEVector<DFEVar>     outputVec;
 
   /**
    * constructor
@@ -40,57 +40,58 @@ public class ConvLayerLineBuffer extends KernelComponent {
     this.cp = params;
 
     this.scalarT = scalarT;
-    
+
     /* input stream */
     this.inputVecT = new DFEVectorType<DFEVar>(scalarT, getInputVecSize());
     this.inputVec = inputVecT.newInstance(getOwner());
-    
+
     /* output stream */
     this.outputVecT = new DFEVectorType<DFEVar>(scalarT, getOutputVecSize());
     this.outputVec = outputVecT.newInstance(getOwner());
-    
+
     /* initialise line buffers */
     int numLineBuffers = getInputVecSize() / cp.PK;
-    
-    for (int i = 0; i < numLineBuffers; i ++) {
-      
+
+    for (int i = 0; i < numLineBuffers; i++) {
+
       /* initialise one line buffer */
-      LineBufferKernel lbuf =
-        new LineBufferKernel(getOwner(), cp.K, cp.W, cp.PK, scalarT);
+      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), cp.K, cp.W,
+          cp.PK, scalarT);
       lbuf.setHeight(constant.var(cp.K).cast(lbuf.getIndexT()));
       lbuf.setWidth(constant.var(cp.W).cast(lbuf.getIndexT()));
       lbuf.setCapacity(constant.var(cp.H * cp.W).cast(lbuf.getIndexT()));
-      
+
       /* create input vectors for line buffers */
       DFEVector<DFEVar> lbufInput = lbuf.getInputVecT().newInstance(getOwner());
-      for (int j = 0; j < cp.PK; j ++)
-        lbufInput[j] <== inputVec[i * cp.PK + j];
+      for (int j = 0; j < cp.PK; j++)
+        lbufInput[j].connect(inputVec[i * cp.PK + j]);
       lbuf.setInput(lbufInput);
-      
+
       /* get results from line buffers */
       /* lbufOut has shape PK * K */
       DFEVector<DFEVar> lbufOutput = lbuf.getOutput();
       int numLbufOutputChunks = (cp.K + cp.PK - 1) / cp.PK;
       int lbufOutputChunkSize = lbufOutput.getSize();
-      for (int j = 0; j < numLbufOutputChunks; j ++) {
-        DFEVector<DFEVar> lbufOutputChunk =
-          stream.offset(lbufOutput, - (numLbufOutputChunks - j - 1));
-        
+      for (int j = 0; j < numLbufOutputChunks; j++) {
+        DFEVector<DFEVar> lbufOutputChunk = stream.offset(
+            lbufOutput,
+            -(numLbufOutputChunks - j - 1));
+
         /* outputVec: (PC, K, K + PK - 1) */
-        for (int p = 0; p < cp.PK; p ++) {
-	        for (int k = 0; k < cp.K; k ++) {
-	          outputVec[i * (cp.K * (cp.K + cp.PK - 1)) +
-	                    k * (cp.K + cp.PK - 1) +
-	                    j * cp.PK +
-	                    p].connect(lbufOutputChunk[p * cp.K + k]);
-	        }
+        for (int p = 0; p < cp.PK; p++) {
+          for (int k = 0; k < cp.K; k++) {
+            outputVec[i * (cp.K * (cp.K + cp.PK - 1)) + k * (cp.K + cp.PK - 1)
+                + j * cp.PK + p].connect(lbufOutputChunk[p * cp.K + k]);
+          }
         }
-        
+
       }
     }
-    
-    // debug.simPrintf("inputVec = %KObj%\n", inputVec);
-    // debug.simPrintf("outputVec = %KObj%\n", outputVec);
+
+    if (cp.dbg) {
+      debug.simPrintf("inputVec = %KObj%\n", inputVec);
+      debug.simPrintf("outputVec = %KObj%\n", outputVec);
+    }
   }
 
   public int getOutputVecSize() {
@@ -101,18 +102,19 @@ public class ConvLayerLineBuffer extends KernelComponent {
         return cp.PC * cp.K * (cp.K + cp.PK - 1);
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
-  
+
   public DFEVectorType<DFEVar> getOutputVecT() {
     return outputVecT;
   }
-  
+
   public DFEVector<DFEVar> getOutputVec() {
     return outputVec;
   }
-  
+
   public int getInputVecSize() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
@@ -121,14 +123,15 @@ public class ConvLayerLineBuffer extends KernelComponent {
         return cp.PC * cp.PK;
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+            "Computation sequence %s has not been supported yet",
+            cp.seq));
     }
   }
 
   public DFEVectorType<DFEVar> getInputVecT() {
     return inputVecT;
   }
-  
+
   public void setInput(DFEVector<DFEVar> inputVec) {
     this.inputVec.connect(inputVec);
   }
