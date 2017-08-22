@@ -9,7 +9,9 @@ B = [ Um; Ua ];
 U = A * B;
 
 lut = U(:, 1);
+lut = lut + 28 * (2 * V - 1) + 30;
 ff = U(:, 2);
+ff = ff + 9 * (2 * V - 1) + 43;
 bram = U(:, 3);
 dsp = U(:, 4);
 

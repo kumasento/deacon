@@ -21,8 +21,8 @@ public class ConvLayerManager extends CustomManager {
 
   public static final int H = 32;
   public static final int W = 32;
-  public static final int C = 128;
-  public static final int F = 128;
+  public static final int C = 512;
+  public static final int F = 512;
   public static final int K = 3;
 
   public ConvLayerManager(ConvLayerEngineParameters params,
