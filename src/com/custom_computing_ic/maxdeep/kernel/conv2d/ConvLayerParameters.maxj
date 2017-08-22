@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 
 /**
@@ -13,19 +14,22 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
  */
 public class ConvLayerParameters {
 
-  public final int     PC, PF, PK; // level of parallelisation
-  public final int     H;         // height
-  public final int     W;         // width
-  public final int     OH;
-  public final int     OW;
-  public final int     C;         // number of channels
-  public final int     F;         // number of filters
-  public final int     K;         // kernel size
-  public final int     BW;        // bit width
-  public final CompSeq seq;       // computation sequence
-  public final String  name;
-  public final boolean dbg;
-  public final Type    type;
+  public final int              PC, PF, PK;  // level of parallelisation
+  public final int              H;           // height
+  public final int              W;           // width
+  public final int              OH;
+  public final int              OW;
+  public final int              C;           // number of channels
+  public final int              F;           // number of filters
+  public final int              K;           // kernel size
+  public final int              BW;          // bit width
+  public final CompSeq          seq;         // computation sequence
+  public final String           name;
+  public final boolean          dbg;
+  public final Type             type;
+  public int                    LRNLocalSize;
+
+  public PoolingLayerParameters pool;
 
   /**
    * Computation sequence
@@ -63,6 +67,8 @@ public class ConvLayerParameters {
     this.name = builder.name;
     this.dbg = false;
     this.type = builder.type;
+    this.LRNLocalSize = 0;
+    this.pool = builder.pool;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -187,18 +193,19 @@ public class ConvLayerParameters {
    * 
    */
   public static class Builder {
-    private final int H;
-    private final int W;
-    private final int C;
-    private final int F;
-    private final int K;
-    private int       BW;  /* bit width */
-    private int       PC;
-    private int       PF;
-    private int       PK;
-    private CompSeq   seq;
-    private String    name;
-    private Type      type;
+    private final int              H;
+    private final int              W;
+    private final int              C;
+    private final int              F;
+    private final int              K;
+    private int                    BW;  /* bit width */
+    private int                    PC;
+    private int                    PF;
+    private int                    PK;
+    private CompSeq                seq;
+    private String                 name;
+    private Type                   type;
+    private PoolingLayerParameters pool;
 
     public Builder(int H, int W, int C, int F, int K) {
 
@@ -279,6 +286,12 @@ public class ConvLayerParameters {
 
     public Builder type(Type type) {
       this.type = type;
+
+      return this;
+    }
+
+    public Builder pool(PoolingLayerParameters pool) {
+      this.pool = pool;
 
       return this;
     }

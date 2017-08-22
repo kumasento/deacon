@@ -1,0 +1,48 @@
+package com.custom_computing_ic.maxdeep.kernel.pool;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+
+public class PoolingLayerKernel extends Kernel {
+
+  private final ConvLayerParameters    cp;
+  private final PoolingLayerParameters pool;
+  private final DFEType                T;
+
+  private DFEVar                       c, h, w, sh, sw, rh, rw;
+
+  public PoolingLayerKernel(KernelParameters params, ConvLayerParameters cp,
+      DFEType T) {
+    super(params);
+
+    this.cp = cp;
+
+    this.pool = cp.pool;
+    if (pool.K <= 0)
+      throw new IllegalArgumentException(
+          "Kernel size of pooling should be larger than 0");
+    if (cp.OH % pool.K != 0)
+      throw new IllegalArgumentException("OH % K should equal 0");
+    if (cp.OW % pool.K != 0)
+      throw new IllegalArgumentException("OW % K should equal 0");
+
+    this.T = T;
+
+  }
+
+  private void setupCounters() {
+    CounterChain chain = control.count.makeCounterChain();
+
+    c = chain.addCounter(cp.F / cp.PF, 1);
+    h = chain.addCounter(cp.OH, pool.S);
+    sh = chain.addCounter(pool.S, 1);
+    w = chain.addCounter(cp.OW, pool.S);
+    sw = chain.addCounter(pool.S, 1);
+    rh = h + sh;
+    rw = w + sw;
+  }
+}

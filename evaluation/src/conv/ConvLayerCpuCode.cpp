@@ -20,18 +20,18 @@ int main(int argc, char *argv[]) {
   uint64_t batch_size = 1;
   uint64_t num_iters = 1;
 
-  uint64_t ifmap_num_elems = H * W * C * batch_size;
-  uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
-  uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
+  // uint64_t ifmap_num_elems = H * W * C * batch_size;
+  // uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
+  // uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
 
-  int32_t *ifmap = (int32_t *) malloc(sizeof(int32_t) * ifmap_num_elems);
-  int32_t *coeff_0 = (int32_t *) malloc(sizeof(int32_t) * coeff_0_num_elems);
-  int32_t *ofmap = (int32_t *) malloc(sizeof(int32_t) * ofmap_num_elems);
+  // int32_t *ifmap = (int32_t *) malloc(sizeof(int32_t) * ifmap_num_elems);
+  // int32_t *coeff_0 = (int32_t *) malloc(sizeof(int32_t) * coeff_0_num_elems);
+  // int32_t *ofmap = (int32_t *) malloc(sizeof(int32_t) * ofmap_num_elems);
 
-  for (uint64_t i = 0; i < ifmap_num_elems; i ++)
-    ifmap[i] = (rand() % 10) - 5;
-  for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
-    coeff_0[i] = (rand() % 10) - 5;
+  // for (uint64_t i = 0; i < ifmap_num_elems; i ++)
+  //   ifmap[i] = (rand() % 10) - 5;
+  // for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
+  //   coeff_0[i] = (rand() % 10) - 5;
 
   ConvLayer_actions_t actions;
   actions.param_batch_size = batch_size;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
-  for (int i = 0; i < num_iters; i ++)
+  for (int i = 0; i < (int) num_iters; i ++)
     ConvLayer_run(engine, &actions);
   end = std::chrono::system_clock::now();
   printf("Done\n");
