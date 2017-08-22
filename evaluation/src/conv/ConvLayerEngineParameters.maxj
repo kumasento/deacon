@@ -4,29 +4,32 @@ import com.maxeler.maxcompiler.v2.build.EngineParameters;
 
 public class ConvLayerEngineParameters extends EngineParameters {
 
-  private static final String BIT_WIDTH_NAME = "bitWidth";
-  private static final int    BIT_WIDTH      = 32;
+  private static final String  BIT_WIDTH_NAME = "bitWidth";
+  private static final int     BIT_WIDTH      = 32;
 
-  private static final String PF_NAME        = "PF";
-  private static final int    PF             = 1;
-  private static final String PC_NAME        = "PC";
-  private static final int    PC             = 1;
-  private static final String PK_NAME        = "PK";
-  private static final int    PK             = 1;
+  private static final String  PF_NAME        = "PF";
+  private static final int     PF             = 1;
+  private static final String  PC_NAME        = "PC";
+  private static final int     PC             = 1;
+  private static final String  PK_NAME        = "PK";
+  private static final int     PK             = 1;
 
-  private static final String H_NAME         = "H";
-  private static final int    H              = 1;
-  private static final String W_NAME         = "W";
-  private static final int    W              = 1;
-  private static final String C_NAME         = "C";
-  private static final int    C              = 1;
-  private static final String F_NAME         = "F";
-  private static final int    F              = 1;
-  private static final String K_NAME         = "K";
-  private static final int    K              = 1;
+  private static final String  H_NAME         = "H";
+  private static final int     H              = 1;
+  private static final String  W_NAME         = "W";
+  private static final int     W              = 1;
+  private static final String  C_NAME         = "C";
+  private static final int     C              = 1;
+  private static final String  F_NAME         = "F";
+  private static final int     F              = 1;
+  private static final String  K_NAME         = "K";
+  private static final int     K              = 1;
 
-  private static final String SEQ_NAME       = "SEQ";
-  private static final int    SEQ            = 0;
+  private static final String  SEQ_NAME       = "SEQ";
+  private static final int     SEQ            = 0;
+
+  private static final String  USE_DRAM_NAME  = "USE_DRAM";
+  private static final boolean USE_DRAM       = false;
 
   public ConvLayerEngineParameters(String[] args) {
     super(args);
@@ -47,6 +50,8 @@ public class ConvLayerEngineParameters extends EngineParameters {
     declareParam(K_NAME, DataType.INT, K);
 
     declareParam(SEQ_NAME, DataType.INT, SEQ);
+
+    declareParam(USE_DRAM_NAME, DataType.BOOL, USE_DRAM);
   }
 
   public int getBitWidth() {
@@ -89,6 +94,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
     return getParam(SEQ_NAME);
   }
 
+  public boolean getUseDRAM() {
+    return getParam(USE_DRAM_NAME);
+  }
+
   @Override
   protected void validate() {
     if (getBitWidth() <= 0)
@@ -117,7 +126,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d",
+        "%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d_%s",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
@@ -130,6 +139,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
         getPF(),
         getPC(),
         getPK(),
-        getSeq());
+        getSeq(),
+        (getUseDRAM() ? "DRAM" : "PCIe"));
   }
 }
