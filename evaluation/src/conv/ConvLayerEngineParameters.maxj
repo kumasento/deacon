@@ -14,6 +14,20 @@ public class ConvLayerEngineParameters extends EngineParameters {
   private static final String PK_NAME        = "PK";
   private static final int    PK             = 1;
 
+  private static final String H_NAME         = "H";
+  private static final int    H              = 1;
+  private static final String W_NAME         = "W";
+  private static final int    W              = 1;
+  private static final String C_NAME         = "C";
+  private static final int    C              = 1;
+  private static final String F_NAME         = "F";
+  private static final int    F              = 1;
+  private static final String K_NAME         = "K";
+  private static final int    K              = 1;
+
+  private static final String SEQ_NAME       = "SEQ";
+  private static final int    SEQ            = 0;
+
   public ConvLayerEngineParameters(String[] args) {
     super(args);
   }
@@ -21,9 +35,18 @@ public class ConvLayerEngineParameters extends EngineParameters {
   @Override
   protected void declarations() {
     declareParam(BIT_WIDTH_NAME, DataType.INT, BIT_WIDTH);
+
     declareParam(PF_NAME, DataType.INT, PF);
     declareParam(PC_NAME, DataType.INT, PC);
     declareParam(PK_NAME, DataType.INT, PK);
+
+    declareParam(H_NAME, DataType.INT, H);
+    declareParam(W_NAME, DataType.INT, W);
+    declareParam(C_NAME, DataType.INT, C);
+    declareParam(F_NAME, DataType.INT, F);
+    declareParam(K_NAME, DataType.INT, K);
+
+    declareParam(SEQ_NAME, DataType.INT, SEQ);
   }
 
   public int getBitWidth() {
@@ -42,6 +65,30 @@ public class ConvLayerEngineParameters extends EngineParameters {
     return getParam(PK_NAME);
   }
 
+  public int getH() {
+    return getParam(H_NAME);
+  }
+
+  public int getW() {
+    return getParam(W_NAME);
+  }
+
+  public int getC() {
+    return getParam(C_NAME);
+  }
+
+  public int getF() {
+    return getParam(F_NAME);
+  }
+
+  public int getK() {
+    return getParam(K_NAME);
+  }
+
+  public int getSeq() {
+    return getParam(SEQ_NAME);
+  }
+
   @Override
   protected void validate() {
     if (getBitWidth() <= 0)
@@ -52,12 +99,37 @@ public class ConvLayerEngineParameters extends EngineParameters {
       throw new IllegalArgumentException("PC should be larger than 0.");
     if (getPK() <= 0)
       throw new IllegalArgumentException("PK should be larger than 0.");
+    if (getH() <= 0)
+      throw new IllegalArgumentException("H should be larger than 0.");
+    if (getW() <= 0)
+      throw new IllegalArgumentException("W should be larger than 0.");
+    if (getC() <= 0)
+      throw new IllegalArgumentException("C should be larger than 0.");
+    if (getF() <= 0)
+      throw new IllegalArgumentException("F should be larger than 0.");
+    if (getK() <= 0)
+      throw new IllegalArgumentException("K should be larger than 0.");
+    if (getSeq() < 0 && getSeq() <= 2)
+      throw new IllegalArgumentException(
+          "SEQ should be larger than or equal to 0 and smaller than 3.");
   }
 
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_b%d_f%d_c%d_k%d", getMaxFileName(), getDFEModel(),
-        getTarget(), getBitWidth(), getPF(), getPC(), getPK());
+        "%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d",
+        getMaxFileName(),
+        getDFEModel(),
+        getTarget(),
+        getBitWidth(),
+        getH(),
+        getW(),
+        getC(),
+        getF(),
+        getK(),
+        getPF(),
+        getPC(),
+        getPK(),
+        getSeq());
   }
 }
