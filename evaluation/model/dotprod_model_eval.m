@@ -17,7 +17,7 @@ U = [lut ff bram dsp];
 g_U = [g_lut g_ff g_bram g_dsp];
 
 % Check lut usage
-fitlut = fit( (2*V-1), g_lut, 'poly1', 'Robust', 'on' );
+fitlut = fit( (2*V-1), g_lut - lut, 'poly1', 'Robust', 'on' );
 
 subplot(1, 2, 1);
 plot( V, fitlut.p1 * (2*V-1) + fitlut.p2 );
@@ -30,13 +30,14 @@ hold off;
 % Check ff usage
 fitff = fit((2*V-1), g_ff - ff, 'poly1', 'Robust', 'on');
 
-subplot(1, 2, 2);
-plot( V, fitff.p1 * (2*V-1) + fitff.p2 );
-hold on;
-scatter( V, g_ff - ff, 'o');
-xlabel('Vector Size');
-ylabel('FF Usage');
-hold off;
-
+% subplot(1, 2, 2);
+% plot( V, fitff.p1 * (2*V-1) + fitff.p2 );
+% hold on;
+% scatter( V, g_ff - ff, 'o');
+% xlabel('Vector Size');
+% ylabel('FF Usage');
+% hold off;
 disp(fitlut);
-disp(fitff);
+fprintf('LUT C1 = %3d C2 = %3d\n', round(fitlut.p1), round(fitlut.p2));
+fprintf('FF  C1 = %3d C2 = %3d\n', round(fitff.p1), round(fitff.p2));
+
