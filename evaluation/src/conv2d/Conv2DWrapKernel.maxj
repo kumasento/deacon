@@ -6,7 +6,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration.OptimizationOptions.DSPMulAddChainBehaviour;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Optimization.PipelinedOps;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -35,8 +35,10 @@ public class Conv2DWrapKernel extends Kernel {
 
     this.convParams = convParams;
 
-    DFEType scalarT = dfeFix(0, convParams.BW, SignMode.UNSIGNED);
+    DFEType scalarT = dfeInt(convParams.BW);
 
+    getManager().logMsg("pipelining factor = %f", optimization.peekPipeliningFactor(PipelinedOps.ALL));
+    
     Conv2DKernel conv2d = new Conv2DKernel(getKernel(), convParams, scalarT);
     
     DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv2d.getIfmapT());
