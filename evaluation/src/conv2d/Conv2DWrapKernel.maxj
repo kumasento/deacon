@@ -37,9 +37,7 @@ public class Conv2DWrapKernel extends Kernel {
 
     DFEType scalarT = dfeFix(0, convParams.BW, SignMode.UNSIGNED);
 
-    optimization.pushDSPFactor(1.0);
     Conv2DKernel conv2d = new Conv2DKernel(getKernel(), convParams, scalarT);
-    optimization.popDSPFactor();
     
     DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv2d.getIfmapT());
     DFEVector<DFEVar> coeff = io.input(COEFF_NAME, conv2d.getCoeffT());
@@ -48,9 +46,9 @@ public class Conv2DWrapKernel extends Kernel {
     DFEVector<DFEVar> coeffCacheVec = conv2d.getCoeffT().newInstance(getKernel());
     
     for (int i = 0; i < conv2d.getIfmapT().getSize(); i ++)
-      ifmapCacheVec[i].connect(optimization.pipeline(ifmap[i]));
+      ifmapCacheVec[i].connect(ifmap[i] * ifmap[i]);
     for (int i = 0; i < conv2d.getCoeffT().getSize(); i ++)
-      coeffCacheVec[i].connect(optimization.pipeline(coeff[i]));
+      coeffCacheVec[i].connect(coeff[i] * coeff[i]);
     
     conv2d.setInputs(ifmapCacheVec, coeffCacheVec);
     
