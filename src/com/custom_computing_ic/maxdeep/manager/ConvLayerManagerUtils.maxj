@@ -8,6 +8,7 @@ import java.util.Map;
 import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
@@ -19,8 +20,6 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
-
-import conv.ConvLayerEngineParameters;
 
 public class ConvLayerManagerUtils {
 
