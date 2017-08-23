@@ -1,7 +1,7 @@
 #!/bin/sh
 
-PF=(1 2 4 8)
-PC=(1 2 4 8)
+PF=(1 2 4 8 16)
+PC=(1 2 4 8 16)
 
 for pf in ${PF[@]}; do
     for pc in ${PC[@]}; do
