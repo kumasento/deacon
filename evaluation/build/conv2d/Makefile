@@ -32,8 +32,10 @@ MANAGER=$(PRJ)Manager
 APPPKG=conv2d
 DEVICE=Maia
 
-BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(PF) PC=$(PC) PK=$(PK)
-BUILD_NAME_OPTION:=_b$(bitWidth)_f$(PF)_c$(PC)_k$(PK)
+K?=3
+
+BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(PF) PC=$(PC) PK=$(PK) K=$(K)
+BUILD_NAME_OPTION:=_b$(bitWidth)_K$(K)_f$(PF)_c$(PC)_k$(PK)
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware
