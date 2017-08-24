@@ -13,6 +13,8 @@ public class Conv2DEngineParameters extends EngineParameters {
   private static final int    PC             = 1;
   private static final String PK_NAME        = "PK";
   private static final int    PK             = 1;
+  private static final String K_NAME         = "K";
+  private static final int    K              = 1;
 
   public Conv2DEngineParameters(String[] args) {
     super(args);
@@ -21,9 +23,10 @@ public class Conv2DEngineParameters extends EngineParameters {
   @Override
   protected void declarations() {
     declareParam(BIT_WIDTH_NAME, DataType.INT);
-    declareParam(PF_NAME, DataType.INT);
-    declareParam(PC_NAME, DataType.INT);
-    declareParam(PK_NAME, DataType.INT);
+    declareParam(PF_NAME, DataType.INT, PF);
+    declareParam(PC_NAME, DataType.INT, PC);
+    declareParam(PK_NAME, DataType.INT, PK);
+    declareParam(K_NAME, DataType.INT, K);
   }
 
   public int getBitWidth() {
@@ -42,6 +45,10 @@ public class Conv2DEngineParameters extends EngineParameters {
     return getParam(PK_NAME);
   }
 
+  public int getK() {
+    return getParam(K_NAME);
+  }
+
   @Override
   protected void validate() {
     if (getBitWidth() <= 0)
@@ -57,7 +64,14 @@ public class Conv2DEngineParameters extends EngineParameters {
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_b%d_f%d_c%d_k%d", getMaxFileName(), getDFEModel(),
-        getTarget(), getBitWidth(), getPF(), getPC(), getPK());
+        "%s_%s_%s_b%d_K%d_f%d_c%d_k%d",
+        getMaxFileName(),
+        getDFEModel(),
+        getTarget(),
+        getBitWidth(),
+        getK(),
+        getPF(),
+        getPC(),
+        getPK());
   }
 }
