@@ -71,8 +71,8 @@ public class Conv2DManager extends CustomManager {
     // mgr.createSlicInterface(mgr.interfaceDefault(convParams));
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
-    buildConfig.setMPPRCostTableSearchRange(1, 4);
-    buildConfig.setMPPRParallelism(4);
+    buildConfig.setMPPRCostTableSearchRange(1, 2);
+    buildConfig.setMPPRParallelism(2);
     mgr.build();
   }
 
