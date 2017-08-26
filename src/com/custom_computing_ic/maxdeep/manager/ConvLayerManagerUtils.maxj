@@ -31,7 +31,13 @@ public class ConvLayerManagerUtils {
 
   public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
       int sizeInBytes, InterfaceParam burstFactor, EngineInterface ei) {
-    InterfaceParam burstSize = ei.addConstant(384) * burstFactor;
+    return getBurstAlignedNumElems(numElems, sizeInBytes, burstFactor, ei, 384);
+  }
+
+  public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
+      int sizeInBytes, InterfaceParam burstFactor, EngineInterface ei,
+      int rawBurstSize) {
+    InterfaceParam burstSize = ei.addConstant(rawBurstSize) * burstFactor;
     burstSize = burstSize.cast(CPUTypes.INT64);
 
     InterfaceParam totalSizeInBytes = numElems * sizeInBytes;
@@ -46,6 +52,13 @@ public class ConvLayerManagerUtils {
         burstAlignedTotalSizeInBytes / sizeInBytes;
 
     return burstAlignedNumElems;
+  }
+
+  private static boolean hasBNN(List<ConvLayerParameters> cps) {
+    for (ConvLayerParameters cp : cps)
+      if (cp.BW == 1)
+        return true;
+    return false;
   }
 
   public static Map<String, KernelBlock> createKernelBlocks(CustomManager mgr,

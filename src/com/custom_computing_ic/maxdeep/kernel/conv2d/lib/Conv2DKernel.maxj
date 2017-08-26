@@ -33,9 +33,9 @@ public class Conv2DKernel extends KernelComponent {
 
   protected final ConvLayerParameters cp;
 
-  private final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
-  private final DFEVector<DFEVar>     ifmap, coeff, ofmap;
-  private final DFEType               scalarT;
+  protected final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
+  protected final DFEVector<DFEVar>     ifmap, coeff, ofmap;
+  protected final DFEType               scalarT;
 
   /**
    * constructor
@@ -63,7 +63,7 @@ public class Conv2DKernel extends KernelComponent {
 
     this.ifmapVecT = new DFEVectorType<DFEVar>(scalarT, ifmapVecSize);
     this.coeffVecT = new DFEVectorType<DFEVar>(scalarT, coeffVecSize);
-    this.ofmapVecT = new DFEVectorType<DFEVar>(scalarT, ofmapVecSize);
+    this.ofmapVecT = new DFEVectorType<DFEVar>(getOfmapScalarT(), ofmapVecSize);
 
     this.ifmap = ifmapVecT.newInstance(owner);
     this.coeff = coeffVecT.newInstance(owner);
@@ -79,6 +79,10 @@ public class Conv2DKernel extends KernelComponent {
       debug.simPrintf("[Conv2DKernel] coeff = %KObj%\n", coeff);
       debug.simPrintf("[Conv2DKernel] ofmap = %KObj%\n", ofmap);
     }
+  }
+
+  public DFEType getOfmapScalarT() {
+    return scalarT;
   }
 
   /**
@@ -124,8 +128,8 @@ public class Conv2DKernel extends KernelComponent {
   }
 
   public DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
-    DotProductKernel dp = new DotProductKernel(this.getOwner(), cp.K * cp.K,
-        scalarT);
+    DotProductKernel dp =
+        new DotProductKernel(this.getOwner(), cp.K * cp.K, scalarT);
     dp.setInputs(ifmap, coeff);
 
     return dp.getOutput();
@@ -171,11 +175,11 @@ public class Conv2DKernel extends KernelComponent {
 
     int ifmapPackedChunkSize = K * (K + PK - 1);
 
-    DFEVectorType<DFEVar> ifmapPackedChunkT = new DFEVectorType<DFEVar>(
-        scalarT, ifmapPackedChunkSize);
+    DFEVectorType<DFEVar> ifmapPackedChunkT =
+        new DFEVectorType<DFEVar>(scalarT, ifmapPackedChunkSize);
 
-    DFEVector<DFEVar> ifmapPackedChunk = ifmapPackedChunkT
-        .newInstance(getOwner());
+    DFEVector<DFEVar> ifmapPackedChunk =
+        ifmapPackedChunkT.newInstance(getOwner());
 
     // create packed chunk
     for (int i = 0; i < ifmapPackedChunkSize; i++)
@@ -191,8 +195,8 @@ public class Conv2DKernel extends KernelComponent {
 
     int coeffChunkSize = K * K;
 
-    DFEVectorType<DFEVar> coeffChunkT = new DFEVectorType<DFEVar>(scalarT,
-        coeffChunkSize);
+    DFEVectorType<DFEVar> coeffChunkT =
+        new DFEVectorType<DFEVar>(scalarT, coeffChunkSize);
     DFEVector<DFEVar> coeffChunk = coeffChunkT.newInstance(getOwner());
 
     for (int i = 0; i < coeffChunkSize; i++)
@@ -217,8 +221,8 @@ public class Conv2DKernel extends KernelComponent {
     int PK = convParams.PK;
 
     int ifmapChunkSize = K * K;
-    DFEVectorType<DFEVar> ifmapChunkT = new DFEVectorType<DFEVar>(scalarT,
-        ifmapChunkSize);
+    DFEVectorType<DFEVar> ifmapChunkT =
+        new DFEVectorType<DFEVar>(scalarT, ifmapChunkSize);
     List<DFEVector<DFEVar>> ifmapChunks = new ArrayList<DFEVector<DFEVar>>(PK);
 
     for (int p = 0; p < PK; p++) {

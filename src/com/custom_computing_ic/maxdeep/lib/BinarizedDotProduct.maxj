@@ -34,7 +34,7 @@ public class BinarizedDotProduct extends KernelComponent {
 
     this.vecSize = vecSize;
 
-    DFEType type = dfeRawBits(1);
+    DFEType type = dfeUInt(1);
 
     vecT = new DFEVectorType<DFEVar>(type, vecSize);
 
@@ -49,13 +49,17 @@ public class BinarizedDotProduct extends KernelComponent {
     // Output is the result of an adder-tree based reduction
     out = AdderTree.reduce(tmp);
   }
+  
+  public static DFEType getOutT(int vecSize) {
+    return dfeUInt(getOutNumBits(vecSize));
+  }
 
-  public int getOutNumBits() {
+  public static int getOutNumBits(int vecSize) {
     return 1 + (int) Math.floor(Math.log10(vecSize) / Math.log10(2.0));
   }
 
   public DFEType getOutT() {
-    return dfeUInt(getOutNumBits());
+    return dfeUInt(getOutNumBits(vecSize));
   }
   
   public void setInputs(DFEVector<DFEVar> vecA, DFEVector<DFEVar> vecB) {

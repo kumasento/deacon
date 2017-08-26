@@ -84,10 +84,8 @@ public class ConvLayerKernel extends KernelComponent {
   public void initConvLayer() {
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, scalarT);
-    DFEVector<DFEVar> ifmapBufVec = ibuf.port(
-        ifmap,
-        getIfmapBufferAddr(),
-        getIfmapBufferWriteEn());
+    DFEVector<DFEVar> ifmapBufVec =
+        ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, scalarT);
@@ -95,17 +93,36 @@ public class ConvLayerKernel extends KernelComponent {
     DFEVector<DFEVar> lineBufVec = lbuf.getOutputVec();
 
     /* conv2d */
-    Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, scalarT);
-    conv2d.setInputs(lineBufVec, coeff);
-    DFEVector<DFEVar> conv2dOfmap = conv2d.getOfmap();
+    DFEVector<DFEVar> conv2dOfmap = null;
+    if (cp.BW == 1) {
+      BinarizedConv2DKernel conv2d = new BinarizedConv2DKernel(getOwner(), cp);
+      conv2d.setInputs(lineBufVec, coeff);
+      conv2dOfmap = conv2d.getOfmap();
+    } else {
+      Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, scalarT);
+      conv2d.setInputs(lineBufVec, coeff);
+      conv2dOfmap = conv2d.getOfmap();
+    }
 
     /* output buffer */
-    obuf = new ConvLayerOfmapBuffer(getOwner(), cp, scalarT, prefix);
+    obuf =
+        new ConvLayerOfmapBuffer(getOwner(), cp,
+            conv2dOfmap.getElementsAsList()[0].getType(), prefix);
     obuf.setReset(getOfmapReset());
-    this.ofmap.connect(obuf.port(
-        conv2dOfmap,
-        getOfmapBufferAddr(),
-        getOfmapBufferWriteEn()));
+
+    if (cp.BW == 1) {
+      DFEVector<DFEVar> rawOfmap =
+          obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+      for (int i = 0; i < rawOfmap.getSize(); i++)
+        this.ofmap[i].connect((rawOfmap[i] > 1).cast(scalarT));
+
+    } else {
+      // TODO: change 1 here to be a real threshold value
+      this.ofmap.connect(obuf.port(
+          conv2dOfmap,
+          getOfmapBufferAddr(),
+          getOfmapBufferWriteEn()));
+    }
 
     if (cp.dbg)
       debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
@@ -258,8 +275,9 @@ public class ConvLayerKernel extends KernelComponent {
     oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
     oh = oh.cast(countT);
 
-    ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0) : (w * cp.PK + 1 - cp.K)
-        / cp.PK;
+    ow =
+        (w * cp.PK < (cp.K - 1)) ? constant.var(0) : (w * cp.PK + 1 - cp.K)
+            / cp.PK;
     ow = ow.cast(countT);
 
     if (cp.dbg) {

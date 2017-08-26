@@ -27,9 +27,14 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   private static final String  SEQ_NAME       = "SEQ";
   private static final int     SEQ            = 0;
+  private static final String  FREQ_NAME      = "FREQ";
+  private static final int     FREQ           = 100;
 
   private static final String  USE_DRAM_NAME  = "USE_DRAM";
   private static final boolean USE_DRAM       = false;
+  /* decide whether to use BNN optimisation when BW = 1 */
+  private static final String  USE_BNN_NAME   = "USE_BNN";
+  private static final boolean USE_BNN        = false;
 
   public ConvLayerEngineParameters(String[] args) {
     super(args);
@@ -50,8 +55,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
     declareParam(K_NAME, DataType.INT, K);
 
     declareParam(SEQ_NAME, DataType.INT, SEQ);
+    declareParam(FREQ_NAME, DataType.INT, FREQ);
 
     declareParam(USE_DRAM_NAME, DataType.BOOL, USE_DRAM);
+    declareParam(USE_BNN_NAME, DataType.BOOL, USE_BNN);
   }
 
   public int getBitWidth() {
@@ -94,8 +101,16 @@ public class ConvLayerEngineParameters extends EngineParameters {
     return getParam(SEQ_NAME);
   }
 
+  public int getFreq() {
+    return getParam(FREQ_NAME);
+  }
+
   public boolean getUseDRAM() {
     return getParam(USE_DRAM_NAME);
+  }
+
+  public boolean getUseBNN() {
+    return getParam(USE_BNN_NAME);
   }
 
   @Override
@@ -121,6 +136,9 @@ public class ConvLayerEngineParameters extends EngineParameters {
     if (getSeq() < 0 && getSeq() <= 2)
       throw new IllegalArgumentException(
           "SEQ should be larger than or equal to 0 and smaller than 3.");
+    if (getBitWidth() != 1 && getUseBNN())
+      throw new IllegalArgumentException(
+          "BNN OPT should not be used if BW != 1");
   }
 
   @Override

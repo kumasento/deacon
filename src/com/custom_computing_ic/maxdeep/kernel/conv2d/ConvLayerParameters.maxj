@@ -88,6 +88,8 @@ public class ConvLayerParameters {
 
   public CPUTypes getCPUTypes() {
     switch (BW) {
+      case 1:
+        return CPUTypes.INT8;
       case 8:
         return CPUTypes.INT8;
       case 16:

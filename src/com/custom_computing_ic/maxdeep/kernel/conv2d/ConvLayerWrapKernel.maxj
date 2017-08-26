@@ -26,8 +26,7 @@ public class ConvLayerWrapKernel extends Kernel {
 
   private final ConvLayerParameters cp;
 
-  public ConvLayerWrapKernel(KernelParameters params,
-      ConvLayerParameters convParams) {
+  public ConvLayerWrapKernel(KernelParameters params, ConvLayerParameters cp) {
     super(params);
 
     // TODO: remove muladd optimisation for now
@@ -35,9 +34,13 @@ public class ConvLayerWrapKernel extends Kernel {
     config.optimization
         .setDSPMulAddChainBehavior(DSPMulAddChainBehaviour.IGNORE);
 
-    this.cp = convParams;
+    this.cp = cp;
 
-    DFEType scalarT = dfeFix(cp.BW / 2, cp.BW / 2, SignMode.TWOSCOMPLEMENT);
+    DFEType scalarT =
+        (cp.BW == 1) ? dfeUInt(1) : dfeFix(
+            cp.BW / 2,
+            cp.BW / 2,
+            SignMode.TWOSCOMPLEMENT);
 
     /**
      * TODO: what is the proper way to initialise conv and cast the type?
