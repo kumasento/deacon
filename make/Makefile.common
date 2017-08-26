@@ -97,7 +97,7 @@ LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lslic -lm
 
 # Add this on the command line to pass to make when compiling
 # Useful for debug/optimization flags
-EXTRA_CFLAGS?=
+# EXTRA_CFLAGS?=
 
 # This is set in the gdbsim/gdbdfe targets
 DEBUG_FLAGS?=

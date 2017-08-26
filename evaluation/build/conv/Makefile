@@ -39,9 +39,10 @@ K?=3
 SEQ?=0
 USE_DRAM?=false
 USE_DRAM_SUFFIX:=PCIe
-ifeq ($(USE_DRAM), "true")
+ifeq ($(USE_DRAM), true)
 
 USE_DRAM_SUFFIX:=DRAM
+EXTRA_CFLAGS:=-DUSE_DRAM
 
 endif
 

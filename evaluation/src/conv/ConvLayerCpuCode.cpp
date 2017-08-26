@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   uint64_t C = max_get_constant_uint64t(max_file, "conv_C");
   uint64_t F = max_get_constant_uint64t(max_file, "conv_F");
   uint64_t K = max_get_constant_uint64t(max_file, "conv_K");
-  uint64_t USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM");
+  // uint64_t USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM");
 
   uint64_t ifmap_num_elems = H * W * C * batch_size;
   uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
@@ -50,11 +50,11 @@ int main(int argc, char *argv[]) {
 
   ConvLayer_actions_t actions;
   actions.param_batch_size = batch_size;
-  if (!USE_DRAM) {
+#ifndef USE_DRAM
     actions.instream_ifmap = (const int32_t *) ifmap;
     actions.instream_coeff_0 = (const int32_t *) coeff_0;
     actions.outstream_ofmap = ofmap;
-  }
+#endif 
 
   printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;
