@@ -21,7 +21,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
  */
 public class ConvSingleLayerManager extends CustomManager {
 
-  public ConvSingleLayerManager(ConvLayerEngineParameters params,
+  public ConvSingleLayerManager(ConvSingleLayerEngineParameters params,
       ConvLayerParameters cp) {
     super(params);
 
@@ -47,7 +47,8 @@ public class ConvSingleLayerManager extends CustomManager {
 
   @SuppressWarnings("deprecation")
   public static void main(String[] args) {
-    ConvLayerEngineParameters params = new ConvLayerEngineParameters(args);
+    ConvSingleLayerEngineParameters params =
+        new ConvSingleLayerEngineParameters(args);
 
     int H = params.getH();
     int W = params.getW();
