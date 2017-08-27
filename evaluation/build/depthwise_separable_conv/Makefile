@@ -32,8 +32,25 @@ MANAGER=$(PRJ)Manager
 APPPKG=depthwise_separable_conv
 DEVICE=Maia
 
-BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(PF) PC=$(PC) PK=$(PK)
-BUILD_NAME_OPTION:=_b$(bitWidth)_f$(PF)_c$(PC)_k$(PK)
+H?=32
+W?=32
+C?=32
+F?=32
+K?=3
+SEQ?=0
+FREQ?=100
+USE_DRAM?=false
+USE_DRAM_SUFFIX:=PCIe
+ifeq ($(USE_DRAM), true)
+
+USE_DRAM_SUFFIX:=DRAM
+EXTRA_CFLAGS:=-DUSE_DRAM
+
+endif
+
+
+BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(PF) PC=$(PC) PK=$(PK) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ)
+BUILD_NAME_OPTION:=_b$(bitWidth)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(PF)_c$(PC)_k$(PK)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

@@ -1,5 +1,6 @@
 package depthwise_separable_conv;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
@@ -13,12 +14,6 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 public class DepthwiseSeparableConvLayerManager extends CustomManager {
 
-  public static final int H = 32;
-  public static final int W = 32;
-  public static final int C = 32;
-  public static final int F = 32;
-  public static final int K = 3;
-
   public DepthwiseSeparableConvLayerManager(ConvLayerEngineParameters params,
       ConvLayerParameters cp) {
     super(params);
@@ -26,16 +21,17 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
 
-    ConvLayerManagerUtils.createKernelBlocks(this, cp);
-    ConvLayerManagerUtils.setupConstants(this, cp);
+    ConvLayerManagerUtils.createKernelBlocks(this, cp, params.getUseDRAM());
+    ConvLayerManagerUtils.setupConstants(this, cp, params);
   }
 
-  public EngineInterface interfaceDefault(ConvLayerParameters cp) {
+  public EngineInterface interfaceDefault(ConvLayerParameters cp,
+      ConvLayerEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
-    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize);
+    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM());
     // ConvLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
 
     return ei;
@@ -43,15 +39,18 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
 
   @SuppressWarnings("deprecation")
   public static void main(String[] args) {
-    ConvLayerEngineParameters params = new ConvLayerEngineParameters(args);
-    ConvLayerParameters cp = new ConvLayerParameters.Builder(H, W, C, F, K)
-        .type(Type.DEPTHWISE_SEPARABLE).seq(CompSeq.FILTER_MAJOR).name("conv")
-        .PC(params.getPC()).PF(params.getPF()).PK(params.getPK())
-        .BW(params.getBitWidth()).build();
+    DepthwiseSeparableConvLayerEngineParameters params =
+        new DepthwiseSeparableConvLayerEngineParameters(args);
+    ConvLayerParameters cp =
+        new ConvLayerParameters.Builder(params.getH(), params.getW(),
+            params.getC(), params.getF(), params.getK())
+            .type(Type.DEPTHWISE_SEPARABLE).seq(CompSeq.FILTER_MAJOR)
+            .name("conv").PC(params.getPC()).PF(params.getPF())
+            .PK(params.getPK()).BW(params.getBitWidth()).dbg(false).build();
 
-    DepthwiseSeparableConvLayerManager mgr = new DepthwiseSeparableConvLayerManager(
-        params, cp);
-    mgr.createSLiCinterface(mgr.interfaceDefault(cp));
+    DepthwiseSeparableConvLayerManager mgr =
+        new DepthwiseSeparableConvLayerManager(params, cp);
+    mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);

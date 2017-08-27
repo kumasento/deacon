@@ -66,7 +66,7 @@ public class ConvLayerParameters {
     this.PK = builder.PK;
     this.seq = builder.seq;
     this.name = builder.name;
-    this.dbg = false;
+    this.dbg = builder.dbg;
     this.type = builder.type;
     this.LRNLocalSize = 0;
     this.pool = builder.pool;
@@ -211,6 +211,7 @@ public class ConvLayerParameters {
     private Type                   type;
     private PoolingLayerParameters pool;
     private boolean                useDRAM;
+    private boolean                dbg;
 
     public Builder(int H, int W, int C, int F, int K) {
 
@@ -237,6 +238,7 @@ public class ConvLayerParameters {
       this.seq = CompSeq.CHANNEL_MAJOR;
       this.type = Type.STANDARD;
       this.useDRAM = true;
+      this.dbg = false;
     }
 
     public Builder BW(int BW) {
@@ -305,6 +307,11 @@ public class ConvLayerParameters {
     public Builder useDRAM(boolean useDRAM) {
       this.useDRAM = useDRAM;
 
+      return this;
+    }
+
+    public Builder dbg(boolean dbg) {
+      this.dbg = dbg;
       return this;
     }
 

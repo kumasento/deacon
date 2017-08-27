@@ -373,6 +373,7 @@ public class ConvLayerManagerUtils {
 
       for (int i = 0; i < cps.size(); i++) {
         ConvLayerParameters cp = cps.get(i);
+
         ei.setTicks(getKernelName(cp), cp.getNumCycles() * batchSize);
 
         if (cp.type == Type.STANDARD)
@@ -396,6 +397,8 @@ public class ConvLayerManagerUtils {
 
       ConvLayerParameters cpf = cps.get(0);
       ConvLayerParameters cpl = cps.get(cps.size() - 1);
+
+      System.out.printf("ifmap size = %d\n", cpf.getIfmapStreamSize());
 
       ei.setStream(IFMAP_NAME, cpf.getCPUTypes(), cpf.getIfmapStreamSize()
           * batchSize);
