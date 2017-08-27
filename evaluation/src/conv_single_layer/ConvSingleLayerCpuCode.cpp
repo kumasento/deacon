@@ -10,6 +10,7 @@
 typedef int16_t data_t;
 
 int main(int argc, char *argv[]) {
+  char c;
 
   uint64_t batch_size = 1;
   uint64_t num_iters = 1;
@@ -33,7 +34,6 @@ int main(int argc, char *argv[]) {
   uint64_t C = max_get_constant_uint64t(max_file, "conv_C");
   uint64_t F = max_get_constant_uint64t(max_file, "conv_F");
   uint64_t K = max_get_constant_uint64t(max_file, "conv_K");
-  uint64_t USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM");
 
   uint64_t ifmap_num_elems = H * W * C * batch_size;
   uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
