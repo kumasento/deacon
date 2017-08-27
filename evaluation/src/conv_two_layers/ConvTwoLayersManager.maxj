@@ -1,4 +1,4 @@
-package conv_twolayers;
+package conv_two_layers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,50 +23,61 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
  */
 public class ConvTwoLayersManager extends CustomManager {
 
-  public static final int H = 32;
-  public static final int W = 32;
-  public static final int C = 512;
-  public static final int F = 512;
-  public static final int K = 3;
-
   public ConvTwoLayersManager(ConvTwoLayersEngineParameters params,
       List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
+    config.setDefaultStreamClockFrequency(params.getFreq());
 
-    ConvLayerManagerUtils.createKernelBlocks(this, cps);
-    ConvLayerManagerUtils.setupConstants(this, cps);
+    ConvLayerManagerUtils.createKernelBlocks(this, cps, params.getUseDRAM());
+    ConvLayerManagerUtils.setupConstants(this, cps, params);
   }
 
-  public EngineInterface interfaceDefault(List<ConvLayerParameters> cps) {
+  public EngineInterface interfaceDefault(List<ConvLayerParameters> cps,
+      ConvTwoLayersEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
-    InterfaceParam numBatches = ei.addParam("num_batches", CPUTypes.UINT64);
+    InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
-    ConvLayerManagerUtils.setupStreams(ei, cps, numBatches);
-    ConvLayerManagerUtils.setupKernelTicks(ei, cps, numBatches);
+    ConvLayerManagerUtils.setupStreams(ei, cps, batchSize, ep.getUseDRAM());
 
     return ei;
   }
 
+  @SuppressWarnings("deprecation")
   public static void main(String[] args) {
-    ConvTwoLayersEngineParameters params = new ConvTwoLayersEngineParameters(
-        args);
+    ConvTwoLayersEngineParameters ep = new ConvTwoLayersEngineParameters(args);
+    int H = ep.getH();
+    int W = ep.getW();
+    int C = ep.getC();
+    int F = ep.getF();
+    int K = ep.getK();
+
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
-    cps.add(0, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
-        .BW(params.getBitWidth()).seq(CompSeq.FILTER_MAJOR).name("conv1").build());
+
     cps.add(
-        1,
+        0,
         new ConvLayerParameters.Builder(H, W, C, F, K)
-            .BW(params.getBitWidth()).name("conv0").build());
-    // cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
-    //     .BW(params.getBitWidth()).seq(CompSeq.FILTER_MAJOR).name("conv1").build());
+            .BW(ep.getBitWidth())
+            .name("conv0")
+            .PC(ep.getPC())
+            .PF(ep.getPF())
+            .PK(ep.getPK())
+            .build());
+    cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+        .BW(ep.getBitWidth())
+        .seq(CompSeq.FILTER_MAJOR)
+        .PC(ep.getPF())
+        .PF(ep.getPF())
+        .PK(ep.getPK())
+        .name("conv1")
+        .build());
 
-    ConvTwoLayersManager mgr = new ConvTwoLayersManager(params, cps);
+    ConvTwoLayersManager mgr = new ConvTwoLayersManager(ep, cps);
 
-    mgr.createSLiCinterface(mgr.interfaceDefault(cps));
+    mgr.createSLiCinterface(mgr.interfaceDefault(cps, ep));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
