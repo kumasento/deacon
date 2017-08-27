@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
   actions.param_batch_size = batch_size;
 #ifndef USE_DRAM
     actions.instream_ifmap = (const int8_t *) ifmap;
-    actions.instream_coeff_0 = (const int8_t *) coeff_0;
+    actions.instream_coeff = (const int8_t *) coeff_0;
     actions.outstream_ofmap = ofmap;
 #endif 
 
