@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
   // conv1
   num_ops += (conv1_H - conv1_K + 1) * (conv1_W - conv1_K + 1) * conv1_C * conv1_F * conv1_K * conv1_K * 2;
   
-  std::cout << "GOP/s: " << num_ops * batch_size * 1e-9 / elapsed_seconds.count() * 1 << std::endl;
+  std::cout << "GOP/s: " << num_ops * batch_size * 1e-9 / (elapsed_seconds.count() / num_iters) << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);
