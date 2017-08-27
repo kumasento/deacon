@@ -116,7 +116,8 @@ public class ConvLayerManagerUtils {
 
       } else {
         knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(
-            knls.get(i - 1).getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+            knls.get(cps.get(i - 1).name).getOutput(
+                ConvLayerWrapKernel.OFMAP_NAME));
       }
 
       // connect coeff
