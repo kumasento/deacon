@@ -6,9 +6,11 @@
 
 #include "Maxfiles.h"
 
+typedef int16_t data_t;
+
 int main(int argc, char *argv[]) {
 
-  max_file_t *max_file = ConvLayer_init();
+  max_file_t *max_file = ConvSingleLayer_init();
   max_engine_t* engine = max_load(max_file, "*");
 
   uint64_t H = max_get_constant_uint64t(max_file, "conv_H");
@@ -25,20 +27,20 @@ int main(int argc, char *argv[]) {
   uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
   uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
 
-  int32_t *ifmap = (int32_t *) malloc(sizeof(int32_t) * ifmap_num_elems);
-  int32_t *coeff_0 = (int32_t *) malloc(sizeof(int32_t) * coeff_0_num_elems);
-  int32_t *ofmap = (int32_t *) malloc(sizeof(int32_t) * ofmap_num_elems);
+  data_t *ifmap = (data_t *) malloc(sizeof(data_t) * ifmap_num_elems);
+  data_t *coeff_0 = (data_t *) malloc(sizeof(data_t) * coeff_0_num_elems);
+  data_t *ofmap = (data_t *) malloc(sizeof(data_t) * ofmap_num_elems);
 
   for (uint64_t i = 0; i < ifmap_num_elems; i ++)
     ifmap[i] = (rand() % 10) - 5;
   for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
     coeff_0[i] = (rand() % 10) - 5;
 
-  ConvLayer_actions_t actions;
+  ConvSingleLayer_actions_t actions;
   actions.param_batch_size = batch_size;
   if (!USE_DRAM) {
-    actions.instream_ifmap = (const int32_t *) ifmap;
-    actions.instream_coeff_0 = (const int32_t *) coeff_0;
+    actions.instream_ifmap = (const data_t *) ifmap;
+    actions.instream_coeff_0 = (const data_t *) coeff_0;
     actions.outstream_ofmap = ofmap;
   }
 
@@ -46,7 +48,7 @@ int main(int argc, char *argv[]) {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
   for (int i = 0; i < (int) num_iters; i ++)
-    ConvLayer_run(engine, &actions);
+    ConvSingleLayer_run(engine, &actions);
   end = std::chrono::system_clock::now();
   printf("Done\n");
 
