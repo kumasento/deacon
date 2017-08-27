@@ -19,14 +19,15 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
  * @author Ruizhe Zhao
  * 
  */
-public class ConvLayerManager extends CustomManager {
+public class ConvSingleLayerManager extends CustomManager {
 
-  public ConvLayerManager(ConvLayerEngineParameters params,
+  public ConvSingleLayerManager(ConvLayerEngineParameters params,
       ConvLayerParameters cp) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
+    config.setDefaultStreamClockFrequency(params.getFreq());
 
     ConvLayerManagerUtils.createKernelBlocks(this, cp, params.getUseDRAM());
     ConvLayerManagerUtils.setupConstants(this, cp, params);
@@ -39,7 +40,7 @@ public class ConvLayerManager extends CustomManager {
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
     ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM());
-    // ConvLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
+    // ConvSingleLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
 
     return ei;
   }
@@ -60,7 +61,7 @@ public class ConvLayerManager extends CustomManager {
             .PK(params.getPK()).BW(params.getBitWidth())
             .seq(CompSeq.values()[params.getSeq()]).build();
 
-    ConvLayerManager mgr = new ConvLayerManager(params, cp);
+    ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);
     mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
