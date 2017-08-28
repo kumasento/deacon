@@ -253,7 +253,7 @@ public class ConvLayerManagerUtils {
       if (cp.type == Type.STANDARD) {
         LMemCommandGroup groupCoeff =
             iface.addCommandGroup(
-                "GROUP_COEFF",
+                "GROUP_COEFF" + "_" + i,
                 LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
         String coeffUnpadKnlName = getCoeffUnpadKernelName(cp);
         KernelBlock coeffUnpadKnl = knls.get(coeffUnpadKnlName);
@@ -268,7 +268,7 @@ public class ConvLayerManagerUtils {
 
         LMemCommandGroup groupDepthCoeff =
             iface.addCommandGroup(
-                "GROUP_DEPTH_COEFF",
+                "GROUP_DEPTH_COEFF" + "_" + i,
                 LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
         String depthwiseKnlName = getDepthwiseCoeffUnpadKernelName(cp);
         KernelBlock depthwiseCoeffUnpadKnl = knls.get(depthwiseKnlName);
@@ -281,7 +281,7 @@ public class ConvLayerManagerUtils {
 
         LMemCommandGroup groupPointCoeff =
             iface.addCommandGroup(
-                "GROUP_POINT_COEFF",
+                "GROUP_POINT_COEFF" + "_" + i,
                 LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
         String pointwiseKnlName = getPointwiseCoeffUnpadKernelName(cp);
         KernelBlock pointwiseCoeffUnpadKnl = knls.get(pointwiseKnlName);
