@@ -57,6 +57,13 @@ public class ConvTwoLayersManager extends CustomManager {
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
 
+    /* resolve the computation sequence */
+    CompSeq seq0 = CompSeq.values()[ep.getSeq()];
+    CompSeq seq1 =
+        (seq0 == CompSeq.CHANNEL_MAJOR)
+            ? CompSeq.FILTER_MAJOR
+            : CompSeq.CHANNEL_MAJOR;
+
     cps.add(
         0,
         new ConvLayerParameters.Builder(H, W, C, F, K)
@@ -65,10 +72,11 @@ public class ConvTwoLayersManager extends CustomManager {
             .PC(ep.getPC())
             .PF(ep.getPF())
             .PK(ep.getPK())
+            .seq(seq0)
             .build());
     cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
         .BW(ep.getBitWidth())
-        .seq(CompSeq.FILTER_MAJOR)
+        .seq(seq1)
         .PC(ep.getPF())
         .PF(ep.getPF())
         .PK(ep.getPK())
