@@ -1,0 +1,36 @@
+package com.custom_computing_ic.maxdeep.kernel.fc;
+
+import com.custom_computing_ic.maxdeep.lib.LayerParameters;
+
+public class FullyConnectedLayerParameters extends LayerParameters {
+
+  public int    H;
+  public int    W;
+
+  public int    PK;
+
+  public String name;
+
+  public FullyConnectedLayerParameters(String name, int H, int W) {
+    this(name, H, W, 1);
+  }
+
+  public FullyConnectedLayerParameters(String name, int H, int W, int PK) {
+    this.name = name;
+    this.H = H;
+    this.W = W;
+    this.PK = PK;
+  }
+
+  public int getIfmapVecSize() {
+    return this.PK;
+  }
+
+  public int getCoeffVecSize() {
+    return this.PK;
+  }
+
+  public int getOfmapVecSize() {
+    return 1;
+  }
+}

@@ -1,0 +1,11 @@
+package lenet;
+
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
+
+public class LeNetEngineParameters extends ConvLayerEngineParameters {
+
+  public LeNetEngineParameters(String[] args) {
+    super(args);
+  }
+
+}

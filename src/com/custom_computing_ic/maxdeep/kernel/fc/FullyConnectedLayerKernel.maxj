@@ -1,0 +1,81 @@
+package com.custom_computing_ic.maxdeep.kernel.fc;
+
+import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+public class FullyConnectedLayerKernel extends Kernel {
+
+  public static final String                  IFMAP_NAME = "ifmap";
+  public static final String                  COEFF_NAME = "coeff";
+  public static final String                  OFMAP_NAME = "ofmap";
+
+  private final DFEType                       T;
+
+  private final FullyConnectedLayerParameters fp;
+
+  private final DFEVectorType<DFEVar>         ifmapVecT, coeffVecT, ofmapVecT;
+
+  public FullyConnectedLayerKernel(KernelParameters p,
+      FullyConnectedLayerParameters fp, DFEType T) {
+    super(p);
+
+    if (fp.PK <= 0)
+      throw new IllegalArgumentException(String.format(
+          "PK (%d) should be larger than 0",
+          fp.PK));
+    if (fp.W % fp.PK != 0)
+      throw new IllegalArgumentException("W % PK should equal 0");
+
+    this.T = T;
+    this.fp = fp;
+
+    this.ifmapVecT = new DFEVectorType<DFEVar>(T, fp.getIfmapVecSize());
+    this.coeffVecT = new DFEVectorType<DFEVar>(T, fp.getCoeffVecSize());
+    this.ofmapVecT = new DFEVectorType<DFEVar>(T, fp.getOfmapVecSize());
+
+    DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, ifmapVecT);
+    DFEVector<DFEVar> coeff = io.input(COEFF_NAME, coeffVecT);
+
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar h = chain.addCounter(fp.H, 1);
+    DFEVar w = chain.addCounter(fp.W / fp.PK, 1);
+
+    Memory<DFEVector<DFEVar>> ibuf = mem.alloc(ifmapVecT, fp.W / fp.PK);
+    DFEVector<DFEVar> port =
+        ibuf.port(w, ifmap, h.eq(0), RamWriteMode.WRITE_FIRST);
+
+    DotProductKernel dp = new DotProductKernel(getKernel(), fp.PK, T);
+    dp.setInputs(port, coeff);
+    DFEVar tmp = dp.getOutput();
+
+    DFEVar carriedSum = T.newInstance(getKernel());
+    DFEVar sum = (w.eq(0)) ? constant.var(0).cast(T) : carriedSum;
+    DFEVar newSum = sum + tmp;
+    carriedSum.connect(stream.offset(newSum, -1));
+
+    DFEVector<DFEVar> ofmap = ofmapVecT.newInstance(getKernel());
+    ofmap[0].connect(newSum);
+
+    io.output(OFMAP_NAME, ofmapVecT, w.eq(fp.W / fp.PK - 1)).connect(ofmap);
+  }
+
+  public DFEVectorType<DFEVar> getIfmapVecT() {
+    return ifmapVecT;
+  }
+
+  public DFEVectorType<DFEVar> getCoeffVecT() {
+    return coeffVecT;
+  }
+
+  public DFEVectorType<DFEVar> getOfmapVecT() {
+    return ofmapVecT;
+  }
+}

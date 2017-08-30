@@ -4,6 +4,7 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
+import com.custom_computing_ic.maxdeep.lib.LayerParameters;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 
 /**
@@ -12,7 +13,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
  * @author Ruizhe Zhao
  * 
  */
-public class ConvLayerParameters {
+public class ConvLayerParameters extends LayerParameters {
 
   public final int              PC, PF, PK;  // level of parallelisation
   public final int              H;           // height
@@ -83,7 +84,12 @@ public class ConvLayerParameters {
 
   public ConvLayerParameters createPointwiseParameters() {
     return new ConvLayerParameters.Builder(OH, OW, C, F, 1)
-        .BW(BW).PC(PC).PF(PF).PK(PK).seq(CompSeq.FILTER_MAJOR).build();
+        .BW(BW)
+        .PC(PC)
+        .PF(PF)
+        .PK(PK)
+        .seq(CompSeq.FILTER_MAJOR)
+        .build();
   }
 
   public CPUTypes getCPUTypes() {

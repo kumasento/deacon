@@ -1,0 +1,18 @@
+package lenet;
+
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+
+public final class LeNetManager extends CustomManager {
+
+  public LeNetManager(LeNetEngineParameters ep) {
+    super(ep);
+
+    logMsg("Start constructing LeNet accelerator design ...");
+
+  }
+
+  public static void main(String[] args) {
+
+  }
+
+}
