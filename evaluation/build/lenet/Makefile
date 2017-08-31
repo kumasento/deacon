@@ -41,7 +41,7 @@ USE_DEPTH?=false
 USE_DEPTH_SUFFIX?=STD
 FREQ?=100
 
-ifeq ($(USE_DEPTH),false)
+ifeq ($(USE_DEPTH),true)
 	EXTRA_CFLAGS:=-DUSE_DEPTH
 	USE_DEPTH_SUFFIX:=DWS
 endif
