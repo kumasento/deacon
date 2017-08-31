@@ -76,6 +76,12 @@ public class ConvLayerWrapKernel extends Kernel {
       io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(
           conv.getOfmap());
 
+      if (cp.dbg) {
+        debug.simPrintf(
+            "[ConvLayerWrapKernel] pointwise en = %d\n",
+            conv.getPointwiseCoeffEn());
+      }
+
     } else {
       throw new IllegalArgumentException("type has no been supported");
     }

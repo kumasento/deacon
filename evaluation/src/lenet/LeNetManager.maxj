@@ -445,6 +445,9 @@ public final class LeNetManager extends CustomManager {
 
     List<Integer> PP = ep.getPP();
 
+    CompSeq seq0 =
+        (ep.getUseDepth()) ? CompSeq.FILTER_MAJOR : CompSeq.CHANNEL_MAJOR;
+
     ConvLayerParameters cp0 =
         new ConvLayerParameters.Builder(28, 28, 1, 32, 5)
             .name("conv0")
@@ -452,7 +455,9 @@ public final class LeNetManager extends CustomManager {
             .PK(2)
             .PF(PP.get(0))
             .pool(new PoolingLayerParameters(2, 2, Mode.MAX))
+            .seq(seq0)
             .type(ep.getUseDepth() ? Type.DEPTHWISE_SEPARABLE : Type.STANDARD)
+            .dbg(false)
             .build();
     lp.add(cp0);
 
@@ -466,6 +471,7 @@ public final class LeNetManager extends CustomManager {
             .seq(CompSeq.FILTER_MAJOR)
             .pool(new PoolingLayerParameters(2, 2, Mode.MAX))
             .type(ep.getUseDepth() ? Type.DEPTHWISE_SEPARABLE : Type.STANDARD)
+            .dbg(false)
             .build();
     lp.add(cp1);
 
@@ -936,7 +942,7 @@ public final class LeNetManager extends CustomManager {
 
     long streamNumElems =
         (isDepthwise) ? cp.getDepthwiseCoeffStreamNumElems() : cp
-            .getPointwiseCoeffStreamBitWidth();
+            .getPointwiseCoeffStreamNumElems();
     int vecSize =
         (isDepthwise) ? cp.getDepthwiseCoeffLMemVecSize() : cp
             .getPointwiseCoeffVecSize();
