@@ -7,30 +7,72 @@ public class FullyConnectedLayerParameters extends LayerParameters {
   public int    H;
   public int    W;
 
-  public int    PK;
+  public int    PC;
+  public int    PR;
 
   public String name;
 
-  public FullyConnectedLayerParameters(String name, int H, int W) {
-    this(name, H, W, 1);
+  public FullyConnectedLayerParameters(String name, int BW, int H, int W) {
+    this(name, BW, H, W, 1, 1);
   }
 
-  public FullyConnectedLayerParameters(String name, int H, int W, int PK) {
+  public FullyConnectedLayerParameters(String name, int BW, int H, int W, int PC) {
+    this(name, BW, H, W, PC, 1);
+  }
+
+  public FullyConnectedLayerParameters(String name, int BW, int H, int W,
+      int PC, int PR) {
     this.name = name;
+    this.BW = BW;
     this.H = H;
     this.W = W;
-    this.PK = PK;
+    this.PC = PC;
+    this.PR = PR;
   }
 
+  @Override
   public int getIfmapVecSize() {
-    return this.PK;
+    return this.PC;
   }
 
+  public int getIfmapStreamBitWidth() {
+    return getIfmapVecSize() * BW;
+  }
+
+  @Override
   public int getCoeffVecSize() {
-    return this.PK;
+    return this.PC * this.PR;
   }
 
+  public int getCoeffStreamBitWidth() {
+    return getCoeffVecSize() * BW;
+  }
+
+  @Override
   public int getOfmapVecSize() {
-    return 1;
+    return this.PR;
+  }
+
+  public int getOfmapStreamBitWidth() {
+    return getOfmapVecSize() * BW;
+  }
+
+  @Override
+  public long getOfmapStreamNumElems() {
+    return H;
+  }
+
+  @Override
+  public long getIfmapStreamNumElems() {
+    return W;
+  }
+
+  @Override
+  public long getCoeffStreamNumElems() {
+    return H * W;
+  }
+
+  public int getNumCycles() {
+    return H * W / (PC * PR);
   }
 }

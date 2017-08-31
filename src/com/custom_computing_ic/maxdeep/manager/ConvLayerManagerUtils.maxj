@@ -29,13 +29,19 @@ public class ConvLayerManagerUtils {
   public static final String DEPTHWISE_COEFF_PREFIX = "depthwise_coeff";
   public static final String POINTWISE_COEFF_PREFIX = "pointwise_coeff";
 
-  public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
-      int sizeInBytes, InterfaceParam burstFactor, EngineInterface ei) {
+  public static InterfaceParam getBurstAlignedNumElems(
+      InterfaceParam numElems,
+      int sizeInBytes,
+      InterfaceParam burstFactor,
+      EngineInterface ei) {
     return getBurstAlignedNumElems(numElems, sizeInBytes, burstFactor, ei, 384);
   }
 
-  public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
-      int sizeInBytes, InterfaceParam burstFactor, EngineInterface ei,
+  public static InterfaceParam getBurstAlignedNumElems(
+      InterfaceParam numElems,
+      int sizeInBytes,
+      InterfaceParam burstFactor,
+      EngineInterface ei,
       int rawBurstSize) {
     InterfaceParam burstSize = ei.addConstant(rawBurstSize) * burstFactor;
     burstSize = burstSize.cast(CPUTypes.INT64);
@@ -61,8 +67,10 @@ public class ConvLayerManagerUtils {
     return false;
   }
 
-  public static Map<String, KernelBlock> createKernelBlocks(CustomManager mgr,
-      ConvLayerParameters cp, boolean useDRAM) {
+  public static Map<String, KernelBlock> createKernelBlocks(
+      CustomManager mgr,
+      ConvLayerParameters cp,
+      boolean useDRAM) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
@@ -78,8 +86,10 @@ public class ConvLayerManagerUtils {
    * @param cps
    * @return
    */
-  public static Map<String, KernelBlock> createKernelBlocks(CustomManager mgr,
-      List<ConvLayerParameters> cps, boolean useDRAM) {
+  public static Map<String, KernelBlock> createKernelBlocks(
+      CustomManager mgr,
+      List<ConvLayerParameters> cps,
+      boolean useDRAM) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
 
     // create computing blocks
@@ -181,7 +191,8 @@ public class ConvLayerManagerUtils {
    * @param cps
    */
   public static Map<String, KernelBlock> createPaddingKernels(
-      CustomManager mgr, List<ConvLayerParameters> cps) {
+      CustomManager mgr,
+      List<ConvLayerParameters> cps) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
 
     // create unpadding kernels for coefficients
@@ -193,7 +204,8 @@ public class ConvLayerManagerUtils {
         String knlName = getCoeffUnpadKernelName(cp);
         KernelBlock knl =
             mgr.addKernel(new UnpaddingKernel(
-                mgr.makeKernelParameters(knlName), cp.getCoeffStreamBitWidth(),
+                mgr.makeKernelParameters(knlName),
+                cp.getCoeffStreamBitWidth(),
                 cp.dbg));
         knls.put(knlName, knl);
 
@@ -330,8 +342,11 @@ public class ConvLayerManagerUtils {
     return "ofmap_pad";
   }
 
-  public static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
-      InterfaceParam batchSize, boolean useDRAM) {
+  public static void setupStreams(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize,
+      boolean useDRAM) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
@@ -345,8 +360,11 @@ public class ConvLayerManagerUtils {
    * @param cps
    * @param batchSize
    */
-  public static void setupStreams(EngineInterface ei,
-      List<ConvLayerParameters> cps, InterfaceParam batchSize, boolean useDRAM) {
+  public static void setupStreams(
+      EngineInterface ei,
+      List<ConvLayerParameters> cps,
+      InterfaceParam batchSize,
+      boolean useDRAM) {
     if (useDRAM) {
 
       InterfaceParam baseAddr;
@@ -409,10 +427,27 @@ public class ConvLayerManagerUtils {
     }
   }
 
-  public static InterfaceParam setupIfmapStream(EngineInterface ei,
-      ConvLayerParameters cp, InterfaceParam batchSize) {
-
+  public static InterfaceParam setupIfmapStream(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize) {
     String ifmapUnpadKnlName = getIfmapUnpadKernelName();
+    String LMemStreamName = IFMAP_NAME;
+
+    return setupIfmapStream(
+        ei,
+        cp,
+        batchSize,
+        LMemStreamName,
+        ifmapUnpadKnlName);
+  }
+
+  public static InterfaceParam setupIfmapStream(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize,
+      String LMemStreamName,
+      String ifmapUnpadKnlName) {
     InterfaceParam ifmapNumElems =
         ei.addConstant(cp.getIfmapStreamNumElems()).cast(CPUTypes.INT64);
     ifmapNumElems *= batchSize;
@@ -440,14 +475,18 @@ public class ConvLayerManagerUtils {
     ei.setTicks(ifmapUnpadKnlName, burstAlignedIfmapNumElems / burstFactor);
 
     InterfaceParam ZERO = ei.addConstant(0).cast(CPUTypes.INT64);
-    ei.setLMemLinear(IFMAP_NAME, ZERO, burstAlignedIfmapSize);
+    ei.setLMemLinear(LMemStreamName, ZERO, burstAlignedIfmapSize);
 
     return burstAlignedIfmapSize;
   }
 
-  public static InterfaceParam setupCoeffStream(EngineInterface ei,
-      ConvLayerParameters cp, int index, InterfaceParam batchSize,
-      InterfaceParam baseAddr, boolean isDepthwise) {
+  public static InterfaceParam setupCoeffStream(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      int index,
+      InterfaceParam batchSize,
+      InterfaceParam baseAddr,
+      boolean isDepthwise) {
 
     String knlName =
         (isDepthwise)
@@ -494,8 +533,11 @@ public class ConvLayerManagerUtils {
     return baseAddr + burstAlignedSize;
   }
 
-  public static InterfaceParam setupCoeffStream(EngineInterface ei,
-      ConvLayerParameters cp, int index, InterfaceParam batchSize,
+  public static InterfaceParam setupCoeffStream(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      int index,
+      InterfaceParam batchSize,
       InterfaceParam baseAddr) {
 
     String knlName = getCoeffUnpadKernelName(cp);
@@ -528,9 +570,11 @@ public class ConvLayerManagerUtils {
     return baseAddr + burstAlignedSize;
   }
 
-  public static InterfaceParam
-      setupOfmapStream(EngineInterface ei, ConvLayerParameters cp,
-          InterfaceParam batchSize, InterfaceParam baseAddr) {
+  public static InterfaceParam setupOfmapStream(
+      EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize,
+      InterfaceParam baseAddr) {
     String knlName = getOfmapPadKernelName();
     InterfaceParam numElems =
         ei.addConstant(cp.getOfmapStreamNumElems()).cast(CPUTypes.INT64);
@@ -560,7 +604,9 @@ public class ConvLayerManagerUtils {
     return baseAddr + burstAlignedNumElems;
   }
 
-  public static void setupConstants(CustomManager mgr, ConvLayerParameters cp,
+  public static void setupConstants(
+      CustomManager mgr,
+      ConvLayerParameters cp,
       ConvLayerEngineParameters ep) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
@@ -568,8 +614,10 @@ public class ConvLayerManagerUtils {
     setupConstants(mgr, cps, ep);
   }
 
-  public static void setupConstants(CustomManager mgr,
-      List<ConvLayerParameters> cps, ConvLayerEngineParameters ep) {
+  public static void setupConstants(
+      CustomManager mgr,
+      List<ConvLayerParameters> cps,
+      ConvLayerEngineParameters ep) {
 
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);

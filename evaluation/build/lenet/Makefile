@@ -25,16 +25,30 @@ MAXCOMPILER_BUILD_DIR?=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
+# ------ Constants ----------
+COMMA:=,
+
 # Assuming Kernel and Manager class names follow the pattern below:
 PRJ=LeNet
 MANAGER=$(PRJ)Manager
 APPPKG=lenet
 DEVICE=Maia
 
+BW?=8
+PP?=1,1,1
+PPP?=$(subst $(COMMA),_,$(PP))
+USE_DEPTH?=false
+USE_DEPTH_SUFFIX?=STD
 FREQ?=100
 
-BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(PF) PC=$(PC) PK=$(PK) FREQ=$(FREQ)
-BUILD_NAME_OPTION:=_b$(bitWidth)_f$(PF)_c$(PC)_k$(PK)_FREQ_$(FREQ)
+ifeq ($(USE_DEPTH),false)
+	EXTRA_CFLAGS:=-DUSE_DEPTH
+	USE_DEPTH_SUFFIX:=DWS
+endif
+
+
+BUILD_PARAMS:=BW=$(BW) PP=$(PP) FREQ=$(FREQ) USE_DEPTH=$(USE_DEPTH)
+BUILD_NAME_OPTION:=_b$(BW)_PP$(PPP)_$(USE_DEPTH_SUFFIX)_FREQ_$(FREQ)
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

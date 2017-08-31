@@ -106,8 +106,11 @@ public class ConvLayerKernel extends KernelComponent {
 
     /* output buffer */
     obuf =
-        new ConvLayerOfmapBuffer(getOwner(), cp,
-            conv2dOfmap.getElementsAsList()[0].getType(), prefix);
+        new ConvLayerOfmapBuffer(
+            getOwner(),
+            cp,
+            conv2dOfmap.getElementsAsList()[0].getType(),
+            prefix);
     obuf.setReset(getOfmapReset());
 
     if (cp.BW == 1) {
@@ -123,9 +126,6 @@ public class ConvLayerKernel extends KernelComponent {
           getOfmapBufferAddr(),
           getOfmapBufferWriteEn()));
     }
-
-    if (cp.dbg)
-      debug.simPrintf("c = %d f = %d h = %d w = %d\n", c, f, h, w);
   }
 
   public DFEVar getOfmapReset() {
@@ -246,15 +246,31 @@ public class ConvLayerKernel extends KernelComponent {
 
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
-        f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
+        if (cp.C / cp.PC == 1)
+          c = constant.var(0).cast(countT);
+        else
+          c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+
+        if (cp.F / cp.PF == 1)
+          f = constant.var(0).cast(countT);
+        else
+          f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
+
         h = chain.addCounter(cp.H, 1).cast(countT);
         w = chain.addCounter(cp.W / cp.PK, 1).cast(countT);
         break;
 
       case FILTER_MAJOR:
-        f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
-        c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+        if (cp.F / cp.PF == 1)
+          f = constant.var(0).cast(countT);
+        else
+          f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
+
+        if (cp.C / cp.PC == 1)
+          c = constant.var(0).cast(countT);
+        else
+          c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+
         h = chain.addCounter(cp.H, 1).cast(countT);
         w = chain.addCounter(cp.W / cp.PK, 1).cast(countT);
         break;
@@ -266,6 +282,7 @@ public class ConvLayerKernel extends KernelComponent {
     }
 
     if (cp.dbg) {
+      debug.simPrintf("[%s]\n", cp.name);
       debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
       debug.simPrintf("ifmapEn = %d\n", getIfmapEn());
       debug.simPrintf("ofmapEn = %d\n", getOfmapEn());

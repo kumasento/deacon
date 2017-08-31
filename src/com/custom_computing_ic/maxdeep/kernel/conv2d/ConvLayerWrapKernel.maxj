@@ -37,10 +37,7 @@ public class ConvLayerWrapKernel extends Kernel {
     this.cp = cp;
 
     DFEType scalarT =
-        (cp.BW == 1) ? dfeUInt(1) : dfeFix(
-            cp.BW / 2,
-            cp.BW / 2,
-            SignMode.TWOSCOMPLEMENT);
+        (cp.BW == 1) ? dfeUInt(1) : dfeFix(cp.BW, 0, SignMode.TWOSCOMPLEMENT);
 
     /**
      * TODO: what is the proper way to initialise conv and cast the type?
