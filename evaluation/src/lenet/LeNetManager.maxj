@@ -759,7 +759,10 @@ public final class LeNetManager extends CustomManager {
       boolean isFirst,
       boolean isLast) {
     /* core kernel */
-    ei.setTicks(fp.name, fp.getNumCycles() * batchSize);
+    InterfaceParam loopLength =
+        ei.getAutoLoopOffset(fp.name, fp.name + "_LOOP_LATENCY");
+    ei.ignoreAutoLoopOffset(fp.name, fp.name + "_LOOP_LATENCY");
+    ei.setTicks(fp.name, fp.getNumCycles() * batchSize * loopLength);
     /* coeff */
     ei.setTicks(
         fp.name + "_coeff",
