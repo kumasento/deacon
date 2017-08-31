@@ -59,7 +59,7 @@ public class LeNetEngineParameters extends EngineParameters {
         getTarget(),
         getBW(),
         ((String) getParam(PP_NAME)).replaceAll(",", "_"),
-        (getUseDepth()) ? "STD" : "DWS",
+        (!getUseDepth()) ? "STD" : "DWS",
         getFreq());
   }
 }

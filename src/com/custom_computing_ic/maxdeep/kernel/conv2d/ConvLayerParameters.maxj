@@ -118,12 +118,20 @@ public class ConvLayerParameters extends LayerParameters {
     return PC * PF * K * K;
   }
 
+  public int getCoeffLMemVecSize() {
+    return PC * PF;
+  }
+
   public long getDepthwiseCoeffStreamNumElems() {
     return C * K * K;
   }
 
   public int getDepthwiseCoeffVecSize() {
     return PC * K * K;
+  }
+
+  public int getDepthwiseCoeffLMemVecSize() {
+    return PC;
   }
 
   public long getPointwiseCoeffStreamNumElems() {
@@ -173,8 +181,16 @@ public class ConvLayerParameters extends LayerParameters {
     return getCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
+  public int getCoeffStreamLMemBitWidth() {
+    return getCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
+  }
+
   public int getDepthwiseCoeffStreamBitWidth() {
     return getDepthwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getDepthwiseCoeffStreamLMemBitWidth() {
+    return getDepthwiseCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   public int getPointwiseCoeffStreamBitWidth() {

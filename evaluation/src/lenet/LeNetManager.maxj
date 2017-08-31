@@ -399,7 +399,7 @@ public final class LeNetManager extends CustomManager {
     if (cp.type == Type.DEPTHWISE_SEPARABLE) {
       knls.put(cp.name + "_depthwise_coeff", addKernel(new UnpaddingKernel(
           makeKernelParameters(cp.name + "_depthwise_coeff"),
-          cp.getDepthwiseCoeffStreamBitWidth(),
+          cp.getDepthwiseCoeffStreamLMemBitWidth(),
           cp.dbg)));
       knls.put(cp.name + "_pointwise_coeff", addKernel(new UnpaddingKernel(
           makeKernelParameters(cp.name + "_pointwise_coeff"),
@@ -408,7 +408,7 @@ public final class LeNetManager extends CustomManager {
     } else
       knls.put(cp.name + "_coeff", addKernel(new UnpaddingKernel(
           makeKernelParameters(cp.name + "_coeff"),
-          cp.getCoeffStreamBitWidth(),
+          cp.getCoeffStreamLMemBitWidth(),
           cp.dbg)));
 
     /* pooling */
@@ -639,21 +639,21 @@ public final class LeNetManager extends CustomManager {
       ei.setScalar(
           cp.name + "_coeff",
           UnpaddingKernel.SCALAR_NUM_INP,
-          cp.getNumCycles() * batchSize);
+          cp.getNumCycles() * cp.K * cp.K * batchSize);
       ei.setScalar(
           cp.name + "_coeff",
           UnpaddingKernel.SCALAR_TOTAL_CYCLES,
-          addrMap.get(cp.name + "_COEFF").size / cp.getCoeffVecSize());
+          addrMap.get(cp.name + "_COEFF").size / cp.getCoeffLMemVecSize());
     } else {
       ei.setScalar(
           cp.name + "_depthwise_coeff",
           UnpaddingKernel.SCALAR_NUM_INP,
-          cp.getNumCycles() * batchSize);
+          cp.getNumCycles() * cp.K * cp.K * batchSize);
       ei.setScalar(
           cp.name + "_depthwise_coeff",
           UnpaddingKernel.SCALAR_TOTAL_CYCLES,
           addrMap.get(cp.name + "_DEPTHWISE_COEFF").size
-              / cp.getDepthwiseCoeffVecSize());
+              / cp.getDepthwiseCoeffLMemVecSize());
       ei.setScalar(
           cp.name + "_pointwise_coeff",
           UnpaddingKernel.SCALAR_NUM_INP,
@@ -723,12 +723,12 @@ public final class LeNetManager extends CustomManager {
     if (cp.type == Type.STANDARD) {
       ei.setTicks(
           cp.name + "_coeff",
-          addrMap.get(cp.name + "_COEFF").size / cp.getCoeffVecSize());
+          addrMap.get(cp.name + "_COEFF").size / cp.getCoeffLMemVecSize());
     } else {
       ei.setTicks(
           cp.name + "_depthwise_coeff",
           addrMap.get(cp.name + "_DEPTHWISE_COEFF").size
-              / cp.getDepthwiseCoeffVecSize());
+              / cp.getDepthwiseCoeffLMemVecSize());
       ei.setTicks(
           cp.name + "_pointwise_coeff",
           addrMap.get(cp.name + "_POINTWISE_COEFF").size
@@ -909,6 +909,23 @@ public final class LeNetManager extends CustomManager {
   }
 
   public static LMemStreamAddress createCoeffLMemAddressMap(
+      ConvLayerParameters cp,
+      EngineInterface ei,
+      InterfaceParam base,
+      InterfaceParam batchSize) {
+    InterfaceParam size =
+        ConvLayerManagerUtils.getBurstAlignedNumElems(
+            ei.addConstant(cp.getCoeffStreamNumElems()).cast(CPUTypes.INT64)
+                * batchSize,
+            cp.getCPUTypes().sizeInBytes(),
+            ei.addConstant(cp.getCoeffLMemVecSize()).cast(CPUTypes.INT64),
+            ei)
+            * cp.getCPUTypes().sizeInBytes();
+
+    return new LMemStreamAddress(base, size);
+  }
+
+  public static LMemStreamAddress createCoeffLMemAddressMap(
       LayerParameters lp,
       EngineInterface ei,
       InterfaceParam base,
@@ -921,7 +938,7 @@ public final class LeNetManager extends CustomManager {
         (isDepthwise) ? cp.getDepthwiseCoeffStreamNumElems() : cp
             .getPointwiseCoeffStreamBitWidth();
     int vecSize =
-        (isDepthwise) ? cp.getDepthwiseCoeffVecSize() : cp
+        (isDepthwise) ? cp.getDepthwiseCoeffLMemVecSize() : cp
             .getPointwiseCoeffVecSize();
 
     InterfaceParam size =
