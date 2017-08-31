@@ -140,7 +140,7 @@ public final class LeNetManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           grps.get("ifmap"),
           knls.get(cp.name + "_ifmap"),
-          "IFMAP",
+          "LMEM_IFMAP",
           UnpaddingKernel.INP_NAME);
     }
 
@@ -156,7 +156,7 @@ public final class LeNetManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           grps.get(cp.name + "_coeff"),
           knls.get(cp.name + "_coeff"),
-          cp.name + "_COEFF",
+          cp.name + "_LMEM_COEFF",
           UnpaddingKernel.INP_NAME);
     } else {
       // conv <- depthwise
@@ -170,7 +170,7 @@ public final class LeNetManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           grps.get(cp.name + "_depthwise_coeff"),
           knls.get(cp.name + "_depthwise_coeff"),
-          cp.name + "_DEPTHWISE_COEFF",
+          cp.name + "_LMEM_DEPTHWISE_COEFF",
           UnpaddingKernel.INP_NAME);
 
       // conv <- pointwise
@@ -184,7 +184,7 @@ public final class LeNetManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           grps.get(cp.name + "_pointwise_coeff"),
           knls.get(cp.name + "_pointwise_coeff"),
-          cp.name + "_POINTWISE_COEFF",
+          cp.name + "_LMEM_POINTWISE_COEFF",
           UnpaddingKernel.INP_NAME);
     }
 
@@ -221,7 +221,7 @@ public final class LeNetManager extends CustomManager {
           grps.get("ofmap"),
           knls.get(cp.name + "_ofmap"),
           PaddingKernel.OUT_NAME,
-          "OFMAP");
+          "LMEM_OFMAP");
     }
   }
 
@@ -273,7 +273,7 @@ public final class LeNetManager extends CustomManager {
       ManagerUtils.addLinearStreamFromLMemToKernel(
           grps.get("ifmap"),
           knls.get(fp.name + "_ifmap"),
-          "IFMAP",
+          "LMEM_IFMAP",
           UnpaddingKernel.INP_NAME);
     }
 
@@ -287,7 +287,7 @@ public final class LeNetManager extends CustomManager {
     ManagerUtils.addLinearStreamFromLMemToKernel(
         grps.get(fp.name + "_coeff"),
         knls.get(fp.name + "_coeff"),
-        fp.name + "_COEFF",
+        fp.name + "_LMEM_COEFF",
         UnpaddingKernel.INP_NAME);
 
     /* ofmap */
@@ -304,7 +304,7 @@ public final class LeNetManager extends CustomManager {
           grps.get("ofmap"),
           knls.get(fp.name + "_ofmap"),
           PaddingKernel.OUT_NAME,
-          "OFMAP");
+          "LMEM_OFMAP");
     }
 
   }
@@ -811,7 +811,7 @@ public final class LeNetManager extends CustomManager {
     addr = new LMemStreamAddress(baseAddr, ifmapSize);
     baseAddr += addr.size;
     addrMap.put("IFMAP", addr);
-    ei.setLMemLinear("IFMAP", addr.base, addr.size);
+    ei.setLMemLinear("LMEM_IFMAP", addr.base, addr.size);
 
     /* ofmap */
     InterfaceParam ofmapSize =
@@ -825,52 +825,68 @@ public final class LeNetManager extends CustomManager {
     addr = new LMemStreamAddress(baseAddr, ofmapSize);
     baseAddr += addr.size;
     addrMap.put("OFMAP", addr);
-    ei.setLMemLinear("OFMAP", addr.base, addr.size);
+    ei.setLMemLinear("LMEM_OFMAP", addr.base, addr.size);
 
     /* coeff */
     if (cp0.type == Type.STANDARD) {
       addr = createCoeffLMemAddressMap(cp0, ei, baseAddr, batchSize);
       addrMap.put(cp0.name + "_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp0.name + "_COEFF", addr.base, addr.size);
+      ei.setLMemLinear(cp0.name + "_LMEM_COEFF", addr.base, addr.size);
     } else {
       addr = createCoeffLMemAddressMap(cp0, ei, baseAddr, batchSize, true);
       addrMap.put(cp0.name + "_DEPTHWISE_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp0.name + "_DEPTHWISE_COEFF", addr.base, addr.size);
+      ei
+          .setLMemLinear(
+              cp0.name + "_LMEM_DEPTHWISE_COEFF",
+              addr.base,
+              addr.size);
 
       addr = createCoeffLMemAddressMap(cp0, ei, baseAddr, batchSize, false);
       addrMap.put(cp0.name + "_POINTWISE_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp0.name + "_POINTWISE_COEFF", addr.base, addr.size);
+      ei
+          .setLMemLinear(
+              cp0.name + "_LMEM_POINTWISE_COEFF",
+              addr.base,
+              addr.size);
     }
 
     if (cp1.type == Type.STANDARD) {
       addr = createCoeffLMemAddressMap(cp1, ei, baseAddr, batchSize);
       addrMap.put(cp1.name + "_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp1.name + "_COEFF", addr.base, addr.size);
+      ei.setLMemLinear(cp1.name + "_LMEM_COEFF", addr.base, addr.size);
     } else {
       addr = createCoeffLMemAddressMap(cp1, ei, baseAddr, batchSize, true);
       addrMap.put(cp1.name + "_DEPTHWISE_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp1.name + "_DEPTHWISE_COEFF", addr.base, addr.size);
+      ei
+          .setLMemLinear(
+              cp1.name + "_LMEM_DEPTHWISE_COEFF",
+              addr.base,
+              addr.size);
 
       addr = createCoeffLMemAddressMap(cp1, ei, baseAddr, batchSize, false);
       addrMap.put(cp1.name + "_POINTWISE_COEFF", addr);
       baseAddr += addr.size;
-      ei.setLMemLinear(cp1.name + "_POINTWISE_COEFF", addr.base, addr.size);
+      ei
+          .setLMemLinear(
+              cp1.name + "_LMEM_POINTWISE_COEFF",
+              addr.base,
+              addr.size);
     }
 
     addr = createCoeffLMemAddressMap(fp0, ei, baseAddr, batchSize);
     addrMap.put(fp0.name + "_COEFF", addr);
     baseAddr += addr.size;
-    ei.setLMemLinear(fp0.name + "_COEFF", addr.base, addr.size);
+    ei.setLMemLinear(fp0.name + "_LMEM_COEFF", addr.base, addr.size);
 
     addr = createCoeffLMemAddressMap(fp1, ei, baseAddr, batchSize);
     addrMap.put(fp1.name + "_COEFF", addr);
     baseAddr += addr.size;
-    ei.setLMemLinear(fp1.name + "_COEFF", addr.base, addr.size);
+    ei.setLMemLinear(fp1.name + "_LMEM_COEFF", addr.base, addr.size);
 
     return addrMap;
   }
