@@ -1,0 +1,13 @@
+INCLUDE "prelude.rby".
+
+pool2d W = fork; 
+           snd [D, D]^(W / 2);
+           [max, max];
+           max;
+           bundle W;
+           half (W / 2);
+           pi2;
+           inv_bundle (W/2)
+           .
+
+current = pool2d 4 .
