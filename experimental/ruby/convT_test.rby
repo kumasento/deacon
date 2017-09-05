@@ -1,0 +1,4 @@
+INCLUDE "prelude.rby".
+INCLUDE "conv.rby".
+
+current = convT 4 4 3 .

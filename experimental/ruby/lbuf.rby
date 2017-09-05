@@ -1,0 +1,9 @@
+INCLUDE "prelude.rby".
+
+lbuf3 w = mfork 9;
+          [
+            D^(2*w+2), D^(2*w+1), D^(2*w),
+            D^(1*w+2), D^(1*w+1), D^(1*w),
+            D^(0*w+2), D^(0*w+1), D^(0*w)
+          ];
+          group 3 3.

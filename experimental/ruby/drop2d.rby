@@ -1,0 +1,6 @@
+INCLUDE "prelude.rby".
+
+drop2d m n h w = group h w;
+                 map h (drop n w);
+                 drop m h;
+                 (group (h-m) (w-n))^~1.

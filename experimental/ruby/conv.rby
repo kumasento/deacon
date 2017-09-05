@@ -1,15 +1,15 @@
 INCLUDE "prelude.rby".
 INCLUDE "btree.rby".
 INCLUDE "conv2d.rby".
+INCLUDE "drop2d.rby".
+INCLUDE "lbuf.rby".
 
-conv Pc Pf Pk K =
-  zip (Pf * Pc);
-  group Pf Pc;
-  map Pf (
-    map Pc (
-      (conv2dstd K (K * K));
-      [-]^~1
-    );
-    btree Pc add;
-    radd 
-  ) .
+# how could make bundle work on generic
+convT h w k = lbuf3 w;
+              # to make bundle work with list
+              (group k k)^~1; inv_bundle (k * k); bundle (h * w * (k * k));
+              (group (h * w) (k * k));
+              (drop2d (k - 1) (k - 1) h w);
+              (group ((h - k + 1) * (w - k + 1)) (k * k))^~1;
+              inv_bundle ((h - k + 1) * (w - k + 1) * (k * k));
+              bundle (k * k).

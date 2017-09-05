@@ -1,0 +1,4 @@
+INCLUDE "prelude.rby".
+INCLUDE "drop2d.rby".
+
+current = drop2d 2 2 4 4.

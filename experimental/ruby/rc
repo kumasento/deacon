@@ -1,0 +1,2 @@
+#!/bin/sh
+sml @SMLload=/homes/wl/public/rebecca/bin/rc.x86-linux  $*
