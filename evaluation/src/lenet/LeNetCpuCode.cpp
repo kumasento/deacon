@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
   std::chrono::duration<double> elapsed_seconds = end-start;
   std::cout << "elapsed time:            " << elapsed_seconds.count() / num_iters << "s\n";
   std::cout << "elapsed time (per item): " << elapsed_seconds.count() / num_iters / batch_size << "s\n";
+  std::cout << "FPS:                     " << batch_size / (elapsed_seconds.count() / num_iters) << "\n";
 
   max_unload(engine);
   max_file_free(max_file);
