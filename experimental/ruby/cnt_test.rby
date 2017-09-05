@@ -1,0 +1,4 @@
+INCLUDE "prelude.rby" .
+INCLUDE "cnt.rby" .
+
+current = cnt 3 .

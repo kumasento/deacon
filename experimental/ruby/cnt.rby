@@ -1,0 +1,7 @@
+INCLUDE "prelude.rby" .
+
+modadd m = add; pi1^~1; snd m; mod .
+
+# This is a counter with a maximum value (m)
+# s (cnt m) x where x = {0, s % m, 2s % m, ... }
+cnt m = loop (modadd m; DI 0; fork) .
