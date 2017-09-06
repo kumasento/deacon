@@ -1,0 +1,3 @@
+INCLUDE "dotprod.rby".
+
+current = dotprod 3 3 .

@@ -3,13 +3,36 @@ INCLUDE "btree.rby".
 INCLUDE "conv2d.rby".
 INCLUDE "drop2d.rby".
 INCLUDE "lbuf.rby".
+INCLUDE "cnt.rby".
 
 # how could make bundle work on generic
 convT h w k = lbuf3 w;
               # to make bundle work with list
-              (group k k)^~1; inv_bundle (k * k); bundle (h * w * (k * k));
-              (group (h * w) (k * k));
+              (group k k)^~1; inv_bundle (k * k); bundle (h * w * (k * k)); (group (h * w) (k * k));
               (drop2d (k - 1) (k - 1) h w);
               (group ((h - k + 1) * (w - k + 1)) (k * k))^~1;
-              inv_bundle ((h - k + 1) * (w - k + 1) * (k * k));
-              bundle (k * k).
+              inv_bundle ((h - k + 1) * (w - k + 1) * (k * k)); bundle (k * k).
+
+G pf pc = group pf pc.
+
+# because ruby doesnt support mfork on list
+convR pf pc h w k = map pc (mfork pf);
+                    tran pc pf;
+                    (G pf pc)^~1;
+                    map (pf * pc) (convT h w k).
+
+convS pf pc c h w k = map pf (
+                   loop (
+                     add; 
+                     (DI 0)^((h-k+1)*(w-k+1));
+                     fork;
+                     snd (
+                       pi1^~1;
+                       snd 0;
+                       pi2^~1;
+                       fst (pc; (cnt c); pi1^~1; snd (c-pc); eq);
+                       muxr
+                     )
+                   )
+                 );
+                 map pf (bundle ((h - k + 1) * (w - k + 1))).

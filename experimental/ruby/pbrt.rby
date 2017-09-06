@@ -1,0 +1,8 @@
+INCLUDE "btree.rby".
+
+# pbrt is another name for btree
+pbrt n R = btree n R.
+
+# we need to manually add anti delays because there is no ceil function in the
+# ruby compiler
+pbrt9 R = pbrt 9 R; AD^4 \ [-] . 

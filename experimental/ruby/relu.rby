@@ -1,0 +1,5 @@
+INCLUDE "prelude.rby".
+
+relu = pi1^~1; snd 0; fork; fst ltn; muxr 2.
+
+current = relu .

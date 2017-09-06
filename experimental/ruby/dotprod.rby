@@ -1,0 +1,12 @@
+INCLUDE "prelude.rby" .
+INCLUDE "pbrt.rby" .
+INCLUDE "cnt.rby" .
+
+dotprod_R v = zip v;
+              map v mult;
+              pbrt v add;
+              [-]^~1;
+              (DI 0);
+              loop (add; (DI 0); fork). 
+
+dotprod n v = dotprod_R v.
