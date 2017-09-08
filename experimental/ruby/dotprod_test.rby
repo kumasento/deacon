@@ -1,3 +1,12 @@
 INCLUDE "dotprod.rby".
 
-current = dotprod 3 3 .
+# current = dotprod 9 9 .
+
+current = dotprod 9 3 .
+
+# current = pi2^~1; fst 0; cmx 3.
+
+# current = loop ( add; 
+#                  ( DI 0 );
+#                  fork;
+#                  fst ( pi2^~1; fst 0; cmx 3 ) ).

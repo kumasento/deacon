@@ -1,0 +1,5 @@
+INCLUDE "prelude.rby".
+INCLUDE "cnt.rby".
+
+reset n = fst ( pi2^~1; fst 0; cmx n ).
+

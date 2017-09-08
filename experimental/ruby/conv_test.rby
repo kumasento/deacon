@@ -7,12 +7,13 @@ INCLUDE "conv.rby".
 
 # current = convR 2 2 4 4 3 .
 
-current = (pi1^~1; snd 0; pi2^~1);
-          (fst ((cnt 2 4); pi1^~1; snd 2; eq));
-          (muxr 2).
+# current = (pi2^~1; snd 0; pi2^~1);
+#           (fst ((cnt 2 4); pi1^~1; snd 2; eq));
+#           (muxr 2).
 # current = (pi1^~1;
 #            snd 0;
 #            pi2^~1;
 #            fst (2; (cnt 4); pi1^~1; snd 2; eq);
 #            (muxr 2)).
-# current = convS 2 2 4 4 4 3.
+
+current = conv 2 2 4 2 2 1.

@@ -1,4 +1,4 @@
 INCLUDE "prelude.rby".
 INCLUDE "lbuf.rby".
 
-current = lbuf3 4 .
+current = D; AD; lbuf 3 4.

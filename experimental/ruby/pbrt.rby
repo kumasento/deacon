@@ -1,7 +1,7 @@
 INCLUDE "btree.rby".
 
 # pbrt is another name for btree
-pbrt n R = btree n R.
+pbrt n R = btree n R; [-]^~1; AD^(n $log 2).
 
 # we need to manually add anti delays because there is no ceil function in the
 # ruby compiler

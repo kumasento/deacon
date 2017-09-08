@@ -4,21 +4,18 @@ INCLUDE "conv2d.rby".
 INCLUDE "drop2d.rby".
 INCLUDE "lbuf.rby".
 INCLUDE "cnt.rby".
+INCLUDE "dotprod.rby".
+INCLUDE "util.rby".
 
 # how could make bundle work on generic
-convT h w k = lbuf3 w;
-              # to make bundle work with list
-              (group k k)^~1; inv_bundle (k * k); bundle (h * w * (k * k)); (group (h * w) (k * k));
-              (drop2d (k - 1) (k - 1) h w);
-              (group ((h - k + 1) * (w - k + 1)) (k * k))^~1;
-              inv_bundle ((h - k + 1) * (w - k + 1) * (k * k)); bundle (k * k).
+convT h w k = lbuf k w; (group k k)^~1.
 
-G pf pc = group pf pc.
+convG pf pc = group pf pc.
 
 # because ruby doesnt support mfork on list
 convR pf pc h w k = map pc (mfork pf);
                     tran pc pf;
-                    (G pf pc)^~1;
+                    (convG pf pc)^~1;
                     map (pf * pc) (convT h w k).
 
 convS pf pc c h w k = map pf (
@@ -36,3 +33,29 @@ convS pf pc c h w k = map pf (
                    )
                  );
                  map pf (bundle ((h - k + 1) * (w - k + 1))).
+
+conv pf pc c h w k = ( [ ( convR pf pc h w k),
+                         ( ( convG pf pc )^~1;
+                           ( map (pf*pc)
+                               ( map (k*k)
+                                   (mfork (h*w); inv_bundle (h*w)))))
+                       ];
+                       zip (pf * pc);
+                       map (pf * pc) (dotprod (k*k) (k*k));
+                       group pf pc;
+                       map pf (pbrt pc add);
+                       map pf (
+                       LET oh = h - k + 1 IN (
+                       LET ow = w - k + 1 IN (
+                         loop (
+                           add; (DI 0)^(oh*ow); fork;
+                           reset ((c/pc)*oh*ow)
+                         );
+                         AD^(oh*ow);
+                         ( bundle (c/pc*oh*ow);
+                           (drop ((c/pc-1)*oh*ow) (c/pc*oh*ow)); 
+                           inv_bundle (oh*ow) )
+                       )
+                       END )
+                       END )
+                     ).
