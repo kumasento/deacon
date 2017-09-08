@@ -35,6 +35,7 @@ public final class LeNetManager extends CustomManager {
     super(ep);
 
     config.setAllowNonMultipleTransitions(true);
+    config.setDefaultStreamClockFrequency(ep.getFreq());
 
     logMsg("Start constructing LeNet accelerator design ...");
 

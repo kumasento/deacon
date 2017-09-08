@@ -20,6 +20,7 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
+    config.setDefaultStreamClockFrequency(params.getFreq());
 
     ConvLayerManagerUtils.createKernelBlocks(this, cp, params.getUseDRAM());
     ConvLayerManagerUtils.setupConstants(this, cp, params);
