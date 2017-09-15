@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 
   std::chrono::duration<double> elapsed_seconds = end-start;
   std::cout << "elapsed time: " << elapsed_seconds.count() / 1 << "s\n";
-  uint64_t num_ops = H * W * C * F * K * K * 2;
+  uint64_t num_ops = (H - K + 1) * (W - K + 1) * C * F * K * K * 2;
 
   std::cout << "GOP/s: " << num_ops * batch_size * 1e-9 / elapsed_seconds.count() * num_iters << std::endl;
 

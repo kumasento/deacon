@@ -1,0 +1,13 @@
+INCLUDE "prelude.rby".
+INCLUDE "conv.rby".
+INCLUDE "pool2d.rby".
+
+current =
+    (
+      ( conv 1 1 1 28 28 5; pi2^~1 )     <->
+      ( pi1; pool2d 24 \ [-]; pi2^~1 )   <->
+      ( conv 1 1 32 12 12 5; pi2^~1 )    <->
+      ( pi1; pool2d 8 \ [-]; pi2^~1 ) <->
+      ( dotprod (4 * 4 * 64) 1; [-]; pi2^~1) <->
+      ( dotprod 1024 1; [-]; pi2^~1)
+    ); pi2.

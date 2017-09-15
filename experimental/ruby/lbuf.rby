@@ -1,9 +1,37 @@
 INCLUDE "prelude.rby".
 
-lbuf3 w = mfork 9;
-          [
-            D^(2*w+2), D^(2*w+1), D^(2*w),
-            D^(1*w+2), D^(1*w+1), D^(1*w),
-            D^(0*w+2), D^(0*w+1), D^(0*w)
-          ];
-          group 3 3.
+# lbuf1dcore i k = IF (i $eq (k - 1))
+#                  THEN ([D^i])
+#                  ELSE (
+#                    [ lbuf1dcore (i+1) k, D^i ] \
+#                    (apr (k-i-1))^~1
+#                  ) .
+
+lbuf1d k = fork;
+           snd (
+             pi1^~1;
+             row (k-1) (pi1; D; fork);
+             pi1
+           );
+           apl (k-1);
+           rev k.
+
+lbuf2d k w = fork;
+             snd (
+               pi1^~1;
+               row (k-1) (pi1; D^w; fork);
+               pi1
+             );
+             apl (k-1);
+             map k (lbuf1d k);
+             rev k.
+
+# lbuf k w = mfork (k * k);
+#            [
+#              D^(2*w+2), D^(2*w+1), D^(2*w),
+#              D^(1*w+2), D^(1*w+1), D^(1*w),
+#              D^(0*w+2), D^(0*w+1), D^(0*w)
+#            ];
+#            group 3 3.
+
+lbuf k w = lbuf2d k w; map k (map k (AD^(w*(k-1)+k-1))).

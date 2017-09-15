@@ -15,5 +15,3 @@ pool2d w = mfork 4;
            map (w/2) pi2;
            inv_bundle (w/2)
            .
-
-current = pool2d 4 .

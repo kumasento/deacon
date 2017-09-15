@@ -205,7 +205,7 @@ public class ConvLayerManagerUtils {
         KernelBlock knl =
             mgr.addKernel(new UnpaddingKernel(
                 mgr.makeKernelParameters(knlName),
-                cp.getCoeffStreamBitWidth(),
+                cp.getCoeffStreamBitWidth() / (cp.K * cp.K),
                 cp.dbg));
         knls.put(knlName, knl);
 
@@ -546,7 +546,7 @@ public class ConvLayerManagerUtils {
     numElems *= batchSize;
 
     InterfaceParam burstFactor =
-        ei.addConstant(cp.getCoeffVecSize()).cast(CPUTypes.INT64);
+        ei.addConstant(cp.PF * cp.PC).cast(CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems =
         getBurstAlignedNumElems(
             numElems,
