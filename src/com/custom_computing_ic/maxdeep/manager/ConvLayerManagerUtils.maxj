@@ -217,7 +217,7 @@ public class ConvLayerManagerUtils {
         KernelBlock depthwiseKnl =
             mgr.addKernel(new UnpaddingKernel(mgr
                 .makeKernelParameters(depthwiseKnlName), cp
-                .getDepthwiseCoeffStreamBitWidth(), cp.dbg));
+                .getDepthwiseCoeffStreamBitWidth() / (cp.K * cp.K), cp.dbg));
         knls.put(depthwiseKnlName, depthwiseKnl);
 
         KernelBlock pointwiseKnl =
@@ -499,8 +499,7 @@ public class ConvLayerManagerUtils {
         ei.addConstant(numElemsValue).cast(CPUTypes.INT64);
     numElems *= batchSize;
 
-    int burstFactorSize =
-        (isDepthwise) ? (cp.PC * cp.K * cp.K) : (cp.PC * cp.PF);
+    int burstFactorSize = (isDepthwise) ? (cp.PC) : (cp.PC * cp.PF);
     InterfaceParam burstFactor =
         ei.addConstant(burstFactorSize).cast(CPUTypes.INT64);
 
