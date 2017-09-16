@@ -78,8 +78,10 @@ int main(int argc, char *argv[]) {
   uint64_t num_ops = (
       ((H - K + 1) * (W - K + 1) * C * K * K) + 
       ((H - K + 1) * (W - K + 1) * C * F)) * 2;
+  uint64_t num_conv_ops = (H - K + 1) * (W - K + 1) * C * F * K * K * 2;
 
   std::cout << "GOP/s: " << num_ops * batch_size * 1e-9 / elapsed_seconds.count() * num_iters << std::endl;
+  std::cout << "GOP/s: " << num_conv_ops * batch_size * 1e-9 / elapsed_seconds.count() * num_iters << " (CONV)" << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);
