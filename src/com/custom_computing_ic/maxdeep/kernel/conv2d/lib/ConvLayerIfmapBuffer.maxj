@@ -64,16 +64,17 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.writeEn = dfeBool().newInstance(owner);
     
     if (!loop)
-	    this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+	  this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
     else {
       this.port = mem.read(addr);
 	     
-	    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
-	        + "_IBUF_WRITE_LATENCY");
-	    mem.write(
-	        stream.offset(addr, -writeLatency),
-	        stream.offset(data, -writeLatency),
-	        stream.offset(writeEn, -writeLatency));
+	  // OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
+	  //      + "_IBUF_WRITE_LATENCY");
+      int writeLatency = 10;
+	  mem.write(
+	      stream.offset(addr, -writeLatency),
+	      stream.offset(data, -writeLatency),
+	      stream.offset(writeEn, -writeLatency));
     }
       
     

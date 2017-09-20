@@ -398,6 +398,7 @@ public class ConvLayerManagerUtils {
           mgr.logMsg("# ofmap stream: %d", cp.getOfmapStreamNumElems());
           mgr.logMsg("coeff vec size: %d", cp.getCoeffVecSize());
           mgr.logMsg("coeff stream bit width: %d", cp.getCoeffStreamBitWidth());
+          mgr.logMsg("coeff stream chunk size: %d", cp.getCoeffStreamChunkSize());
         }
 
         if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2)
