@@ -5,7 +5,6 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -17,6 +16,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  * Buffer for input feature map stream.
  * 
  * HOW TO USE:
+ * 
  * <pre>
  * ConvLayerParameters cp = ...;
  * ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(getKernel(), cp, scalarT);
@@ -24,7 +24,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  * </pre>
  * 
  * @author Ruizhe Zhao
- *
+ * 
  */
 public class ConvLayerIfmapBuffer extends KernelComponent {
 
@@ -39,7 +39,7 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   private final DFEVar                    addr;
   private final DFEVector<DFEVar>         data;
   private final DFEVar                    writeEn;
-  
+
   public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
       DFEType scalarT) {
     this(owner, params, scalarT, false, "");
@@ -62,36 +62,49 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.addr = addrT.newInstance(owner);
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
-    
+
+    int writeLatency = 8;
+    DFEVar cnt = owner.control.count.simpleCounter(32);
+    // OffsetExpr writeLatency =
+    // stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
+    DFEVar delayedWriteEn =
+        ((cnt < writeLatency) ? (constant.var(0).cast(dfeBool())) : (stream
+            .offset(writeEn, -writeLatency)));
+
     if (!loop)
-	  this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+      this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
     else {
       this.port = mem.read(addr);
-	     
-	  // OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
-	  //      + "_IBUF_WRITE_LATENCY");
-      int writeLatency = 10;
-	  mem.write(
-	      stream.offset(addr, -writeLatency),
-	      stream.offset(data, -writeLatency),
-	      stream.offset(writeEn, -writeLatency));
+
+      mem.write(
+          stream.offset(addr, -writeLatency),
+          stream.offset(data, -writeLatency),
+          delayedWriteEn);
     }
-      
-    
-    if (cp.dbg) {
-	    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
-	    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
-    }
+
+    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
+    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
+    debug.simPrintf(
+        "[ConvLayerIfmapBuffer] addr = %KObj% %KObj%\n",
+        addr,
+        stream.offset(addr, -writeLatency));
+    debug.simPrintf(
+        "[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n",
+        writeEn,
+        delayedWriteEn);
   }
-  
+
   public DFEType getAddrT() {
     return addrT;
   }
 
-  public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
-    this.data <== data;
-    this.addr <== addr;
-    this.writeEn <== writeEn;
+  public DFEVector<DFEVar> port(
+      DFEVector<DFEVar> data,
+      DFEVar addr,
+      DFEVar writeEn) {
+    this.data.connect(data);
+    this.addr.connect(addr);
+    this.writeEn.connect(writeEn);
     return this.port;
   }
 
@@ -106,7 +119,8 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
       return cp.PK * cp.PC;
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet", cp.seq));
+          "Computation sequence %s has not been supported yet",
+          cp.seq));
     }
   }
 
@@ -117,7 +131,8 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
       return (cp.C / cp.PC) * cp.H * (cp.W / cp.PK);
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet", cp.seq));
+          "Computation sequence %s has not been supported yet",
+          cp.seq));
     }
   }
 }

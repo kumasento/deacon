@@ -41,6 +41,14 @@ int main(int argc, char *argv[]) {
   printf("F = %lu\n", F);
   printf("K = %lu\n", K);
 
+  // for (uint64_t i = 0; i < ifmap_num_elems; i ++)
+  //   ifmap[i] = (rand() % 10) - 5;
+  // for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
+  //   coeff_0[i] = (rand() % 10) - 5;
+
+  DepthwiseSeparableConvLayer_actions_t actions;
+  actions.param_batch_size = batch_size;
+#ifndef USE_DRAM
   uint64_t ifmap_num_elems = H * W * C * batch_size;
   uint64_t depthwise_coeff_num_elems = C * K * K * batch_size;
   uint64_t pointwise_coeff_num_elems = C * F * batch_size;
@@ -51,18 +59,10 @@ int main(int argc, char *argv[]) {
   data_t *pointwise_coeff_0 = (data_t *) malloc(sizeof(data_t) * pointwise_coeff_num_elems);
   data_t *ofmap = (data_t *) malloc(sizeof(data_t) * ofmap_num_elems);
 
-  // for (uint64_t i = 0; i < ifmap_num_elems; i ++)
-  //   ifmap[i] = (rand() % 10) - 5;
-  // for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
-  //   coeff_0[i] = (rand() % 10) - 5;
-
-  DepthwiseSeparableConvLayer_actions_t actions;
-  actions.param_batch_size = batch_size;
-#ifndef USE_DRAM
-    actions.instream_ifmap = (const data_t *) ifmap;
-    actions.instream_depthwise_coeff_0 = (const data_t *) depthwise_coeff_0;
-    actions.instream_pointwise_coeff_0 = (const data_t *) pointwise_coeff_0;
-    actions.outstream_ofmap = ofmap;
+  actions.instream_ifmap = (const data_t *) ifmap;
+  actions.instream_depthwise_coeff_0 = (const data_t *) depthwise_coeff_0;
+  actions.instream_pointwise_coeff_0 = (const data_t *) pointwise_coeff_0;
+  actions.outstream_ofmap = ofmap;
 #endif 
 
   printf("Running ...\n");

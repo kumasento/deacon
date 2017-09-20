@@ -49,11 +49,13 @@ BATCH_SIZE?=1
 
 # ----- USE_DRAM or NOT parameters -----
 USE_DRAM?=true
-USE_DRAM_SUFFIX:=PCIe
-ifeq ($(USE_DRAM), true)
-
 USE_DRAM_SUFFIX:=DRAM
 EXTRA_CFLAGS:=-DUSE_DRAM
+
+ifeq ($(USE_DRAM), false)
+
+USE_DRAM_SUFFIX:=PCIe
+EXTRA_CFLAGS:=
 
 endif
 
