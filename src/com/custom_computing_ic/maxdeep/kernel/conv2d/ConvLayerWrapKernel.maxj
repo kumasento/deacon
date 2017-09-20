@@ -31,8 +31,8 @@ public class ConvLayerWrapKernel extends Kernel {
 
     // TODO: remove muladd optimisation for now
     KernelConfiguration config = getKernelConfig();
-    config.optimization
-        .setDSPMulAddChainBehavior(DSPMulAddChainBehaviour.IGNORE);
+    // config.optimization
+    //     .setDSPMulAddChainBehavior(DSPMulAddChainBehaviour.IGNORE);
 
     this.cp = cp;
 
