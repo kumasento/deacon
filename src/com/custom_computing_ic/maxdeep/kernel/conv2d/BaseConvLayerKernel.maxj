@@ -1,0 +1,23 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+
+public abstract class BaseConvLayerKernel extends KernelComponent {
+
+  protected final ConvLayerParameters cp;
+  protected final DFEType             T;
+
+  public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp,
+      DFEType T) {
+    super(owner);
+
+    this.cp = cp;
+    this.T = T;
+
+    validate();
+  }
+
+  public abstract void validate();
+}

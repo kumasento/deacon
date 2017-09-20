@@ -5,6 +5,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -38,9 +39,14 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   private final DFEVar                    addr;
   private final DFEVector<DFEVar>         data;
   private final DFEVar                    writeEn;
-
+  
   public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
       DFEType scalarT) {
+    this(owner, params, scalarT, false, "");
+  }
+
+  public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
+      DFEType scalarT, boolean loop, String prefix) {
     super(owner);
 
     this.cp = params;
@@ -56,7 +62,20 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.addr = addrT.newInstance(owner);
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
-    this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+    
+    if (!loop)
+	    this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+    else {
+      this.port = mem.read(addr);
+	     
+	    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
+	        + "_IBUF_WRITE_LATENCY");
+	    mem.write(
+	        stream.offset(addr, -writeLatency),
+	        stream.offset(data, -writeLatency),
+	        stream.offset(writeEn, -writeLatency));
+    }
+      
     
     if (cp.dbg) {
 	    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);

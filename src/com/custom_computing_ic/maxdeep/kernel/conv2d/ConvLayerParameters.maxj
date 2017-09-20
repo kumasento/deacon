@@ -48,7 +48,7 @@ public class ConvLayerParameters extends LayerParameters {
    * 
    */
   public enum Type {
-    STANDARD, DEPTHWISE_SEPARABLE
+    STANDARD, DEPTHWISE_SEPARABLE, DEPTHWISE_SEPARABLE_V2
   }
 
   public ConvLayerParameters(Builder builder) {
@@ -91,7 +91,10 @@ public class ConvLayerParameters extends LayerParameters {
   }
 
   public int getNumCycles() {
-    return (H * W * C * F) / (PC * PF * PK);
+    if (type == Type.STANDARD)
+      return (H * W * C * F) / (PC * PF * PK);
+
+    return (H * W * C) / (PC * PK) + (H * W * C * F) / (PC * PF * PK);
   }
 
   public int getPoolNumCycles() {
@@ -110,12 +113,17 @@ public class ConvLayerParameters extends LayerParameters {
 
   @Override
   public long getCoeffStreamNumElems() {
-    return C * F * K * K;
+    if (type == Type.STANDARD)
+      return C * F * K * K;
+
+    return C * (F / PF + 1) * Math.max(K * K, PF);
   }
 
   @Override
   public int getCoeffVecSize() {
-    return PC * PF * K * K;
+    return (type == Type.DEPTHWISE_SEPARABLE_V2)
+        ? (PC * Math.max(K * K, PF))
+        : (PC * PF * K * K);
   }
 
   public int getCoeffLMemVecSize() {
@@ -179,6 +187,12 @@ public class ConvLayerParameters extends LayerParameters {
 
   public int getCoeffStreamBitWidth() {
     return getCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
+  }
+
+  public int getCoeffStreamChunkSize() {
+    return (type == Type.DEPTHWISE_SEPARABLE_V2)
+        ? Math.max(K * K, PF)
+        : (K * K);
   }
 
   public int getCoeffStreamLMemBitWidth() {

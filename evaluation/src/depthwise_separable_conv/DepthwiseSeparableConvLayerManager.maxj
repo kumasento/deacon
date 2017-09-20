@@ -26,13 +26,15 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
     ConvLayerManagerUtils.setupConstants(this, cp, params);
   }
 
-  public EngineInterface interfaceDefault(ConvLayerParameters cp,
+  public EngineInterface interfaceDefault(
+      ConvLayerParameters cp,
       ConvLayerEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
-    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM());
+    ConvLayerManagerUtils
+        .setupStreams(ei, cp, batchSize, ep.getUseDRAM(), this);
     // ConvLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
 
     return ei;
@@ -42,12 +44,27 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
   public static void main(String[] args) {
     DepthwiseSeparableConvLayerEngineParameters params =
         new DepthwiseSeparableConvLayerEngineParameters(args);
+    Type type =
+        (params.getVersion() == 1)
+            ? Type.DEPTHWISE_SEPARABLE
+            : Type.DEPTHWISE_SEPARABLE_V2;
+
     ConvLayerParameters cp =
-        new ConvLayerParameters.Builder(params.getH(), params.getW(),
-            params.getC(), params.getF(), params.getK())
-            .type(Type.DEPTHWISE_SEPARABLE).seq(CompSeq.FILTER_MAJOR)
-            .name("conv").PC(params.getPC()).PF(params.getPF())
-            .PK(params.getPK()).BW(params.getBitWidth()).dbg(false).build();
+        new ConvLayerParameters.Builder(
+            params.getH(),
+            params.getW(),
+            params.getC(),
+            params.getF(),
+            params.getK())
+            .type(type)
+            .seq(CompSeq.FILTER_MAJOR)
+            .name("conv")
+            .PC(params.getPC())
+            .PF(params.getPF())
+            .PK(params.getPK())
+            .BW(params.getBitWidth())
+            .dbg(false)
+            .build();
 
     DepthwiseSeparableConvLayerManager mgr =
         new DepthwiseSeparableConvLayerManager(params, cp);

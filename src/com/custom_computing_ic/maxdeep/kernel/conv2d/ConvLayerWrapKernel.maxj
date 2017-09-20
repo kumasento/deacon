@@ -82,6 +82,14 @@ public class ConvLayerWrapKernel extends Kernel {
             conv.getPointwiseCoeffEn());
       }
 
+    } else if (cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
+      // create the kernel for depthwise separable convolution V2
+      getManager().logMsg(
+          "Initializing kernel for Depthwise Separable Convolution V2");
+
+      DepthwiseSeparableConvLayerKernelV2 conv =
+          new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, scalarT);
+      conv.setIO(getKernel());
     } else {
       throw new IllegalArgumentException("type has no been supported");
     }

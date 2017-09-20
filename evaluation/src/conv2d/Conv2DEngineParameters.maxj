@@ -15,6 +15,8 @@ public class Conv2DEngineParameters extends EngineParameters {
   private static final int    PK             = 1;
   private static final String K_NAME         = "K";
   private static final int    K              = 1;
+  private static final String VERSION_NAME   = "VERSION";
+  private static final int    VERSION        = 1;
 
   public Conv2DEngineParameters(String[] args) {
     super(args);
@@ -27,6 +29,7 @@ public class Conv2DEngineParameters extends EngineParameters {
     declareParam(PC_NAME, DataType.INT, PC);
     declareParam(PK_NAME, DataType.INT, PK);
     declareParam(K_NAME, DataType.INT, K);
+    declareParam(VERSION_NAME, DataType.INT, VERSION);
   }
 
   public int getBitWidth() {
@@ -47,6 +50,10 @@ public class Conv2DEngineParameters extends EngineParameters {
 
   public int getK() {
     return getParam(K_NAME);
+  }
+
+  public int getVersion() {
+    return getParam(VERSION_NAME);
   }
 
   @Override

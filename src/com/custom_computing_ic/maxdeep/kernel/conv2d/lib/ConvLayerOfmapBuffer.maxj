@@ -79,15 +79,14 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
 
     this.result = portVecT.newInstance(owner);
     for (int i = 0; i < portVecT.getSize(); i++) {
-      DFEVar prevData = (reset.eq(true))
-          ? constant.var(0).cast(scalarT)
-          : port[i];
+      DFEVar prevData =
+          (reset.eq(true)) ? constant.var(0).cast(scalarT) : port[i];
       this.result[i].connect(data[i] + prevData);
     }
 
     /* TODO: we assume the read result of an unwritten address is 0 */
-    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix
-        + "WRITE_LATENCY");
+    OffsetExpr writeLatency =
+        stream.makeOffsetAutoLoop(prefix + "_WRITE_LATENCY");
     mem.write(
         stream.offset(addr, -writeLatency),
         stream.offset(result, -writeLatency),
@@ -106,7 +105,9 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     return addrT;
   }
 
-  public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr,
+  public DFEVector<DFEVar> port(
+      DFEVector<DFEVar> data,
+      DFEVar addr,
       DFEVar writeEn) {
     this.data.connect(data);
     this.addr.connect(addr);
