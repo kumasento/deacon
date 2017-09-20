@@ -63,7 +63,7 @@ public class DepthwiseSeparableConvLayerManager extends CustomManager {
             .PF(params.getPF())
             .PK(params.getPK())
             .BW(params.getBitWidth())
-            .dbg(true)
+            .dbg(false)
             .build();
 
     DepthwiseSeparableConvLayerManager mgr =

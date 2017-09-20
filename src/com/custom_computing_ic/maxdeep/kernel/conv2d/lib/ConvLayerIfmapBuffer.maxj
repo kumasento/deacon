@@ -5,6 +5,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -55,6 +56,11 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     int width = getWidth();
     int depth = getDepth();
 
+    System.out.printf(
+        "[ConvLayerIfmapBuffer] width = %d depth = %d\n",
+        width,
+        depth);
+
     this.addrT = dfeUInt(MathUtils.bitsToAddress(depth));
     this.portVecT = new DFEVectorType<DFEVar>(scalarT, width);
 
@@ -63,13 +69,8 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
 
-    int writeLatency = 8;
-    DFEVar cnt = owner.control.count.simpleCounter(32);
-    // OffsetExpr writeLatency =
-    // stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
-    DFEVar delayedWriteEn =
-        ((cnt < writeLatency) ? (constant.var(0).cast(dfeBool())) : (stream
-            .offset(writeEn, -writeLatency)));
+    OffsetExpr writeLatency =
+        stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
 
     if (!loop)
       this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
@@ -79,19 +80,21 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
       mem.write(
           stream.offset(addr, -writeLatency),
           stream.offset(data, -writeLatency),
-          delayedWriteEn);
+          stream.offset(writeEn, -writeLatency));
     }
 
-    debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
-    debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
-    debug.simPrintf(
-        "[ConvLayerIfmapBuffer] addr = %KObj% %KObj%\n",
-        addr,
-        stream.offset(addr, -writeLatency));
-    debug.simPrintf(
-        "[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n",
-        writeEn,
-        delayedWriteEn);
+    if (cp.dbg) {
+      debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
+      debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
+      debug.simPrintf(
+          "[ConvLayerIfmapBuffer] addr = %KObj% %KObj%\n",
+          addr,
+          stream.offset(addr, -writeLatency));
+      debug.simPrintf(
+          "[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n",
+          writeEn,
+          stream.offset(writeEn, -writeLatency));
+    }
   }
 
   public DFEType getAddrT() {

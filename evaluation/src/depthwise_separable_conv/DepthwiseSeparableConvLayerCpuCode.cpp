@@ -49,19 +49,26 @@ int main(int argc, char *argv[]) {
   DepthwiseSeparableConvLayer_actions_t actions;
   actions.param_batch_size = batch_size;
 #ifndef USE_DRAM
-  uint64_t ifmap_num_elems = H * W * C * batch_size;
+#ifndef DEPTHWISE_SEPARABLE_V2
   uint64_t depthwise_coeff_num_elems = C * K * K * batch_size;
   uint64_t pointwise_coeff_num_elems = C * F * batch_size;
+  data_t *depthwise_coeff_0 = (data_t *) malloc(sizeof(data_t) * depthwise_coeff_num_elems);
+  data_t *pointwise_coeff_0 = (data_t *) malloc(sizeof(data_t) * pointwise_coeff_num_elems);
+  actions.instream_depthwise_coeff_0 = (const data_t *) depthwise_coeff_0;
+  actions.instream_pointwise_coeff_0 = (const data_t *) pointwise_coeff_0;
+#else
+  uint64_t coeff_num_elems = C * (F + 1) * K * K * batch_size;
+  data_t *coeff_0 = (data_t *) malloc(sizeof(data_t) * coeff_num_elems);
+  actions.instream_coeff_0 = (const data_t *) coeff_0;
+#endif
+
+  uint64_t ifmap_num_elems = H * W * C * batch_size;
   uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
 
   data_t *ifmap = (data_t *) malloc(sizeof(data_t) * ifmap_num_elems);
-  data_t *depthwise_coeff_0 = (data_t *) malloc(sizeof(data_t) * depthwise_coeff_num_elems);
-  data_t *pointwise_coeff_0 = (data_t *) malloc(sizeof(data_t) * pointwise_coeff_num_elems);
   data_t *ofmap = (data_t *) malloc(sizeof(data_t) * ofmap_num_elems);
 
   actions.instream_ifmap = (const data_t *) ifmap;
-  actions.instream_depthwise_coeff_0 = (const data_t *) depthwise_coeff_0;
-  actions.instream_pointwise_coeff_0 = (const data_t *) pointwise_coeff_0;
   actions.outstream_ofmap = ofmap;
 #endif 
 
