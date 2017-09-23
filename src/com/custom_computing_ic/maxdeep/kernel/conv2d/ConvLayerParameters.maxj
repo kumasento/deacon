@@ -92,11 +92,11 @@ public class ConvLayerParameters extends LayerParameters {
 
   public long getNumCycles() {
     if (type == Type.STANDARD)
-      return (long) (H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
-      return (long) (H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE_V2)
-      return (long) (H * W * C) / (PC * PK) + (H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C) / (PC * PK) + ((long) H * W * C * F) / (PC * PF * PK);
     throw new IllegalArgumentException(
         "getNumCycles has not implemented for the current type");
   }
