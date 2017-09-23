@@ -389,11 +389,11 @@ public class ConvLayerManagerUtils {
       for (int i = 0; i < cps.size(); i++) {
         ConvLayerParameters cp = cps.get(i);
 
-        mgr.logMsg("Setup streams for kernel \"%s\"", cp.name);
         ei.setTicks(getKernelName(cp), cp.getNumCycles() * batchSize);
-        mgr.logMsg("# cycles:       %d%n", cp.getNumCycles());
 
         if (mgr != null) {
+          mgr.logMsg("Setup streams for kernel \"%s\"", cp.name);
+          mgr.logMsg("# cycles:       %d%n", cp.getNumCycles());
           mgr.logMsg("# ifmap stream: %d", cp.getIfmapStreamNumElems());
           mgr.logMsg("# coeff stream: %d", cp.getCoeffStreamNumElems());
           mgr.logMsg("# ofmap stream: %d", cp.getOfmapStreamNumElems());
