@@ -29,6 +29,10 @@ Please cite the following paper(s) if you use this framework, cheers!
 2. Add `MaxCompiler.jar` to your project's dependencies
 3. Check whether it works by running JUnit tests
 
+### Work without MaxIDE
+
+We provide several evaluation sub-projects under `evaluation/`.
+
 ## Experiment Results
 
 Please see the [evaluation](evaluation) folder.
