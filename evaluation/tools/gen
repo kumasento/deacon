@@ -1,0 +1,58 @@
+#!/bin/sh
+# This script helps you generate evaluation files.
+# You should run this script directly under evaluation/
+
+CURRENT=`pwd`
+BASENAME=`basename "$CURRENT"`
+DIR=`dirname "${BASH_SOURCE[0]}"`
+PROJ=$1
+PKG=$2
+
+usage() {
+  echo ""
+  echo "usage: $0 [project name] [package name]"
+}
+
+# check directory structure
+if [ ! -d build ] || [ ! -d src ] || [ "$BASENAME" != "evaluation" ]; then
+  echo "Please run this script under the evaluation folder"
+fi
+
+echo "You are running under \"$BASENAME/\""
+
+# check whether you provide a project name
+if [ -z "$PROJ" ]; then
+  echo "You should provide a project name!"
+  usage
+  exit 1
+fi
+
+if [ -z "$PKG" ]; then
+  echo "You should provide a package name!"
+  usage
+  exit 1
+fi
+
+echo ""
+echo "Project name: $PROJ"
+echo "Package name: $PKG"
+echo ""
+
+echo "Creating subdirectory \"$PKG/\" under build/ ..."
+mkdir -p build/$PKG
+
+echo "Creating subdirectory \"$PKG/\" under src/ ..."
+mkdir -p src/$PKG
+
+export PROJ=$PROJ
+export PKG=$PKG
+
+echo "Generating Makefile from template ..."
+envsubst < "$DIR/tmpl/Makefile" > "build/$PKG/Makefile"
+
+echo "Generating CPU code from template ..."
+envsubst < "$DIR/tmpl/CpuCode.cpp" > "src/$PKG/${PROJ}CpuCode.cpp"
+echo "Generating manager code from template ..."
+envsubst < "$DIR/tmpl/Manager.maxj" > "src/$PKG/${PROJ}Manager.maxj"
+echo "Generating kernel code from template ..."
+envsubst < "$DIR/tmpl/Kernel.maxj" > "src/$PKG/${PROJ}Kernel.maxj"
