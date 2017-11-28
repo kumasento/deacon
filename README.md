@@ -26,7 +26,7 @@ Please cite the following paper(s) if you use this framework, cheers!
 ### Work with MaxIDE
 
 1. Import this project folder into your workspace
-2. Add `MaxCompiler.jar` to your project's dependencies
+2. Add `MaxCompiler.jar` (under `/opt/maxeler/lib` usually) and `JUnit4` to your project's library dependencies
 3. Check whether it works by running JUnit tests
 
 ### Work without MaxIDE
