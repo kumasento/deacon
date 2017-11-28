@@ -1,0 +1,17 @@
+package matmul;
+
+import com.custom_computing_ic.maxdeep.kernel.fc.FullyConnectedLayerParameters;
+import com.maxeler.maxcompiler.v2.build.EngineParameters;
+import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+
+public class MatMulManager extends CustomManager {
+
+  public MatMulManager(EngineParameters params, FullyConnectedLayerParameters fp) {
+    super(params);
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Hello World");
+  }
+
+}
