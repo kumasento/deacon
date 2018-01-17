@@ -11,18 +11,12 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
-/**
- * 
- */
+/** */
 
-/**
- * @author Ruizhe Zhao
- * 
- */
+/** @author Ruizhe Zhao */
 public class ConvSingleLayerManager extends CustomManager {
 
-  public ConvSingleLayerManager(ConvSingleLayerEngineParameters params,
-      ConvLayerParameters cp) {
+  public ConvSingleLayerManager(ConvSingleLayerEngineParameters params, ConvLayerParameters cp) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -33,8 +27,7 @@ public class ConvSingleLayerManager extends CustomManager {
     ConvLayerManagerUtils.setupConstants(this, cp, params);
   }
 
-  public EngineInterface interfaceDefault(ConvLayerParameters cp,
-      ConvLayerEngineParameters ep) {
+  public EngineInterface interfaceDefault(ConvLayerParameters cp, ConvLayerEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
@@ -47,8 +40,7 @@ public class ConvSingleLayerManager extends CustomManager {
 
   @SuppressWarnings("deprecation")
   public static void main(String[] args) {
-    ConvSingleLayerEngineParameters params =
-        new ConvSingleLayerEngineParameters(args);
+    ConvSingleLayerEngineParameters params = new ConvSingleLayerEngineParameters(args);
 
     int H = params.getH();
     int W = params.getW();
@@ -58,9 +50,13 @@ public class ConvSingleLayerManager extends CustomManager {
 
     ConvLayerParameters cp =
         new ConvLayerParameters.Builder(H, W, C, F, K)
-            .name("conv").PC(params.getPC()).PF(params.getPF())
-            .PK(params.getPK()).BW(params.getBitWidth())
-            .seq(CompSeq.values()[params.getSeq()]).build();
+            .name("conv")
+            .PC(params.getPC())
+            .PF(params.getPF())
+            .PK(params.getPK())
+            .BW(params.getBitWidth())
+            .seq(CompSeq.values()[params.getSeq()])
+            .build();
 
     ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);
     mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));

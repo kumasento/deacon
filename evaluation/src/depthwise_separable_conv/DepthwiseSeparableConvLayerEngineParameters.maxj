@@ -15,7 +15,6 @@ public class DepthwiseSeparableConvLayerEngineParameters extends
   @Override
   protected void declarations() {
     super.declarations();
-
     declareParam(VERSION_NAME, DataType.INT, VERSION);
   }
 
