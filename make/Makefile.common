@@ -138,7 +138,8 @@ all: runsim build
 # ---- Simulation ----
 
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
-	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
+	@ echo "Running maxjc ..."
+	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
