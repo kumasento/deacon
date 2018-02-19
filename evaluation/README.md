@@ -7,3 +7,19 @@ In each evaluation project package, there will be:
 1. A customised `Kernel` that wraps components to be tested
 2. A `Manager` that manages the kernel
 3. A software code snippet to call the functionality to be evaluated.
+
+## Current Evaluation
+
+| Name                                                                | Package                                                               | Description                      |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------|----------------------------------|
+| [Depthwise Separable Convolution](#depthwise-separable-convolution) | [`depthwise_separable_conv`](evaluation/src/depthwise_separable_conv) | Single depthwise separable layer |
+
+### Depthwise Separable Convolution
+
+#### Configurable Parameters
+
+| Parameter | Value Range | Description |
+|-----------|-------------|-------------|
+
+
+## Create a New Evaluation Project
