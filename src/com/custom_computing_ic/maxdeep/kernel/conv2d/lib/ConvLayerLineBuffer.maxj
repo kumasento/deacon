@@ -17,14 +17,14 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public class ConvLayerLineBuffer extends KernelComponent {
 
-  private final ConvLayerParameters   cp;
+  private final ConvLayerParameters cp;
 
-  private final DFEType               scalarT;
+  private final DFEType scalarT;
   private final DFEVectorType<DFEVar> inputVecT;
   private final DFEVectorType<DFEVar> outputVecT;
 
-  private final DFEVector<DFEVar>     inputVec;
-  private final DFEVector<DFEVar>     outputVec;
+  private final DFEVector<DFEVar> inputVec;
+  private final DFEVector<DFEVar> outputVec;
 
   /**
    * constructor
@@ -33,8 +33,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
    * @param params
    * @param scalarT
    */
-  public ConvLayerLineBuffer(KernelBase<?> owner, ConvLayerParameters params,
-      DFEType scalarT) {
+  public ConvLayerLineBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
     super(owner);
 
     this.cp = params;
@@ -55,8 +54,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
     for (int i = 0; i < numLineBuffers; i++) {
 
       /* initialise one line buffer */
-      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), cp.K, cp.W,
-          cp.PK, scalarT);
+      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), cp.K, cp.W, cp.PK, scalarT);
       lbuf.setHeight(constant.var(cp.K).cast(lbuf.getIndexT()));
       lbuf.setWidth(constant.var(cp.W).cast(lbuf.getIndexT()));
       lbuf.setCapacity(constant.var(cp.H * cp.W).cast(lbuf.getIndexT()));
@@ -73,15 +71,14 @@ public class ConvLayerLineBuffer extends KernelComponent {
       int numLbufOutputChunks = (cp.K + cp.PK - 1) / cp.PK;
       int lbufOutputChunkSize = lbufOutput.getSize();
       for (int j = 0; j < numLbufOutputChunks; j++) {
-        DFEVector<DFEVar> lbufOutputChunk = stream.offset(
-            lbufOutput,
-            -(numLbufOutputChunks - j - 1));
+        DFEVector<DFEVar> lbufOutputChunk =
+            stream.offset(lbufOutput, -(numLbufOutputChunks - j - 1));
 
         /* outputVec: (PC, K, K + PK - 1) */
         for (int p = 0; p < cp.PK; p++) {
           for (int k = 0; k < cp.K; k++) {
-            outputVec[i * (cp.K * (cp.K + cp.PK - 1)) + k * (cp.K + cp.PK - 1)
-                + j * cp.PK + p].connect(lbufOutputChunk[p * cp.K + k]);
+            outputVec[i * (cp.K * (cp.K + cp.PK - 1)) + k * (cp.K + cp.PK - 1) + j * cp.PK + p]
+                .connect(lbufOutputChunk[p * cp.K + k]);
           }
         }
 
@@ -89,8 +86,8 @@ public class ConvLayerLineBuffer extends KernelComponent {
     }
 
     if (cp.dbg) {
-      debug.simPrintf("inputVec = %KObj%\n", inputVec);
-      debug.simPrintf("outputVec = %KObj%\n", outputVec);
+      debug.simPrintf("Line buffer inputVec = %KObj%\n", inputVec);
+      debug.simPrintf("Line buffer outputVec = %KObj%\n", outputVec);
     }
   }
 
@@ -102,8 +99,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
         return cp.PC * cp.K * (cp.K + cp.PK - 1);
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet",
-            cp.seq));
+            "Computation sequence %s has not been supported yet", cp.seq));
     }
   }
 
@@ -123,8 +119,7 @@ public class ConvLayerLineBuffer extends KernelComponent {
         return cp.PC * cp.PK;
       default:
         throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet",
-            cp.seq));
+            "Computation sequence %s has not been supported yet", cp.seq));
     }
   }
 

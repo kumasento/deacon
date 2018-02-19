@@ -1,6 +1,6 @@
 # MaxDeep: A Deep Learning Framework on Maxeler Platform
 
-Please cite the following paper(s) if you use this framework, cheers!
+Please consider citing the following paper(s) if you use this framework, cheers!
 
 ```bibtex
 @inproceedings{arc17rz,
@@ -25,9 +25,12 @@ Please cite the following paper(s) if you use this framework, cheers!
 
 ### Work with MaxIDE
 
-1. Import this project folder into your workspace
-2. Add `MaxCompiler.jar` (under `/opt/maxeler/lib` usually) and `JUnit4` to your project's library dependencies
-3. Check whether it works by running JUnit tests
+1. Import this project folder into your workspace (`General > Old/Non MaxCompiler projects`)
+2. Add `MaxCompiler.jar` (under `/opt/maxeler/lib` usually, add by `Add External JARs`) and `JUnit4` to your project's library dependencies (add by `Add Library`)
+3. Set the following directories as project `Source` (`properties > Java Build Path`):
+    1. `maxdeep/src`
+    2. `maxdeep/evaluation/src`
+    3. `maxdeep/lib/dfe-snippets/src`
 
 ### Work without MaxIDE
 

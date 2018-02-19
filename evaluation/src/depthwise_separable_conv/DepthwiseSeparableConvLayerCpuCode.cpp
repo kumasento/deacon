@@ -1,3 +1,7 @@
+/**
+ * Evaluation of Depthwise Separable Convolution.
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -6,10 +10,20 @@
 #include <getopt.h>
 
 #include "Maxfiles.h"
+#include "maxdeep/layers.h"
+#include "maxdeep/utils.h"
 
+#if BIT_WIDTH == 8
+typedef int8_t data_t;
+#elif BIT_WIDTH == 16
+typedef int16_t data_t;
+#elif BIT_WIDTH == 32
 typedef int32_t data_t;
+#endif
 
 int main(int argc, char *argv[]) {
+  srand(42);
+
   char c;
 
   uint64_t batch_size = 1;
@@ -41,15 +55,28 @@ int main(int argc, char *argv[]) {
   printf("C = %lu\n", C);
   printf("F = %lu\n", F);
   printf("K = %lu\n", K);
+  printf("batch_size = %lu\n", batch_size);
 
   // for (uint64_t i = 0; i < ifmap_num_elems; i ++)
   //   ifmap[i] = (rand() % 10) - 5;
   // for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
   //   coeff_0[i] = (rand() % 10) - 5;
 
+  printf("Initializing arrays ...\n");
+
   DepthwiseSeparableConvLayer_actions_t actions;
   actions.param_batch_size = batch_size;
 #ifndef USE_DRAM
+  uint64_t ifmap_num_elems = H * W * C * batch_size;
+  uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
+
+  auto ifmap = random_initialize<data_t>(ifmap_num_elems, 100);
+  auto ofmap = create_array<data_t>(ofmap_num_elems);
+  auto ofmap_golden = create_array<data_t>(ofmap_num_elems);
+
+  actions.instream_ifmap = (const data_t *)ifmap;
+  actions.outstream_ofmap = ofmap;
+
 #ifndef DEPTHWISE_SEPARABLE_V2
   uint64_t depthwise_coeff_num_elems = C * K * K * batch_size;
   uint64_t pointwise_coeff_num_elems = C * F * batch_size;
@@ -60,20 +87,20 @@ int main(int argc, char *argv[]) {
   actions.instream_depthwise_coeff_0 = (const data_t *)depthwise_coeff_0;
   actions.instream_pointwise_coeff_0 = (const data_t *)pointwise_coeff_0;
 #else
-  uint64_t coeff_num_elems = C * (F + 1) * K * K * batch_size;
-  data_t *coeff_0 = (data_t *)malloc(sizeof(data_t) * coeff_num_elems);
+  uint64_t coeff_num_elems = C * K * K * (1 + F) * batch_size;
+  auto coeff_0 = random_initialize<data_t>(coeff_num_elems, 100);
   actions.instream_coeff_0 = (const data_t *)coeff_0;
+
+  dump_array("coeff.txt", coeff_0, coeff_num_elems);
 #endif
 
-  uint64_t ifmap_num_elems = H * W * C * batch_size;
-  uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
-
-  data_t *ifmap = (data_t *)malloc(sizeof(data_t) * ifmap_num_elems);
-  data_t *ofmap = (data_t *)malloc(sizeof(data_t) * ofmap_num_elems);
-
-  actions.instream_ifmap = (const data_t *)ifmap;
-  actions.outstream_ofmap = ofmap;
+#else
+#error "Using DRAM is not supported yet"
 #endif
+
+  printf("Running golden function ...\n");
+  depthwise_separable_conv_layer(ifmap, coeff_0, ofmap_golden, H, W, C, F, K,
+                                 batch_size);
 
   printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -96,6 +123,20 @@ int main(int argc, char *argv[]) {
   std::cout << "GOP/s: " << num_conv_ops *batch_size * 1e-9 /
                                 elapsed_seconds.count() *
                                 num_iters << " (CONV)" << std::endl;
+
+  for (int i = 0; i < 10; i++) printf("ofmap[%5d] = %d\n", i, ofmap[i]);
+  printf("Golden:\n");
+  for (int i = 0; i < 10; i++) printf("ofmap[%5d] = %d\n", i, ofmap_golden[i]);
+
+  printf("Running test ...\n");
+  for (int i = 0; i < ofmap_num_elems; i++)
+    if (ofmap[i] != ofmap_golden[i]) {
+      fprintf(stderr, "ofmap doesn't matched at %d: %d != %d\n", i, ofmap[i],
+              ofmap_golden[i]);
+      exit(1);
+    }
+
+  printf("Test PASSED!\n");
 
   max_unload(engine);
   max_file_free(max_file);
