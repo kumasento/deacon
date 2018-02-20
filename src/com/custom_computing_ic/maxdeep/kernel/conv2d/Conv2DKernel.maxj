@@ -1,0 +1,71 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d;
+
+import java.util.HashMap;
+import com.custom_computing_ic.maxdeep.lib.stream.BaseStream;
+import com.custom_computing_ic.maxdeep.utils.CounterUtils;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+
+/**
+ * A newer version of Conv2D layer based on BaseConvLayerKernel.
+ * 
+ * @author Ruizhe Zhao
+ * @since 06-03-2018
+ */
+public class Conv2DKernel extends BaseConvLayerKernel {
+
+  public static final String IFMAP = "ifmap";
+  public static final String OFMAP = "ofmap";
+  public static final String COEFF = "coeff";
+  public static final String BIAS = "bias";
+
+  public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
+    super(owner, cp, T);
+
+    // initialize streams
+    DFEVar ifmapEn = dfeBool().newInstance(owner);
+    DFEVar coeffEn = dfeBool().newInstance(owner);
+    DFEVar ofmapEn = dfeBool().newInstance(owner);
+    DFEVar biasEn = dfeBool().newInstance(owner);
+
+    streams = new HashMap<String, BaseStream>();
+    streams[IFMAP] = new BaseStream(IFMAP, cp.PC * cp.PK, T, ifmapEn);
+    streams[COEFF] = new BaseStream(COEFF, cp.PC * cp.PF, T, coeffEn);
+    streams[OFMAP] = new BaseStream(OFMAP, cp.PF * cp.PK, T, ofmapEn, false);
+    streams[BIAS] = new BaseStream(BIAS, cp.PF, T, biasEn);
+
+    DFEVector<DFEVar> ifmap = streams[IFMAP].getPlaceholder(owner);
+    DFEVector<DFEVar> ofmap = streams[OFMAP].getPlaceholder(owner);
+    DFEVector<DFEVar> coeff = streams[COEFF].getPlaceholder(owner);
+    DFEVector<DFEVar> bias = streams[BIAS].getPlaceholder(owner);
+
+    // counters
+    int maxIterF = (int) Math.ceil((double) cp.F / cp.PF);
+    int maxIterC = (int) Math.ceil((double) cp.C / cp.PC);
+    int maxIterW = (int) Math.ceil((double) cp.W / cp.PK);
+
+    CounterChain chain = owner.control.count.makeCounterChain();
+    DFEVar f = CounterUtils.createCounter(chain, maxIterF, owner);
+    DFEVar c = CounterUtils.createCounter(chain, maxIterC, owner);
+    DFEVar h = CounterUtils.createCounter(chain, cp.H, owner);
+    DFEVar w = CounterUtils.createCounter(chain, maxIterW, owner);
+
+    DFEVar ZERO = constant.var(0);
+    DFEVar oh = ((h <= cp.K - 1) ? ZERO : h - cp.K + 1).cast(CounterUtils.COUNTER_TYPE);
+
+    // real width index value
+    DFEVar rw = w * cp.PK;
+    DFEVar ow = ((rw < cp.K - 1) ? ZERO : (rw + 1 - cp.K) / cp.PK);
+    ow = ow.cast(CounterUtils.COUNTER_TYPE);
+  }
+
+  @Override
+  public void validate() {
+    // TODO Auto-generated method stub
+
+  }
+
+}

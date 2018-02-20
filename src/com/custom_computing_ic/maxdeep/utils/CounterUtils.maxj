@@ -8,18 +8,16 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public final class CounterUtils {
 
-  public static DFEVar createCounter(
-      CounterChain chain,
-      int maxStep,
-      KernelBase<?> owner) {
+  public static final DFEType COUNTER_TYPE = DFETypeFactory.dfeInt(32);
 
-    DFEType countT = DFETypeFactory.dfeInt(32);
+  public static DFEVar createCounter(CounterChain chain, int maxStep, KernelBase<?> owner) {
+
     DFEVar counter;
     if (maxStep == 1)
       counter = owner.constant.var(0);
     else
       counter = chain.addCounter(maxStep, 1);
 
-    return counter.cast(countT);
+    return counter.cast(COUNTER_TYPE);
   }
 }

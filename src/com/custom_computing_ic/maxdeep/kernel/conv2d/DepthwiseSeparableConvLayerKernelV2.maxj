@@ -3,7 +3,6 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
@@ -19,8 +18,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 public class DepthwiseSeparableConvLayerKernelV2 extends BaseConvLayerKernel {
-
-  public Map<String, BaseStream> streams;
 
   public static final String IFMAP = "ifmap";
   public static final String OFMAP = "ofmap";
