@@ -39,7 +39,6 @@ std::vector<T> dotprod_cpu(std::vector<T> vec_a, std::vector<T> vec_b,
 template <typename T>
 std::vector<T> dotprod_dfe(std::vector<T> vec_a, std::vector<T> vec_b,
                            int num_vecs, const uint64_t VEC_LEN) {
-  std::cout << "Starting DFE ..." << std::endl;
   auto num_vec_elems =
       static_cast<int>(static_cast<double>(vec_a.size()) / num_vecs);
 
@@ -88,6 +87,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Run CPU
+  std::cout << "Starting CPU ..." << std::endl;
   auto start = std::chrono::system_clock::now();
   auto golden = dotprod_cpu<T>(vec_a, vec_b, num_vecs);
   auto end = std::chrono::system_clock::now();
@@ -100,6 +100,7 @@ int main(int argc, char *argv[]) {
   std::cout << "Throughput: " << get_throughput(total_vec_elems, elapsed_cpu.count(), 2.0) << " GFLOPs" << std::endl;
 
   // Run DFE
+  std::cout << "Starting DFE ..." << std::endl;
   start = std::chrono::system_clock::now();
   auto result = dotprod_dfe<T>(vec_a, vec_b, num_vecs, VEC_LEN);
   end = std::chrono::system_clock::now();
