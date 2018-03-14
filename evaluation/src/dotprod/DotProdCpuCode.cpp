@@ -59,6 +59,10 @@ std::vector<T> dotprod_dfe(std::vector<T> vec_a, std::vector<T> vec_b,
   return result;
 }
 
+double get_throughput(uint64_t N, double elapsed, double flop_per_elem) {
+  return N * flop_per_elem / elapsed * 1e-9;
+}
+
 typedef float T;
 
 int main(int argc, char *argv[]) {
@@ -88,22 +92,25 @@ int main(int argc, char *argv[]) {
   auto golden = dotprod_cpu<T>(vec_a, vec_b, num_vecs);
   auto end = std::chrono::system_clock::now();
 
-  std::chrono::duration<double> elapsed = end - start;
+  std::chrono::duration<double> elapsed_cpu = end - start;
   std::cout << "CPU result: " << std::endl;
   for (int i = 0; i < (int)golden.size(); i++)
     printf("golden[%4d] = %.6f\n", i, golden[i]);
-  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "elapsed time: " << elapsed_cpu.count() << " sec" << std::endl;
+  std::cout << "Throughput: " << get_throughput(total_vec_elems, elapsed_cpu.count(), 2.0) << " GFLOPs" << std::endl;
 
   // Run DFE
   start = std::chrono::system_clock::now();
   auto result = dotprod_dfe<T>(vec_a, vec_b, num_vecs, VEC_LEN);
   end = std::chrono::system_clock::now();
 
-  elapsed = end - start;
+  std::chrono::duration<double> elapsed_dfe = end - start;
   std::cout << "DFE result: " << std::endl;
   for (int i = 0; i < (int)result.size(); i++)
     printf("result[%4d] = %.6f\n", i, result[i]);
-  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "elapsed time: " << elapsed_dfe.count() << " sec" << std::endl;
+  std::cout << "Throughput: " << get_throughput(total_vec_elems, elapsed_dfe.count(), 2.0) << " GFLOPs" << std::endl;
+  std::cout << "Speed up: " << elapsed_cpu.count() / elapsed_dfe.count() << std::endl;
 
   // Test
   CHECK_EQ(result.size(), golden.size());
