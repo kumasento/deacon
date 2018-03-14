@@ -13,16 +13,18 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * A kernel component responsible for creating dot-product logic.
+ * 
+ * The dot-product is implemented by an array of multipliers followed by an adder tree
+ * with the same width.
  *
  * @author Ruizhe Zhao
  * @since 18/06/2017
- *
  */
 public class DotProductKernel extends KernelComponent {
 
   private final DFEVector<DFEVar> vecA;
   private final DFEVector<DFEVar> vecB;
-  private final DFEVar            out;
+  private final DFEVar out;
   private final DFEVectorType<DFEVar> vecT;
 
   /**
@@ -32,8 +34,7 @@ public class DotProductKernel extends KernelComponent {
    * @param vecSize size of the vectors to be computed
    * @param type data type.s
    */
-  public DotProductKernel(KernelBase<?> owner, int vecSize,
-      DFEType type) {
+  public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type) {
     super(owner);
 
     if (vecSize <= 0)
@@ -44,6 +45,7 @@ public class DotProductKernel extends KernelComponent {
     vecA = vecT.newInstance(owner);
     vecB = vecT.newInstance(owner);
 
+    // An array of multipliers will be initialized here.
     DFEVector<DFEVar> vecC = vecA * vecB;
 
     // Output is the result of an adder-tree based reduction
