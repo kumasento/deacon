@@ -23,6 +23,7 @@ public final class DotProdManager extends CustomManager {
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
+    config.setDefaultStreamClockFrequency(200);
 
     this.vecSize = params.getVecSize();
 
