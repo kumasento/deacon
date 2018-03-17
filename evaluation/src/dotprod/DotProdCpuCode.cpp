@@ -5,9 +5,11 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 #include <vector>
 #include <chrono>
 #include <glog/logging.h>
+#include <getopt.h>
 
 #include "Maxfiles.h"
 
@@ -61,7 +63,7 @@ typedef float T;
 
 int main(int argc, char *argv[]) {
   max_file = DotProd_init();
-  max_engine = max_load(max_file, "local:*");
+  max_engine = max_load(max_file, "*");
 
   const uint64_t VEC_LEN = max_get_constant_uint64t(max_file, "VEC_LEN");
 
@@ -106,7 +108,7 @@ int main(int argc, char *argv[]) {
   // Test
   CHECK_EQ(result.size(), golden.size());
   for (int i = 0; i < (int)result.size(); i++)
-    CHECK_NEAR(golden[i], result[i], 1e-3);
+    CHECK_LT(fabs((golden[i] - result[i]) / golden[i]), 1e-6);
 
   max_unload(max_engine);
 

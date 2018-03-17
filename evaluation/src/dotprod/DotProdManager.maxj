@@ -63,7 +63,7 @@ public final class DotProdManager extends CustomManager {
   public static void main(String[] args) {
     DotProdEngineParameters params = new DotProdEngineParameters(args);
     DotProdManager mgr = new DotProdManager(params);
-    mgr.createSlicInterface(mgr.interfaceDefault());
+    mgr.createSLiCinterface(mgr.interfaceDefault());
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
