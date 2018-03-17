@@ -34,3 +34,9 @@ MaxDeep/build/*
 # eclipse
 .settings/
 .classpath
+
+# Python
+venv
+
+# CMake
+build/
