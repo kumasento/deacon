@@ -168,7 +168,8 @@ gdbsim:
 # ---- DFE ----
 
 $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
-	$(MAXJC) $(JFLAGS) $(ENGINEFILES)
+	@ echo "Running maxjc ..."
+	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
 	cp $(DFEMAXDIR)/$(PRJ).max $(DFEMAXDIR)/$(PRJ)_backup.max

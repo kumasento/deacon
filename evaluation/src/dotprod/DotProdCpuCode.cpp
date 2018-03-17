@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 
   const uint64_t VEC_LEN = max_get_constant_uint64t(max_file, "VEC_LEN");
 
-  uint64_t num_vec_elems = 1024 * 1024 * 8;
+  uint64_t num_vec_elems = 1024 * 1024 * 16;
   uint64_t num_vecs = 16;
   uint64_t total_vec_elems = num_vec_elems * num_vecs;
 
