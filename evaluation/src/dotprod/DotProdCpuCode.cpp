@@ -70,9 +70,9 @@ int main(int argc, char *argv[]) {
 
   const uint64_t VEC_LEN = max_get_constant_uint64t(max_file, "VEC_LEN");
 
-  int num_vec_elems = 1024;
-  int num_vecs = 16;
-  int total_vec_elems = num_vec_elems * num_vecs;
+  uint64_t num_vec_elems = 1024 * 1024 * 8;
+  uint64_t num_vecs = 16;
+  uint64_t total_vec_elems = num_vec_elems * num_vecs;
 
   std::cout << "Total number of vectors: " << num_vecs << std::endl;
   std::cout << "Number of elements in each vector: " << num_vec_elems
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
             << std::endl;
 
   std::vector<T> vec_a(total_vec_elems), vec_b(total_vec_elems);
-  for (int i = 0; i < total_vec_elems; i++) {
+  for (uint64_t i = 0; i < total_vec_elems; i++) {
     vec_a[i] = static_cast<T>(static_cast<float>(rand()) / RAND_MAX);
     vec_b[i] = static_cast<T>(static_cast<float>(rand()) / RAND_MAX);
   }
