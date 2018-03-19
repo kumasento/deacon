@@ -1,0 +1,157 @@
+package pointwise_convolution;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
+import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
+import com.custom_computing_ic.maxdeep.lib.stream.BaseStream;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * We try to evaluate the hardware design of doing point-wise convolution on FPGA.
+ * 
+ * @author rz3515
+ * 
+ */
+public class PointwiseConvolutionKernel extends Kernel {
+
+  public static final String[] INPUTS = {"ifmap", "weights", "bias"};
+  public static final String[] OUTPUTS = {"ofmap"};
+
+  public PointwiseConvolutionKernel(KernelParameters params, int tileHeight, int tileWidth,
+      int tileInDepth, int tileOutDepth, int parWidth, int parInDepth, int parOutDepth, DFEType T,
+      boolean dbg) {
+    super(params);
+
+    // initialise counters
+    CounterChain chain = control.count.makeCounterChain();
+    DFEVar f = chain.addCounter(tileOutDepth / parOutDepth, 1);
+    DFEVar c = chain.addCounter(tileInDepth / parInDepth, 1);
+    DFEVar h = chain.addCounter(tileHeight, 1);
+    DFEVar w = chain.addCounter(tileWidth / parWidth, 1);
+
+    // construct convolution layer parameters
+    ConvLayerParameters cp =
+        (new ConvLayerParameters.Builder(tileHeight, tileWidth, tileInDepth, tileOutDepth, 1))
+            .PC(parInDepth).PF(parOutDepth).PK(parWidth).build();
+
+    // initialise streams
+    DFEVar ifmapEn = f.eq(0);
+    DFEVector<DFEVar> ifmap =
+        (new BaseStream(INPUTS[0], cp.PC * cp.PK, T, ifmapEn)).getPlaceholder(getKernel());
+
+    DFEVar weightsEn = h.eq(0) & w.eq(0);
+    DFEVector<DFEVar> weights =
+        (new BaseStream(INPUTS[1], cp.PC * cp.PF, T, weightsEn)).getPlaceholder(getKernel());
+
+    DFEVar biasEn = h.eq(0) & w.eq(0) & c.eq(0);
+    DFEVector<DFEVar> bias =
+        (new BaseStream(INPUTS[2], cp.PF, T, biasEn)).getPlaceholder(getKernel());
+
+    DFEVar ofmapEn = (c.eq(cp.C / cp.PC - 1));
+    DFEVector<DFEVar> ofmap =
+        (new BaseStream(OUTPUTS[0], cp.PF, T, ofmapEn)).getPlaceholder(getKernel());
+
+    // input feature map buffer
+    ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(getKernel(), cp, T);
+    DFEVar ibufAddr = getIbufAddr(cp, ibuf.getAddrT(), c, h, w);
+    DFEVar ibufWriteEn = getIbufWriteEn(f);
+    DFEVector<DFEVar> ibufOutput = ibuf.port(ifmap, ibufAddr, ibufWriteEn);
+    List<DFEVector<DFEVar>> ifmapPE = splitIfmap(ifmap, parWidth, parInDepth, T);
+    List<DFEVector<DFEVar>> weightsPE = splitWeights(weights, parInDepth, parOutDepth, T);
+
+    // output feature map buffer
+    ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(getKernel(), cp, T);
+    obuf.setReset(getObufReset(c));
+
+    // dot-product units
+    DFEVector<DFEVar> obufInput = obuf.getPortVecT().newInstance(getKernel());
+    for (int pk = 0; pk < parWidth; pk++) {
+      DFEVector<DFEVar> currIfmap = ifmapPE.get(pk);
+
+      for (int pf = 0; pf < parOutDepth; pf++) {
+        DFEVector<DFEVar> currWeights = weightsPE.get(pf);
+
+        for (int pc = 0; pc < parInDepth; pc++) {
+          DotProductKernel dp = new DotProductKernel(getKernel(), parInDepth, T);
+          dp.setInputs(currIfmap, currWeights);
+          DFEVar result = (c.eq(0)) ? dp.getOutput() + bias[pf] : dp.getOutput();
+
+          obufInput[pf * parWidth + pk].connect(result);
+        }
+      }
+    }
+
+    ofmap.connect(obuf.port(obufInput, getObufAddr(cp, obuf.getAddrT(), h, w),
+        getObufWriteEn(cp, h, w)));
+  }
+
+  private DFEVar getIbufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar c, DFEVar h, DFEVar w) {
+    DFEVar addr = c * cp.OH * cp.OW / cp.PK;
+    addr += h * cp.OW / cp.PK;
+    addr += w;
+
+    return addr.cast(addrT);
+  }
+
+  private DFEVar getIbufWriteEn(DFEVar f) {
+    return f.eq(0);
+  }
+
+  private DFEVar getObufReset(DFEVar c) {
+    return c.eq(0);
+  }
+
+  private DFEVar getObufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar h, DFEVar w) {
+    return (h * cp.W / cp.PK + w).cast(addrT);
+  }
+
+  private DFEVar getObufWriteEn(ConvLayerParameters cp, DFEVar h, DFEVar w) {
+    return constant.var(1).cast(dfeBool());
+  }
+
+
+  private List<DFEVector<DFEVar>> splitIfmap(DFEVector<DFEVar> ifmap, int parWidth, int parInDepth,
+      DFEType T) {
+    List<DFEVector<DFEVar>> splits = new ArrayList<DFEVector<DFEVar>>();
+
+    DFEVectorType<DFEVar> sT = new DFEVectorType<DFEVar>(T, parInDepth);
+    for (int pk = 0; pk < parWidth; pk++) {
+      DFEVector<DFEVar> split = sT.newInstance(getKernel());
+
+      for (int pc = 0; pc < parInDepth; pc++) {
+        split[pc].connect(ifmap[pc * parWidth + pk]);
+      }
+
+      splits.add(split);
+    }
+
+    return splits;
+  }
+
+  private List<DFEVector<DFEVar>> splitWeights(DFEVector<DFEVar> weights, int parInDepth,
+      int parOutDepth, DFEType T) {
+    List<DFEVector<DFEVar>> splits = new ArrayList<DFEVector<DFEVar>>();
+
+    DFEVectorType<DFEVar> sT = new DFEVectorType<DFEVar>(T, parInDepth);
+    for (int pf = 0; pf < parOutDepth; pf++) {
+      DFEVector<DFEVar> split = sT.newInstance(getKernel());
+
+      for (int pc = 0; pc < parInDepth; pc++) {
+        split[pc].connect(weights[pf * parInDepth + pc]);
+      }
+
+      splits.add(split);
+    }
+
+    return splits;
+  }
+}
