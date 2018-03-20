@@ -55,7 +55,7 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     int width = getWidth();
     int depth = getDepth();
 
-    System.out.printf("[ConvLayerIfmapBuffer] width = %d depth = %d\n", width, depth);
+    // System.out.printf("[ConvLayerIfmapBuffer] width = %d depth = %d\n", width, depth);
 
     this.addrT = dfeUInt(MathUtils.bitsToAddress(depth));
     this.portVecT = new DFEVectorType<DFEVar>(scalarT, width);

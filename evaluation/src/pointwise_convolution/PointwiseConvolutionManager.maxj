@@ -1,6 +1,7 @@
 package pointwise_convolution;
 
-import com.maxeler.maxcompiler.v2.build.EngineParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
@@ -12,22 +13,30 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 public class PointwiseConvolutionManager extends CustomManager {
 
   public static final String knlName = "pointwise_convolution_kernel";
+  private static DFEType dfeT;
+  private static CPUTypes cpuT;
 
-  public PointwiseConvolutionManager(EngineParameters params) {
+  public PointwiseConvolutionManager(PointwiseConvolutionEngineParameters params) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
-    config.setDefaultStreamClockFrequency(100);
+    config.setDefaultStreamClockFrequency(params.getFreq());
+
+    dfeT = DFETypeFactory.dfeFloat(8, 24);
+    cpuT = CPUTypes.FLOAT;
 
     // create a kernel block.
-    KernelBlock knl = this.addKernel(
-        new PointwiseConvolutionKernel(this.makeKernelParameters(knlName)));
+    KernelBlock knl =
+        this.addKernel(new PointwiseConvolutionKernel(this.makeKernelParameters(knlName), params
+            .getTileHeight(), params.getTileWidth(), params.getTileInDepth(), params
+            .getTileOutDepth(), params.getParWidth(), params.getParInDepth(), params
+            .getParOutDepth(), dfeT, params.getDebug()));
 
     // connect them to external environment
-    for (String inputName: PointwiseConvolutionKernel.INPUTS)
+    for (String inputName : PointwiseConvolutionKernel.INPUTS)
       knl.getInput(inputName).connect(this.addStreamFromCPU(inputName));
-    for (String outputName: PointwiseConvolutionKernel.OUTPUTS)
+    for (String outputName : PointwiseConvolutionKernel.OUTPUTS)
       this.addStreamToCPU(outputName).connect(knl.getOutput(outputName));
   }
 
@@ -41,16 +50,16 @@ public class PointwiseConvolutionManager extends CustomManager {
     ei.setTicks(knlName, N);
 
     // set streams
-    for (String inputName: PointwiseConvolutionKernel.INPUTS)
-      ei.setStream(inputName, CPUTypes.UINT8, N);
-    for (String outputName: PointwiseConvolutionKernel.OUTPUTS)
-      ei.setStream(outputName, CPUTypes.UINT8, N);
+    for (String inputName : PointwiseConvolutionKernel.INPUTS)
+      ei.setStream(inputName, cpuT, N);
+    for (String outputName : PointwiseConvolutionKernel.OUTPUTS)
+      ei.setStream(outputName, cpuT, N);
 
     return ei;
   }
 
   public static void main(String[] args) {
-    EngineParameters params = new EngineParameters(args);
+    PointwiseConvolutionEngineParameters params = new PointwiseConvolutionEngineParameters(args);
 
     PointwiseConvolutionManager mgr = new PointwiseConvolutionManager(params);
     mgr.createSLiCinterface(mgr.interfaceDefault());
