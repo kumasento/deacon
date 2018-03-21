@@ -26,6 +26,15 @@ public class PointwiseConvolutionManager extends CustomManager {
     dfeT = DFETypeFactory.dfeFloat(8, 24);
     cpuT = CPUTypes.FLOAT;
 
+    // constants
+    addMaxFileConstant("TILE_HEIGHT", params.getTileHeight());
+    addMaxFileConstant("TILE_WIDTH", params.getTileWidth());
+    addMaxFileConstant("TILE_IN_DEPTH", params.getTileInDepth());
+    addMaxFileConstant("TILE_OUT_DEPTH", params.getTileOutDepth());
+    addMaxFileConstant("PAR_WIDTH", params.getParWidth());
+    addMaxFileConstant("PAR_IN_DEPTH", params.getParInDepth());
+    addMaxFileConstant("PAR_OUT_DEPTH", params.getParOutDepth());
+
     // create a kernel block.
     KernelBlock knl =
         this.addKernel(new PointwiseConvolutionKernel(this.makeKernelParameters(knlName), params
@@ -40,20 +49,32 @@ public class PointwiseConvolutionManager extends CustomManager {
       this.addStreamToCPU(outputName).connect(knl.getOutput(outputName));
   }
 
-  public EngineInterface interfaceDefault() {
+  public EngineInterface interfaceDefault(PointwiseConvolutionEngineParameters params) {
     EngineInterface ei = new EngineInterface();
 
-    // number of ticks
+    // number of computation batches
     InterfaceParam N = ei.addParam("N", CPUTypes.INT64);
+    InterfaceParam numParWidth = ei.addConstant(params.getTileWidth() / params.getParWidth());
+    InterfaceParam numParInDepth = ei.addConstant(params.getTileInDepth() / params.getParInDepth());
+    InterfaceParam numParOutDepth =
+        ei.addConstant(params.getTileOutDepth() / params.getParOutDepth());
+    InterfaceParam numTicks =
+        params.getTileHeight() * numParWidth * numParInDepth * numParOutDepth * N;
+
+    InterfaceParam numIfmapElems =
+        ei.addConstant(params.getTileHeight() * params.getTileWidth() * params.getTileInDepth());
+    InterfaceParam numOfmapElems =
+        ei.addConstant(params.getTileHeight() * params.getTileWidth() * params.getTileOutDepth());
+    InterfaceParam numWeightsElems =
+        ei.addConstant(params.getTileOutDepth() * params.getTileInDepth());
+    InterfaceParam numBiasElems = ei.addConstant(params.getTileOutDepth());
 
     // set ticks
-    ei.setTicks(knlName, N);
-
-    // set streams
-    for (String inputName : PointwiseConvolutionKernel.INPUTS)
-      ei.setStream(inputName, cpuT, N);
-    for (String outputName : PointwiseConvolutionKernel.OUTPUTS)
-      ei.setStream(outputName, cpuT, N);
+    ei.setTicks(knlName, numTicks);
+    ei.setStream(PointwiseConvolutionKernel.INPUTS[0], cpuT, cpuT.sizeInBytes() * numIfmapElems);
+    ei.setStream(PointwiseConvolutionKernel.INPUTS[1], cpuT, cpuT.sizeInBytes() * numWeightsElems);
+    ei.setStream(PointwiseConvolutionKernel.INPUTS[2], cpuT, cpuT.sizeInBytes() * numBiasElems);
+    ei.setStream(PointwiseConvolutionKernel.OUTPUTS[0], cpuT, cpuT.sizeInBytes() * numOfmapElems);
 
     return ei;
   }
@@ -62,7 +83,7 @@ public class PointwiseConvolutionManager extends CustomManager {
     PointwiseConvolutionEngineParameters params = new PointwiseConvolutionEngineParameters(args);
 
     PointwiseConvolutionManager mgr = new PointwiseConvolutionManager(params);
-    mgr.createSLiCinterface(mgr.interfaceDefault());
+    mgr.createSLiCinterface(mgr.interfaceDefault(params));
 
     BuildConfig cfg = mgr.getBuildConfig();
     cfg.setBuildEffort(Effort.HIGH);
