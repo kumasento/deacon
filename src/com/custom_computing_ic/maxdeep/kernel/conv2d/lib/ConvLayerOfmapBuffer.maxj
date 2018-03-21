@@ -29,24 +29,23 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  */
 public class ConvLayerOfmapBuffer extends KernelComponent {
 
-  private final ConvLayerParameters       cp;
+  private final ConvLayerParameters cp;
 
-  private final DFEType                   scalarT;
-  private final DFEVectorType<DFEVar>     portVecT;
-  private final DFEType                   addrT;
+  private final DFEType scalarT;
+  private final DFEVectorType<DFEVar> portVecT;
+  private final DFEType addrT;
 
   private final Memory<DFEVector<DFEVar>> mem;
-  private final DFEVector<DFEVar>         port;
-  private final DFEVar                    addr;
-  private final DFEVector<DFEVar>         data;
-  private final DFEVar                    writeEn;
-  private final DFEVector<DFEVar>         result;
-  private final DFEVar                    reset;
+  private final DFEVector<DFEVar> port;
+  private final DFEVar addr;
+  private final DFEVector<DFEVar> data;
+  private final DFEVar writeEn;
+  private final DFEVector<DFEVar> result;
+  private final DFEVar reset;
 
-  private final int                       MAX_WRITE_LATENCY = 10;
+  private final int MAX_WRITE_LATENCY = 10;
 
-  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
-      DFEType scalarT) {
+  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
     this(owner, params, scalarT, "");
   }
 
@@ -56,8 +55,8 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
    * @param params
    * @param scalarT
    */
-  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params,
-      DFEType scalarT, String prefix) {
+  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT,
+      String prefix) {
     super(owner);
 
     this.cp = params;
@@ -65,6 +64,9 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
 
     int width = getWidth();
     int depth = getDepth();
+
+    owner.getManager().logMsg("[ConvLayerOfmapBuffer] depth = %5d addr_bits = %5d\n", depth,
+        MathUtils.bitsToAddress(depth));
 
     this.addrT = dfeUInt(MathUtils.bitsToAddress(depth));
     this.portVecT = new DFEVectorType<DFEVar>(scalarT, width);
@@ -74,30 +76,35 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
     this.reset = dfeBool().newInstance(owner);
-    this.port = mem.read(addr); // mem.port(addr, data, writeEn,
-                                // RamWriteMode.WRITE_FIRST);
+    this.port = mem.read(addr);
+
+    // mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
 
     this.result = portVecT.newInstance(owner);
     for (int i = 0; i < portVecT.getSize(); i++) {
-      DFEVar prevData =
-          (reset.eq(true)) ? constant.var(0).cast(scalarT) : port[i];
+      DFEVar prevData = (reset.eq(true)) ? constant.var(0).cast(scalarT) : port[i];
       this.result[i].connect(data[i] + prevData);
     }
 
     /* TODO: we assume the read result of an unwritten address is 0 */
-    OffsetExpr writeLatency =
-        stream.makeOffsetAutoLoop(prefix + "_WRITE_LATENCY");
-    mem.write(
-        stream.offset(addr, -writeLatency),
-        stream.offset(result, -writeLatency),
-        stream.offset(writeEn, -writeLatency));
+    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix + "_WRITE_LATENCY");
+    DFEVar memWriteAddr = stream.offset(addr, -writeLatency);
+    DFEVector<DFEVar> memWriteValue = stream.offset(result, -writeLatency);
+    DFEVar memWriteEn = stream.offset(writeEn, -writeLatency);
+
+    mem.write(memWriteAddr, memWriteValue, memWriteEn);
 
     if (cp.dbg) {
-      debug.simPrintf("[ConvLayerOfmapBuffer] input = %KObj%\n", data);
-      debug.simPrintf("[ConvLayerOfmapBuffer] read = %KObj%\n", port);
-      debug.simPrintf("[ConvLayerOfmapBuffer] output = %KObj%\n", result);
-      debug.simPrintf("[ConvLayerOfmapBuffer] writeEn = %KObj%\n", writeEn);
-      debug.simPrintf("[ConvLayerOfmapBuffer] addr = %KObj%\n", addr);
+      debug.simPrintf("[ConvLayerOfmapBuffer] input          = %KObj%\n", data);
+      debug.simPrintf("[ConvLayerOfmapBuffer] read           = %KObj%\n", port);
+      debug.simPrintf("[ConvLayerOfmapBuffer] output         = %KObj%\n", result);
+      debug.simPrintf("[ConvLayerOfmapBuffer] writeEn        = %KObj%\n", writeEn);
+      debug.simPrintf("[ConvLayerOfmapBuffer] addr           = %KObj%\n", addr);
+      debug.simPrintf("[ConvLayerOfmapBuffer] actual output  = %KObj%\n", memWriteValue);
+      debug.simPrintf("[ConvLayerOfmapBuffer] actual writeEn = %KObj%\n", memWriteEn);
+      debug.simPrintf("[ConvLayerOfmapBuffer] actual addr    = %KObj%\n", memWriteAddr);
+      debug.simPrintf("[ConvLayerOfmapBuffer] latency        = %KObj%\n",
+          writeLatency.getDFEVar(getOwner(), dfeUInt(8)));
     }
   }
 
@@ -105,10 +112,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
     return addrT;
   }
 
-  public DFEVector<DFEVar> port(
-      DFEVector<DFEVar> data,
-      DFEVar addr,
-      DFEVar writeEn) {
+  public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
     this.data.connect(data);
     this.addr.connect(addr);
     this.writeEn.connect(writeEn);
@@ -130,8 +134,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
       return cp.PK * cp.PF;
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet",
-          cp.seq));
+          "Computation sequence %s has not been supported yet", cp.seq));
     }
   }
 
@@ -142,8 +145,7 @@ public class ConvLayerOfmapBuffer extends KernelComponent {
       return cp.OH * cp.OW / cp.PK;
     } else {
       throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet",
-          cp.seq));
+          "Computation sequence %s has not been supported yet", cp.seq));
     }
   }
 }

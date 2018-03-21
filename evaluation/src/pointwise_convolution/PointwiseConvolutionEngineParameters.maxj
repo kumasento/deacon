@@ -67,8 +67,9 @@ public class PointwiseConvolutionEngineParameters extends EngineParameters {
 
   @Override
   public String getBuildName() {
-    return String.format("%s_%s_%s_th%d_tw%d_tc%d_tf%d_pw%d_pc%d_pf%d_%dMHz", getMaxFileName(),
+    return String.format("%s_%s_%s_th%d_tw%d_tc%d_tf%d_pw%d_pc%d_pf%d_%dMHz%s", getMaxFileName(),
         getDFEModel(), getTarget(), getTileHeight(), getTileWidth(), getTileInDepth(),
-        getTileOutDepth(), getParWidth(), getParInDepth(), getParOutDepth(), getFreq());
+        getTileOutDepth(), getParWidth(), getParInDepth(), getParOutDepth(), getFreq(),
+        (getDebug() ? "_debug" : ""));
   }
 }

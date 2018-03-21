@@ -3,6 +3,7 @@ package pointwise_convolution;
 import java.util.ArrayList;
 import java.util.List;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
 import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
@@ -36,33 +37,50 @@ public class PointwiseConvolutionKernel extends Kernel {
     DFEVar f = chain.addCounter(tileOutDepth / parOutDepth, 1);
     DFEVar c = chain.addCounter(tileInDepth / parInDepth, 1);
     DFEVar h = chain.addCounter(tileHeight, 1);
-    DFEVar w = chain.addCounter(tileWidth / parWidth, 1);
+    DFEVar w =
+        (tileWidth == parWidth) ? constant.var(0) : chain.addCounter(tileWidth / parWidth, 1);
+
+    if (dbg) {
+      debug.simPrintf("f = %KObj% c = %KObj% h = %KObj% w = %KObj%\n", f, c, h, w);
+    }
 
     // construct convolution layer parameters
     ConvLayerParameters cp =
         (new ConvLayerParameters.Builder(tileHeight, tileWidth, tileInDepth, tileOutDepth, 1))
-            .PC(parInDepth).PF(parOutDepth).PK(parWidth).build();
+            .PC(parInDepth).PF(parOutDepth).PK(parWidth).seq(CompSeq.FILTER_MAJOR).dbg(dbg).build();
 
     // initialise streams
     DFEVar ifmapEn = f.eq(0);
     BaseStream ifmapStream = new BaseStream(INPUTS[0], cp.PC * cp.PK, T, ifmapEn);
     DFEVector<DFEVar> ifmap = ifmapStream.getPlaceholder(getKernel());
     ifmapStream.setIO(getKernel());
+    if (dbg) {
+      debug.simPrintf("ifmap[%3d, %3d, %3d] = %KObj%\n", c, h, w, ifmap);
+    }
 
     DFEVar weightsEn = h.eq(0) & w.eq(0);
     BaseStream weightsStream = new BaseStream(INPUTS[1], cp.PC * cp.PF, T, weightsEn);
     DFEVector<DFEVar> weights = weightsStream.getPlaceholder(getKernel());
     weightsStream.setIO(getKernel());
+    if (dbg) {
+      debug.simPrintf("weights[%3d, %3d] = %KObj%\n", f, c, weights);
+    }
 
     DFEVar biasEn = h.eq(0) & w.eq(0) & c.eq(0);
     BaseStream biasStream = new BaseStream(INPUTS[2], cp.PF, T, biasEn);
     DFEVector<DFEVar> bias = biasStream.getPlaceholder(getKernel());
     biasStream.setIO(getKernel());
+    if (dbg) {
+      debug.simPrintf("bias[%3d] = %KObj%\n", f, bias);
+    }
 
     DFEVar ofmapEn = (c.eq(cp.C / cp.PC - 1));
-    BaseStream ofmapStream = new BaseStream(OUTPUTS[0], cp.PF, T, ofmapEn, false);
+    BaseStream ofmapStream = new BaseStream(OUTPUTS[0], cp.PF * cp.PK, T, ofmapEn, false);
     DFEVector<DFEVar> ofmap = ofmapStream.getPlaceholder(getKernel());
     ofmapStream.setIO(getKernel());
+    if (dbg) {
+      debug.simPrintf("ofmap[%3d, %3d, %3d] = %KObj%\n", f, h, w, ofmap);
+    }
 
     // input feature map buffer
     ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(getKernel(), cp, T);
@@ -77,6 +95,9 @@ public class PointwiseConvolutionKernel extends Kernel {
     // dot-product units
     DFEVector<DFEVar> procResult =
         process(ibufOutput, weights, bias, parWidth, parInDepth, parOutDepth, T, c);
+    if (dbg) {
+      debug.simPrintf("dp_out[%3d, %3d, %3d] = %KObj%\n", f, h, w, procResult);
+    }
 
     // output feature map buffer
     ofmap.connect(obuf.port(procResult, getObufAddr(cp, obuf.getAddrT(), h, w),
@@ -95,15 +116,13 @@ public class PointwiseConvolutionKernel extends Kernel {
         DFEVector<DFEVar> currIfmap = ifmapPE.get(pk);
         DFEVector<DFEVar> currWeights = weightsPE.get(pf);
 
-        for (int pc = 0; pc < parInDepth; pc++) {
-          // in total we initialise parWidth * parOutDepth * parInDepth number of multipliers
-          DotProductKernel dp = new DotProductKernel(getKernel(), parInDepth, T);
-          dp.setInputs(currIfmap, currWeights);
-          DFEVar out = dp.getOutput();
-          DFEVar res = out + (c.eq(0) ? bias[pf] : constant.var(0).cast(T));
+        // in total we instantiate parWidth * parOutDepth * parInDepth number of multipliers
+        DotProductKernel dp = new DotProductKernel(getKernel(), parInDepth, T);
+        dp.setInputs(currIfmap, currWeights);
+        DFEVar out = dp.getOutput();
+        DFEVar res = out + (c.eq(0) ? bias[pf] : constant.var(0).cast(T));
 
-          result[pf * parWidth + pk].connect(res);
-        }
+        result[pf * parWidth + pk].connect(res);
       }
     }
 
@@ -111,11 +130,14 @@ public class PointwiseConvolutionKernel extends Kernel {
   }
 
   private DFEVar getIbufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar c, DFEVar h, DFEVar w) {
-    DFEVar addr = c * cp.H * cp.W / cp.PK;
-    addr += h * cp.W / cp.PK;
-    addr += w;
+    DFEVar HEIGHT = constant.var(cp.H).cast(addrT);
+    DFEVar WIDTH = constant.var(cp.W / cp.PK).cast(addrT);
 
-    return addr.cast(addrT);
+    DFEVar addr = c.cast(addrT) * HEIGHT * WIDTH;
+    addr += h.cast(addrT) * WIDTH;
+    addr += w.cast(addrT);
+
+    return addr;
   }
 
   private DFEVar getIbufWriteEn(DFEVar f) {
@@ -127,7 +149,9 @@ public class PointwiseConvolutionKernel extends Kernel {
   }
 
   private DFEVar getObufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar h, DFEVar w) {
-    return (h * cp.W / cp.PK + w).cast(addrT);
+    DFEVar WIDTH = constant.var(cp.W / cp.PK).cast(addrT);
+
+    return (h.cast(addrT) * WIDTH + w.cast(addrT));
   }
 
   private DFEVar getObufWriteEn(ConvLayerParameters cp, DFEVar h, DFEVar w) {

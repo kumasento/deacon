@@ -36,7 +36,9 @@ template <typename T>
 std::vector<std::vector<T>> PrepareTiledIfmap(std::vector<T> &ifmap, int height,
                                               int width, int in_depth,
                                               int tile_height, int tile_width,
-                                              int tile_in_depth) {
+                                              int tile_in_depth,
+                                              int par_width = 1,
+                                              int par_in_depth = 1) {
   auto num_tiles_height = get_num_tiles(height, tile_height);
   auto num_tiles_width = get_num_tiles(width, tile_width);
   auto num_tiles_in_depth = get_num_tiles(in_depth, tile_in_depth);
@@ -55,18 +57,27 @@ std::vector<std::vector<T>> PrepareTiledIfmap(std::vector<T> &ifmap, int height,
         auto tile_idx = (tc * num_tiles_height * num_tiles_width +
                          th * num_tiles_width + tw);
 
-        for (int c = 0; c < tile_in_depth; c++) {
+        for (int c = 0; c < tile_in_depth; c += par_in_depth) {
           for (int h = 0; h < tile_height; h++) {
-            for (int w = 0; w < tile_width; w++) {
-              auto tiled_idx =
-                  c * tile_height * tile_width + h * tile_width + w;
-              auto ifmap_idx =
-                  (ic + c) * height * width + (ih + h) * width + (iw + w);
+            for (int w = 0; w < tile_width; w += par_width) {
+              for (int ci = 0; ci < par_in_depth; ci++) {
+                for (int wi = 0; wi < par_width; wi++) {
+                  auto pc = c / par_in_depth;
+                  auto pw = w / par_width;
+                  auto tiled_idx = ((pc * tile_height * tile_width / par_width +
+                                     h * tile_width / par_width + pw) *
+                                    (par_width * par_in_depth)) +
+                                   (ci * par_width + wi);
+                  auto ifmap_idx = (ic + c + ci) * height * width +
+                                   (ih + h) * width + (iw + w + wi);
 
-              if (ic + c >= in_depth || ih + h >= height || iw + w >= width)
-                tiled[tile_idx][tiled_idx] = (T)0.0f;
+                  if (ic + c + ci >= in_depth || ih + h >= height ||
+                      iw + w + wi >= width)
+                    tiled[tile_idx][tiled_idx] = (T)0.0f;
 
-              tiled[tile_idx][tiled_idx] = ifmap[ifmap_idx];
+                  tiled[tile_idx][tiled_idx] = ifmap[ifmap_idx];
+                }
+              }
             }
           }
         }
@@ -78,10 +89,9 @@ std::vector<std::vector<T>> PrepareTiledIfmap(std::vector<T> &ifmap, int height,
 }
 
 template <typename T>
-std::vector<std::vector<T>> PrepareTiledWeights(std::vector<T> &weights,
-                                                int in_depth, int out_depth,
-                                                int tile_in_depth,
-                                                int tile_out_depth) {
+std::vector<std::vector<T>> PrepareTiledWeights(
+    std::vector<T> &weights, int in_depth, int out_depth, int tile_in_depth,
+    int tile_out_depth, int par_in_depth = 1, int par_out_depth = 1) {
   auto num_tiles_in_depth = get_num_tiles(in_depth, tile_in_depth);
   auto num_tiles_out_depth = get_num_tiles(out_depth, tile_out_depth);
   auto num_tiles = num_tiles_in_depth * num_tiles_out_depth;
@@ -96,15 +106,25 @@ std::vector<std::vector<T>> PrepareTiledWeights(std::vector<T> &weights,
       auto sc = tc * tile_in_depth;
       auto tile_idx = (tf * num_tiles_in_depth + tc);
 
-      for (int f = 0; f < tile_out_depth; f++) {
-        for (int c = 0; c < tile_in_depth; c++) {
-          auto tiled_idx = f * tile_in_depth + c;
-          auto weights_idx = (sf + f) * in_depth + (sc + c);
+      for (int f = 0; f < tile_out_depth; f += par_out_depth) {
+        for (int c = 0; c < tile_in_depth; c += par_in_depth) {
+          for (int fi = 0; fi < par_out_depth; fi++) {
+            for (int ci = 0; ci < par_in_depth; ci++) {
+              auto pf = f / par_out_depth;
+              auto pc = c / par_in_depth;
+              auto tiled_idx = ((pf * tile_in_depth / par_in_depth + pc) *
+                                (par_in_depth * par_out_depth)) +
+                               (fi * par_in_depth + ci);
+              auto rf = sf + f + fi;
+              auto rc = sc + c + ci;
+              auto weights_idx = rf * in_depth + rc;
 
-          if (sc + c >= in_depth || sf + f >= out_depth)
-            tiled[tile_idx][tiled_idx] = (T)0.0f;
+              if (rc >= in_depth || rf >= out_depth)
+                tiled[tile_idx][tiled_idx] = (T)0.0f;
 
-          tiled[tile_idx][tiled_idx] = weights[weights_idx];
+              tiled[tile_idx][tiled_idx] = weights[weights_idx];
+            }
+          }
         }
       }
     }
@@ -229,11 +249,13 @@ void PointwiseConvolutionDfe(max_engine_t *engine, std::vector<T> &ifmap,
 
   // tiled data
   LOG(INFO) << "Preparing tiled ifmap ...";
-  auto tiled_ifmap = PrepareTiledIfmap<T>(
-      ifmap, height, width, in_depth, tile_height, tile_width, tile_in_depth);
+  auto tiled_ifmap =
+      PrepareTiledIfmap<T>(ifmap, height, width, in_depth, tile_height,
+                           tile_width, tile_in_depth, par_width, par_in_depth);
   LOG(INFO) << "Preparing tiled weights ...";
-  auto tiled_weights = PrepareTiledWeights<T>(weights, in_depth, out_depth,
-                                              tile_in_depth, tile_out_depth);
+  auto tiled_weights =
+      PrepareTiledWeights<T>(weights, in_depth, out_depth, tile_in_depth,
+                             tile_out_depth, par_in_depth, par_out_depth);
   LOG(INFO) << "Preparing tiled bias ...";
   auto tiled_bias = PrepareTiledBias<T>(bias, out_depth, tile_out_depth);
 
@@ -264,17 +286,28 @@ void PointwiseConvolutionDfe(max_engine_t *engine, std::vector<T> &ifmap,
           auto sh = th * tile_height;
           auto sw = tw * tile_width;
 
-          for (int f = 0; f < tile_out_depth; f++) {
+          for (int f = 0; f < tile_out_depth; f += par_out_depth) {
             for (int h = 0; h < tile_height; h++) {
-              for (int w = 0; w < tile_width; w++) {
-                if ((f + sf) >= out_depth || (h + sh) >= height ||
-                    (w + sw) >= width)
-                  continue;
+              for (int w = 0; w < tile_width; w += par_width) {
+                for (int fi = 0; fi < par_out_depth; fi++) {
+                  for (int wi = 0; wi < par_width; wi++) {
+                    if ((f + sf + fi) >= out_depth || (h + sh) >= height ||
+                        (w + sw + wi) >= width)
+                      continue;
 
-                auto ofmap_idx =
-                    (sf + f) * height * width + (sh + h) * width + (sw + w);
-                ofmap[ofmap_idx] += ofmap_tile
-                    [f * tile_height * tile_width + h * tile_width + w];
+                    auto pf = f / par_out_depth;
+                    auto pw = w / par_width;
+                    auto ofmap_idx = (sf + f + fi) * height * width +
+                                     (sh + h) * width + (sw + w + wi);
+                    auto tiled_idx =
+                        ((pf * tile_height * tile_width / par_width +
+                          h * tile_width / par_width + pw) *
+                         (par_out_depth * par_width)) +
+                        (fi * par_width + wi);
+
+                    ofmap[ofmap_idx] += ofmap_tile[tiled_idx];
+                  }
+                }
               }
             }
           }
@@ -355,8 +388,11 @@ void RunDfe(std::vector<T> &ifmap, std::vector<T> &weights,
 typedef float T;
 
 int main(int argc, char *argv[]) {
-  const int height = 32;
-  const int width = 32;
+  srand(42);
+  google::InitGoogleLogging(argv[0]);
+
+  const int height = 128;
+  const int width = 128;
   const int in_depth = 32;
   const int out_depth = 32;
 
@@ -385,10 +421,16 @@ int main(int argc, char *argv[]) {
         << "golden and tiled result should match: " << golden[i] << " "
         << tiled_result[i];
 
+  // for (int i = 0; i < (int)tiled_result.size(); i++)
+  //   printf("tiled result[%5d] = %10.6f\n", i, tiled_result[i]);
+
+  // for (int i = 0; i < (int)dfe_result.size(); i++)
+  //   printf("dfe result[%5d] = %10.6f\n", i, dfe_result[i]);
+
   for (int i = 0; i < (int)dfe_result.size(); i++)
     CHECK(fabs(golden[i] - dfe_result[i]) < 1e-3)
-        << "golden and dfe result should match: " << golden[i] << " "
-        << dfe_result[i];
+        << "golden and dfe result should match at " << i << ": " << golden[i]
+        << " " << dfe_result[i];
 
   return 0;
 }
