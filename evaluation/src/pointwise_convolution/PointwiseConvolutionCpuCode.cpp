@@ -317,6 +317,10 @@ void PointwiseConvolutionDfe(max_engine_t *engine, std::vector<T> &ifmap,
   }
 }
 
+double get_throughput(uint64_t N, double elapsed, double flop_per_elem) {
+  return N * flop_per_elem / elapsed * 1e-9;
+}
+
 template <typename T>
 void RunCpu(std::vector<T> &ifmap, std::vector<T> &weights,
             std::vector<T> &bias, std::vector<T> &ofmap, int height, int width,
@@ -329,6 +333,9 @@ void RunCpu(std::vector<T> &ifmap, std::vector<T> &weights,
 
   std::chrono::duration<double> elapsed = end - start;
   std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: "
+            << get_throughput((uint64_t)height * width * in_depth * out_depth,
+                              elapsed.count(), 2) << " GFLOPs" << std::endl;
 }
 
 template <typename T>
@@ -351,6 +358,9 @@ void RunTiledCpu(std::vector<T> &ifmap, std::vector<T> &weights,
 
   std::chrono::duration<double> elapsed = end - start;
   std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: "
+            << get_throughput((uint64_t)height * width * in_depth * out_depth,
+                              elapsed.count(), 2) << " GFLOPs" << std::endl;
 
   max_file_free(max_file);
 }
@@ -380,6 +390,9 @@ void RunDfe(std::vector<T> &ifmap, std::vector<T> &weights,
 
   std::chrono::duration<double> elapsed = end - start;
   std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: "
+            << get_throughput((uint64_t)height * width * in_depth * out_depth,
+                              elapsed.count(), 2) << " GFLOPs" << std::endl;
 
   max_unload(engine);
   max_file_free(max_file);
@@ -393,8 +406,8 @@ int main(int argc, char *argv[]) {
 
   const int height = 128;
   const int width = 128;
-  const int in_depth = 32;
-  const int out_depth = 32;
+  const int in_depth = 512;
+  const int out_depth = 512;
 
   std::vector<T> ifmap(in_depth * height * width);
   std::vector<T> weights(out_depth * in_depth);

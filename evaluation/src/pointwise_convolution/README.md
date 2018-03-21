@@ -38,4 +38,3 @@ make runsim \
 
 This simulation will run a pointwise convolution by a `16 x 16 x 4 x 4` tile,
 in which the computation will be parallelised by `2 x 2 x 2`.
-                     
