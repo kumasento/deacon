@@ -54,10 +54,10 @@ public class ConvLayerLineBuffer extends KernelComponent {
     for (int i = 0; i < numLineBuffers; i++) {
 
       /* initialise one line buffer */
-      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), cp.K, cp.W, cp.PK, scalarT);
-      lbuf.setHeight(constant.var(cp.K).cast(lbuf.getIndexT()));
+      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), cp.K, cp.W, cp.PK, scalarT, false);
+      // lbuf.setHeight(constant.var(cp.K).cast(lbuf.getIndexT()));
       lbuf.setWidth(constant.var(cp.W).cast(lbuf.getIndexT()));
-      lbuf.setCapacity(constant.var(cp.H * cp.W).cast(lbuf.getIndexT()));
+      // lbuf.setCapacity(constant.var(cp.H * cp.W).cast(lbuf.getIndexT()));
 
       /* create input vectors for line buffers */
       DFEVector<DFEVar> lbufInput = lbuf.getInputVecT().newInstance(getOwner());

@@ -119,10 +119,9 @@ std::vector<std::vector<T>> PrepareTiledWeights(
               auto rc = sc + c + ci;
               auto weights_idx = rf * in_depth + rc;
 
-              if (rc >= in_depth || rf >= out_depth)
-                tiled[tile_idx][tiled_idx] = (T)0.0f;
-
-              tiled[tile_idx][tiled_idx] = weights[weights_idx];
+              tiled[tile_idx][tiled_idx] = (rc >= in_depth || rf >= out_depth)
+                                               ? (T)0.0f
+                                               : weights[weights_idx];
             }
           }
         }
