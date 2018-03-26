@@ -8,9 +8,9 @@
 
 #include "Maxfiles.h"
 
-DEFINE_int32(height, 130, "Height of the input feature map");
-DEFINE_int32(width, 130, "Width of the input fetaure map");
-DEFINE_int32(depth, 128, "Depth of the input feature map");
+DEFINE_int32(height, 514, "Height of the input feature map");
+DEFINE_int32(width, 514, "Width of the input fetaure map");
+DEFINE_int32(depth, 512, "Depth of the input feature map");
 
 typedef float T;
 
@@ -243,8 +243,14 @@ void DepthwiseConvolutionDfe(max_engine_t *engine, T *ifmap, T *weights,
   actions.instream_bias = (const T *)tiled_bias;
   actions.outstream_ofmap = tiled_ofmap;
 
+  auto start = std::chrono::system_clock::now();
   DepthwiseConvolution_run(engine, &actions);
-  std::cout << "Finished depthwise convolution" << std::endl;
+  auto end = std::chrono::system_clock::now();
+  auto N = (uint64_t)H * W * D * K * K;
+  std::chrono::duration<double> elapsed = end - start;
+  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)
+            << " GFLOPs" << std::endl;
 
   for (int td = 0; td < NTD; td++) {
     for (int th = 0; th < NTH; th++) {
