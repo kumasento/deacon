@@ -76,7 +76,7 @@ void Transform(T A[M][N], T B[N][N], T R[M][M]) {
   T A_B[M][N];
   Transpose<T, M, N>(A, A_T);
   Matmul<T, M, N, N>(A, B, A_B);
-  Matmul<T, N, N, M>(A_B, A_T, R);
+  Matmul<T, M, M, N>(A_B, A_T, R);
 }
 
 template <typename T>
@@ -98,24 +98,24 @@ void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
   auto eltwise = new T[TILE_SIZE][TILE_SIZE];
   auto trans_ofmap = new T[M][M];
 
-  const T B[TILE_SIZE][TILE_SIZE] = {{4, 0, 0, 0, 0, 0},
-                                     {0, -4, 4, -2, 2, 4},
-                                     {-5, -4, -4, -1, -1, 0},
-                                     {0, 1, -1, 2, -2, -5},
-                                     {1, 1, 1, 1, 1, 0},
-                                     {0, 0, 0, 0, 0, 1}};
-  const T G[TILE_SIZE][R] = {{0.25f, 0.0, 0.0},
-                             {-1. / 6, -1. / 6, -1. / 6},
-                             {-1. / 6, 1. / 6, -1. / 6},
-                             {1. / 24, 1. / 12, 1. / 6},
-                             {1. / 24, -1. / 12, 1. / 6},
-                             {0.0, 0.0, 1.0}};
-  const T A[TILE_SIZE][M] = {{1, 0, 0, 0},
-                             {1, 1, 1, 1},
-                             {1, -1, 1, -1},
-                             {1, 2, 4, 8},
-                             {1, -2, 4, 8},
-                             {0, 0, 0, 1}};
+  T B[TILE_SIZE][TILE_SIZE] = {{4, 0, 0, 0, 0, 0},
+                               {0, -4, 4, -2, 2, 4},
+                               {-5, -4, -4, -1, -1, 0},
+                               {0, 1, -1, 2, -2, -5},
+                               {1, 1, 1, 1, 1, 0},
+                               {0, 0, 0, 0, 0, 1}};
+  T G[TILE_SIZE][R] = {{0.25f, 0.0, 0.0},
+                       {-1. / 6, -1. / 6, -1. / 6},
+                       {-1. / 6, 1. / 6, -1. / 6},
+                       {1. / 24, 1. / 12, 1. / 6},
+                       {1. / 24, -1. / 12, 1. / 6},
+                       {0.0, 0.0, 1.0}};
+  T A[TILE_SIZE][M] = {{1, 0, 0, 0},
+                       {1, 1, 1, 1},
+                       {1, -1, 1, -1},
+                       {1, 2, 4, 8},
+                       {1, -2, 4, -8},
+                       {0, 0, 0, 1}};
   T A_T[M][TILE_SIZE];
   T B_T[TILE_SIZE][TILE_SIZE];
   Transpose<T, TILE_SIZE, TILE_SIZE>(B, B_T);
@@ -128,7 +128,7 @@ void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
             weights[d * kernel_size * kernel_size + kh * kernel_size + kw];
 
     for (int th = 0; th < num_tiles_height; th++) {
-      for (int tw = 0; tw < num_tiles_height; tw++) {
+      for (int tw = 0; tw < num_tiles_width; tw++) {
         auto hi = th * TILE_SIZE;
         auto wi = tw * TILE_SIZE;
 
@@ -149,7 +149,7 @@ void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
         for (int hj = 0; hj < M; hj++)
           for (int wj = 0; wj < M; wj++)
             ofmap[d * out_height * out_width + (th * M + hj) * out_width +
-                  (tw * M + wj)] = trans_ofmap[hj][wj];
+                  (tw * M + wj)] = trans_ofmap[hj][wj] + bias[d];
       }
     }
   }
@@ -410,6 +410,24 @@ void RunCpu(std::vector<T> &ifmap, std::vector<T> &weights,
 }
 
 template <typename T>
+void RunWinogradCpu(std::vector<T> &ifmap, std::vector<T> &weights,
+                    std::vector<T> &bias, std::vector<T> &ofmap, int height,
+                    int width, int depth, int kernel_size) {
+  std::cout << "Starting Winograd CPU ..." << std::endl;
+  auto start = std::chrono::system_clock::now();
+  DepthwiseConvolutionWinogradCpu<T>(
+      (T *)ifmap.data(), (T *)weights.data(), (T *)bias.data(),
+      (T *)ofmap.data(), FLAGS_height, FLAGS_width, FLAGS_depth, kernel_size);
+  auto end = std::chrono::system_clock::now();
+
+  auto N = (uint64_t)height * width * depth * kernel_size * kernel_size;
+  std::chrono::duration<double> elapsed = end - start;
+  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)
+            << " GFLOPs" << std::endl;
+}
+
+template <typename T>
 void RunTiledCpu(std::vector<T> &ifmap, std::vector<T> &weights,
                  std::vector<T> &bias, std::vector<T> &ofmap, int height,
                  int width, int depth, int kernel_size, int tile_height,
@@ -471,6 +489,8 @@ int main(int argc, char *argv[]) {
 
   std::vector<T> golden(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
                         (FLAGS_width - kernel_size + 1));
+  std::vector<T> winograd_cpu(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
+                              (FLAGS_width - kernel_size + 1));
   std::vector<T> tiled_cpu(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
                            (FLAGS_width - kernel_size + 1));
   std::vector<T> result(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
@@ -485,6 +505,13 @@ int main(int argc, char *argv[]) {
 
   RunCpu<T>(ifmap, weights, bias, golden, FLAGS_height, FLAGS_width,
             FLAGS_depth, kernel_size);
+  RunWinogradCpu<T>(ifmap, weights, bias, winograd_cpu, FLAGS_height,
+                    FLAGS_width, FLAGS_depth, kernel_size);
+  for (int i = 0; i < (int)winograd_cpu.size(); i++)
+    CHECK(fabs(golden[i] - winograd_cpu[i]) < 1e-3)
+        << "golden and winograd result should match at " << i << " : "
+        << golden[i] << " " << winograd_cpu[i];
+
   RunTiledCpu<T>(ifmap, weights, bias, tiled_cpu, FLAGS_height, FLAGS_width,
                  FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth);
   RunDfe<T>(engine, ifmap, weights, bias, result, FLAGS_height, FLAGS_width,
