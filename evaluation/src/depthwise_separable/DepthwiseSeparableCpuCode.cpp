@@ -8,10 +8,10 @@
 
 #include "Maxfiles.h"
 
-DEFINE_int32(height, 34, "Height of the input feature map");
-DEFINE_int32(width, 34, "Width of the input fetaure map");
-DEFINE_int32(in_depth, 32, "Depth of the input feature map");
-DEFINE_int32(out_depth, 32, "Depth of the output feature map");
+DEFINE_int32(height, 66, "Height of the input feature map");
+DEFINE_int32(width, 66, "Width of the input fetaure map");
+DEFINE_int32(in_depth, 64, "Depth of the input feature map");
+DEFINE_int32(out_depth, 64, "Depth of the output feature map");
 
 typedef float T;
 
@@ -30,9 +30,9 @@ void DepthwiseSeparableCpu(T *ifmap, T *depthwise_weights, T *pointwise_weights,
 
   auto depthwise_result = new T[out_height * out_width * in_depth];
 
-  for (int oh = 0; oh < out_height; oh++) {
-    for (int ow = 0; ow < out_width; ow++) {
-      for (int d = 0; d < in_depth; d++) {
+  for (int d = 0; d < in_depth; d++) {
+    for (int oh = 0; oh < out_height; oh++) {
+      for (int ow = 0; ow < out_width; ow++) {
         auto idx = d * out_height * out_width + oh * out_width + ow;
         depthwise_result[idx] = (T)0.0f;
 
@@ -61,7 +61,7 @@ void DepthwiseSeparableCpu(T *ifmap, T *depthwise_weights, T *pointwise_weights,
         for (int w = 0; w < out_width; w++) {
           auto ofmap_idx = f * out_height * out_width + h * out_width + w;
           auto ifmap_val =
-              ifmap[c * out_height * out_width + h * out_width + w];
+              depthwise_result[c * out_height * out_width + h * out_width + w];
           auto weights_val = pointwise_weights[f * in_depth + c];
 
           ofmap[ofmap_idx] += ifmap_val * weights_val;
@@ -83,7 +83,7 @@ T *PrepareTiledIfmap(T *ifmap, int H, int W, int ID, int OD, int K, int TH,
   auto TIH = TH + K - 1;
   auto TIW = TW + K - 1;
   auto NT = NTH * NTW * NTID * NTOD;
-  auto TN = TIH * TIW * TID * TOD;
+  auto TN = TIH * TIW * TID;
   auto N = NT * TN;
   auto HK = (int)floor((double)K / 2) + 1;
 
@@ -113,7 +113,7 @@ T *PrepareTiledIfmap(T *ifmap, int H, int W, int ID, int OD, int K, int TH,
                     auto hii = hi + hj;
                     auto wii = wi + wj + pwi;
 
-                    tiled[tii + tj] = (dii >= ID || wii >= W)
+                    tiled[tii + tj] = (dii >= ID || hii >= H || wii >= W)
                                           ? (T)0.0f
                                           : ifmap[dii * H * W + hii * W + wii];
                   }
@@ -142,21 +142,21 @@ T *PrepareTiledDepthwiseWeights(T *weights, int H, int W, int ID, int OD, int K,
   auto TN = TOD * K * K;
   auto N = TN * NT;
 
-  T *tiled = new T[N];
+  auto tiled = new T[N];
 
   for (int tf = 0; tf < NTOD; tf++) {
     for (int tc = 0; tc < NTID; tc++) {
       for (int th = 0; th < NTH; th++) {
         for (int tw = 0; tw < NTW; tw++) {
 
-          for (int di = 0; di < TID; di++) {
+          for (int c = 0; c < TID; c++) {
             for (int k = 0; k < K * K; k++) {
-              auto d = tf * TID + di;
+              auto ci = tc * TID + c;
               auto tile_idx =
                   tf * NTID * NTH * NTW + tc * NTH * NTW + th * NTW + tw;
-              auto ti = tile_idx * TN + di * K * K + k;
+              auto ti = tile_idx * TN + c * K * K + k;
 
-              tiled[ti] = weights[d * K * K + k];
+              tiled[ti] = weights[ci * K * K + k];
             }
           }
         }
@@ -177,7 +177,8 @@ T *PrepareTiledPointwiseWeights(T *weights, int out_height, int out_width,
   auto num_tiles_width = get_num_tiles(out_width, tile_width);
   auto num_tiles_in_depth = get_num_tiles(in_depth, tile_in_depth);
   auto num_tiles_out_depth = get_num_tiles(out_depth, tile_out_depth);
-  auto num_tiles = num_tiles_in_depth * num_tiles_out_depth;
+  auto num_tiles = num_tiles_height * num_tiles_width * num_tiles_in_depth *
+                   num_tiles_out_depth;
   auto tile_num_elems = tile_in_depth * tile_out_depth;
 
   T *tiled = new T[num_tiles * tile_num_elems];
@@ -270,7 +271,7 @@ void DepthwiseSeparableTiledCpu(T *ifmap, T *depthwise_weights,
             for (int hi = 0; hi < TH; hi++) {
               for (int wi = 0; wi < TW; wi++) {
                 ofmap[(tf * TOD + fi) * OH * OW + (th * TH + hi) * OW +
-                      (tw * TW + wi)] = ofmap_ptr[fi * TH * TW + hi * TW + wi];
+                      (tw * TW + wi)] += ofmap_ptr[fi * TH * TW + hi * TW + wi];
               }
             }
           }
@@ -280,6 +281,8 @@ void DepthwiseSeparableTiledCpu(T *ifmap, T *depthwise_weights,
   }
 
   delete tiled_ifmap;
+  delete tiled_depthwise_weights;
+  delete tiled_pointwise_weights;
   delete tiled_ofmap;
 }
 
@@ -302,7 +305,7 @@ void DepthwiseSeparableDfe(max_engine_t *engine, T *ifmap, T *depthwise_weights,
   auto tiled_depthwise_weights = PrepareTiledDepthwiseWeights<T>(
       depthwise_weights, H, W, ID, OD, K, TH, TW, TID, TOD);
   auto tiled_pointwise_weights = PrepareTiledPointwiseWeights<T>(
-      pointwise_weights, OH, OW, ID, OD, TH, TW, TID, TOD);
+      pointwise_weights, OH, OW, ID, OD, TH, TW, TID, TOD, PID, POD);
   auto tiled_ofmap = new T[NT * TON];
 
   DepthwiseSeparable_actions_t actions;
@@ -318,7 +321,7 @@ void DepthwiseSeparableDfe(max_engine_t *engine, T *ifmap, T *depthwise_weights,
 
   auto N = (uint64_t)(H * W * ID * K * K + H * W * ID * OD);
   std::chrono::duration<double> elapsed = end - start;
-  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "core elapsed time: " << elapsed.count() << " sec" << std::endl;
   std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)
             << " GFLOPs" << std::endl;
 
@@ -343,9 +346,9 @@ void DepthwiseSeparableDfe(max_engine_t *engine, T *ifmap, T *depthwise_weights,
                         (pfi * TH * TW / PW + hi * TW / PW + pwi) * POD * PW +
                         (fj * PW + wj);
 
-                    if (fii >= OD || hii >= H || wii >= W) continue;
+                    if (fii >= OD || hii >= OH || wii >= OW) continue;
 
-                    ofmap[fii * OH * OW + hii * OW + wii] = tiled_ofmap[tii];
+                    ofmap[fii * OH * OW + hii * OW + wii] += tiled_ofmap[tii];
                   }
                 }
               }
@@ -471,6 +474,11 @@ int main(int argc, char *argv[]) {
                  FLAGS_height, FLAGS_width, FLAGS_in_depth, FLAGS_out_depth,
                  kernel_size, tile_height, tile_width, tile_in_depth,
                  tile_out_depth);
+  for (int i = 0; i < (int)tiled_cpu.size(); i++)
+    CHECK(fabs(golden[i] - tiled_cpu[i]) < 1e-3)
+        << "golden and tiled result should match at " << i << " : " << golden[i]
+        << " " << tiled_cpu[i];
+
   RunDfe<T>(engine, ifmap, depthwise_weights, pointwise_weights, result,
             FLAGS_height, FLAGS_width, FLAGS_in_depth, FLAGS_out_depth,
             kernel_size, tile_height, tile_width, tile_in_depth, tile_out_depth,
@@ -479,10 +487,6 @@ int main(int argc, char *argv[]) {
   // for (int i = 0; i < (int)golden.size(); i++)
   //   printf("golden[%5d] = %.6f\n", i, golden[i]);
   //
-  for (int i = 0; i < (int)tiled_cpu.size(); i++)
-    CHECK(fabs(golden[i] - tiled_cpu[i]) < 1e-3)
-        << "golden and tiled result should match at " << i << " : " << golden[i]
-        << " " << tiled_cpu[i];
   for (int i = 0; i < (int)result.size(); i++)
     CHECK(fabs(golden[i] - result[i]) < 1e-3)
         << "golden and DFE result should match at " << i << " : " << golden[i]

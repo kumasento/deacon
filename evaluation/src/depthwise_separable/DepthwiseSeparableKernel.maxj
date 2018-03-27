@@ -5,6 +5,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
+import com.custom_computing_ic.maxdeep.utils.CounterUtils;
 import com.custom_computing_ic.maxdeep.utils.StreamUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
@@ -40,7 +41,7 @@ public class DepthwiseSeparableKernel extends Kernel {
      */
     ConvLayerParameters cp =
         (new ConvLayerParameters.Builder(tileInHeight, tileInWidth, tileInDepth, tileOutDepth,
-            kernelSize)).PK(parWidth).PC(parInDepth).PF(parOutDepth).build();
+            kernelSize)).PK(parWidth).PC(parInDepth).PF(parOutDepth).dbg(dbg).build();
     ConvLayerParameters dcp = cp.createDepthwiseParameters();
     ConvLayerParameters pcp = cp.createPointwiseParameters();
 
@@ -54,14 +55,18 @@ public class DepthwiseSeparableKernel extends Kernel {
     int maxInDepthCount = (int) Math.ceil((double) tileInDepth / parInDepth);
     int maxInWidthCount = (int) Math.ceil((double) tileInWidth / parWidth);
 
-    DFEVar f = chain.addCounter(maxOutDepthCount, 1).cast(cT);
-    DFEVar c = chain.addCounter(maxInDepthCount, 1).cast(cT);
+    DFEVar f = CounterUtils.createCounter(chain, maxOutDepthCount, this);
+    DFEVar c = CounterUtils.createCounter(chain, maxInDepthCount, this);
     DFEVar ih = chain.addCounter(tileInHeight, stride).cast(cT);
     DFEVar iw = chain.addCounter(maxInWidthCount, stride).cast(cT);
     DFEVar oh = ((ih < kernelSize) ? constant.var(0) : (ih - kernelSize + 1)).cast(cT);
     DFEVar ow =
         (((iw * parWidth < kernelSize - 1) ? constant.var(0) : (iw * parWidth - kernelSize + 1)) / parWidth)
             .cast(cT);
+    if (dbg) {
+      debug
+          .simPrintf("f = %5d c = %5d ih = %5d iw = %5d oh = %5d ow = %5d\n", f, c, ih, iw, oh, ow);
+    }
 
     /**
      * Streams
@@ -84,6 +89,9 @@ public class DepthwiseSeparableKernel extends Kernel {
             true);
     DFEVector<DFEVar> ofmap =
         StreamUtils.createStream(this, OUTPUTS[0], T, parWidth * parOutDepth, ofmapEn, false);
+    if (dbg) {
+      debug.simPrintf("ifmap = %KObj%\n", ifmap);
+    }
 
     /**
      * Line buffer:
@@ -93,6 +101,9 @@ public class DepthwiseSeparableKernel extends Kernel {
     ConvLayerLineBuffer lineBuffer = new ConvLayerLineBuffer(getKernel(), dcp, T);
     lineBuffer.setInput(ifmap);
     DFEVector<DFEVar> lbuf = lineBuffer.getOutputVec();
+    if (dbg) {
+      debug.simPrintf("lbuf  = %KObj%\n", lbuf);
+    }
 
     /**
      * Depthwise Convolution:
@@ -108,6 +119,15 @@ public class DepthwiseSeparableKernel extends Kernel {
         DepthwiseConvolutionKernel.process(this, depthwiseIfmapPE, depthwiseWeightsPE, parInDepth,
             parWidth, kernelSize, T);
 
+    if (dbg) {
+      debug.simPrintf("depthwise weights   = %KObj%\n", depthwiseWeights);
+      for (int i = 0; i < depthwiseIfmapPE.size(); i++) {
+        debug.simPrintf("depthwise ifmapPE[%3d]   = %KObj%\n", i, depthwiseIfmapPE[i]);
+        debug.simPrintf("depthwise weightsPE[%3d] = %KObj%\n", i, depthwiseWeightsPE[i]);
+      }
+      debug.simPrintf("depthwise result    = %KObj%\n", depthwise);
+    }
+
     /**
      * Input feature map buffer:
      * 
@@ -118,6 +138,9 @@ public class DepthwiseSeparableKernel extends Kernel {
         ifmapBuffer.port(depthwise,
             getIBufAddr(c, oh, ow, tileInDepth, tileWidth, parWidth, ifmapBuffer.getAddrT()),
             getIBufWriteEn(f));
+    if (dbg) {
+      debug.simPrintf("ibuf  = %KObj%\n", ibuf);
+    }
 
     /**
      * Pointwise Convolution Computation
@@ -125,6 +148,10 @@ public class DepthwiseSeparableKernel extends Kernel {
     DFEVector<DFEVar> pointwise =
         PointwiseConvolutionKernel.process(this, ibuf, pointwiseWeights, null, parWidth,
             parInDepth, parOutDepth, T, c);
+    if (dbg) {
+      debug.simPrintf("pointwiseWeights = %KObj%\n", pointwiseWeights);
+      debug.simPrintf("pointwise        = %KObj%\n", pointwise);
+    }
 
     /**
      * Output feature map buffer
