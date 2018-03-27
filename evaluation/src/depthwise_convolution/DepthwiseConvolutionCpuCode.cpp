@@ -8,9 +8,9 @@
 
 #include "Maxfiles.h"
 
-DEFINE_int32(height, 514, "Height of the input feature map");
-DEFINE_int32(width, 514, "Width of the input fetaure map");
-DEFINE_int32(depth, 512, "Depth of the input feature map");
+DEFINE_int32(height, 34, "Height of the input feature map");
+DEFINE_int32(width, 34, "Width of the input fetaure map");
+DEFINE_int32(depth, 32, "Depth of the input feature map");
 
 typedef float T;
 
@@ -47,6 +47,109 @@ void DepthwiseConvolutionCpu(T *ifmap, T *weights, T *bias, T *ofmap,
             ofmap[ofmap_idx] += ifmap[ifmap_idx] * weights[weights_idx];
           }
         }
+      }
+    }
+  }
+}
+
+template <typename T, int M, int N, int K>
+void Matmul(T A[M][K], T B[K][N], T C[M][N]) {
+  for (int m = 0; m < M; m++) {
+    for (int n = 0; n < N; n++) {
+      C[m][n] = (T)0.0f;
+      for (int k = 0; k < K; k++) {
+        C[m][n] += A[m][k] * B[k][n];
+      }
+    }
+  }
+}
+
+template <typename T, int M, int N>
+void Transpose(T A[M][N], T B[N][M]) {
+  for (int m = 0; m < M; m++)
+    for (int n = 0; n < N; n++) B[n][m] = A[m][n];
+}
+
+template <typename T, int M, int N>
+void Transform(T A[M][N], T B[N][N], T R[M][M]) {
+  T A_T[N][M];
+  T A_B[M][N];
+  Transpose<T, M, N>(A, A_T);
+  Matmul<T, M, N, N>(A, B, A_B);
+  Matmul<T, N, N, M>(A_B, A_T, R);
+}
+
+template <typename T>
+void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
+                                     int height, int width, int depth,
+                                     int kernel_size) {
+  const int M = 4;
+  const int R = 3;
+  const int TILE_SIZE = M + R - 1;
+  int out_height = height - kernel_size + 1;
+  int out_width = width - kernel_size + 1;
+  int num_tiles_height = get_num_tiles(height, TILE_SIZE);
+  int num_tiles_width = get_num_tiles(width, TILE_SIZE);
+
+  auto tiled_ifmap = new T[TILE_SIZE][TILE_SIZE];
+  auto tiled_coeff = new T[R][R];
+  auto trans_ifmap = new T[TILE_SIZE][TILE_SIZE];
+  auto trans_coeff = new T[TILE_SIZE][TILE_SIZE];
+  auto eltwise = new T[TILE_SIZE][TILE_SIZE];
+  auto trans_ofmap = new T[M][M];
+
+  const T B[TILE_SIZE][TILE_SIZE] = {{4, 0, 0, 0, 0, 0},
+                                     {0, -4, 4, -2, 2, 4},
+                                     {-5, -4, -4, -1, -1, 0},
+                                     {0, 1, -1, 2, -2, -5},
+                                     {1, 1, 1, 1, 1, 0},
+                                     {0, 0, 0, 0, 0, 1}};
+  const T G[TILE_SIZE][R] = {{0.25f, 0.0, 0.0},
+                             {-1. / 6, -1. / 6, -1. / 6},
+                             {-1. / 6, 1. / 6, -1. / 6},
+                             {1. / 24, 1. / 12, 1. / 6},
+                             {1. / 24, -1. / 12, 1. / 6},
+                             {0.0, 0.0, 1.0}};
+  const T A[TILE_SIZE][M] = {{1, 0, 0, 0},
+                             {1, 1, 1, 1},
+                             {1, -1, 1, -1},
+                             {1, 2, 4, 8},
+                             {1, -2, 4, 8},
+                             {0, 0, 0, 1}};
+  T A_T[M][TILE_SIZE];
+  T B_T[TILE_SIZE][TILE_SIZE];
+  Transpose<T, TILE_SIZE, TILE_SIZE>(B, B_T);
+  Transpose<T, TILE_SIZE, M>(A, A_T);
+
+  for (int d = 0; d < depth; d++) {
+    for (int kh = 0; kh < kernel_size; kh++)
+      for (int kw = 0; kw < kernel_size; kw++)
+        tiled_coeff[kh][kw] =
+            weights[d * kernel_size * kernel_size + kh * kernel_size + kw];
+
+    for (int th = 0; th < num_tiles_height; th++) {
+      for (int tw = 0; tw < num_tiles_height; tw++) {
+        auto hi = th * TILE_SIZE;
+        auto wi = tw * TILE_SIZE;
+
+        for (int hj = 0; hj < TILE_SIZE; hj++)
+          for (int wj = 0; wj < TILE_SIZE; wj++)
+            tiled_ifmap[hj][wj] =
+                ifmap[d * height * width + (hi + hj) * width + (wi + wj)];
+
+        Transform<T, TILE_SIZE, TILE_SIZE>(B_T, tiled_ifmap, trans_ifmap);
+        Transform<T, TILE_SIZE, R>(G, tiled_coeff, trans_coeff);
+
+        for (int hj = 0; hj < TILE_SIZE; hj++)
+          for (int wj = 0; wj < TILE_SIZE; wj++)
+            eltwise[hj][wj] = trans_coeff[hj][wj] * trans_ifmap[hj][wj];
+
+        Transform<T, M, TILE_SIZE>(A_T, eltwise, trans_ofmap);
+
+        for (int hj = 0; hj < M; hj++)
+          for (int wj = 0; wj < M; wj++)
+            ofmap[d * out_height * out_width + (th * M + hj) * out_width +
+                  (tw * M + wj)] = trans_ofmap[hj][wj];
       }
     }
   }

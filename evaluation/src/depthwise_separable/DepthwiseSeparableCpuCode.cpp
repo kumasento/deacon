@@ -10,8 +10,8 @@
 
 DEFINE_int32(height, 66, "Height of the input feature map");
 DEFINE_int32(width, 66, "Width of the input fetaure map");
-DEFINE_int32(in_depth, 64, "Depth of the input feature map");
-DEFINE_int32(out_depth, 64, "Depth of the output feature map");
+DEFINE_int32(in_depth, 512, "Depth of the input feature map");
+DEFINE_int32(out_depth, 512, "Depth of the output feature map");
 
 typedef float T;
 
@@ -475,7 +475,7 @@ int main(int argc, char *argv[]) {
                  kernel_size, tile_height, tile_width, tile_in_depth,
                  tile_out_depth);
   for (int i = 0; i < (int)tiled_cpu.size(); i++)
-    CHECK(fabs(golden[i] - tiled_cpu[i]) < 1e-3)
+    CHECK(fabs(golden[i] - tiled_cpu[i]) < 1e-2)
         << "golden and tiled result should match at " << i << " : " << golden[i]
         << " " << tiled_cpu[i];
 
@@ -488,7 +488,7 @@ int main(int argc, char *argv[]) {
   //   printf("golden[%5d] = %.6f\n", i, golden[i]);
   //
   for (int i = 0; i < (int)result.size(); i++)
-    CHECK(fabs(golden[i] - result[i]) < 1e-3)
+    CHECK(fabs(golden[i] - result[i]) < 1e-2)
         << "golden and DFE result should match at " << i << " : " << golden[i]
         << " " << result[i];
 
