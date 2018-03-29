@@ -88,8 +88,8 @@ void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
   const int TILE_SIZE = M + R - 1;
   int out_height = height - kernel_size + 1;
   int out_width = width - kernel_size + 1;
-  int num_tiles_height = get_num_tiles(height, TILE_SIZE);
-  int num_tiles_width = get_num_tiles(width, TILE_SIZE);
+  int num_tiles_height = get_num_tiles(out_height, M);
+  int num_tiles_width = get_num_tiles(out_width, M);
 
   auto tiled_ifmap = new T[TILE_SIZE][TILE_SIZE];
   auto tiled_coeff = new T[R][R];
@@ -129,8 +129,8 @@ void DepthwiseConvolutionWinogradCpu(T *ifmap, T *weights, T *bias, T *ofmap,
 
     for (int th = 0; th < num_tiles_height; th++) {
       for (int tw = 0; tw < num_tiles_width; tw++) {
-        auto hi = th * TILE_SIZE;
-        auto wi = tw * TILE_SIZE;
+        auto hi = th * M;
+        auto wi = tw * M;
 
         for (int hj = 0; hj < TILE_SIZE; hj++)
           for (int wj = 0; wj < TILE_SIZE; wj++)
@@ -323,6 +323,55 @@ void DepthwiseConvolutionTiledCpu(T *ifmap, T *weights, T *bias, T *ofmap,
 }
 
 template <typename T>
+void DepthwiseConvolutionTiledWinogradCpu(T *ifmap, T *weights, T *bias,
+                                          T *ofmap, int H, int W, int D, int K,
+                                          int TH, int TW, int TD) {
+  auto OH = H - K + 1;
+  auto OW = W - K + 1;
+  auto NTH = get_num_tiles(OH, TH);
+  auto NTW = get_num_tiles(OW, TW);
+  auto NTD = get_num_tiles(D, TD);
+  auto NT = NTH * NTW * NTD;
+  auto TIH = TH + K - 1;
+  auto TIW = TW + K - 1;
+  auto TIN = TIH * TIW * TD;
+  auto TWN = TD * K * K;
+  auto TBN = TD;
+  auto TON = TH * TW * TD;
+
+  T *tiled_ifmap = PrepareTiledIfmap<T>(ifmap, H, W, D, K, TH, TW, TD);
+  T *tiled_ofmap = new T[NT * TH * TW * TD];
+
+  for (int td = 0; td < NTD; td++) {
+    for (int th = 0; th < NTH; th++) {
+      for (int tw = 0; tw < NTW; tw++) {
+        T *ifmap_ptr = &tiled_ifmap[(td * NTH * NTW + th * NTW + tw) * TIN];
+        T *weights_ptr = &weights[td * TWN];
+        T *bias_ptr = &bias[td * TBN];
+        T *ofmap_ptr = &tiled_ofmap[(td * NTH * NTW + th * NTW + tw) * TON];
+
+        DepthwiseConvolutionWinogradCpu<T>(ifmap_ptr, weights_ptr, bias_ptr,
+                                           ofmap_ptr, TIH, TIW, TD, K);
+
+        for (int di = 0; di < TD; di++) {
+          for (int hi = 0; hi < TH; hi++) {
+            for (int wi = 0; wi < TW; wi++) {
+              ofmap[(td * TD + di) * OH * OW + (th * TH + hi) * OW +
+                    (tw * TW + wi)] =
+                  tiled_ofmap[(td * NTH * NTW + th * NTW + tw) * TON +
+                              (di * TH * TW + hi * TW + wi)];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  delete tiled_ifmap;
+  delete tiled_ofmap;
+}
+
+template <typename T>
 void DepthwiseConvolutionDfe(max_engine_t *engine, T *ifmap, T *weights,
                              T *bias, T *ofmap, int H, int W, int D, int K,
                              int TH, int TW, int TD, int PW, int PD) {
@@ -392,6 +441,78 @@ void DepthwiseConvolutionDfe(max_engine_t *engine, T *ifmap, T *weights,
 }
 
 template <typename T>
+void DepthwiseConvolutionWinogradDfe(max_engine_t *engine, T *ifmap, T *weights,
+                                     T *bias, T *ofmap, int H, int W, int D,
+                                     int K, int TH, int TW, int TD, int PD) {
+  const int M = 4;
+  auto OH = H - K + 1;
+  auto OW = W - K + 1;
+  auto NTH = get_num_tiles(OH, TH);
+  auto NTW = get_num_tiles(OW, TW);
+  auto NTD = get_num_tiles(D, TD);
+  auto NT = NTH * NTW * NTD;
+  auto TON = TH * TW * TD;
+
+  T *tiled_ifmap = PrepareTiledIfmap<T>(ifmap, H, W, D, K, TH, TW, TD, 1, PD);
+  T *tiled_weights = PrepareTiledWeights<T>(weights, H, W, D, K, TH, TW, TD);
+  T *tiled_bias = PrepareTiledBias<T>(bias, H, W, D, K, TH, TW, TD);
+  T *tiled_ofmap = new T[NT * TON];
+
+  DepthwiseConvolution_actions_t actions;
+  actions.param_N = (const int64_t)NT;
+  actions.instream_ifmap = (const T *)tiled_ifmap;
+  actions.instream_weights = (const T *)tiled_weights;
+  actions.instream_bias = (const T *)tiled_bias;
+  actions.outstream_ofmap = tiled_ofmap;
+
+  auto start = std::chrono::system_clock::now();
+  DepthwiseConvolution_run(engine, &actions);
+  auto end = std::chrono::system_clock::now();
+  auto N = (uint64_t)H * W * D * K * K;
+  std::chrono::duration<double> elapsed = end - start;
+  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)
+            << " GFLOPs" << std::endl;
+
+  for (int td = 0; td < NTD; td++) {
+    for (int th = 0; th < NTH; th++) {
+      for (int tw = 0; tw < NTW; tw++) {
+        for (int di = 0; di < TD; di += PD) {
+          for (int hi = 0; hi < TH; hi += M) {
+            for (int wi = 0; wi < TW; wi += M) {
+              for (int dj = 0; dj < PD; dj++) {
+                for (int hj = 0; hj < M; hj++) {
+                  for (int wj = 0; wj < M; wj++) {
+                    auto dii = td * TD + di + dj;
+                    auto hii = th * TH + hi + hj;
+                    auto wii = tw * TW + wi + wj;
+                    auto pdi = di / PD;
+                    auto phi = hi / M;
+                    auto pwi = wi / M;
+                    auto tii = (td * NTH * NTW + th * NTW + tw) * TON +
+                               (pdi * TH / M * TW / M + phi * TW / M + pwi) *
+                                   PD * M * M +
+                               (dj * M * M + hj * M + wj);
+
+                    if (dii >= D || hii >= H || wii >= W) continue;
+
+                    ofmap[dii * OH * OW + hii * OW + wii] = tiled_ofmap[tii];
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  delete tiled_ifmap;
+  delete tiled_weights;
+  delete tiled_bias;
+  delete tiled_ofmap;
+}
+template <typename T>
 void RunCpu(std::vector<T> &ifmap, std::vector<T> &weights,
             std::vector<T> &bias, std::vector<T> &ofmap, int height, int width,
             int depth, int kernel_size) {
@@ -448,17 +569,44 @@ void RunTiledCpu(std::vector<T> &ifmap, std::vector<T> &weights,
 }
 
 template <typename T>
+void RunTiledWinogradCpu(std::vector<T> &ifmap, std::vector<T> &weights,
+                         std::vector<T> &bias, std::vector<T> &ofmap,
+                         int height, int width, int depth, int kernel_size,
+                         int tile_height, int tile_width, int tile_depth) {
+  std::cout << "Starting Tiled Winograd CPU ..." << std::endl;
+  auto start = std::chrono::system_clock::now();
+  DepthwiseConvolutionTiledWinogradCpu<T>(
+      (T *)ifmap.data(), (T *)weights.data(), (T *)bias.data(),
+      (T *)ofmap.data(), height, width, depth, kernel_size, tile_height,
+      tile_width, tile_depth);
+  auto end = std::chrono::system_clock::now();
+
+  auto N = (uint64_t)height * width * depth * kernel_size * kernel_size;
+  std::chrono::duration<double> elapsed = end - start;
+  std::cout << "elapsed time: " << elapsed.count() << " sec" << std::endl;
+  std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)
+            << " GFLOPs" << std::endl;
+}
+
+template <typename T>
 void RunDfe(max_engine_t *engine, std::vector<T> &ifmap,
             std::vector<T> &weights, std::vector<T> &bias,
             std::vector<T> &ofmap, int height, int width, int depth,
             int kernel_size, int tile_height, int tile_width, int tile_depth,
-            int par_width, int par_depth) {
+            int par_width, int par_depth, bool use_winograd) {
   std::cout << "Starting DFE ..." << std::endl;
   auto start = std::chrono::system_clock::now();
-  DepthwiseConvolutionDfe<T>(engine, (T *)ifmap.data(), (T *)weights.data(),
-                             (T *)bias.data(), (T *)ofmap.data(), height, width,
-                             depth, kernel_size, tile_height, tile_width,
-                             tile_depth, par_width, par_depth);
+  if (use_winograd) {
+    DepthwiseConvolutionWinogradDfe<T>(
+        engine, (T *)ifmap.data(), (T *)weights.data(), (T *)bias.data(),
+        (T *)ofmap.data(), height, width, depth, kernel_size, tile_height,
+        tile_width, tile_depth, par_depth);
+  } else {
+    DepthwiseConvolutionDfe<T>(engine, (T *)ifmap.data(), (T *)weights.data(),
+                               (T *)bias.data(), (T *)ofmap.data(), height,
+                               width, depth, kernel_size, tile_height,
+                               tile_width, tile_depth, par_width, par_depth);
+  }
   auto end = std::chrono::system_clock::now();
 
   auto N = (uint64_t)height * width * depth * kernel_size * kernel_size;
@@ -482,6 +630,7 @@ int main(int argc, char *argv[]) {
   auto par_width = max_get_constant_uint64t(max_file, "PAR_WIDTH");
   auto par_depth = max_get_constant_uint64t(max_file, "PAR_DEPTH");
   auto kernel_size = max_get_constant_uint64t(max_file, "KERNEL_SIZE");
+  auto use_winograd = max_get_constant_uint64t(max_file, "USE_WINOGRAD");
 
   std::vector<T> ifmap(FLAGS_depth * FLAGS_height * FLAGS_width);
   std::vector<T> weights(FLAGS_depth * kernel_size * kernel_size);
@@ -491,6 +640,9 @@ int main(int argc, char *argv[]) {
                         (FLAGS_width - kernel_size + 1));
   std::vector<T> winograd_cpu(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
                               (FLAGS_width - kernel_size + 1));
+  std::vector<T> winograd_tiled_cpu(FLAGS_depth *
+                                    (FLAGS_height - kernel_size + 1) *
+                                    (FLAGS_width - kernel_size + 1));
   std::vector<T> tiled_cpu(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
                            (FLAGS_width - kernel_size + 1));
   std::vector<T> result(FLAGS_depth * (FLAGS_height - kernel_size + 1) *
@@ -514,17 +666,25 @@ int main(int argc, char *argv[]) {
 
   RunTiledCpu<T>(ifmap, weights, bias, tiled_cpu, FLAGS_height, FLAGS_width,
                  FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth);
-  RunDfe<T>(engine, ifmap, weights, bias, result, FLAGS_height, FLAGS_width,
-            FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth,
-            par_width, par_depth);
-
-  // for (int i = 0; i < (int)golden.size(); i++)
-  //   printf("golden[%5d] = %.6f\n", i, golden[i]);
-  //
+  RunTiledWinogradCpu<T>(ifmap, weights, bias, winograd_tiled_cpu, FLAGS_height,
+                         FLAGS_width, FLAGS_depth, kernel_size, tile_height,
+                         tile_width, tile_depth);
   for (int i = 0; i < (int)tiled_cpu.size(); i++)
     CHECK(fabs(golden[i] - tiled_cpu[i]) < 1e-3)
         << "golden and tiled result should match at " << i << " : " << golden[i]
         << " " << tiled_cpu[i];
+  for (int i = 0; i < (int)winograd_tiled_cpu.size(); i++)
+    CHECK(fabs(golden[i] - winograd_tiled_cpu[i]) < 1e-3)
+        << "golden and winograd tiled result should match at " << i << " : "
+        << golden[i] << " " << winograd_tiled_cpu[i];
+
+  RunDfe<T>(engine, ifmap, weights, bias, result, FLAGS_height, FLAGS_width,
+            FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth,
+            par_width, par_depth, use_winograd == 1);
+
+  // for (int i = 0; i < (int)golden.size(); i++)
+  //   printf("golden[%5d] = %.6f\n", i, golden[i]);
+  //
   for (int i = 0; i < (int)result.size(); i++)
     CHECK(fabs(golden[i] - result[i]) < 1e-3)
         << "golden and DFE result should match at " << i << " : " << golden[i]

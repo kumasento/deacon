@@ -1,0 +1,48 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.winograd;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+/**
+ * Perform Winograd transformation before the dot-product
+ * 
+ * @author rz3515
+ * 
+ */
+public class WinogradIfmapTransform extends KernelComponent {
+
+  private final float[][] B = { {4, 0, 0, 0, 0, 0}, {0, -4, 4, -2, 2, 4}, {-5, -4, -4, -1, -1, 0},
+      {0, 1, -1, 2, -2, -5}, {1, 1, 1, 1, 1, 0}, {0, 0, 0, 0, 0, 1}};
+  private final DFEVectorType<DFEVar> dT;
+  private final DFEVector<DFEVar> d, BdB;
+
+  public WinogradIfmapTransform(KernelBase<?> owner, DFEType T) {
+    super(owner);
+
+    int TILE_SIZE = WinogradTransform.TILE_SIZE;
+    int M = WinogradTransform.M;
+
+    DFEVector<DFEVar> BB =
+        WinogradTransform.convertToMatrix(owner, B, TILE_SIZE, TILE_SIZE, T, true);
+    dT = new DFEVectorType<DFEVar>(T, TILE_SIZE * TILE_SIZE);
+    d = dT.newInstance(owner);
+    BdB = WinogradTransform.transform(owner, d, BB, TILE_SIZE, TILE_SIZE, T);
+  }
+
+  public DFEVectorType<DFEVar> getInputT() {
+    return dT;
+  }
+
+  public void setInput(DFEVector<DFEVar> mat) {
+    d.connect(mat);
+  }
+
+  public DFEVector<DFEVar> getOutput() {
+    return BdB;
+  }
+
+}

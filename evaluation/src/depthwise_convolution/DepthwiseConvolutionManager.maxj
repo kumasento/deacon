@@ -1,5 +1,6 @@
 package depthwise_convolution;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.DepthwiseConvolutionKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
@@ -21,7 +22,7 @@ public class DepthwiseConvolutionManager extends CustomManager {
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     config.setAllowNonMultipleTransitions(true);
-    config.setDefaultStreamClockFrequency(100);
+    config.setDefaultStreamClockFrequency(params.getFreq());
 
     dfeT = DFETypeFactory.dfeFloat(8, 24);
     cpuT = CPUTypes.FLOAT;
@@ -33,12 +34,14 @@ public class DepthwiseConvolutionManager extends CustomManager {
     addMaxFileConstant("KERNEL_SIZE", params.getKernelSize());
     addMaxFileConstant("PAR_WIDTH", params.getParWidth());
     addMaxFileConstant("PAR_DEPTH", params.getParDepth());
+    addMaxFileConstant("USE_WINOGRAD", params.getUseWinograd() ? 1 : 0);
 
     // create a kernel block.
     KernelBlock knl =
         this.addKernel(new DepthwiseConvolutionKernel(this.makeKernelParameters(knlName), params
             .getTileHeight(), params.getTileWidth(), params.getTileDepth(), params.getKernelSize(),
-            params.getParWidth(), params.getParDepth(), dfeT, params.getDebug()));
+            params.getParWidth(), params.getParDepth(), dfeT, params.getDebug(), params
+                .getUseWinograd()));
 
     // connect them to external environment
     for (String inputName : DepthwiseConvolutionKernel.INPUTS)

@@ -8,8 +8,8 @@
 
 #include "Maxfiles.h"
 
-DEFINE_int32(height, 66, "Height of the input feature map");
-DEFINE_int32(width, 66, "Width of the input fetaure map");
+DEFINE_int32(height, 514, "Height of the input feature map");
+DEFINE_int32(width, 514, "Width of the input fetaure map");
 DEFINE_int32(in_depth, 512, "Depth of the input feature map");
 DEFINE_int32(out_depth, 512, "Depth of the output feature map");
 
@@ -319,7 +319,7 @@ void DepthwiseSeparableDfe(max_engine_t *engine, T *ifmap, T *depthwise_weights,
   DepthwiseSeparable_run(engine, &actions);
   auto end = std::chrono::system_clock::now();
 
-  auto N = (uint64_t)(H * W * ID * K * K + H * W * ID * OD);
+  auto N = (uint64_t)H * W * ID * K * K + (uint64_t)H * W * ID * OD;
   std::chrono::duration<double> elapsed = end - start;
   std::cout << "core elapsed time: " << elapsed.count() << " sec" << std::endl;
   std::cout << "throughput: " << get_throughput(N, elapsed.count(), 2)

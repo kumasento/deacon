@@ -36,6 +36,8 @@ public class DotProductKernel extends KernelComponent {
    */
   public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type) {
     super(owner);
+    
+    owner.optimization.pushDSPFactor(1.0);
 
     if (vecSize <= 0)
       throw new IllegalArgumentException("vecSize should be larger than 0");
@@ -50,6 +52,8 @@ public class DotProductKernel extends KernelComponent {
 
     // Output is the result of an adder-tree based reduction
     out = AdderTree.reduce(vecC.getElementsAsList());
+    
+    owner.optimization.popDSPFactor();
   }
 
   public void setInputs(DFEVector<DFEVar> vecA, DFEVector<DFEVar> vecB) {

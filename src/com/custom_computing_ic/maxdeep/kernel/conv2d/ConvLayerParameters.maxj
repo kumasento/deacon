@@ -28,6 +28,9 @@ public class ConvLayerParameters extends LayerParameters {
   public final Type type;
   public int LRNLocalSize;
   public boolean useDRAM;
+  public boolean useWinograd;
+
+  public static final int WINOGRAD_TILE_SIZE = 4;
 
   public PoolingLayerParameters pool;
 
@@ -70,6 +73,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.LRNLocalSize = 0;
     this.pool = builder.pool;
     this.useDRAM = builder.useDRAM;
+    this.useWinograd = builder.useWinograd;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -77,7 +81,8 @@ public class ConvLayerParameters extends LayerParameters {
      * TODO: One thing not clear - PC is actually not sensible here However, we still need it to
      * specify correct number of line buffers.
      */
-    return new ConvLayerParameters.Builder(H, W, C, C, K).BW(BW).PC(PC).PK(PK).dbg(dbg).build();
+    return new ConvLayerParameters.Builder(H, W, C, C, K).BW(BW).PC(PC).PK(PK).dbg(dbg)
+        .useWinograd(useWinograd).build();
   }
 
   public ConvLayerParameters createPointwiseParameters() {
@@ -235,6 +240,7 @@ public class ConvLayerParameters extends LayerParameters {
     private PoolingLayerParameters pool;
     private boolean useDRAM;
     private boolean dbg;
+    private boolean useWinograd;
 
     public Builder(int H, int W, int C, int F, int K) {
 
@@ -261,6 +267,7 @@ public class ConvLayerParameters extends LayerParameters {
       this.seq = CompSeq.CHANNEL_MAJOR;
       this.type = Type.STANDARD;
       this.useDRAM = true;
+      this.useWinograd = false;
       this.dbg = false;
     }
 
@@ -330,6 +337,11 @@ public class ConvLayerParameters extends LayerParameters {
     public Builder useDRAM(boolean useDRAM) {
       this.useDRAM = useDRAM;
 
+      return this;
+    }
+
+    public Builder useWinograd(boolean useWinograd) {
+      this.useWinograd = useWinograd;
       return this;
     }
 
