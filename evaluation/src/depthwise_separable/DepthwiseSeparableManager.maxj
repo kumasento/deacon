@@ -26,6 +26,7 @@ public class DepthwiseSeparableManager extends CustomManager {
     dfeT = DFETypeFactory.dfeFloat(8, 24);
     cpuT = CPUTypes.FLOAT;
 
+
     // constants
     addMaxFileConstant("TILE_HEIGHT", p.getTileHeight());
     addMaxFileConstant("TILE_WIDTH", p.getTileWidth());

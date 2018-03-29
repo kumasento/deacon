@@ -1,6 +1,7 @@
 package depthwise_convolution;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.DepthwiseConvolutionKernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
@@ -24,8 +25,10 @@ public class DepthwiseConvolutionManager extends CustomManager {
     config.setAllowNonMultipleTransitions(true);
     config.setDefaultStreamClockFrequency(params.getFreq());
 
-    dfeT = DFETypeFactory.dfeFloat(8, 24);
-    cpuT = CPUTypes.FLOAT;
+    // dfeT = DFETypeFactory.dfeFloat(8, 24);
+    // cpuT = CPUTypes.FLOAT;
+    dfeT = DFETypeFactory.dfeFix(6, 10, SignMode.TWOSCOMPLEMENT);
+    cpuT = CPUTypes.INT16;
 
     // constants
     addMaxFileConstant("TILE_HEIGHT", params.getTileHeight());

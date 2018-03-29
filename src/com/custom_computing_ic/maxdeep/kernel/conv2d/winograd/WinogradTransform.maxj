@@ -49,8 +49,10 @@ public class WinogradTransform {
       throw new IllegalArgumentException(String.format(
           "The DFEVector to be transformed should have size %d but got %d", N * N, X.getSize()));
 
+    owner.optimization.pushDSPFactor(0.0);
     MatrixMultiply mma = new MatrixMultiply(owner, M, N, N, T);
     MatrixMultiply mmb = new MatrixMultiply(owner, M, M, N, T);
+    owner.optimization.popDSPFactor();
 
     mma.setInputMatrices(A, X);
     mmb.setInputMatrices(mma.getOutput(), transpose(owner, A, M, N, T));

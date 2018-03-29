@@ -13,6 +13,29 @@ DEFINE_int32(width, 34, "Width of the input fetaure map");
 DEFINE_int32(depth, 32, "Depth of the input feature map");
 
 typedef float T;
+typedef int16_t DT;
+
+template <typename DT, typename T, int FB = 10>
+std::vector<DT> FloatToFixed(std::vector<T> src) {
+  std::vector<DT> dst;
+  dst.resize(src.size());
+
+  for (int i = 0; i < (int)src.size(); i++)
+    dst[i] = static_cast<DT>(src[i] * (1 << FB));
+
+  return dst;
+}
+
+template <typename DT, typename T, int FB = 10>
+std::vector<T> FixedToFloat(std::vector<DT> src) {
+  std::vector<T> dst;
+  dst.resize(src.size());
+
+  for (int i = 0; i < (int)src.size(); i++)
+    dst[i] = static_cast<T>(src[i]) / (1 << FB);
+
+  return dst;
+}
 
 double get_throughput(uint64_t N, double elapsed, double flop_per_elem) {
   return N * flop_per_elem / elapsed * 1e-9;
@@ -588,26 +611,40 @@ void RunTiledWinogradCpu(std::vector<T> &ifmap, std::vector<T> &weights,
             << " GFLOPs" << std::endl;
 }
 
-template <typename T>
+template <typename DT, typename T>
 void RunDfe(max_engine_t *engine, std::vector<T> &ifmap,
             std::vector<T> &weights, std::vector<T> &bias,
             std::vector<T> &ofmap, int height, int width, int depth,
             int kernel_size, int tile_height, int tile_width, int tile_depth,
             int par_width, int par_depth, bool use_winograd) {
+
+  auto fixed_ifmap = FloatToFixed<DT, T>(ifmap);
+  auto fixed_weights = FloatToFixed<DT, T>(weights);
+  auto fixed_bias = FloatToFixed<DT, T>(bias);
+
+  std::vector<DT> fixed_ofmap(ofmap.size());
+
+  auto ifmap_ptr = (DT *)fixed_ifmap.data();
+  auto weights_ptr = (DT *)fixed_weights.data();
+  auto bias_ptr = (DT *)fixed_bias.data();
+  auto ofmap_ptr = (DT *)fixed_ofmap.data();
+
   std::cout << "Starting DFE ..." << std::endl;
   auto start = std::chrono::system_clock::now();
   if (use_winograd) {
-    DepthwiseConvolutionWinogradDfe<T>(
-        engine, (T *)ifmap.data(), (T *)weights.data(), (T *)bias.data(),
-        (T *)ofmap.data(), height, width, depth, kernel_size, tile_height,
-        tile_width, tile_depth, par_depth);
+    DepthwiseConvolutionWinogradDfe<DT>(
+        engine, ifmap_ptr, weights_ptr, bias_ptr, ofmap_ptr, height, width,
+        depth, kernel_size, tile_height, tile_width, tile_depth, par_depth);
   } else {
-    DepthwiseConvolutionDfe<T>(engine, (T *)ifmap.data(), (T *)weights.data(),
-                               (T *)bias.data(), (T *)ofmap.data(), height,
-                               width, depth, kernel_size, tile_height,
-                               tile_width, tile_depth, par_width, par_depth);
+    DepthwiseConvolutionDfe<DT>(engine, ifmap_ptr, weights_ptr, bias_ptr,
+                                ofmap_ptr, height, width, depth, kernel_size,
+                                tile_height, tile_width, tile_depth, par_width,
+                                par_depth);
   }
   auto end = std::chrono::system_clock::now();
+
+  auto float_ofmap = FixedToFloat<DT, T>(fixed_ofmap);
+  for (int i = 0; i < ofmap.size(); i++) ofmap[i] = float_ofmap[i];
 
   auto N = (uint64_t)height * width * depth * kernel_size * kernel_size;
   std::chrono::duration<double> elapsed = end - start;
@@ -678,9 +715,9 @@ int main(int argc, char *argv[]) {
         << "golden and winograd tiled result should match at " << i << " : "
         << golden[i] << " " << winograd_tiled_cpu[i];
 
-  RunDfe<T>(engine, ifmap, weights, bias, result, FLAGS_height, FLAGS_width,
-            FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth,
-            par_width, par_depth, use_winograd == 1);
+  RunDfe<DT, T>(engine, ifmap, weights, bias, result, FLAGS_height, FLAGS_width,
+                FLAGS_depth, kernel_size, tile_height, tile_width, tile_depth,
+                par_width, par_depth, use_winograd == 1);
 
   // for (int i = 0; i < (int)golden.size(); i++)
   //   printf("golden[%5d] = %.6f\n", i, golden[i]);

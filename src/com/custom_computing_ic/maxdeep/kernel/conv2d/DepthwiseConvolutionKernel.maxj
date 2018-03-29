@@ -11,7 +11,6 @@ import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -210,7 +209,10 @@ public class DepthwiseConvolutionKernel extends Kernel {
 
     for (int pd = 0; pd < parDepth; pd++) {
       for (int pw = 0; pw < parWidth; pw++) {
+        owner.optimization.pushDSPFactor(1.0);
         DotProductKernel dp = new DotProductKernel(owner, kernelSize * kernelSize, T);
+        owner.optimization.popDSPFactor();
+
         dp.setInputs(ifmapPE.get(pd * parWidth + pw), weightsPE.get(pd * parWidth + pw));
         v[pd * parWidth + pw].connect(dp.getOutput());
       }
@@ -237,7 +239,12 @@ public class DepthwiseConvolutionKernel extends Kernel {
 
       for (int j = 0; j < TILE_SIZE * TILE_SIZE; j++) {
         int idx = i * TILE_SIZE * TILE_SIZE + j;
-        TO[idx].connect(ifmapPE[idx] * weightsPE[idx]);
+
+        owner.optimization.pushDSPFactor(1.0);
+        DFEVar r = ifmapPE[idx] * weightsPE[idx];
+        owner.optimization.popDSPFactor();
+
+        TO[j].connect(r);
       }
 
       WinogradInverseTransform transform = new WinogradInverseTransform(owner, T);
@@ -291,13 +298,18 @@ public class DepthwiseConvolutionKernel extends Kernel {
   private DFEVar getWinogradObufWriteEn(DFEVar h, DFEVar w) {
     int TILE_SIZE = WinogradTransform.TILE_SIZE;
     int M = WinogradTransform.M;
-    DFEVar CM = constant.var(M);
-    DFEType T = dfeUInt(32);
+
+    DFEVar hi = h - TILE_SIZE + M + 1;
+    DFEVar wi = w - TILE_SIZE + M + 1;
 
     DFEVar rowAbove = h >= (TILE_SIZE - 1);
     DFEVar colRight = w >= (TILE_SIZE - 1);
-    DFEVar posHeight = KernelMath.divMod((h - TILE_SIZE + 1).cast(T), CM).getRemainder().eq(0);
-    DFEVar posWidth = KernelMath.divMod((w - TILE_SIZE + 1).cast(T), CM).getRemainder().eq(0);
+    DFEVar posHeight = (hi.get(0) | hi.get(1)).eq(0);
+    DFEVar posWidth = (wi.get(0) | wi.get(1)).eq(0);
+
+    // debug.simPrintf(
+    // "h = %KObj% w = %KObj% hi = %KObj% wi = %KObj% posHeight = %KObj% posWidth = %KObj%\n", h,
+    // w, hi, wi, posHeight, posWidth);
 
     return rowAbove & colRight & posHeight & posWidth;
   }
