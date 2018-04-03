@@ -37,6 +37,7 @@ MaxDeep/build/*
 
 # Python
 venv
+.ipynb_checkpoints/
 
 # CMake
 build/
