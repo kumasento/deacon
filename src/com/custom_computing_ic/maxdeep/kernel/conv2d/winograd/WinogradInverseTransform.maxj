@@ -1,0 +1,37 @@
+package com.custom_computing_ic.maxdeep.kernel.conv2d.winograd;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+public class WinogradInverseTransform extends KernelComponent {
+
+  private final float[][] A = { {1, 0, 0, 0}, {1, 1, 1, 1}, {1, -1, 1, -1}, {1, 2, 4, 8},
+      {1, -2, 4, -8}, {0, 0, 0, 1}};
+
+  private final DFEVector<DFEVar> X, Y;
+
+  public WinogradInverseTransform(KernelBase<?> owner, DFEType T) {
+    super(owner);
+
+    int M = WinogradTransform.M;
+    int R = WinogradTransform.R;
+    int TILE_SIZE = WinogradTransform.TILE_SIZE;
+
+    DFEVector<DFEVar> AA = WinogradTransform.convertToMatrix(owner, A, TILE_SIZE, M, T, true);
+    DFEVectorType<DFEVar> XT = new DFEVectorType<DFEVar>(T, TILE_SIZE * TILE_SIZE);
+    X = XT.newInstance(owner);
+    Y = WinogradTransform.transform(owner, X, AA, M, TILE_SIZE, T);
+  }
+
+  public void setInputMatrix(DFEVector<DFEVar> m) {
+    X.connect(m);
+  }
+
+  public DFEVector<DFEVar> getOutput() {
+    return Y;
+  }
+}

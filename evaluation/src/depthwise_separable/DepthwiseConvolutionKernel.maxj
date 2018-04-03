@@ -1,4 +1,4 @@
-package depthwise_convolution;
+package depthwise_separable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -70,11 +71,13 @@ public class DepthwiseConvolutionKernel extends Kernel {
     DFEVector<DFEVar> lbuf = lineBuffer.getOutputVec();
 
     // prepare input for the PE
-    List<DFEVector<DFEVar>> ifmapPE = getIfmapPE(lbuf, parDepth, parWidth, kernelSize, T);
-    List<DFEVector<DFEVar>> weightsPE = getWeightsPE(weights, parDepth, parWidth, kernelSize, T);
+    List<DFEVector<DFEVar>> ifmapPE = getIfmapPE(this, lbuf, parDepth, parWidth, kernelSize, T);
+    List<DFEVector<DFEVar>> weightsPE =
+        getWeightsPE(this, weights, parDepth, parWidth, kernelSize, T);
 
     // run PE
-    DFEVector<DFEVar> ofmapPE = process(ifmapPE, weightsPE, parDepth, parWidth, kernelSize, T);
+    DFEVector<DFEVar> ofmapPE =
+        process(this, ifmapPE, weightsPE, parDepth, parWidth, kernelSize, T);
 
     // add bias
     DFEVector<DFEVar> ofmapBias = addBias(ofmapPE, bias, parDepth, parWidth);
@@ -83,14 +86,14 @@ public class DepthwiseConvolutionKernel extends Kernel {
     ofmap.connect(ofmapBias);
   }
 
-  private DFEVector<DFEVar> process(List<DFEVector<DFEVar>> ifmapPE,
+  public static DFEVector<DFEVar> process(KernelBase<?> owner, List<DFEVector<DFEVar>> ifmapPE,
       List<DFEVector<DFEVar>> weightsPE, int parDepth, int parWidth, int kernelSize, DFEType T) {
     DFEVectorType<DFEVar> vT = new DFEVectorType<DFEVar>(T, parDepth * parWidth);
-    DFEVector<DFEVar> v = vT.newInstance(getKernel());
+    DFEVector<DFEVar> v = vT.newInstance(owner);
 
     for (int pd = 0; pd < parDepth; pd++) {
       for (int pw = 0; pw < parWidth; pw++) {
-        DotProductKernel dp = new DotProductKernel(getKernel(), kernelSize * kernelSize, T);
+        DotProductKernel dp = new DotProductKernel(owner, kernelSize * kernelSize, T);
         dp.setInputs(ifmapPE.get(pd * parWidth + pw), weightsPE.get(pd * parWidth + pw));
         v[pd * parWidth + pw].connect(dp.getOutput());
       }
@@ -127,8 +130,8 @@ public class DepthwiseConvolutionKernel extends Kernel {
    * @param lbuf
    * @return
    */
-  private List<DFEVector<DFEVar>> getIfmapPE(DFEVector<DFEVar> lbuf, int parDepth, int parWidth,
-      int kernelSize, DFEType T) {
+  public static List<DFEVector<DFEVar>> getIfmapPE(KernelBase<?> owner, DFEVector<DFEVar> lbuf,
+      int parDepth, int parWidth, int kernelSize, DFEType T) {
     DFEVectorType<DFEVar> vT = new DFEVectorType<DFEVar>(T, kernelSize * kernelSize);
     List<DFEVector<DFEVar>> ifmapPE = new ArrayList<DFEVector<DFEVar>>();
 
@@ -137,7 +140,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
 
     for (int pd = 0; pd < parDepth; pd++) {
       for (int pw = 0; pw < parWidth; pw++) {
-        DFEVector<DFEVar> v = vT.newInstance(getKernel());
+        DFEVector<DFEVar> v = vT.newInstance(owner);
 
         for (int kh = 0; kh < kernelSize; kh++) {
           for (int kw = 0; kw < kernelSize; kw++) {
@@ -153,14 +156,14 @@ public class DepthwiseConvolutionKernel extends Kernel {
     return ifmapPE;
   }
 
-  private List<DFEVector<DFEVar>> getWeightsPE(DFEVector<DFEVar> weights, int parDepth,
-      int parWidth, int kernelSize, DFEType T) {
+  public static List<DFEVector<DFEVar>> getWeightsPE(KernelBase<?> owner,
+      DFEVector<DFEVar> weights, int parDepth, int parWidth, int kernelSize, DFEType T) {
     DFEVectorType<DFEVar> vT = new DFEVectorType<DFEVar>(T, kernelSize * kernelSize);
     List<DFEVector<DFEVar>> weightsPE = new ArrayList<DFEVector<DFEVar>>();
 
     for (int pd = 0; pd < parDepth; pd++) {
       for (int pw = 0; pw < parWidth; pw++) {
-        DFEVector<DFEVar> v = vT.newInstance(getKernel());
+        DFEVector<DFEVar> v = vT.newInstance(owner);
         for (int k = 0; k < kernelSize * kernelSize; k++) {
           int idx = pd * kernelSize * kernelSize + k;
           v[k].connect(weights[idx]);

@@ -17,6 +17,7 @@ public class DepthwiseConvolutionEngineParameters extends EngineParameters {
     declareParam("PAR_WIDTH", DataType.INT, 1);
     declareParam("PAR_DEPTH", DataType.INT, 1);
     declareParam("FREQ", DataType.INT, 200);
+    declareParam("USE_WINOGRAD", DataType.BOOL, false);
     declareParam("DEBUG", DataType.BOOL, false);
   }
 
@@ -44,6 +45,9 @@ public class DepthwiseConvolutionEngineParameters extends EngineParameters {
     return getParam("PAR_DEPTH");
   }
 
+  public boolean getUseWinograd() {
+    return getParam("USE_WINOGRAD");
+  }
 
   public int getFreq() {
     return getParam("FREQ");
@@ -55,9 +59,8 @@ public class DepthwiseConvolutionEngineParameters extends EngineParameters {
 
   @Override
   public String getBuildName() {
-    return String.format("%s_%s_%s_th%d_tw%d_tc%d_pw%d_pc%d_%dMHz%s", getMaxFileName(),
+    return String.format("%s_%s_%s_th%d_tw%d_tc%d_pw%d_pc%d_wg%d_%dMHz%s", getMaxFileName(),
         getDFEModel(), getTarget(), getTileHeight(), getTileWidth(), getTileDepth(), getParWidth(),
-        getParDepth(), getFreq(), (getDebug() ? "_debug" : ""));
+        getParDepth(), getUseWinograd() ? 1 : 0, getFreq(), (getDebug() ? "_debug" : ""));
   }
-
 }
