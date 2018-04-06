@@ -1,29 +1,13 @@
 import math
 import numpy as np
+from utils import ConvLayer
 
 FILTER = "filter"
 CHANNEL = "channel"
 
 
-class ConvLayer:
-  def __init__(self, name, H, W, C, F, K, T):
-    self.name = name
-    self.H = H
-    self.W = W
-    self.C = C
-    self.F = F
-    self.K = K
-    self.T = T  # type
-
-  def __str__(self):
-    return "%10s: <%4d, %4d, %4d, %4d, %4d, %10s>" % (self.name, self.H, self.W, self.C, self.F, self.K, self.T)
-
-  def __repr__(self):
-    return self.__str__()
-
-
 class BaseConvSimDesign(object):
-  def __init__(self, layer, P_W, P_C, P_F, seq):
+  def __init__(self, layer, P_W, P_C, P_F, seq, is_buf_input=True):
     self.layer = layer
     self.p_f = P_F
     self.p_c = P_C
@@ -32,6 +16,7 @@ class BaseConvSimDesign(object):
     self.next = None
     self.seq = seq
     self.tick = 0
+    self.is_buf_input = is_buf_input
 
     self.H = int(self.layer.H)
     self.W = int(self.layer.W / P_W)
@@ -81,25 +66,37 @@ class PointwiseConvSimDesign(BaseConvSimDesign):
   @property
   def input_addr(self):
     f, c, h, w = self.state
-    if self.prev:
-      if self.prev.seq == FILTER:
-        return h * self.W + w
-      elif self.prev.seq == CHANNEL:
-        return c * self.H * self.W + h * self.W + w
-    else:
+    if self.is_buf_input:
       if self.seq == CHANNEL:
         return h * self.W + w
       elif self.seq == FILTER:
         return c * self.H * self.W + h * self.W + w
+    else:
+      if self.prev:
+        if self.prev.seq == FILTER:
+          return h * self.W + w
+        elif self.prev.seq == CHANNEL:
+          return c * self.H * self.W + h * self.W + w
+      else:
+        if self.seq == CHANNEL:
+          return h * self.W + w
+        elif self.seq == FILTER:
+          return c * self.H * self.W + h * self.W + w
 
   @property
   def output_addr(self):
     f, c, h, w = self.state
-    if self.next:
-      if self.next.seq == CHANNEL:
-        return h * self.W + w
-      elif self.next.seq == FILTER:
-        return f * self.H * self.W + h * self.W + w
+    if self.is_buf_input:
+      if self.next:
+        if self.next.seq == CHANNEL:
+          return h * self.W + w
+        elif self.next.seq == FILTER:
+          return f * self.H * self.W + h * self.W + w
+      else:
+        if self.seq == FILTER:
+          return h * self.W + w
+        elif self.seq == CHANNEL:
+          return f * self.H * self.W + h * self.W + w
     else:
       if self.seq == FILTER:
         return h * self.W + w
@@ -162,27 +159,39 @@ class StandardConvSimDesign(BaseConvSimDesign):
   @property
   def input_addr(self):
     f, c, h, w = self.state
-    if self.prev:
-      if self.prev.seq == FILTER:
-        return h * self.W + w
-      elif self.prev.seq == CHANNEL:
-        return c * self.H * self.W + h * self.W + w
-    else:
+    if self.is_buf_input:
       if self.seq == CHANNEL:
         return h * self.W + w
       elif self.seq == FILTER:
         return c * self.H * self.W + h * self.W + w
+    else:
+      if self.prev:
+        if self.prev.seq == FILTER:
+          return h * self.W + w
+        elif self.prev.seq == CHANNEL:
+          return c * self.H * self.W + h * self.W + w
+      else:
+        if self.seq == CHANNEL:
+          return h * self.W + w
+        elif self.seq == FILTER:
+          return c * self.H * self.W + h * self.W + w
 
   @property
   def output_addr(self):
     f, c, h, w = self.state
     out_h = self.out_h(h)
     out_w = self.out_w(w)
-    if self.next:
-      if self.next.seq == CHANNEL:
-        return out_h * self.OW + out_w
-      elif self.next.seq == FILTER:
-        return f * self.OH * self.OW + out_h * self.OW + out_w
+    if self.is_buf_input:  # output depends on the next
+      if self.next:
+        if self.next.seq == CHANNEL:
+          return out_h * self.OW + out_w
+        elif self.next.seq == FILTER:
+          return f * self.OH * self.OW + out_h * self.OW + out_w
+      else:
+        if self.seq == FILTER:
+          return out_h * self.OW + out_w
+        elif self.seq == CHANNEL:
+          return f * self.OH * self.OW + out_h * self.OW + out_w
     else:
       if self.seq == FILTER:
         return out_h * self.OW + out_w
@@ -205,19 +214,23 @@ class StandardConvSimDesign(BaseConvSimDesign):
     return f == self.F - 1
 
 
-def make_conv_sim_design(layer, param, seq):
+def make_conv_sim_design(layer, param, seq, is_buf_input=True):
   if layer.T == 'depthwise':
-    return DepthwiseConvSimDesign(layer, param['P_W'], param['P_C'], param['P_C'], seq)
+    return DepthwiseConvSimDesign(layer, param['P_W'], param['P_C'], param['P_C'],
+                                  seq, is_buf_input=is_buf_input)
   if layer.T == 'pointwise':
-    return PointwiseConvSimDesign(layer, param['P_W'], param['P_C'], param['P_F'], seq)
+    return PointwiseConvSimDesign(layer, param['P_W'], param['P_C'], param['P_F'],
+                                  seq, is_buf_input=is_buf_input)
   if layer.T == 'standard':
-    return StandardConvSimDesign(layer, param['P_W'], param['P_C'], param['P_F'], seq)
+    return StandardConvSimDesign(layer, param['P_W'], param['P_C'], param['P_F'],
+                                 seq, is_buf_input=is_buf_input)
 
 
 class Buffer(object):
-  def __init__(self, depth):
+  def __init__(self, depth, width):
     self.state = np.vstack([np.zeros(depth, dtype=np.bool),
                             np.ones(depth, dtype=np.bool)]).T
+    self.size = width * depth
 
   def readable(self, addr):
     return self.state[addr][0]
@@ -238,14 +251,24 @@ class Buffer(object):
     self.state[addr][1] = False
 
 
-def get_output_buffer_depth(design):
-  if design.seq == FILTER:
-    return int(design.OH * design.OW)
-  if design.seq == CHANNEL:
-    return int(design.OH * design.OW * design.F)
+def get_output_buffer_depth(design, is_buf_input=True):
+  if is_buf_input:
+    if design.next.seq == CHANNEL:
+      return int(design.OH * design.OW)
+    if design.next.seq == FILTER:
+      return int(design.OH * design.OW * design.F)
+  else:
+    if design.seq == FILTER:
+      return int(design.OH * design.OW)
+    if design.seq == CHANNEL:
+      return int(design.OH * design.OW * design.F)
 
 
-def run_dataflow_sim(N, block, params, seqs):
+def get_output_buffer_width(design):
+  return design.p_f * design.p_w
+
+
+def run_dataflow_sim(N, block, params, seqs, is_buf_input=True):
   """
   :param N: batch size
   :param block: list of layers in a block
@@ -255,7 +278,7 @@ def run_dataflow_sim(N, block, params, seqs):
   """
 
   # set up block designs
-  block_design = [make_conv_sim_design(layer, params[layer.name], seqs[idx])
+  block_design = [make_conv_sim_design(layer, params[layer.name], seqs[idx], is_buf_input=is_buf_input)
                   for idx, layer in enumerate(block)]
   for i in range(len(block)):
     if i < len(block) - 1:
@@ -264,8 +287,10 @@ def run_dataflow_sim(N, block, params, seqs):
       block_design[i].prev = block_design[i-1]
 
   # initialise buffers
-  buffers = [Buffer(get_output_buffer_depth(design))
+  buffers = [Buffer(get_output_buffer_depth(design, is_buf_input=is_buf_input),
+                    get_output_buffer_width(design))
              for design in block_design[:-1]]
+  buffer_size = np.sum([b.size for b in buffers])
 
   batch = 0
   global_tick = 0
@@ -313,4 +338,4 @@ def run_dataflow_sim(N, block, params, seqs):
 
     global_tick += 1
 
-  return output_ticks
+  return output_ticks, buffer_size
