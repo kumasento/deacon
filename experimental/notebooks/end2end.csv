@@ -1,2 +1,5 @@
-model_name,accuracy,performance
-VGG-16,0.9075,300.0
+model_name,accuracy,performance,latency,size
+VGG-16,0.9075,752.36,37.2,138.34
+ResNet-50,0.935,655.7,10.3,24.30
+MobileNetV1,0.8825,182.87,6.22,4.21
+MobileNetV2,0.875,95.34,6.40,3.47
