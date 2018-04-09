@@ -63,6 +63,43 @@ VGG16_OPT = ConvNet([
     MatmulLayer("fc8", 4096, 1000),
 ])
 
+VGG16_OPT_V2 = ConvNet([
+    ConvLayer("conv1_1", 224, 224, 3, 64, 3, STD),
+    ConvLayer("conv1_2", 224, 224, 64, 64, 3, STD),
+    ConvLayer("conv2_1", 112, 112, 64, 128, 3, STD),
+    ConvLayer("conv2_2", 112, 112, 128, 128, 3, STD),
+    ConvLayer("conv3_1", 56, 56, 128, 256, 3, STD),
+    ConvLayer("conv3_2", 56, 56, 256, 256, 3, STD),
+    ConvLayer("conv3_3", 56, 56, 256, 256, 3, STD),
+    DepthwiseSeparableBlock("conv4_1", 28, 28, 256, 512, 3, 1),
+    DepthwiseSeparableBlock("conv4_2", 28, 28, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv4_3", 28, 28, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_1", 14, 14, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_2", 14, 14, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_3", 14, 14, 512, 512, 3, 1),
+    MatmulLayer("fc6", 7 * 7 * 512, 4096),
+    MatmulLayer("fc7", 4096, 4096),
+    MatmulLayer("fc8", 4096, 1000),
+])
+
+VGG16_OPT_V5 = ConvNet([
+    DepthwiseSeparableBlock("conv1_1", 224, 224, 3, 64, 3, 1),
+    DepthwiseSeparableBlock("conv1_2", 224, 224, 64, 64, 3, 1),
+    DepthwiseSeparableBlock("conv2_1", 112, 112, 64, 128, 3, 1),
+    DepthwiseSeparableBlock("conv2_2", 112, 112, 128, 128, 3, 1),
+    DepthwiseSeparableBlock("conv3_1", 56, 56, 128, 256, 3, 1),
+    DepthwiseSeparableBlock("conv3_2", 56, 56, 256, 256, 3, 1),
+    DepthwiseSeparableBlock("conv3_3", 56, 56, 256, 256, 3, 1),
+    DepthwiseSeparableBlock("conv4_1", 28, 28, 256, 512, 3, 1),
+    DepthwiseSeparableBlock("conv4_2", 28, 28, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv4_3", 28, 28, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_1", 14, 14, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_2", 14, 14, 512, 512, 3, 1),
+    DepthwiseSeparableBlock("conv5_3", 14, 14, 512, 512, 3, 1),
+    MatmulLayer("fc6", 7 * 7 * 512, 4096),
+    MatmulLayer("fc7", 4096, 4096),
+    MatmulLayer("fc8", 4096, 1000),
+])
 RESNET50 = ConvNet([
     ConvLayer('conv2_1/conv1', 56, 56, 64, 64, 1, PNT),
     ConvLayer('conv2_1/conv2', 56, 56, 64, 64, 3, STD, P=1),

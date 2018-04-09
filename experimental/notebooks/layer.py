@@ -118,12 +118,13 @@ class BottleneckBlock(ConvBlock):
   def __init__(self, name, H, W, C1, C2, F, K, S):
     super().__init__(name)
 
+    self.S = S
     HH = int(H / 2) if S == 2 else H
     WW = int(W / 2) if S == 2 else W
 
     self.layers = [
         ConvLayer('%s/conv1' % name, H, W, C1, C2, 1, PNT, S=S, P=0),
-        ConvLayer('%s/conv2' % name, HH, WW, C2, C2, 3, STD, S=1, P=1),
+        ConvLayer('%s/conv2' % name, HH, WW, C2, C2, K, STD, S=1, P=1),
         ConvLayer('%s/conv3' % name, HH, WW, C2, F, 1, PNT, S=1, P=0)
     ]
 
@@ -137,6 +138,7 @@ class DepthwiseSeparableBlock(ConvBlock):
   def __init__(self, name, H, W, C, F, K, S):
     super().__init__(name)
 
+    self.S = S
     HH = int(H / 2) if S == 2 else H
     WW = int(W / 2) if S == 2 else W
 
@@ -151,6 +153,7 @@ class SeparableBottleneckBlock(ConvBlock):
   def __init__(self, name, H, W, C1, C2, F, K, S):
     super().__init__(name)
 
+    self.S = S
     HH = int(H / 2) if S == 2 else H
     WW = int(W / 2) if S == 2 else W
 

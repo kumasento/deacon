@@ -29,7 +29,7 @@ class StratixVPlatform(Platform):
 
   @property
   def max_DSP(self):
-    return 3926
+    return 1963
 
   @staticmethod
   def get_DSP(num_mult, bit_width):
