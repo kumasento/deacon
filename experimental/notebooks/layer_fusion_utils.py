@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from utils import ConvLayer
+from layer import ConvLayer
 
 FILTER = "filter"
 CHANNEL = "channel"
