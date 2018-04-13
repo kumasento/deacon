@@ -1,0 +1,77 @@
+package resnet;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+
+public class ResidualNetworkBottleneckKernel extends Kernel {
+
+  public class BottleneckParameters {
+    public class TileShape {
+      public int height;
+      public int width;
+      public int inDepth;
+      public int parWidth;
+      public int parInDepth;
+    }
+
+    public TileShape[] tiles;
+    public int outDepth;
+    public int parOutDepth;
+    public int stride;
+    public int kernelSize;
+    public boolean useWinograd = false;
+
+    public static final int NUM_LAYERS = 3;
+
+    public BottleneckParameters() {
+      tiles = new TileShape[NUM_LAYERS];
+    }
+
+    public void setTile(int idx, int height, int width, int inDepth, int parWidth, int parInDepth) {
+      tiles[idx].height = height;
+      tiles[idx].width = width;
+      tiles[idx].inDepth = inDepth;
+      tiles[idx].parWidth = parWidth;
+      tiles[idx].parInDepth = parInDepth;
+    }
+
+    public void setOutDepth(int outDepth) {
+      this.outDepth = outDepth;
+    }
+
+    public void setParOutDepth(int parOutDepth) {
+      this.parOutDepth = parOutDepth;
+    }
+
+    public void setStride(int stride) {
+      this.stride = stride;
+    }
+
+    public void setKernelSize(int kernelSize) {
+      this.kernelSize = kernelSize;
+    }
+
+    public void setUseWinograd(boolean useWinograd) {
+      this.useWinograd = useWinograd;
+    }
+  }
+
+  public static final String[] INPUTS = {"ifmap", "weights_a", "weights_b", "weights_c"};
+  public static final String[] OUTPUTS = {"ofmap"};
+
+  public ResidualNetworkBottleneckKernel(KernelParameters params, BottleneckParameters bp,
+      DFEType T, boolean dbg) {
+    super(params);
+
+    /**
+     * Counters
+     */
+    CounterChain chain = control.count.makeCounterChain();
+
+    DFEVar f = chain.addCounter(bp.outDepth / bp.parOutDepth, 1);
+  }
+
+}

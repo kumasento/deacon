@@ -644,7 +644,7 @@ void RunDfe(max_engine_t *engine, std::vector<T> &ifmap,
   auto end = std::chrono::system_clock::now();
 
   auto float_ofmap = FixedToFloat<DT, T>(fixed_ofmap);
-  for (int i = 0; i < ofmap.size(); i++) ofmap[i] = float_ofmap[i];
+  for (int i = 0; i < (int)ofmap.size(); i++) ofmap[i] = float_ofmap[i];
 
   auto N = (uint64_t)height * width * depth * kernel_size * kernel_size;
   std::chrono::duration<double> elapsed = end - start;

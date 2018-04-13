@@ -21,7 +21,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
 
   public static final String[] INPUTS = {"ifmap", "weights", "bias"};
   public static final String[] OUTPUTS = {"ofmap"};
-
+  public static final boolean OPT = true;
 
   public DepthwiseConvolutionKernel(KernelParameters params, int tileHeight, int tileWidth,
       int tileDepth, int kernelSize, int parWidth, int parDepth, DFEType T, boolean dbg) {
@@ -156,6 +156,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
       // connect output
       ofmap.connect(ofmapBias);
     }
+
   }
 
   public static DFEVector<DFEVar> getIfmapWinogradPE(KernelBase<?> owner, DFEVector<DFEVar> ifmap,
@@ -165,7 +166,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
     DFEVector<DFEVar> R = RT.newInstance(owner);
 
     for (int i = 0; i < parInDepth; i++) {
-      WinogradIfmapTransform winogradTransform = new WinogradIfmapTransform(owner, T);
+      WinogradIfmapTransform winogradTransform = new WinogradIfmapTransform(owner, T, OPT);
 
       DFEVector<DFEVar> input = winogradTransform.getInputT().newInstance(owner);
       for (int j = 0; j < TILE_SIZE * TILE_SIZE; j++)
@@ -187,7 +188,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
     DFEVector<DFEVar> R = RT.newInstance(owner);
 
     for (int i = 0; i < parInDepth; i++) {
-      WinogradWeightsTransform winogradTransform = new WinogradWeightsTransform(owner, T);
+      WinogradWeightsTransform winogradTransform = new WinogradWeightsTransform(owner, T, OPT);
 
       DFEVector<DFEVar> input = winogradTransform.getInputT().newInstance(owner);
       for (int j = 0; j < kernelSize * kernelSize; j++)
@@ -247,7 +248,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
         TO[j].connect(r);
       }
 
-      WinogradInverseTransform transform = new WinogradInverseTransform(owner, T);
+      WinogradInverseTransform transform = new WinogradInverseTransform(owner, T, OPT);
       transform.setInputMatrix(TO);
       DFEVector<DFEVar> trans = transform.getOutput();
 
