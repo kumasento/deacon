@@ -20,6 +20,11 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
+/**
+ * Manager related utilities.
+ * 
+ * @author rz3515
+ */
 public class ConvLayerManagerUtils {
 
   public static final String IFMAP_NAME = "ifmap";
@@ -82,8 +87,11 @@ public class ConvLayerManagerUtils {
     // create computing blocks
     for (ConvLayerParameters cp : cps) {
       String knlName = getKernelName(cp);
-      knls.put(knlName,
-          mgr.addKernel(new ConvLayerWrapKernel(mgr.makeKernelParameters(knlName), cp)));
+
+      mgr.logInfo("Generating kernel %s", knlName);
+      KernelBlock knl =
+          mgr.addKernel(new ConvLayerWrapKernel(mgr.makeKernelParameters(knlName), cp));
+      knls.put(knlName, knl);
     }
 
     // create padding blocks

@@ -1,0 +1,11 @@
+#!/bin/sh
+# This script runs all the tests of this evaluation project.
+
+MAXDEEP_DIR=$HOME/projects/maxdeep
+BUILD_DIR=$MAXDEEP_DIR/evaluation/build
+MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/rz3515/builds
+
+# Single convolution layer
+cd $BUILD_DIR/conv_single_layer
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR
+cd -
