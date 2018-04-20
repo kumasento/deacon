@@ -44,11 +44,10 @@ SEQ?=0
 FREQ?=100
 USE_DRAM?=true
 USE_DRAM_SUFFIX:=PCIe
-ifeq ($(USE_DRAM), true)
 
+ifeq ($(USE_DRAM), true)
 USE_DRAM_SUFFIX:=DRAM
 EXTRA_CFLAGS:=-DUSE_DRAM
-
 endif
 
 
