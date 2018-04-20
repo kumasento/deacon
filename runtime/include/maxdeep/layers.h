@@ -1,10 +1,13 @@
 /**
- * Layers
+ * Layers - implemented software version of various CNN layers.
  */
 
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <glog/logging.h>
+
+#include "maxdeep/utils.h"
 
 template <typename T>
 void depthwise_separable_conv_layer(T *ifmap, T *coeff, T *ofmap, int H, int W,
@@ -48,71 +51,115 @@ void depthwise_separable_conv_layer(T *ifmap, T *coeff, T *ofmap, int H, int W,
   }
 }
 
-template <typename T, int T_H, int T_W, int T_C, int T_F>
-void conv_layer(T *input, T *weights, T *bias, T *output, int H, int W, int C,
-                int F, int K, int P, int S) {
-  auto O_H = (H - K + 2 * P) / S + 1;
-  auto O_W = (W - K + 2 * P) / S + 1;
+int GetConvLayerInputDim(int output_dim, int K, int P, int S) {
+  // sanity checks
+  CHECK_GT(output_dim, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
 
-  auto num_tile_h = static_cast<int>(ceil(static_cast<float>(O_H) / T_H));
-  auto num_tile_w = static_cast<int>(ceil(static_cast<float>(O_W) / T_W));
-  auto num_tile_c = static_cast<int>(ceil(static_cast<float>(C) / T_C));
-  auto num_tile_f = static_cast<int>(ceil(static_cast<float>(F) / T_F));
+  return (output_dim - 1) * S + K - 2 * P;
+}
 
-  auto T_H_i = T_H * S + 2 * P;
-  auto T_W_i = T_W * S + 2 * P;
+int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
+  // sanity checks
+  CHECK_GT(input_dim, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
+  CHECK_EQ((input_dim - K + 2 * P) % S, 0);
 
-  auto input_tile =
-      reinterpret_cast<T *>(malloc(sizeof(T) * T_H_i * T_W_i * T_C));
-  auto weight_tile =
-      reinterpret_cast<T *>(malloc(sizeof(T) * T_F * T_C * K * K));
-  auto bias_tile = reinterpret_cast<T *>(malloc(sizeof(T) * T_F));
-  auto output_tile = reinterpret_cast<T *>(malloc(sizeof(T) * T_H * T_W * T_F));
+  return (input_dim - K + 2 * P) / S + 1;
+}
 
-  for (int t_f = 0; t_f < num_tile_f; t_f++) {
-    for (int t_h = 0; t_h < num_tile_h; t_h++) {
-      for (int t_w = 0; t_w < num_tile_w; t_w++) {
-        auto num_f = std::min(T_F, F - t_f * T_F);
-        auto num_h = std::min(T_H, H - t_h * T_H);
-        auto num_w = std::min(T_W, W - t_w * T_W);
+/*! An implementation of convolution layer in software.
+ *
+ * No tiling involved in this implementation.
+ */
+template <typename T>
+void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
+                  std::vector<T> &bias, std::vector<T> &output, int H, int W,
+                  int C, int F, int K, int P, int S, bool use_bias = true) {
+  CHECK_GT(H, 0);
+  CHECK_GT(W, 0);
+  CHECK_GT(C, 0);
+  CHECK_GT(F, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
 
-        for (int f_i = 0; f_i < num_f; f_i++) {
-          for (int o_h_i = 0; o_h_i < num_h; o_h_i++) {
-            for (int o_w_i = 0; o_w_i < num_w; o_w_i++) {
-              auto f = f_i + t_f * T_F;
-              auto o_h = o_h_i + t_h * T_H;
-              auto o_w = o_w_i + t_w * T_W;
-              auto o_i = f * O_H * O_W + o_h * O_W + o_w;
-              auto o_i_i = f_i * T_H * T_W + o_h_i * T_W + o_w_i;
+  auto OH = GetConvLayerOutputDim(H, K, P, S);
+  auto OW = GetConvLayerOutputDim(W, K, P, S);
 
-              output_tile[o_i_i] = bias_tile[f];
+  for (int f = 0; f < F; f++) {
+    for (int oh = 0; oh < OH; oh++) {
+      for (int ow = 0; ow < OW; ow++) {
+        auto oi = f * OH * OW + oh * OW + ow;
 
-              for (int t_c = 0; t_c < num_tile_c; t_c++) {
-                auto num_c = std::min(T_C, C - t_c * T_C);
+        output[oi] = (use_bias) ? bias[f] : static_cast<T>(0.0f);
 
-                for (int c_i = 0; c_i < num_c; c_i++) {
-                  auto c = c_i + t_c * T_C;
-                  for (int k_h = 0; k_h < K; k_h++) {
-                    for (int k_w = 0; k_w < K; k_w++) {
-                      auto i_h_i = o_h_i * S + k_h - P;
-                      auto i_w_i = o_w_i * S + k_w - P;
+        for (int c = 0; c < C; c++) {
+          for (int kh = 0; kh < K; kh++) {
+            for (int kw = 0; kw < K; kw++) {
+              auto ih = oh * S + kh - P;
+              auto iw = ow * S + kw - P;
 
-                      if (i_h_i < 0 || i_h_i >= T_H_i || i_w_i < 0 ||
-                          i_w_i >= T_W_i)
-                        continue;
+              if (ih < 0 || ih >= H || iw < 0 || iw >= W) continue;
 
-                      auto i_i = c_i * T_H_i * T_W_i + i_h_i * T_W_i + i_w_i;
-                      auto w_i =
-                          f_i * T_C * K * K + c_i * K * K + k_h * K + k_w;
-                      output_tile[o_i_i] += input_tile[i_i] * weight_tile[w_i];
-                    }
-                  }
-                }
-              }
+              auto input_val = input[c * H * W + ih * W + iw];
+              auto weights_val =
+                  weights[f * C * K * K + c * K * K + kh * K + kw];
+
+#if 0
+              printf(
+                  "f = %3d c = %3d oh = %3d ow = %3d kh = %3d kw = %3d input = "
+                  "% 2d weight = % 2d\n",
+                  f, c, oh, ow, kh, kw, input_val, weights_val);
+#endif
+              output[oi] += input_val * weights_val;
             }
           }
         }
       }
     }
   }
+}
+
+/*! Create tiled input for convolution layer.
+ *
+ * We will add zeros to the tiled result if P > 0.
+ */
+template <typename T>
+std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
+                                         int C, int F, int K, int P, int S,
+                                         int TH, int TW, int TC, int TF,
+                                         bool dfe = true) {
+  std::vector<T> tiled_input;
+
+  if (dfe) {
+    // simply do padding here
+    auto DFE_TH = GetConvLayerInputDim(TH, K, 0, S);
+    auto DFE_TW = GetConvLayerInputDim(TW, K, 0, S);
+    auto tiled_input_size = DFE_TH * DFE_TW * TC;
+    tiled_input.resize(tiled_input_size);
+
+    for (int c = 0; c < TC; c++) {
+      for (int h = 0; h < DFE_TH; h++) {
+        for (int w = 0; w < DFE_TW; w++) {
+          auto i = c * DFE_TH * DFE_TW + h * DFE_TW + w;
+          auto j = c * TH * TW + (h - P) * TW + (w - P);
+
+          if (h < P || h >= DFE_TH - P || w < P || w >= DFE_TW - P)
+            tiled_input[i] = static_cast<T>(0.0f);
+          else
+            tiled_input[i] = input[j];
+
+          // printf("c = %3d h = %3d w = %3d i = %5d j = %5d res = %6d\n", c, h,
+          // w, i, j, tiled_input[i]);
+        }
+      }
+    }
+  }
+
+  return tiled_input;
 }

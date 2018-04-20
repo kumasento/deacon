@@ -32,7 +32,7 @@ public class ConvSingleLayerManager extends CustomManager {
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
-    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM());
+    ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM(), this);
     // ConvSingleLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
 
     return ei;
@@ -49,14 +49,9 @@ public class ConvSingleLayerManager extends CustomManager {
     int K = params.getK();
 
     ConvLayerParameters cp =
-        new ConvLayerParameters.Builder(H, W, C, F, K)
-            .name("conv")
-            .PC(params.getPC())
-            .PF(params.getPF())
-            .PK(params.getPK())
-            .BW(params.getBitWidth())
-            .seq(CompSeq.values()[params.getSeq()])
-            .build();
+        new ConvLayerParameters.Builder(H, W, C, F, K).name("conv").PC(params.getPC())
+            .PF(params.getPF()).PK(params.getPK()).BW(params.getBitWidth())
+            .seq(CompSeq.values()[params.getSeq()]).dbg(false).build();
 
     ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);
     mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));
@@ -65,6 +60,7 @@ public class ConvSingleLayerManager extends CustomManager {
     buildConfig.setBuildEffort(Effort.HIGH);
     buildConfig.setMPPRCostTableSearchRange(1, 4);
     buildConfig.setMPPRParallelism(4);
+
     mgr.build();
   }
 }

@@ -38,7 +38,7 @@ RUNTIME?=$(WHEREISROOT)/runtime
 # ---- Source files ----
 MAXDEEPFILES=$(shell find $(MAXDEEP)/ -type f -name '*.maxj')
 ENGINEFILES=$(wildcard $(SRCROOT)/$(APPPKG)/*.maxj $(SRCROOT)/$(APPPKG)/**/*.maxj $(MAXDEEPFILES))
-CPUFILES=$(wildcard $(SRCROOT)/*.c $(RUNTIME)/include/**.h $(SRCROOT)/$(APPPKG)/*.cpp $(SRCROOT)/$(APPPKG)/include/**/*.h)
+CPUFILES=$(wildcard $(SRCROOT)/*.c $(SRCROOT)/$(APPPKG)/*.cpp)
 # TESTENGINEFILES=$(wildcard ../test/maxdeep/*.maxj) $(ENGINEFILES)
 
 # ---- Compiler settings ----

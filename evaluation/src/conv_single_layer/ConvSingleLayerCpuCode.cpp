@@ -3,72 +3,118 @@
 #include <cstdlib>
 #include <chrono>
 #include <ctime>
+#include <vector>
 #include <getopt.h>
+#include <glog/logging.h>
 
 #include "Maxfiles.h"
+#include "maxdeep/layers.h"
 
-typedef int16_t data_t;
+typedef int16_t T;
 
-int main(int argc, char *argv[]) {
-  char c;
+max_file_t *max_file;
+max_engine_t *engine;
 
-  uint64_t batch_size = 1;
-  uint64_t num_iters = 1;
-  while ((c = getopt(argc, argv, "i:n:")) != -1)
-    switch (c) {
-      case 'i':
-        num_iters = atoi(optarg);
-        break;
-      case 'n':
-        batch_size = atoi(optarg);
-        break;
-      default:
-        exit(1);
-    }
-
-  max_file_t *max_file = ConvSingleLayer_init();
-  max_engine_t* engine = max_load(max_file, "*");
-
-  uint64_t H = max_get_constant_uint64t(max_file, "conv_H");
-  uint64_t W = max_get_constant_uint64t(max_file, "conv_W");
-  uint64_t C = max_get_constant_uint64t(max_file, "conv_C");
-  uint64_t F = max_get_constant_uint64t(max_file, "conv_F");
-  uint64_t K = max_get_constant_uint64t(max_file, "conv_K");
-
-  uint64_t ifmap_num_elems = H * W * C * batch_size;
-  uint64_t coeff_0_num_elems = F * C *  K * K * batch_size;
-  uint64_t ofmap_num_elems = (H - K + 1) * (W - K + 1) * F * batch_size;
-
-  data_t *ifmap = (data_t *) malloc(sizeof(data_t) * ifmap_num_elems);
-  data_t *coeff_0 = (data_t *) malloc(sizeof(data_t) * coeff_0_num_elems);
-  data_t *ofmap = (data_t *) malloc(sizeof(data_t) * ofmap_num_elems);
-
-  for (uint64_t i = 0; i < ifmap_num_elems; i ++)
-    ifmap[i] = (rand() % 10) - 5;
-  for (uint64_t i = 0; i < coeff_0_num_elems; i ++)
-    coeff_0[i] = (rand() % 10) - 5;
+/*! Tiled convolution layer on DFE.
+ *
+ * We assume that all inputs are already tiled,
+ * and we output tiled results.
+ * Therefore, for cases when the input shape equals to the tile shape,
+ * we don't need any preprocessing and post-processing.
+ *
+ * NOTE that there is no explicit padding in the DFE -
+ * we just make sure that the tiled_input has padded zero values.
+ */
+template <typename T>
+void ConvLayerTiledDfe(std::vector<T> &tiled_input,
+                       std::vector<T> &tiled_weights,
+                       std::vector<T> &tiled_bias, std::vector<T> &tiled_output,
+                       int H, int W, int C, int F, int K, int P, int S, int TH,
+                       int TW, int TC, int TF) {
+  // get number of total tiles
+  auto OH = GetConvLayerOutputDim(H, K, P, S);
+  auto OW = GetConvLayerOutputDim(W, K, P, S);
+  auto NTH = GetNumTiles(OH, TH);
+  auto NTW = GetNumTiles(OW, TW);
+  auto NTC = GetNumTiles(C, TC);
+  auto NTF = GetNumTiles(F, TF);
+  auto NT = NTH * NTW * NTC * NTF;
 
   ConvSingleLayer_actions_t actions;
-  actions.param_batch_size = batch_size;
-#ifndef USE_DRAM
-    actions.instream_ifmap = (const data_t *) ifmap;
-    actions.instream_coeff_0 = (const data_t *) coeff_0;
-    actions.outstream_ofmap = ofmap;
-#endif 
+  actions.param_batch_size = NT;
+  actions.instream_ifmap = tiled_input.data();
+  actions.instream_coeff_0 = tiled_weights.data();
+  actions.outstream_ofmap = reinterpret_cast<T *>(tiled_output.data());
 
-  printf("Running ...\n");
+  std::cout << "Running convolution layer on DFE ..." << std::endl;
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
-  for (int i = 0; i < (int) num_iters; i ++)
-    ConvSingleLayer_run(engine, &actions);
+  ConvSingleLayer_run(engine, &actions);
   end = std::chrono::system_clock::now();
-  printf("Done\n");
+  std::cout << "Done" << std::endl;
 
-  std::chrono::duration<double> elapsed_seconds = end-start;
-  std::cout << "elapsed time: " << elapsed_seconds.count() / 1 << "s\n";
-  uint64_t num_ops = (H - K + 1) * (W - K + 1) * C * F * K * K * 2;
+  std::chrono::duration<double> elapsed_seconds = end - start;
+  std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+}
 
-  std::cout << "GOP/s: " << num_ops * batch_size * 1e-9 / elapsed_seconds.count() * num_iters << std::endl;
+template <typename T>
+void TestSingleTile() {
+  // get tile size
+  const int P = 1, S = 1;
+  auto DFE_TH = max_get_constant_uint64t(max_file, "conv_H");
+  auto DFE_TW = max_get_constant_uint64t(max_file, "conv_W");
+  auto TC = max_get_constant_uint64t(max_file, "conv_C");
+  auto TF = max_get_constant_uint64t(max_file, "conv_F");
+  auto K = max_get_constant_uint64t(max_file, "conv_K");
+  auto TH = GetConvLayerOutputDim(DFE_TH, K, 0, S);
+  auto TW = GetConvLayerOutputDim(DFE_TW, K, 0, S);
+  auto H = TH;
+  auto W = TW;
+  auto OH = GetConvLayerOutputDim(H, K, P, S);
+  auto OW = GetConvLayerOutputDim(W, K, P, S);
+  auto C = TC;
+  auto F = TF;
+
+  std::cout << "DFE Tile height: " << DFE_TH << std::endl;
+  std::cout << "DFE Tile width: " << DFE_TW << std::endl;
+  std::cout << "Tile input height: " << TH << std::endl;
+  std::cout << "Tile input width: " << TW << std::endl;
+  std::cout << "Tile input channels: " << TC << std::endl;
+  std::cout << "Tile output height: " << TH << std::endl;
+  std::cout << "Tile output width: " << TW << std::endl;
+  std::cout << "Tile output channels: " << TF << std::endl;
+
+  // initialise test array
+  int max_val = 5, min_val = 0;
+
+  auto input = CreateRandomArray<T>(C * H * W, min_val, max_val);
+  auto weights = CreateRandomArray<T>(F * C * K * K, min_val, max_val);
+  auto bias = CreateRandomArray<T>(F, min_val, max_val);
+  auto output_cpu = std::vector<T>(F * OH * OW);
+  auto output_dfe = std::vector<T>(F * OH * OW);
+
+  auto tiled_input = CreateConvLayerTiledInput<T>(input, H, W, C, F, K, P, S,
+                                                  TH, TW, TC, TF, true);
+  CHECK_EQ(tiled_input.size(), DFE_TH * DFE_TW * C);
+
+  ConvLayerCpu(input, weights, bias, output_cpu, H, W, C, F, K, P, S, false);
+  ConvLayerTiledDfe(tiled_input, weights, bias, output_dfe, H, W, C, F, K, P, S,
+                    TH, TW, TC, TF);
+
+  for (int i = 0; i < (int)(TF * TH * TW); i++)
+    if (output_cpu[i] != output_dfe[i]) {
+      fprintf(stderr, "Result mis-matched at %6d: cpu %6d dfe %6d\n", i,
+              output_cpu[i], output_dfe[i]);
+      exit(1);
+    }
+}
+
+int main(int argc, char *argv[]) {
+  max_file = ConvSingleLayer_init();
+  engine = max_load(max_file, "*");
+
+  // run test on single tile
+  TestSingleTile<T>();
 
   max_unload(engine);
   max_file_free(max_file);

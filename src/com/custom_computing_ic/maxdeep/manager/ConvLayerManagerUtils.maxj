@@ -88,7 +88,7 @@ public class ConvLayerManagerUtils {
     for (ConvLayerParameters cp : cps) {
       String knlName = getKernelName(cp);
 
-      mgr.logInfo("Generating kernel %s", knlName);
+      mgr.logMsg("Generating kernel %s ...", knlName);
       KernelBlock knl =
           mgr.addKernel(new ConvLayerWrapKernel(mgr.makeKernelParameters(knlName), cp));
       knls.put(knlName, knl);
@@ -96,14 +96,19 @@ public class ConvLayerManagerUtils {
 
     // create padding blocks
     Map<String, KernelBlock> padKnls = null;
-    if (useDRAM)
+    if (useDRAM) {
+      mgr.logMsg("Generating padding kernels for DRAM access");
       padKnls = createPaddingKernels(mgr, cps);
+    }
 
     KernelBlock knl = null;
 
+    // setting up streams
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
       knl = knls.get(getKernelName(cp));
+
+      mgr.logMsg("Setting up stream connections for %s", getKernelName(cp));
 
       // connect ifmap
       if (i == 0) {
@@ -365,6 +370,15 @@ public class ConvLayerManagerUtils {
 
       for (int i = 0; i < cps.size(); i++) {
         ConvLayerParameters cp = cps.get(i);
+
+        if (mgr != null) {
+          mgr.logMsg("Setup streams for kernel \"%s\"", cp.name);
+          mgr.logMsg("# cycles per batch: %d", cp.getNumCycles());
+          mgr.logMsg("# ifmap stream: %d", cp.getIfmapStreamNumElems());
+          mgr.logMsg("# coeff stream: %d", cp.getCoeffStreamNumElems());
+          mgr.logMsg("# ofmap stream: %d", cp.getOfmapStreamNumElems());
+          mgr.logMsg("coeff vec size: %d", cp.getCoeffVecSize());
+        }
 
         ei.setTicks(getKernelName(cp), cp.getNumCycles() * batchSize);
 
