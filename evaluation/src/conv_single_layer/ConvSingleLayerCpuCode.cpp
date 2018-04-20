@@ -55,6 +55,9 @@ void ConvLayerTiledDfe(std::vector<T> &tiled_input,
 
   std::chrono::duration<double> elapsed_seconds = end - start;
   std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+  auto gflops =
+      (2 * OH * OW * C * F * K * K) / (elapsed_seconds.count()) * 1e-9;
+  std::cout << "GFLOPS: " << gflops << std::endl;
 }
 
 template <typename T>
@@ -75,6 +78,7 @@ void TestSingleTile() {
   auto C = TC;
   auto F = TF;
 
+#if 0
   std::cout << "DFE Tile height: " << DFE_TH << std::endl;
   std::cout << "DFE Tile width: " << DFE_TW << std::endl;
   std::cout << "Tile input height: " << TH << std::endl;
@@ -83,6 +87,7 @@ void TestSingleTile() {
   std::cout << "Tile output height: " << TH << std::endl;
   std::cout << "Tile output width: " << TW << std::endl;
   std::cout << "Tile output channels: " << TF << std::endl;
+#endif
 
   // initialise test array
   int max_val = 5, min_val = 0;
@@ -107,6 +112,8 @@ void TestSingleTile() {
               output_cpu[i], output_dfe[i]);
       exit(1);
     }
+
+  printf("TEST single tile: " ANSI_COLOR_GREEN "PASSED!\n" ANSI_COLOR_RESET);
 }
 
 int main(int argc, char *argv[]) {
