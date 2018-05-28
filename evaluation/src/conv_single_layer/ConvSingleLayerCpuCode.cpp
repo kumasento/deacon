@@ -64,8 +64,11 @@ template <typename T>
 void TestSingleTile() {
   // get tile size
   const int P = 1, S = 1;
+
   auto DFE_TH = max_get_constant_uint64t(max_file, "conv_H");
   auto DFE_TW = max_get_constant_uint64t(max_file, "conv_W");
+  auto DFE_PC = max_get_constant_uint64t(max_file, "conv_PC");
+  auto DFE_PF = max_get_constant_uint64t(max_file, "conv_PF");
   auto TC = max_get_constant_uint64t(max_file, "conv_C");
   auto TF = max_get_constant_uint64t(max_file, "conv_F");
   auto K = max_get_constant_uint64t(max_file, "conv_K");
@@ -78,7 +81,6 @@ void TestSingleTile() {
   auto C = TC;
   auto F = TF;
 
-#if 0
   std::cout << "DFE Tile height: " << DFE_TH << std::endl;
   std::cout << "DFE Tile width: " << DFE_TW << std::endl;
   std::cout << "Tile input height: " << TH << std::endl;
@@ -87,24 +89,38 @@ void TestSingleTile() {
   std::cout << "Tile output height: " << TH << std::endl;
   std::cout << "Tile output width: " << TW << std::endl;
   std::cout << "Tile output channels: " << TF << std::endl;
-#endif
+  std::cout << "H: " << H << std::endl;
+  std::cout << "W: " << W << std::endl;
+  std::cout << "PF: " << DFE_PF << std::endl;
+  std::cout << "PC: " << DFE_PC << std::endl;
 
   // initialise test array
-  int max_val = 5, min_val = 0;
+  int max_val = 10, min_val = -10;
 
   auto input = CreateRandomArray<T>(C * H * W, min_val, max_val);
   auto weights = CreateRandomArray<T>(F * C * K * K, min_val, max_val);
   auto bias = CreateRandomArray<T>(F, min_val, max_val);
   auto output_cpu = std::vector<T>(F * OH * OW);
-  auto output_dfe = std::vector<T>(F * OH * OW);
+  auto tiled_output_dfe = std::vector<T>(F * OH * OW);
 
-  auto tiled_input = CreateConvLayerTiledInput<T>(input, H, W, C, F, K, P, S,
-                                                  TH, TW, TC, TF, true);
+  auto tiled_input = CreateConvLayerTiledInput<T>(input, H, W, C, K, P, S, TH,
+                                                  TW, TC, DFE_PC, true);
+  auto tiled_weights = CreateConvLayerTiledWeights<T>(weights, C, F, K, TC, TF,
+                                                      DFE_PC, DFE_PF, 1);
   CHECK_EQ(tiled_input.size(), DFE_TH * DFE_TW * C);
+  CHECK_EQ(tiled_weights.size(), C * F * K * K);
+
+  DumpArray<T>("input.txt", input.data(), input.size());
+  DumpArray<T>("tiled_input.txt", tiled_input.data(), tiled_input.size());
+  DumpArray<T>("weights.txt", weights.data(), weights.size());
+  DumpArray<T>("tiled_weights.txt", tiled_weights.data(), tiled_weights.size());
 
   ConvLayerCpu(input, weights, bias, output_cpu, H, W, C, F, K, P, S, false);
-  ConvLayerTiledDfe(tiled_input, weights, bias, output_dfe, H, W, C, F, K, P, S,
-                    TH, TW, TC, TF);
+  ConvLayerTiledDfe(tiled_input, tiled_weights, bias, tiled_output_dfe, H, W, C,
+                    F, K, P, S, TH, TW, TC, TF);
+
+  auto output_dfe = TransformConvLayerTiledOutput<T>(tiled_output_dfe, OH, OW,
+                                                     F, TH, TW, TF, DFE_PF);
 
   for (int i = 0; i < (int)(TF * TH * TW); i++)
     if (output_cpu[i] != output_dfe[i]) {
@@ -117,6 +133,8 @@ void TestSingleTile() {
 }
 
 int main(int argc, char *argv[]) {
+  srand(42);
+
   max_file = ConvSingleLayer_init();
   engine = max_load(max_file, "*");
 

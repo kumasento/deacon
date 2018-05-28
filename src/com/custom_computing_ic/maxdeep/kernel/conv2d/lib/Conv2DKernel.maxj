@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d.lib;
 
@@ -18,33 +18,38 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * This kernel implements the conv2d block.
- * 
+ *
  * INTERFACE: *described in ruby* < <<X(1 ,1), X(1 ,2), ..., X(1 ,K*(K+PK))>,
  * <X(2 ,1), X(2 ,2), ..., X(2 ,K*(K+PK))>, ..., <X(PC,1), X(PC,2), ...,
  * X(PC,K*(K+PK))>>_PF, <<W(1 ,1), W(1 ,2), ..., W(1 ,K*K)>, <W(2 ,1), W(2 ,2),
  * ..., W(2 ,K*K)>, ..., <W(PC,1), W(PC,2), ..., W(PC,K*K)>>_PF > ~ <<Y(1 ,1),
  * Y(1 ,2), ..., Y(1 ,PK)>, <Y(2 ,1), Y(2 ,2), ..., Y(2 ,PK)>, ..., <Y(PF,1),
  * Y(PF,2), ..., Y(PF,PK)>>
- * 
+ *
  * @author Ruizhe Zhao
- * 
+ *
  */
-public class Conv2DKernel extends KernelComponent {
+public
+class Conv2DKernel extends KernelComponent {
 
-  protected final ConvLayerParameters cp;
+ protected
+  final ConvLayerParameters cp;
 
-  protected final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
-  protected final DFEVector<DFEVar>     ifmap, coeff, ofmap;
-  protected final DFEType               scalarT;
+ protected
+  final DFEVectorType<DFEVar> ifmapVecT, coeffVecT, ofmapVecT;
+ protected
+  final DFEVector<DFEVar> ifmap, coeff, ofmap;
+ protected
+  final DFEType scalarT;
 
   /**
    * constructor
-   * 
+   *
    * @param owner
    * @param convParams
    * @param scalarT
    */
-  public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters convParams,
+ public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters convParams,
       DFEType scalarT) {
     super(owner);
 
@@ -81,19 +86,19 @@ public class Conv2DKernel extends KernelComponent {
     }
   }
 
-  public DFEType getOfmapScalarT() {
-    return scalarT;
-  }
+ public
+  DFEType getOfmapScalarT() { return scalarT; }
 
   /**
    * core computation, based on dot-product.
-   * 
+   *
    * @param ifmap
    * @param coeff
    * @param ofmap
    */
-  public void compute(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,
-      DFEVector<DFEVar> ofmap) {
+ public
+  void compute(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,
+               DFEVector<DFEVar> ofmap) {
     int K = cp.K;
     int PC = cp.PC;
     int PF = cp.PF;
@@ -102,8 +107,7 @@ public class Conv2DKernel extends KernelComponent {
     for (int pf = 0; pf < PF; pf++) {
       List<DFEVar> tmpResults = new ArrayList<DFEVar>(PK * PC);
       // TODO: initialise an ArrayList in this way might be silly
-      for (int i = 0; i < PC * PK; i++)
-        tmpResults.add(null);
+      for (int i = 0; i < PC * PK; i++) tmpResults.add(null);
 
       for (int pc = 0; pc < PC; pc++) {
         // create a new vector instance
@@ -120,14 +124,13 @@ public class Conv2DKernel extends KernelComponent {
       }
 
       for (int pk = 0; pk < PK; pk++)
-        ofmap[pf * PK + pk].connect(AdderTree.reduce(tmpResults.subList(
-            pk * PC,
-            (pk + 1) * PC)));
+        ofmap[pf * PK + pk].connect(
+            AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) * PC)));
     }
-
   }
 
-  public DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
+ public
+  DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
     DotProductKernel dp =
         new DotProductKernel(this.getOwner(), cp.K * cp.K, scalarT);
     dp.setInputs(ifmap, coeff);
@@ -135,37 +138,35 @@ public class Conv2DKernel extends KernelComponent {
     return dp.getOutput();
   }
 
-  public DFEVectorType<DFEVar> getIfmapT() {
-    return ifmapVecT;
-  }
+ public
+  DFEVectorType<DFEVar> getIfmapT() { return ifmapVecT; }
 
-  public DFEVectorType<DFEVar> getCoeffT() {
-    return coeffVecT;
-  }
+ public
+  DFEVectorType<DFEVar> getCoeffT() { return coeffVecT; }
 
-  public DFEVectorType<DFEVar> getOfmapT() {
-    return ofmapVecT;
-  }
+ public
+  DFEVectorType<DFEVar> getOfmapT() { return ofmapVecT; }
 
-  public void setInputs(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
+ public
+  void setInputs(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
     this.ifmap.connect(ifmap);
     this.coeff.connect(coeff);
   }
 
-  public DFEVector<DFEVar> getOfmap() {
-    return ofmap;
-  }
+ public
+  DFEVector<DFEVar> getOfmap() { return ofmap; }
 
   /**
    * Get ifmap data chunk at (pc)
-   * 
+   *
    * TODO: Each time you call this function, a new vector will be created, might
    * need caching in the future.
-   * 
+   *
    * @param pc
    * @return
    */
-  private List<DFEVector<DFEVar>> getIfmapChunksAt(int pc) {
+ private
+  List<DFEVector<DFEVar>> getIfmapChunksAt(int pc) {
     int K = cp.K;
     int PC = cp.PC;
     int PK = cp.PK;
@@ -189,7 +190,8 @@ public class Conv2DKernel extends KernelComponent {
     return unpackIfmapChunk(ifmapPackedChunk, cp);
   }
 
-  private DFEVector<DFEVar> getCoeffChunkAt(int pf, int pc) {
+ private
+  DFEVector<DFEVar> getCoeffChunkAt(int pf, int pc) {
     int K = cp.K;
     int PC = cp.PC;
 
@@ -200,23 +202,24 @@ public class Conv2DKernel extends KernelComponent {
     DFEVector<DFEVar> coeffChunk = coeffChunkT.newInstance(getOwner());
 
     for (int i = 0; i < coeffChunkSize; i++)
-      coeffChunk[i].connect(coeff[pf * PC * coeffChunkSize + pc
-          * coeffChunkSize + i]);
+      coeffChunk[i]
+          .connect(coeff[pf * PC * coeffChunkSize + pc * coeffChunkSize + i]);
 
     return coeffChunk;
   }
 
   /**
    * Convert vector from (K, K + PK -1) to (PK, K, K)
-   * 
+   *
    * @param src
    *          source vector
    * @param convParams
-   * 
+   *
    * @author Ruizhe Zhao
    */
-  private List<DFEVector<DFEVar>> unpackIfmapChunk(DFEVector<DFEVar> src,
-      ConvLayerParameters convParams) {
+ private
+  List<DFEVector<DFEVar>> unpackIfmapChunk(DFEVector<DFEVar> src,
+                                           ConvLayerParameters convParams) {
     int K = convParams.K;
     int PK = convParams.PK;
 

@@ -13,4 +13,6 @@ endmacro(use_cxx11)
 
 use_cxx11()
 
+include(cmake/FindGlog.cmake)
+
 include(runtime/CMakeLists.txt)

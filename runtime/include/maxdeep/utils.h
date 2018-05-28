@@ -43,7 +43,7 @@ T* random_initialize(int num, float scale = 1.0) {
 }
 
 template <typename T>
-void dump_array(const char* file_name, T* data, int num) {
+void DumpArray(const char* file_name, T* data, int num) {
   std::ofstream out(file_name);
 
   if (!out) {

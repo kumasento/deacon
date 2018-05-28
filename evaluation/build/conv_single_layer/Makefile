@@ -44,15 +44,21 @@ SEQ?=0
 FREQ?=100
 USE_DRAM?=true
 USE_DRAM_SUFFIX:=PCIe
+DEBUG?=false
+DEBUG_SUFFIX:=
 
 ifeq ($(USE_DRAM), true)
 USE_DRAM_SUFFIX:=DRAM
 EXTRA_CFLAGS:=-DUSE_DRAM
 endif
 
+ifeq ($(DEBUG), true)
+DEBUG_SUFFIX:=_DEBUG
+endif
 
-BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ)
-BUILD_NAME_OPTION:=_b$(bitWidth)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)
+
+BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) DEBUG=$(DEBUG)
+BUILD_NAME_OPTION:=_b$(bitWidth)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)$(DEBUG_SUFFIX)
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

@@ -8,53 +8,74 @@ import com.custom_computing_ic.maxdeep.lib.LayerParameters;
 
 /**
  * Parameters used for building a convolution layer.
- * 
+ *
  * @author Ruizhe Zhao
- * 
+ *
  */
-public class ConvLayerParameters extends LayerParameters {
+public
+class ConvLayerParameters extends LayerParameters {
 
-  public final int PC, PF, PK; // level of parallelisation
-  public final int H; // height
-  public final int W; // width
-  public final int OH;
-  public final int OW;
-  public final int C; // number of channels
-  public final int F; // number of filters
-  public final int K; // kernel size
-  public final CompSeq seq; // computation sequence
-  public final String name;
-  public final boolean dbg;
-  public final Type type;
-  public int LRNLocalSize;
-  public boolean useDRAM;
-  public boolean useWinograd;
+ public
+  final int PC, PF, PK;  // level of parallelisation
+ public
+  final int H;  // height
+ public
+  final int W;  // width
+ public
+  final int OH;
+ public
+  final int OW;
+ public
+  final int C;  // number of channels
+ public
+  final int F;  // number of filters
+ public
+  final int K;  // kernel size
+ public
+  final CompSeq seq;  // computation sequence
+ public
+  final String name;
+ public
+  final boolean dbg;
+ public
+  final Type type;
+ public
+  int LRNLocalSize;
+ public
+  boolean useDRAM;
+ public
+  boolean useWinograd;
 
-  public static final int WINOGRAD_TILE_SIZE = 4;
+ public
+  static final int WINOGRAD_TILE_SIZE = 4;
 
-  public PoolingLayerParameters pool;
+ public
+  PoolingLayerParameters pool;
 
   /**
    * Computation sequence
-   * 
+   *
    * @author Ruizhe Zhao
-   * 
+   *
    */
-  public enum CompSeq {
-    FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR
+ public
+  enum CompSeq {
+    FILTER_MAJOR,
+    CHANNEL_MAJOR,
+    PIXEL_MAJOR
   }
 
   /**
    * Type of convolution computation
-   * 
+   *
    * @author Ruizhe Zhao
-   * 
+   *
    */
   public enum Type {
-    STANDARD, DEPTHWISE_SEPARABLE, DEPTHWISE_SEPARABLE_V2
-  }
-
-  public ConvLayerParameters(Builder builder) {
+    STANDARD,
+    DEPTHWISE_SEPARABLE,
+    DEPTHWISE_SEPARABLE_V2
+  } public ConvLayerParameters(Builder builder) {
     this.H = builder.H;
     this.W = builder.W;
     this.C = builder.C;
@@ -76,177 +97,216 @@ public class ConvLayerParameters extends LayerParameters {
     this.useWinograd = builder.useWinograd;
   }
 
-  public ConvLayerParameters createDepthwiseParameters() {
+ public
+  ConvLayerParameters createDepthwiseParameters() {
     /**
-     * TODO: One thing not clear - PC is actually not sensible here However, we still need it to
+     * TODO: One thing not clear - PC is actually not sensible here However, we
+     * still need it to
      * specify correct number of line buffers.
      */
-    return new ConvLayerParameters.Builder(H, W, C, C, K).BW(BW).PC(PC).PK(PK).dbg(dbg)
-        .useWinograd(useWinograd).build();
+    return new ConvLayerParameters.Builder(H, W, C, C, K)
+        .BW(BW)
+        .PC(PC)
+        .PK(PK)
+        .dbg(dbg)
+        .useWinograd(useWinograd)
+        .build();
   }
 
-  public ConvLayerParameters createPointwiseParameters() {
-    return new ConvLayerParameters.Builder(OH, OW, C, F, 1).BW(BW).PC(PC).PF(PF).PK(PK)
-        .seq(CompSeq.FILTER_MAJOR).dbg(dbg).build();
+ public
+  ConvLayerParameters createPointwiseParameters() {
+    return new ConvLayerParameters.Builder(OH, OW, C, F, 1)
+        .BW(BW)
+        .PC(PC)
+        .PF(PF)
+        .PK(PK)
+        .seq(CompSeq.FILTER_MAJOR)
+        .dbg(dbg)
+        .build();
   }
 
-  public long getNumCycles() {
-    if (type == Type.STANDARD)
-      return ((long) H * W * C * F) / (PC * PF * PK);
+ public
+  long getNumCycles() {
+    if (type == Type.STANDARD) return ((long)H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
-      return ((long) H * W * C * F) / (PC * PF * PK);
+      return ((long)H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE_V2)
-      return ((long) H * W * C) / (PC * PK) + ((long) H * W * C * F) / (PC * PF * PK);
-    throw new IllegalArgumentException("getNumCycles has not implemented for the current type");
+      return ((long)H * W * C) / (PC * PK) +
+             ((long)H * W * C * F) / (PC * PF * PK);
+    throw new IllegalArgumentException(
+        "getNumCycles has not implemented for the current type");
   }
 
-  public int getPoolNumCycles() {
-    return (OH * OW * F) / (PK * PF);
-  }
+ public
+  int getPoolNumCycles() { return (OH * OW * F) / (PK * PF); }
 
-  @Override
-  public long getIfmapStreamNumElems() {
+  @Override public long getIfmapStreamNumElems() {
     return C * H * W;
   }
 
-  @Override
-  public int getIfmapVecSize() {
+  @Override public int getIfmapVecSize() {
     return PC * PK;
   }
 
-  @Override
-  public long getCoeffStreamNumElems() {
-    if (type == Type.STANDARD)
-      return C * F * K * K;
+  @Override public long getCoeffStreamNumElems() {
+    if (type == Type.STANDARD) return C * F * K * K;
 
     return C * (F / PF + 1) * Math.max(K * K, PF);
   }
 
-  @Override
-  public int getCoeffVecSize() {
-    return (type == Type.DEPTHWISE_SEPARABLE_V2) ? (PC * Math.max(K * K, PF)) : (PC * PF * K * K);
+  @Override public int getCoeffVecSize() {
+    return (type == Type.DEPTHWISE_SEPARABLE_V2) ? (PC * Math.max(K * K, PF))
+                                                 : (PC * PF * K * K);
   }
 
-  public int getCoeffLMemVecSize() {
-    return PC * PF;
-  }
+ public
+  int getCoeffLMemVecSize() { return PC * PF; }
 
-  public long getDepthwiseCoeffStreamNumElems() {
-    return C * K * K;
-  }
+ public
+  long getDepthwiseCoeffStreamNumElems() { return C * K * K; }
 
-  public int getDepthwiseCoeffVecSize() {
-    return PC * K * K;
-  }
+ public
+  int getDepthwiseCoeffVecSize() { return PC * K * K; }
 
-  public int getDepthwiseCoeffLMemVecSize() {
-    return PC;
-  }
+ public
+  int getDepthwiseCoeffLMemVecSize() { return PC; }
 
-  public long getPointwiseCoeffStreamNumElems() {
-    return C * F;
-  }
+ public
+  long getPointwiseCoeffStreamNumElems() { return C * F; }
 
-  public int getPointwiseCoeffVecSize() {
-    return PC * PF;
-  }
+ public
+  int getPointwiseCoeffVecSize() { return PC * PF; }
 
-  @Override
-  public long getOfmapStreamNumElems() {
+  @Override public long getOfmapStreamNumElems() {
     return F * OH * OW;
   }
 
-  @Override
-  public int getOfmapVecSize() {
+  @Override public int getOfmapVecSize() {
     return PK * PF;
   }
 
-  public long getIfmapStreamSize() {
+ public
+  long getIfmapStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getIfmapStreamNumElems();
   }
 
-  public long getCoeffStreamSize() {
+ public
+  long getCoeffStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getCoeffStreamNumElems();
   }
 
-  public long getDepthwiseCoeffStreamSize() {
+ public
+  long getDepthwiseCoeffStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getDepthwiseCoeffStreamNumElems();
   }
 
-  public long getPointwiseCoeffStreamSize() {
+ public
+  long getPointwiseCoeffStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getPointwiseCoeffStreamNumElems();
   }
 
-  public long getOfmapStreamSize() {
+ public
+  long getOfmapStreamSize() {
     long sizeInBytes = getCPUTypes().sizeInBytes();
     return sizeInBytes * getOfmapStreamNumElems();
   }
 
-  public int getCoeffStreamBitWidth() {
+ public
+  int getCoeffStreamBitWidth() {
     return getCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getCoeffStreamChunkSize() {
-    return (type == Type.DEPTHWISE_SEPARABLE_V2) ? Math.max(K * K, PF) : (K * K);
+ public
+  int getCoeffStreamChunkSize() {
+    return (type == Type.DEPTHWISE_SEPARABLE_V2) ? Math.max(K * K, PF)
+                                                 : (K * K);
   }
 
-  public int getCoeffStreamLMemBitWidth() {
+ public
+  int getCoeffStreamLMemBitWidth() {
     return getCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getDepthwiseCoeffStreamBitWidth() {
+ public
+  int getDepthwiseCoeffStreamBitWidth() {
     return getDepthwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getDepthwiseCoeffStreamLMemBitWidth() {
+ public
+  int getDepthwiseCoeffStreamLMemBitWidth() {
     return getDepthwiseCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getPointwiseCoeffStreamBitWidth() {
+ public
+  int getPointwiseCoeffStreamBitWidth() {
     return getPointwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getIfmapStreamBitWidth() {
+ public
+  int getIfmapStreamBitWidth() {
     return getIfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getOfmapStreamBitWidth() {
+ public
+  int getOfmapStreamBitWidth() {
     return getOfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
 
   /**
    * Builder class for ConvLayerParameters
-   * 
+   *
    * @author Ruizhe Zhao
-   * 
+   *
    */
-  public static class Builder {
-    private final int H;
-    private final int W;
-    private final int C;
-    private final int F;
-    private final int K;
-    private final int OH;
-    private final int OW;
-    private int BW; /* bit width */
-    private int PC;
-    private int PF;
-    private int PK;
-    private final int S;
-    private final int P;
-    private CompSeq seq;
-    private String name;
-    private Type type;
-    private PoolingLayerParameters pool;
-    private boolean useDRAM;
-    private boolean dbg;
-    private boolean useWinograd;
+ public
+  static class Builder {
+   private
+    final int H;
+   private
+    final int W;
+   private
+    final int C;
+   private
+    final int F;
+   private
+    final int K;
+   private
+    final int OH;
+   private
+    final int OW;
+   private
+    int BW; /* bit width */
+   private
+    int PC;
+   private
+    int PF;
+   private
+    int PK;
+   private
+    final int S;
+   private
+    final int P;
+   private
+    CompSeq seq;
+   private
+    String name;
+   private
+    Type type;
+   private
+    PoolingLayerParameters pool;
+   private
+    boolean useDRAM;
+   private
+    boolean dbg;
+   private
+    boolean useWinograd;
 
-    public Builder(int OH, int OW, int C, int F, int K) {
+   public
+    Builder(int OH, int OW, int C, int F, int K) {
 
       if (OH <= 0)
         throw new IllegalArgumentException("OH should be larger than 0");
@@ -280,14 +340,16 @@ public class ConvLayerParameters extends LayerParameters {
       this.dbg = false;
     }
 
-    public Builder BW(int BW) {
+   public
+    Builder BW(int BW) {
       if (BW <= 0)
         throw new IllegalArgumentException("BW should be larger than 0");
       this.BW = BW;
       return this;
     }
 
-    public Builder PF(int PF) {
+   public
+    Builder PF(int PF) {
       if (PF <= 0)
         throw new IllegalArgumentException("PF should be larger than 0");
       if (F % PF != 0)
@@ -296,7 +358,8 @@ public class ConvLayerParameters extends LayerParameters {
       return this;
     }
 
-    public Builder PK(int PK) {
+   public
+    Builder PK(int PK) {
       if (PK <= 0)
         throw new IllegalArgumentException("PK should be larger than 0");
       // TODO: we need to verify whether it is a good condition
@@ -310,7 +373,8 @@ public class ConvLayerParameters extends LayerParameters {
       return this;
     }
 
-    public Builder PC(int PC) {
+   public
+    Builder PC(int PC) {
       if (PC <= 0)
         throw new IllegalArgumentException("PC should be larger than 0");
       if (C % PC != 0)
@@ -319,49 +383,54 @@ public class ConvLayerParameters extends LayerParameters {
       return this;
     }
 
-    public Builder name(String name) {
+   public
+    Builder name(String name) {
       this.name = name;
 
       return this;
     }
 
-    public Builder seq(CompSeq seq) {
+   public
+    Builder seq(CompSeq seq) {
       this.seq = seq;
 
       return this;
     }
 
-    public Builder type(Type type) {
+   public
+    Builder type(Type type) {
       this.type = type;
 
       return this;
     }
 
-    public Builder pool(PoolingLayerParameters pool) {
+   public
+    Builder pool(PoolingLayerParameters pool) {
       this.pool = pool;
 
       return this;
     }
 
-    public Builder useDRAM(boolean useDRAM) {
+   public
+    Builder useDRAM(boolean useDRAM) {
       this.useDRAM = useDRAM;
 
       return this;
     }
 
-    public Builder useWinograd(boolean useWinograd) {
+   public
+    Builder useWinograd(boolean useWinograd) {
       this.useWinograd = useWinograd;
       return this;
     }
 
-    public Builder dbg(boolean dbg) {
+   public
+    Builder dbg(boolean dbg) {
       this.dbg = dbg;
       return this;
     }
 
-    public ConvLayerParameters build() {
-      return new ConvLayerParameters(this);
-    }
+   public
+    ConvLayerParameters build() { return new ConvLayerParameters(this); }
   }
-
 }

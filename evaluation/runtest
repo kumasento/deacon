@@ -7,5 +7,10 @@ MAXCOMPILER_BUILD_DIR=/mnt/data/scratch/rz3515/builds
 
 # Single convolution layer
 cd $BUILD_DIR/conv_single_layer
-make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false || exit $?
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false P_C=2 P_F=2 || exit $?
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false P_C=4 P_F=4 || exit $?
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false P_C=8 P_F=8 || exit $?
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false P_C=16 P_F=16 || exit $?
+make runsim MAXCOMPILER_BUILD_DIR=$MAXCOMPILER_BUILD_DIR USE_DRAM=false P_C=32 P_F=32 || exit $?
 cd -
