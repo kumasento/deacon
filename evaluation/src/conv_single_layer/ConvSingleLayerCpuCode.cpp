@@ -1,98 +1,47 @@
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
-#include <chrono>
-#include <ctime>
-#include <vector>
 #include <getopt.h>
 #include <glog/logging.h>
+#include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+#include <vector>
 
 #include "Maxfiles.h"
 #include "maxdeep/layers.h"
 
-typedef int16_t T;
-
 max_file_t *max_file;
 max_engine_t *engine;
 
-/*! Tiled convolution layer on DFE.
- *
- * We assume that all inputs are already tiled,
- * and we output tiled results.
- * Therefore, for cases when the input shape equals to the tile shape,
- * we don't need any preprocessing and post-processing.
- *
- * NOTE that there is no explicit padding in the DFE -
- * we just make sure that the tiled_input has padded zero values.
- */
-template <typename T>
-void ConvLayerTiledDfe(std::vector<T> &tiled_input,
-                       std::vector<T> &tiled_weights,
-                       std::vector<T> &tiled_bias, std::vector<T> &tiled_output,
-                       int H, int W, int C, int F, int K, int P, int S, int TH,
-                       int TW, int TC, int TF) {
-  // get number of total tiles
-  auto OH = GetConvLayerOutputDim(H, K, P, S);
-  auto OW = GetConvLayerOutputDim(W, K, P, S);
-  auto NTH = GetNumTiles(OH, TH);
-  auto NTW = GetNumTiles(OW, TW);
-  auto NTC = GetNumTiles(C, TC);
-  auto NTF = GetNumTiles(F, TF);
-  auto NT = NTH * NTW * NTC * NTF;
-
-  ConvSingleLayer_actions_t actions;
-  actions.param_batch_size = NT;
-  actions.instream_ifmap = tiled_input.data();
-  actions.instream_coeff_0 = tiled_weights.data();
-  actions.outstream_ofmap = reinterpret_cast<T *>(tiled_output.data());
-
-  std::cout << "Running convolution layer on DFE ..." << std::endl;
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  start = std::chrono::system_clock::now();
-  ConvSingleLayer_run(engine, &actions);
-  end = std::chrono::system_clock::now();
-  std::cout << "Done" << std::endl;
-
-  std::chrono::duration<double> elapsed_seconds = end - start;
-  std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
-  auto gflops =
-      (2 * OH * OW * C * F * K * K) / (elapsed_seconds.count()) * 1e-9;
-  std::cout << "GFLOPS: " << gflops << std::endl;
-}
+struct ConvSingleLayerRun {
+  void run(max_engine_t *engine, ConvSingleLayer_actions_t *actions) {
+    ConvSingleLayer_run(engine, actions);
+  }
+};
 
 template <typename T>
-void TestSingleTile() {
+void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF) {
   // get tile size
-  const int P = 1, S = 1;
+  int P = 1, S = 1;
 
   auto DFE_TH = max_get_constant_uint64t(max_file, "conv_H");
   auto DFE_TW = max_get_constant_uint64t(max_file, "conv_W");
-  auto DFE_PC = max_get_constant_uint64t(max_file, "conv_PC");
-  auto DFE_PF = max_get_constant_uint64t(max_file, "conv_PF");
   auto TC = max_get_constant_uint64t(max_file, "conv_C");
   auto TF = max_get_constant_uint64t(max_file, "conv_F");
-  auto K = max_get_constant_uint64t(max_file, "conv_K");
+  auto K = static_cast<int>(max_get_constant_uint64t(max_file, "conv_K"));
+
   auto TH = GetConvLayerOutputDim(DFE_TH, K, 0, S);
   auto TW = GetConvLayerOutputDim(DFE_TW, K, 0, S);
-  auto H = TH;
-  auto W = TW;
+  auto H = N_TOH * static_cast<int>(TH);
+  auto W = N_TOW * static_cast<int>(TW);
+
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
-  auto C = TC;
-  auto F = TF;
+  auto C = N_TC * static_cast<int>(TC);
+  auto F = N_TF * static_cast<int>(TF);
 
-  std::cout << "DFE Tile height: " << DFE_TH << std::endl;
-  std::cout << "DFE Tile width: " << DFE_TW << std::endl;
-  std::cout << "Tile input height: " << TH << std::endl;
-  std::cout << "Tile input width: " << TW << std::endl;
-  std::cout << "Tile input channels: " << TC << std::endl;
-  std::cout << "Tile output height: " << TH << std::endl;
-  std::cout << "Tile output width: " << TW << std::endl;
-  std::cout << "Tile output channels: " << TF << std::endl;
-  std::cout << "H: " << H << std::endl;
-  std::cout << "W: " << W << std::endl;
-  std::cout << "PF: " << DFE_PF << std::endl;
-  std::cout << "PC: " << DFE_PC << std::endl;
+  LOG(INFO) << C << " x " << H << " x " << W << " -> " << F << " x " << OH
+            << " x " << OW;
 
   // initialise test array
   int max_val = 10, min_val = -10;
@@ -101,26 +50,11 @@ void TestSingleTile() {
   auto weights = CreateRandomArray<T>(F * C * K * K, min_val, max_val);
   auto bias = CreateRandomArray<T>(F, min_val, max_val);
   auto output_cpu = std::vector<T>(F * OH * OW);
-  auto tiled_output_dfe = std::vector<T>(F * OH * OW);
-
-  auto tiled_input = CreateConvLayerTiledInput<T>(input, H, W, C, K, P, S, TH,
-                                                  TW, TC, DFE_PC, true);
-  auto tiled_weights = CreateConvLayerTiledWeights<T>(weights, C, F, K, TC, TF,
-                                                      DFE_PC, DFE_PF, 1);
-  CHECK_EQ(tiled_input.size(), DFE_TH * DFE_TW * C);
-  CHECK_EQ(tiled_weights.size(), C * F * K * K);
-
-  DumpArray<T>("input.txt", input.data(), input.size());
-  DumpArray<T>("tiled_input.txt", tiled_input.data(), tiled_input.size());
-  DumpArray<T>("weights.txt", weights.data(), weights.size());
-  DumpArray<T>("tiled_weights.txt", tiled_weights.data(), tiled_weights.size());
+  auto output_dfe = std::vector<T>(F * OH * OW);
 
   ConvLayerCpu(input, weights, bias, output_cpu, H, W, C, F, K, P, S, false);
-  ConvLayerTiledDfe(tiled_input, tiled_weights, bias, tiled_output_dfe, H, W, C,
-                    F, K, P, S, TH, TW, TC, TF);
-
-  auto output_dfe = TransformConvLayerTiledOutput<T>(tiled_output_dfe, OH, OW,
-                                                     F, TH, TW, TF, DFE_PF);
+  ConvLayerDfe<T, ConvSingleLayer_actions_t, ConvSingleLayerRun>(
+      input, weights, bias, output_dfe, H, W, C, F, K, P, S, max_file, engine);
 
   for (int i = 0; i < (int)(TF * TH * TW); i++)
     if (output_cpu[i] != output_dfe[i]) {
@@ -129,17 +63,24 @@ void TestSingleTile() {
       exit(1);
     }
 
-  printf("TEST single tile: " ANSI_COLOR_GREEN "PASSED!\n" ANSI_COLOR_RESET);
+  LOG(INFO) << "TEST single tile: " << ANSI_COLOR_GREEN << "PASSED!"
+            << ANSI_COLOR_RESET;
 }
 
 int main(int argc, char *argv[]) {
+  ::google::InitGoogleLogging(argv[0]);
+  FLAGS_logtostderr = 1;
+
   srand(42);
 
   max_file = ConvSingleLayer_init();
   engine = max_load(max_file, "*");
 
   // run test on single tile
-  TestSingleTile<T>();
+  TestTiles<int16_t>(1, 1, 1, 1);
+  TestTiles<int16_t>(2, 2, 1, 1);
+  TestTiles<int16_t>(1, 1, 2, 2);
+  TestTiles<int16_t>(2, 2, 2, 2);
 
   max_unload(engine);
   max_file_free(max_file);

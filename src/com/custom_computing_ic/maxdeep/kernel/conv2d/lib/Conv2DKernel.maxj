@@ -31,7 +31,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public
 class Conv2DKernel extends KernelComponent {
-
  protected
   final ConvLayerParameters cp;
 
@@ -202,8 +201,8 @@ class Conv2DKernel extends KernelComponent {
     DFEVector<DFEVar> coeffChunk = coeffChunkT.newInstance(getOwner());
 
     for (int i = 0; i < coeffChunkSize; i++)
-      coeffChunk[i]
-          .connect(coeff[pf * PC * coeffChunkSize + pc * coeffChunkSize + i]);
+      coeffChunk[i].connect(
+          coeff[pf * PC * coeffChunkSize + pc * coeffChunkSize + i]);
 
     return coeffChunk;
   }
