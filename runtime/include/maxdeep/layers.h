@@ -179,6 +179,10 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
   auto N_T = N_TOH * N_TOW * N_TC;
   auto total_size = N_T * tile_size;
 
+  LOG(INFO) << "Tiling input into " << N_TC << " x " << N_TOH << " x " << N_TOW
+            << " number of " << TC << " x " << TH << " x " << TW
+            << " tiles ...";
+
   // half kernel
   auto hk = static_cast<int>(std::ceil(K / 2));
 
@@ -219,8 +223,8 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
 #endif
 
                   // input index lies in the padding range
-                  if (src_hi < P || src_hi >= H + P || src_wi < P ||
-                      src_wi >= W + P)
+                  if (src_ci >= C || src_hi < P || src_hi >= H + P ||
+                      src_wi < P || src_wi >= W + P)
                     tiled_input[base_idx + dst_idx] = static_cast<T>(0.0f);
                   else
                     tiled_input[base_idx + dst_idx] = input[src_idx];
@@ -254,6 +258,9 @@ std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
   auto tile_size = TC * TF * K * K;
   auto total_size = tile_size * N_T;
 
+  LOG(INFO) << "Tiling weights into " << N_TF << " x " << N_TC << " number of "
+            << TF << " x " << TC << " x " << K << " x " << K << " tiles ...";
+
   tiled_weights.resize(total_size);
 
   for (int tf = 0; tf < N_TF; tf++) {
@@ -267,8 +274,11 @@ std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
             for (int pf = 0; pf < PF; pf++) {
               for (int pc = 0; pc < PC; pc++) {
                 for (int k = 0; k < K * K; k++) {
-                  auto src_idx = (tf * TF + f + pf) * C * K * K +
-                                 (tc * TC + c + pc) * K * K + k;
+                  auto src_fi = tf * TF + f + pf;
+                  auto src_ci = tc * TC + c + pc;
+                  if (src_fi >= F || src_ci >= C) continue;
+
+                  auto src_idx = src_fi * C * K * K + src_ci * K * K + k;
                   auto dst_idx =
                       ((((((f / PF) * (TC / PC) + (c / PC)) * PC * PF) +
                          (pf * PC + pc)) *
@@ -304,6 +314,10 @@ std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
   auto tile_size = T_OH * T_OW * T_F;
   auto total_size = N_T * tile_size;
 
+  LOG(INFO) << "Merging outputs from " << N_TF << " x " << N_TOH << " x "
+            << N_TOW << " number of " << T_F << " x " << T_OH << " x " << T_OW
+            << " tiles ...";
+
   output.resize(total_size);
 
   for (int tf = 0; tf < N_TF; tf++) {
@@ -317,8 +331,12 @@ std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
                 for (int pf = 0; pf < P_F; pf++) {
                   auto src_idx =
                       ((f / P_F) * T_OH * T_OW + oh * T_OW + ow) * P_F + pf;
-                  auto dst_idx = (tf * T_F + f + pf) * OH * OW +
-                                 (t_oh * T_OH + oh) * OW + (t_ow * T_OW + ow);
+                  auto dst_fi = tf * T_F + f + pf;
+                  auto dst_hi = t_oh * T_OH + oh;
+                  auto dst_wi = t_ow * T_OW + ow;
+                  if (dst_fi >= F || dst_hi >= OH || dst_wi >= OW) continue;
+
+                  auto dst_idx = dst_fi * OH * OW + dst_hi * OW + dst_wi;
                   auto base_idx = (tf * N_TC * N_TOH * N_TOW +
                                    tc * N_TOH * N_TOW + t_oh * N_TOW + t_ow) *
                                   tile_size;
@@ -408,7 +426,7 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   actions.instream_coeff_0 = tiled_weights.data();
   actions.outstream_ofmap = reinterpret_cast<T *>(tiled_output.data());
 
-  LOG(INFO) << "Running convolution layer on DFE ...";
+  LOG(INFO) << "Running " << N_T << " convolution on DFE ...";
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
   dfe_run_fn().run(engine, &actions);

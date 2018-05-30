@@ -20,7 +20,8 @@ struct ConvSingleLayerRun {
 };
 
 template <typename T>
-void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF) {
+void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
+               int D_W = 0, int D_C = 0, int D_F = 0) {
   // get tile size
   int P = 1, S = 1;
 
@@ -32,13 +33,13 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF) {
 
   auto TH = GetConvLayerOutputDim(DFE_TH, K, 0, S);
   auto TW = GetConvLayerOutputDim(DFE_TW, K, 0, S);
-  auto H = N_TOH * static_cast<int>(TH);
-  auto W = N_TOW * static_cast<int>(TW);
+  auto H = N_TOH * static_cast<int>(TH) + D_H;
+  auto W = N_TOW * static_cast<int>(TW) + D_W;
 
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
-  auto C = N_TC * static_cast<int>(TC);
-  auto F = N_TF * static_cast<int>(TF);
+  auto C = N_TC * static_cast<int>(TC) + D_C;
+  auto F = N_TF * static_cast<int>(TF) + D_F;
 
   LOG(INFO) << C << " x " << H << " x " << W << " -> " << F << " x " << OH
             << " x " << OW;
@@ -76,7 +77,10 @@ int main(int argc, char *argv[]) {
   max_file = ConvSingleLayer_init();
   engine = max_load(max_file, "*");
 
-  // run test on single tile
+  TestTiles<int16_t>(1, 1, 1, 1, 1);
+  TestTiles<int16_t>(1, 1, 1, 1, 1, 1);
+  TestTiles<int16_t>(1, 1, 1, 1, 1, 1, 1);
+  TestTiles<int16_t>(1, 1, 1, 1, 1, 1, 1, 1);
   TestTiles<int16_t>(1, 1, 1, 1);
   TestTiles<int16_t>(2, 2, 1, 1);
   TestTiles<int16_t>(1, 1, 2, 2);
