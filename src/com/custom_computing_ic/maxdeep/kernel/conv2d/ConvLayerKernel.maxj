@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
@@ -23,7 +24,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public
 class ConvLayerKernel extends KernelComponent {
-
  protected
   final ConvLayerParameters cp;
  protected
@@ -68,19 +68,11 @@ class ConvLayerKernel extends KernelComponent {
     super(owner);
 
     this.cp = convParams;
-
     this.prefix = prefix;
-
-    /* scalar type */
     this.scalarT = scalarT;
 
-    /* streams */
     initStreams();
-
-    /* counters */
     initCounters();
-
-    /* compute */
     initConvLayer();
   }
 
@@ -165,19 +157,32 @@ class ConvLayerKernel extends KernelComponent {
     }
   }
 
+ private
+  DFEVar getWinogradObufWriteEn(DFEVar h, DFEVar w) {
+    int TILE_SIZE = WinogradTransform.TILE_SIZE;
+    int M = WinogradTransform.M;
+
+    DFEVar hi = h - TILE_SIZE + M + 1;
+    DFEVar wi = w - TILE_SIZE + M + 1;
+
+    DFEVar rowAbove = h >= (TILE_SIZE - 1);
+    DFEVar colRight = w >= (TILE_SIZE - 1);
+    DFEVar posHeight = (hi.get(0) | hi.get(1)).eq(0);
+    DFEVar posWidth = (wi.get(0) | wi.get(1)).eq(0);
+
+    // debug.simPrintf(
+    // "h = %KObj% w = %KObj% hi = %KObj% wi = %KObj% posHeight = %KObj%
+    // posWidth = %KObj%\n", h, w, hi, wi, posHeight, posWidth);
+
+    return rowAbove & colRight & posHeight & posWidth;
+  }
+
  public
   DFEVar getOfmapBufferWriteEn() {
-    switch (cp.seq) {
-      case CHANNEL_MAJOR:
-        return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
-
-      case FILTER_MAJOR:
-        return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
-
-      default:
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
-    }
+    if (cp.useWinograd) {
+      return getWinogradObufWriteEn(h, w);
+    } else
+      return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
   }
 
  public
@@ -185,18 +190,38 @@ class ConvLayerKernel extends KernelComponent {
 
  public
   DFEVar getOfmapBufferAddr(DFEType addrT) {
+    if (cp.useWinograd) {
+      int M = WinogradTransform.M;
+      // TODO(vince): this code relies on M == 4
+      DFEVar ohi = oh >> 2;
+      DFEVar owi = ow >> 2;
 
-    switch (cp.seq) {
-      case CHANNEL_MAJOR:
-        return (f * (cp.OH * cp.OW / cp.PK) + oh * cp.OW / cp.PK + ow)
-            .cast(addrT);
+      switch (cp.seq) {
+        case CHANNEL_MAJOR:
+          return (f * (cp.OH * cp.OW / (M * M)) + ohi * cp.OW / M + owi)
+              .cast(addrT);
 
-      case FILTER_MAJOR:
-        return (oh * cp.OW / cp.PK + ow).cast(addrT);
+        case FILTER_MAJOR:
+          return (ohi * cp.OW / M + owi).cast(addrT);
 
-      default:
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+        default:
+          throw new IllegalArgumentException(String.format(
+              "Computation sequence %s has not been supported yet", cp.seq));
+      }
+
+    } else {
+      switch (cp.seq) {
+        case CHANNEL_MAJOR:
+          return (f * (cp.OH * cp.OW / cp.PK) + oh * cp.OW / cp.PK + ow)
+              .cast(addrT);
+
+        case FILTER_MAJOR:
+          return (oh * cp.OW / cp.PK + ow).cast(addrT);
+
+        default:
+          throw new IllegalArgumentException(String.format(
+              "Computation sequence %s has not been supported yet", cp.seq));
+      }
     }
   }
 
@@ -223,7 +248,7 @@ class ConvLayerKernel extends KernelComponent {
   int getCoeffVecSize() { return cp.PF * cp.PC * cp.K * cp.K; }
 
  public
-  int getOfmapVecSize() { return cp.PF * cp.PK; }
+  int getOfmapVecSize() { return cp.getOfmapVecSize(); }
 
  public
   DFEVectorType<DFEVar> getIfmapVecT() { return this.ifmapVecT; }

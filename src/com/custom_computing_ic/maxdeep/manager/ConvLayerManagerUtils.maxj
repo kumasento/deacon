@@ -7,6 +7,7 @@ import java.util.Map;
 import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
@@ -615,6 +616,9 @@ class ConvLayerManagerUtils {
     }
 
     mgr.addMaxFileConstant("USE_DRAM", ep.getUseDRAM() ? 1 : 0);
+    mgr.addMaxFileConstant("USE_WINO", ep.getUseWinograd() ? 1 : 0);
+    mgr.addMaxFileConstant("WINO_TILE_SIZE", WinogradTransform.TILE_SIZE);
+    mgr.addMaxFileConstant("WINO_M", WinogradTransform.M);
 
     ConvLayerParameters cp = cps.get(0);
     mgr.addMaxFileConstant("conv_PC", cp.PC);

@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
 import com.custom_computing_ic.maxdeep.lib.LayerParameters;
 
@@ -181,7 +182,8 @@ class ConvLayerParameters extends LayerParameters {
   }
 
   @Override public int getOfmapVecSize() {
-    return PK * PF;
+    return useWinograd ? WinogradTransform.M * WinogradTransform.M * PF
+                       : PK * PF;
   }
 
  public

@@ -68,6 +68,7 @@ class ConvSingleLayerManager extends CustomManager {
                                  .BW(params.getBitWidth())
                                  .seq(CompSeq.values()[params.getSeq()])
                                  .dbg(params.getDebug())
+                                 .useWinograd(params.getUseWinograd())
                                  .build();
 
     ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);

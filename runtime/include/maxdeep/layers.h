@@ -307,6 +307,7 @@ template <typename T>
 std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
                                              int OH, int OW, int F, int T_OH,
                                              int T_OW, int T_F, int P_F = 1,
+                                             int P_OH = 1, int P_OW = 1,
                                              int N_TC = 1) {
   std::vector<T> output;
 
@@ -329,22 +330,32 @@ std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
         for (int t_ow = 0; t_ow < N_TOW; t_ow++) {
           // inside a tile
           for (int f = 0; f < T_F; f += P_F) {
-            for (int oh = 0; oh < T_OH; oh++) {
-              for (int ow = 0; ow < T_OW; ow++) {
+            for (int oh = 0; oh < T_OH; oh += P_OH) {
+              for (int ow = 0; ow < T_OW; ow += P_OW) {
                 for (int pf = 0; pf < P_F; pf++) {
-                  auto src_idx =
-                      ((f / P_F) * T_OH * T_OW + oh * T_OW + ow) * P_F + pf;
-                  auto dst_fi = tf * T_F + f + pf;
-                  auto dst_hi = t_oh * T_OH + oh;
-                  auto dst_wi = t_ow * T_OW + ow;
-                  if (dst_fi >= F || dst_hi >= OH || dst_wi >= OW) continue;
+                  for (int p_oh = 0; p_oh < P_OH; p_oh++) {
+                    for (int p_ow = 0; p_ow < P_OW; p_ow++) {
+                      auto src_idx =
+                          (((f / P_F) * (T_OH / P_OH) * (T_OW / P_OW)) +
+                           ((oh / P_OH) * (T_OW / P_OW) + (ow / P_OW))) *
+                              P_F * P_OH * P_OW +
+                          (pf * P_OH * P_OW + p_oh * P_OW + p_ow);
 
-                  auto dst_idx = dst_fi * OH * OW + dst_hi * OW + dst_wi;
-                  auto base_idx = (tf * N_TC * N_TOH * N_TOW +
-                                   tc * N_TOH * N_TOW + t_oh * N_TOW + t_ow) *
-                                  tile_size;
+                      auto dst_fi = tf * T_F + f + pf;
+                      auto dst_hi = t_oh * T_OH + oh + p_oh;
+                      auto dst_wi = t_ow * T_OW + ow + p_ow;
 
-                  output[dst_idx] += tiled_output[base_idx + src_idx];
+                      if (dst_fi >= F || dst_hi >= OH || dst_wi >= OW) continue;
+
+                      auto dst_idx = dst_fi * OH * OW + dst_hi * OW + dst_wi;
+                      auto base_idx =
+                          (tf * N_TC * N_TOH * N_TOW + tc * N_TOH * N_TOW +
+                           t_oh * N_TOW + t_ow) *
+                          tile_size;
+
+                      output[dst_idx] += tiled_output[base_idx + src_idx];
+                    }
+                  }
                 }
               }
             }
@@ -416,6 +427,15 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto DFE_PF = max_get_constant_uint64t(max_file, "conv_PF");
   auto DFE_PK = max_get_constant_uint64t(max_file, "conv_PK");
   auto DFE_K = max_get_constant_uint64t(max_file, "conv_K");
+#ifdef USE_WINO
+  auto DFE_USE_WINO = max_get_constant_uint64t(max_file, "USE_WINO") == 1;
+  auto DFE_WINO_M = max_get_constant_uint64t(max_file, "WINO_M");
+#else
+  auto DFE_USE_WINO = false;
+  auto DFE_WINO_M = 1;
+#endif
+  auto DFE_POH = DFE_USE_WINO ? DFE_WINO_M : 1;
+  auto DFE_POW = DFE_USE_WINO ? DFE_WINO_M : 1;
 
   // check whether the given convolution layer can be placed on DFE
   CHECK_EQ(static_cast<int>(DFE_K), K);
@@ -474,7 +494,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
 
   BurstAlign(tiled_input, num_bytes_per_burst * DFE_PC * DFE_PK);
   BurstAlign(tiled_weights, num_bytes_per_burst * DFE_PC * DFE_PF);
-  BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF * DFE_PK);
+  BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF *
+                               (DFE_USE_WINO ? DFE_POH * DFE_POW : DFE_PK));
 
   base_addr = WriteDRAM<T, DfeT>(tiled_input, base_addr, engine);
   base_addr = WriteDRAM<T, DfeT>(tiled_weights, base_addr, engine);
@@ -493,7 +514,7 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
 
   // transform the the final output
   output = TransformConvLayerTiledOutput<T>(tiled_output, OH, OW, F, T_OH, T_OW,
-                                            TF, DFE_PF, N_TC);
+                                            TF, DFE_PF, DFE_POH, DFE_POW, N_TC);
 
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() << "s";
