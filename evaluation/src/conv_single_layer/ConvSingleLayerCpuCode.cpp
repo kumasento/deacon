@@ -13,9 +13,19 @@
 max_file_t *max_file;
 max_engine_t *engine;
 
-struct ConvSingleLayerRun {
-  void run(max_engine_t *engine, ConvSingleLayer_actions_t *actions) {
+struct Dfe {
+  typedef ConvSingleLayer_actions_t dfe_run_actions_t;
+  typedef ConvSingleLayer_dramRead_actions_t dram_read_actions_t;
+  typedef ConvSingleLayer_dramWrite_actions_t dram_write_actions_t;
+
+  static void Run(max_engine_t *engine, dfe_run_actions_t *actions) {
     ConvSingleLayer_run(engine, actions);
+  }
+  static void ReadDRAM(max_engine_t *engine, dram_read_actions_t *actions) {
+    ConvSingleLayer_dramRead_run(engine, actions);
+  }
+  static void WriteDRAM(max_engine_t *engine, dram_write_actions_t *actions) {
+    ConvSingleLayer_dramWrite_run(engine, actions);
   }
 };
 
@@ -53,9 +63,12 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
   auto output_cpu = std::vector<T>(F * OH * OW);
   auto output_dfe = std::vector<T>(F * OH * OW);
 
+  LOG(INFO) << "Running CPU reference ...";
   ConvLayerCpu(input, weights, bias, output_cpu, H, W, C, F, K, P, S, false);
-  ConvLayerDfe<T, ConvSingleLayer_actions_t, ConvSingleLayerRun>(
-      input, weights, bias, output_dfe, H, W, C, F, K, P, S, max_file, engine);
+
+  LOG(INFO) << "Running DFE reference ...";
+  ConvLayerDfe<T, Dfe>(input, weights, bias, output_dfe, H, W, C, F, K, P, S,
+                       max_file, engine);
 
   for (int i = 0; i < (int)(TF * TH * TW); i++)
     if (output_cpu[i] != output_dfe[i]) {
@@ -77,14 +90,12 @@ int main(int argc, char *argv[]) {
   max_file = ConvSingleLayer_init();
   engine = max_load(max_file, "*");
 
-  TestTiles<int16_t>(1, 1, 1, 1, 1);
-  TestTiles<int16_t>(1, 1, 1, 1, 1, 1);
-  TestTiles<int16_t>(1, 1, 1, 1, 1, 1, 1);
-  TestTiles<int16_t>(1, 1, 1, 1, 1, 1, 1, 1);
+#ifdef __SIM__
   TestTiles<int16_t>(1, 1, 1, 1);
-  TestTiles<int16_t>(2, 2, 1, 1);
-  TestTiles<int16_t>(1, 1, 2, 2);
   TestTiles<int16_t>(2, 2, 2, 2);
+#else
+  TestTiles<int16_t>(1, 1, 2, 2);
+#endif
 
   max_unload(engine);
   max_file_free(max_file);

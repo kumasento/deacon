@@ -1,13 +1,14 @@
 package conv_single_layer;
 
+import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters
-    .CompSeq;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
@@ -15,6 +16,8 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 /** @author Ruizhe Zhao */
 public
 class ConvSingleLayerManager extends CustomManager {
+ public
+  LMemInterface iface;
 
  public
   ConvSingleLayerManager(ConvSingleLayerEngineParameters params,
@@ -34,16 +37,19 @@ class ConvSingleLayerManager extends CustomManager {
                                    ConvLayerEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
+    // number of tiles with indentical sizes to be processed
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
 
+    // setup streams of the convolution layer defined cp
     ConvLayerManagerUtils.setupStreams(ei, cp, batchSize, ep.getUseDRAM(),
                                        this);
-    // ConvSingleLayerManagerUtils.setupKernelTicks(ei, cp, batchSize);
+    ManagerUtils.ignoreLMemStreams(ei);
 
     return ei;
   }
 
-  @SuppressWarnings("deprecation") public static void main(String[] args) {
+ public
+  static void main(String[] args) {
     ConvSingleLayerEngineParameters params =
         new ConvSingleLayerEngineParameters(args);
 
@@ -66,6 +72,8 @@ class ConvSingleLayerManager extends CustomManager {
 
     ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);
     mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));
+    mgr.createSLiCinterface(ManagerUtils.dramRead(mgr, mgr.iface));
+    mgr.createSLiCinterface(ManagerUtils.dramWrite(mgr, mgr.iface));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);

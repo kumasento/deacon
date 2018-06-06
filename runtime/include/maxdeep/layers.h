@@ -4,10 +4,13 @@
  * Layers - implemented software version of various CNN layers.
  */
 
-#include <glog/logging.h>
-#include <math.h>
-#include <stdlib.h>
 #include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+
+#include <glog/logging.h>
 
 #ifndef NO_DFE
 #include "MaxSLiCInterface.h"
@@ -355,13 +358,49 @@ std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
 }
 
 #ifndef NO_DFE
+
+template <typename T, typename DfeT>
+size_t WriteDRAM(std::vector<T> &arr, size_t base_addr, max_engine_t *engine) {
+  typename DfeT::dram_write_actions_t dram_write_actions;
+
+  dram_write_actions.param_start_bytes = base_addr;
+  dram_write_actions.param_size_bytes = arr.size() * sizeof(T);
+  dram_write_actions.instream_fromcpu =
+      reinterpret_cast<const uint8_t *>(arr.data());
+
+  LOG(INFO) << std::showbase << std::setfill('0') << std::setw(8) << std::hex
+            << "Writing DRAM to " << base_addr << " with size "
+            << arr.size() * sizeof(T);
+
+  DfeT::WriteDRAM(engine, &dram_write_actions);
+
+  return base_addr + arr.size() * sizeof(T);
+}
+
+template <typename T, typename DfeT>
+size_t ReadDRAM(std::vector<T> &arr, size_t base_addr, max_engine_t *engine) {
+  typename DfeT::dram_read_actions_t dram_read_actions;
+
+  dram_read_actions.param_start_bytes = base_addr;
+  dram_read_actions.param_size_bytes = arr.size() * sizeof(T);
+  dram_read_actions.outstream_tocpu = reinterpret_cast<uint8_t *>(arr.data());
+
+  LOG(INFO) << std::showbase << std::setfill('0') << std::setw(8) << std::hex
+            << "Reading DRAM from " << base_addr << " with size "
+            << arr.size() * sizeof(T);
+
+  DfeT::ReadDRAM(engine, &dram_read_actions);
+
+  return base_addr + arr.size() * sizeof(T);
+}
+
 /*! Run convolution layer on DFE.
  *
  * We will do tiling within this function.
  * Design-specific classes/functions should be specified through
  * template parameters.
  */
-template <typename T, typename dfe_actions_t, typename dfe_run_fn>
+template <typename T, typename DfeT>
 void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
                   std::vector<T> &bias, std::vector<T> &output, int H, int W,
                   int C, int F, int K, int P, int S, max_file_t *max_file,
@@ -375,12 +414,13 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto DFE_TF = max_get_constant_uint64t(max_file, "conv_F");
   auto DFE_PC = max_get_constant_uint64t(max_file, "conv_PC");
   auto DFE_PF = max_get_constant_uint64t(max_file, "conv_PF");
+  auto DFE_PK = max_get_constant_uint64t(max_file, "conv_PK");
   auto DFE_K = max_get_constant_uint64t(max_file, "conv_K");
-  auto DFE_USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM") == 1;
 
   // check whether the given convolution layer can be placed on DFE
   CHECK_EQ(static_cast<int>(DFE_K), K);
-  CHECK(!DFE_USE_DRAM) << "We don't support DRAM mode in software yet";
+  // auto DFE_USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM") == 1;
+  // CHECK(!DFE_USE_DRAM) << "We don't support DRAM mode in software yet";
 
   // alias
   auto T_OH = DFE_TOH;
@@ -420,18 +460,36 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   std::vector<T> tiled_output(N_T * output_tile_size);
 
   // create actions for DFE call
-  dfe_actions_t actions;
+  typename DfeT::dfe_run_actions_t actions;
   actions.param_batch_size = N_T;
+#ifndef USE_DRAM
   actions.instream_ifmap = tiled_input.data();
   actions.instream_coeff_0 = tiled_weights.data();
   actions.outstream_ofmap = reinterpret_cast<T *>(tiled_output.data());
+#endif
+
+#ifdef USE_DRAM
+  constexpr size_t num_bytes_per_burst = 384;
+  size_t base_addr = 0;
+
+  BurstAlign(tiled_input, num_bytes_per_burst * DFE_PC * DFE_PK);
+  BurstAlign(tiled_weights, num_bytes_per_burst * DFE_PC * DFE_PF);
+  BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF * DFE_PK);
+
+  base_addr = WriteDRAM<T, DfeT>(tiled_input, base_addr, engine);
+  base_addr = WriteDRAM<T, DfeT>(tiled_weights, base_addr, engine);
+#endif
 
   LOG(INFO) << "Running " << N_T << " convolution on DFE ...";
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
-  dfe_run_fn().run(engine, &actions);
+  DfeT::Run(engine, &actions);
   end = std::chrono::system_clock::now();
   LOG(INFO) << "Done";
+
+#ifdef USE_DRAM
+  ReadDRAM<T, DfeT>(tiled_output, base_addr, engine);
+#endif
 
   // transform the the final output
   output = TransformConvLayerTiledOutput<T>(tiled_output, OH, OW, F, T_OH, T_OW,
@@ -441,7 +499,10 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() << "s";
   auto gflops =
       (2 * OH * OW * C * F * K * K) / (elapsed_seconds.count()) * 1e-9;
+  auto tiled_gflops = (2 * T_OH * T_OW * TC * TF * K * K) * N_T /
+                      (elapsed_seconds.count()) * 1e-9;
   LOG(INFO) << "GFLOPS: " << gflops;
+  LOG(INFO) << "Tiled GFLOPS: " << tiled_gflops;
 }
 #endif
 #endif

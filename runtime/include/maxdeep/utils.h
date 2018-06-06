@@ -2,12 +2,12 @@
  * Utility functions for MaxDeep
  */
 
-#include <stdlib.h>
-#include <math.h>
-#include <vector>
-#include <iostream>
-#include <fstream>
 #include <glog/logging.h>
+#include <math.h>
+#include <stdlib.h>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 #define ANSI_COLOR_RED "\x1b[31m"
 #define ANSI_COLOR_GREEN "\x1b[32m"
@@ -106,4 +106,25 @@ std::vector<T> CreateRandomTensor(int C, int H, int W, int pad_size = 0,
   }
 
   return arr;
+}
+
+size_t GetBurstAlignedNumElems(size_t num_elems, size_t num_bytes_per_elem,
+                               size_t num_bytes_per_burst) {
+  CHECK(num_bytes_per_burst % num_bytes_per_elem == 0);
+
+  auto total_num_bytes = num_elems * num_bytes_per_elem;
+  auto num_bursts = static_cast<size_t>(
+      std::ceil(static_cast<double>(total_num_bytes) / num_bytes_per_burst));
+  auto burst_aligned_total_num_bytes = num_bursts * num_bytes_per_burst;
+
+  return static_cast<size_t>(burst_aligned_total_num_bytes /
+                             num_bytes_per_elem);
+}
+
+template <typename T>
+void BurstAlign(std::vector<T>& arr, size_t num_bytes_per_burst) {
+  auto burst_aligned_num_elems =
+      GetBurstAlignedNumElems(arr.size(), sizeof(T), num_bytes_per_burst);
+  // the input vector is resized (side effect)
+  arr.resize(burst_aligned_num_elems);
 }

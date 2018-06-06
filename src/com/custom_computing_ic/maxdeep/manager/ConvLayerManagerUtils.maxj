@@ -19,6 +19,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import conv_single_layer.ConvSingleLayerManager;
 
 /**
  * Manager related utilities.
@@ -27,7 +28,6 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
  */
 public
 class ConvLayerManagerUtils {
-
  public
   static final String IFMAP_NAME = "ifmap";
  public
@@ -59,8 +59,9 @@ class ConvLayerManagerUtils {
     InterfaceParam totalSizeInBytes = numElems * sizeInBytes;
 
     InterfaceParam burstAlignedTotalSizeInBytes =
-        InterfaceMath.ceil(totalSizeInBytes.cast(CPUTypes.DOUBLE) /
-                           burstSize.cast(CPUTypes.DOUBLE))
+        InterfaceMath
+            .ceil(totalSizeInBytes.cast(CPUTypes.DOUBLE) /
+                  burstSize.cast(CPUTypes.DOUBLE))
             .cast(CPUTypes.INT64) *
         burstSize;
 
@@ -129,7 +130,6 @@ class ConvLayerManagerUtils {
 
       // connect ifmap
       if (i == 0) {
-
         if (useDRAM) {
           KernelBlock ifmapUnpadKnl = padKnls.get(getIfmapUnpadKernelName());
           // connect ifmap to the output of unpad kernel
@@ -148,7 +148,6 @@ class ConvLayerManagerUtils {
 
       // connect coeff
       if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
-
         if (useDRAM) {
           KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
           knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
@@ -159,9 +158,7 @@ class ConvLayerManagerUtils {
         }
 
       } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-
         if (useDRAM) {
-
           KernelBlock depthCoeffUnpadKnl =
               padKnls.get(getDepthwiseCoeffUnpadKernelName(cp));
           knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
@@ -173,7 +170,6 @@ class ConvLayerManagerUtils {
               .connect(pointCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
 
         } else {
-
           knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
               .connect(mgr.addStreamFromCPU(DEPTHWISE_COEFF_PREFIX + "_" + i));
           knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME)
@@ -215,7 +211,6 @@ class ConvLayerManagerUtils {
       ConvLayerParameters cp = cps.get(i);
 
       if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
-
         String knlName = getCoeffUnpadKernelName(cp);
         KernelBlock knl = mgr.addKernel(new UnpaddingKernel(
             mgr.makeKernelParameters(knlName),
@@ -224,7 +219,6 @@ class ConvLayerManagerUtils {
         knls.put(knlName, knl);
 
       } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-
         String depthwiseKnlName = getDepthwiseCoeffUnpadKernelName(cp);
         String pointwiseKnlName = getPointwiseCoeffUnpadKernelName(cp);
 
@@ -265,6 +259,10 @@ class ConvLayerManagerUtils {
     LMemCommandGroup groupOfmap = iface.addCommandGroup(
         "GROUP_OFMAP", LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
 
+    if (mgr instanceof ConvSingleLayerManager) {
+      ((ConvSingleLayerManager)mgr).iface = iface;
+    }
+
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
 
@@ -280,7 +278,6 @@ class ConvLayerManagerUtils {
                                                      UnpaddingKernel.INP_NAME);
 
       } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-
         LMemCommandGroup groupDepthCoeff = iface.addCommandGroup(
             "GROUP_DEPTH_COEFF" + "_" + i,
             LMemCommandGroup.MemoryAccessPattern.LINEAR_1D);
@@ -368,9 +365,16 @@ class ConvLayerManagerUtils {
                            InterfaceParam batchSize, boolean useDRAM,
                            CustomManager mgr) {
     if (useDRAM) {
+      if (mgr != null) mgr.logMsg("DRAM will be used to build the design");
 
+      // base address of the memory space, will be updated once
+      // a new block is allocated.
       InterfaceParam baseAddr;
+
+      // setup the stream input from ifmap stored in DRAM
       baseAddr = setupIfmapStream(ei, cps.get(0), batchSize);
+
+      // for each convolution layer to be built
       for (int i = 0; i < cps.size(); i++) {
         ConvLayerParameters cp = cps.get(i);
 
@@ -388,9 +392,10 @@ class ConvLayerManagerUtils {
                      cp.getCoeffStreamChunkSize());
         }
 
-        if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2)
-          baseAddr = setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr);
-        else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+        if (cp.type == Type.STANDARD ||
+            cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
+          baseAddr = setupCoeffStream(ei, cp, i, batchSize, baseAddr);
+        } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
           baseAddr =
               setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr, true);
           baseAddr =
@@ -400,10 +405,10 @@ class ConvLayerManagerUtils {
         }
       }
 
-      setupOfmapStream(ei, cps.get(cps.size() - 1), batchSize, baseAddr);
+      baseAddr =
+          setupOfmapStream(ei, cps.get(cps.size() - 1), batchSize, baseAddr);
 
     } else {
-
       for (int i = 0; i < cps.size(); i++) {
         ConvLayerParameters cp = cps.get(i);
 
@@ -490,7 +495,6 @@ class ConvLayerManagerUtils {
                                          InterfaceParam batchSize,
                                          InterfaceParam baseAddr,
                                          boolean isDepthwise) {
-
     String knlName = (isDepthwise) ? getDepthwiseCoeffUnpadKernelName(cp)
                                    : getPointwiseCoeffUnpadKernelName(cp);
     long numElemsValue = (isDepthwise) ? cp.getDepthwiseCoeffStreamNumElems()
@@ -530,7 +534,6 @@ class ConvLayerManagerUtils {
                                          ConvLayerParameters cp, int index,
                                          InterfaceParam batchSize,
                                          InterfaceParam baseAddr) {
-
     String knlName = getCoeffUnpadKernelName(cp);
     InterfaceParam numElems =
         ei.addConstant(cp.getCoeffStreamNumElems()).cast(CPUTypes.INT64);
