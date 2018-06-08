@@ -24,6 +24,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  */
 public
 class ConvLayerKernel extends KernelComponent {
+ public
+  final int H, W, PH, PW;
  protected
   final ConvLayerParameters cp;
  protected
@@ -70,6 +72,15 @@ class ConvLayerKernel extends KernelComponent {
     this.cp = convParams;
     this.prefix = prefix;
     this.scalarT = scalarT;
+
+    this.H = cp.useWinograd
+                 ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                 : cp.H;
+    this.W = cp.useWinograd
+                 ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                 : cp.W;
+    this.PH = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : 1;
+    this.PW = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : cp.PK;
 
     initStreams();
     initCounters();
@@ -157,30 +168,11 @@ class ConvLayerKernel extends KernelComponent {
     }
   }
 
- private
-  DFEVar getWinogradObufWriteEn(DFEVar h, DFEVar w) {
-    int TILE_SIZE = WinogradTransform.TILE_SIZE;
-    int M = WinogradTransform.M;
-
-    DFEVar hi = h - TILE_SIZE + M + 1;
-    DFEVar wi = w - TILE_SIZE + M + 1;
-
-    DFEVar rowAbove = h >= (TILE_SIZE - 1);
-    DFEVar colRight = w >= (TILE_SIZE - 1);
-    DFEVar posHeight = (hi.get(0) | hi.get(1)).eq(0);
-    DFEVar posWidth = (wi.get(0) | wi.get(1)).eq(0);
-
-    // debug.simPrintf(
-    // "h = %KObj% w = %KObj% hi = %KObj% wi = %KObj% posHeight = %KObj%
-    // posWidth = %KObj%\n", h, w, hi, wi, posHeight, posWidth);
-
-    return rowAbove & colRight & posHeight & posWidth;
-  }
-
  public
   DFEVar getOfmapBufferWriteEn() {
     if (cp.useWinograd) {
-      return getWinogradObufWriteEn(h, w);
+      return (h >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1) &
+             (w >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1);
     } else
       return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
   }
@@ -192,17 +184,13 @@ class ConvLayerKernel extends KernelComponent {
   DFEVar getOfmapBufferAddr(DFEType addrT) {
     if (cp.useWinograd) {
       int M = WinogradTransform.M;
-      // TODO(vince): this code relies on M == 4
-      DFEVar ohi = oh >> 2;
-      DFEVar owi = ow >> 2;
-
       switch (cp.seq) {
         case CHANNEL_MAJOR:
-          return (f * (cp.OH * cp.OW / (M * M)) + ohi * cp.OW / M + owi)
+          return (f * (cp.OH * cp.OW / (M * M)) + oh * cp.OW / M + ow)
               .cast(addrT);
 
         case FILTER_MAJOR:
-          return (ohi * cp.OW / M + owi).cast(addrT);
+          return (oh * cp.OW / M + ow).cast(addrT);
 
         default:
           throw new IllegalArgumentException(String.format(
@@ -242,7 +230,7 @@ class ConvLayerKernel extends KernelComponent {
   }
 
  public
-  int getIfmapVecSize() { return cp.PC * cp.PK; }
+  int getIfmapVecSize() { return cp.getIfmapVecSize(); }
 
  public
   int getCoeffVecSize() { return cp.PF * cp.PC * cp.K * cp.K; }
@@ -285,8 +273,8 @@ class ConvLayerKernel extends KernelComponent {
         else
           f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
 
-        h = chain.addCounter(cp.H, 1).cast(countT);
-        w = chain.addCounter(cp.W / cp.PK, 1).cast(countT);
+        h = chain.addCounter(H / PH, 1).cast(countT);
+        w = chain.addCounter(W / PW, 1).cast(countT);
         break;
 
       case FILTER_MAJOR:
@@ -300,8 +288,8 @@ class ConvLayerKernel extends KernelComponent {
         else
           c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
 
-        h = chain.addCounter(cp.H, 1).cast(countT);
-        w = chain.addCounter(cp.W / cp.PK, 1).cast(countT);
+        h = chain.addCounter(H / PH, 1).cast(countT);
+        w = chain.addCounter(W / PW, 1).cast(countT);
         break;
 
       default:
@@ -317,11 +305,17 @@ class ConvLayerKernel extends KernelComponent {
     }
 
     // counters for the output fmap
-    oh = (h <= cp.K - 1) ? constant.var(0) : h - cp.K + 1;
+    int lbufHeight = ConvLayerLineBuffer.getLineBufferHeight(cp);
+
+    oh = (h <= lbufHeight - 1) ? constant.var(0) : h - lbufHeight + 1;
     oh = oh.cast(countT);
 
-    ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0)
-                                  : (w * cp.PK + 1 - cp.K) / cp.PK;
+    if (cp.useWinograd) {
+      ow = (w <= lbufHeight - 1) ? constant.var(0) : w - lbufHeight + 1;
+    } else {
+      ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0)
+                                    : (w * cp.PK + 1 - cp.K) / cp.PK;
+    }
     ow = ow.cast(countT);
 
     if (cp.dbg) {
@@ -332,18 +326,17 @@ class ConvLayerKernel extends KernelComponent {
  protected
   DFEVar getIfmapBufferAddr() {
     DFEVar addr;
-
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        addr = h * (cp.W / cp.PK) + w;
+        addr = h * (W / PW) + w;
         return addr.cast(ibuf.getAddrT());
 
       case FILTER_MAJOR:
-        addr = c * cp.H * (cp.W / cp.PK) + h * (cp.W / cp.PK) + w;
+        addr = c * (H / PH) * (W / PW) + h * (W / PW) + w;
         return addr.cast(ibuf.getAddrT());
 
       case PIXEL_MAJOR:
-        addr = c * cp.H * (cp.W / cp.PK) + h * (cp.W / cp.PK) + w;
+        addr = c * (H / PH) * (W / PW) + h * (W / PW) + w;
         return addr.cast(ibuf.getAddrT());
 
       default:

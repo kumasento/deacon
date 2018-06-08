@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 #define ANSI_COLOR_RED "\x1b[31m"
@@ -70,6 +71,8 @@ std::vector<T> CreateRandomArray(int N, int min_val = 0, int max_val = 1) {
   for (int i = 0; i < N; i++) {
     float rand_val = static_cast<float>(rand()) / RAND_MAX;
     rand_val = rand_val * range + min_val;
+
+    if (std::is_same<T, int16_t>::value) rand_val *= (1 << 8);
 
     arr[i] = static_cast<T>(rand_val);
   }

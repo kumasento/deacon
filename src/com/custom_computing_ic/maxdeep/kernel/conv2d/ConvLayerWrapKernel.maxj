@@ -6,25 +6,33 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 
 /**
  * Kernel for generating Conv2DKernel different parameters
- * 
+ *
  * @author rz3515
- * 
+ *
  */
-public class ConvLayerWrapKernel extends Kernel {
+public
+class ConvLayerWrapKernel extends Kernel {
+ public
+  static final String IFMAP_NAME = "ifmap";
+ public
+  static final String COEFF_NAME = "coeff";
+ public
+  static final String DEPTHWISE_COEFF_NAME = "depthwise_coeff";
+ public
+  static final String POINTWISE_COEFF_NAME = "pointwise_coeff";
+ public
+  static final String OFMAP_NAME = "ofmap";
 
-  public static final String IFMAP_NAME = "ifmap";
-  public static final String COEFF_NAME = "coeff";
-  public static final String DEPTHWISE_COEFF_NAME = "depthwise_coeff";
-  public static final String POINTWISE_COEFF_NAME = "pointwise_coeff";
-  public static final String OFMAP_NAME = "ofmap";
+ private
+  final ConvLayerParameters cp;
 
-  private final ConvLayerParameters cp;
-
-  public ConvLayerWrapKernel(KernelParameters params, ConvLayerParameters cp) {
+ public
+  ConvLayerWrapKernel(KernelParameters params, ConvLayerParameters cp) {
     super(params);
 
     // KernelConfiguration config = getKernelConfig();
@@ -35,8 +43,9 @@ public class ConvLayerWrapKernel extends Kernel {
     this.cp = cp;
 
     // TODO: This type will return a signed integer when BW > 1
-    DFEType scalarT = (cp.BW == 1) ? dfeUInt(1) : dfeInt(cp.BW); // dfeFix(cp.BW, 0,
-                                                                 // SignMode.TWOSCOMPLEMENT);
+    DFEType scalarT =
+        (cp.BW == 1) ? dfeUInt(1)
+                     : dfeFix(cp.BW / 2, cp.BW / 2, SignMode.TWOSCOMPLEMENT);
 
     /**
      * TODO: what is the proper way to initialise conv and cast the type?
@@ -44,33 +53,41 @@ public class ConvLayerWrapKernel extends Kernel {
     if (cp.type == Type.STANDARD) {
       ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
 
-      DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
-      DFEVector<DFEVar> coeff = io.input(COEFF_NAME, conv.getCoeffVecT(), conv.getCoeffEn());
+      DFEVector<DFEVar> ifmap =
+          io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
+      DFEVector<DFEVar> coeff =
+          io.input(COEFF_NAME, conv.getCoeffVecT(), conv.getCoeffEn());
 
       conv.setInputs(ifmap, coeff);
-      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(conv.getOfmap());
+      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn())
+          .connect(conv.getOfmap());
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-
       DepthwiseSeparableConvLayerKernel conv =
           new DepthwiseSeparableConvLayerKernel(getKernel(), cp, scalarT);
 
-      DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
+      DFEVector<DFEVar> ifmap =
+          io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
       DFEVector<DFEVar> depthwiseCoeff =
-          io.input(DEPTHWISE_COEFF_NAME, conv.getDepthwiseCoeffVecT(), conv.getDepthwiseCoeffEn());
+          io.input(DEPTHWISE_COEFF_NAME, conv.getDepthwiseCoeffVecT(),
+                   conv.getDepthwiseCoeffEn());
       DFEVector<DFEVar> pointwiseCoeff =
-          io.input(POINTWISE_COEFF_NAME, conv.getPointwiseCoeffVecT(), conv.getPointwiseCoeffEn());
+          io.input(POINTWISE_COEFF_NAME, conv.getPointwiseCoeffVecT(),
+                   conv.getPointwiseCoeffEn());
 
       conv.setInputs(ifmap, depthwiseCoeff, pointwiseCoeff);
-      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(conv.getOfmap());
+      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn())
+          .connect(conv.getOfmap());
 
       if (cp.dbg) {
-        debug.simPrintf("[ConvLayerWrapKernel] pointwise en = %d\n", conv.getPointwiseCoeffEn());
+        debug.simPrintf("[ConvLayerWrapKernel] pointwise en = %d\n",
+                        conv.getPointwiseCoeffEn());
       }
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
       // create the kernel for depthwise separable convolution V2
-      getManager().logMsg("Initializing kernel for Depthwise Separable Convolution V2");
+      getManager().logMsg(
+          "Initializing kernel for Depthwise Separable Convolution V2");
 
       DepthwiseSeparableConvLayerKernelV2 conv =
           new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, scalarT);
@@ -78,6 +95,5 @@ public class ConvLayerWrapKernel extends Kernel {
     } else {
       throw new IllegalArgumentException("type has no been supported");
     }
-
   }
 }

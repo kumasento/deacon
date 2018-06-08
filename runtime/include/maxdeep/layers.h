@@ -19,6 +19,8 @@
 #include "maxdeep/utils.h"
 
 #define DUMP_ARRAY
+#define WINO_PAD 2
+#define WINO_TILE_SIZE 4
 
 template <typename T>
 void depthwise_separable_conv_layer(T *ifmap, T *coeff, T *ofmap, int H, int W,
@@ -158,7 +160,7 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
  *
  * \return a tiled array
  */
-template <typename T>
+template <typename T, bool use_wino = false>
 std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
                                          int C, int K, int P, int S, int T_OH,
                                          int T_OW, int TC, int PC = 1,
@@ -170,9 +172,18 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
 
+  auto PH = use_wino ? WINO_TILE_SIZE : 1;
+
+  auto top_left_pad = use_wino ? WINO_PAD : 0;
+
   // input tile size
   auto TH = GetConvLayerInputDim(T_OH, K, 0, S);
   auto TW = GetConvLayerInputDim(T_OW, K, 0, S);
+  if (use_wino) {
+    TH += WINO_PAD;
+    TW += WINO_PAD;
+  }
+
   auto tile_size = TH * TW * TC;  // decided by input tile size
 
   // number of tiles
@@ -199,23 +210,29 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
           // single tile
 
           for (int c = 0; c < TC; c += PC) {
-            for (int h = 0; h < TH; h++) {
+            for (int h = 0; h < TH; h += PH) {
               for (int w = 0; w < TW; w++) {
                 // The inner loops for building parallelised input
                 // data.
                 for (int pc = 0; pc < PC; pc++) {
-                  // index in the tiled result
-                  auto base_idx =
-                      td * total_size +
-                      (tc * N_TOH * N_TOW + t_oh * N_TOW + t_ow) * tile_size;
-                  auto dst_idx = ((c / PC) * TH * TW + h * TW + w) * PC + pc;
-                  // index in the input data
-                  // hi and wi are padded
-                  auto src_ci = tc * TC + c + pc;
-                  auto src_hi = t_oh * TH + h - 2 * hk * t_oh;
-                  auto src_wi = t_ow * TW + w - 2 * hk * t_ow;
-                  auto src_idx =
-                      src_ci * H * W + (src_hi - P) * W + (src_wi - P);
+                  for (int ph = 0; ph < PH; ph++) {
+                    // index in the tiled result
+                    auto base_idx =
+                        td * total_size +
+                        (tc * N_TOH * N_TOW + t_oh * N_TOW + t_ow) * tile_size;
+                    auto dst_idx =
+                        (((c / PC) * (TH / PH) * TW + (h / PH) * TW + w) * PC *
+                         PH) +
+                        (pc * PH + ph);
+                    // index in the input data
+                    // hi and wi are padded
+                    auto src_ci = tc * TC + c + pc;
+                    auto src_hi = t_oh * TH + h + ph - 2 * hk * t_oh -
+                                  t_oh * top_left_pad;
+                    auto src_wi =
+                        t_ow * TW + w - 2 * hk * t_ow - t_ow * top_left_pad;
+                    auto src_idx =
+                        src_ci * H * W + (src_hi - P) * W + (src_wi - P);
 
 #if 0
                   printf(
@@ -225,12 +242,13 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
                       tc, t_oh, t_ow, c, h, w, pc, src_hi, src_wi, src_idx);
 #endif
 
-                  // input index lies in the padding range
-                  if (src_ci >= C || src_hi < P || src_hi >= H + P ||
-                      src_wi < P || src_wi >= W + P)
-                    tiled_input[base_idx + dst_idx] = static_cast<T>(0.0f);
-                  else
-                    tiled_input[base_idx + dst_idx] = input[src_idx];
+                    // input index lies in the padding range
+                    if (src_ci >= C || src_hi < P || src_hi >= H + P ||
+                        src_wi < P || src_wi >= W + P)
+                      tiled_input[base_idx + dst_idx] = static_cast<T>(0.0f);
+                    else
+                      tiled_input[base_idx + dst_idx] = input[src_idx];
+                  }
                 }
               }
             }
@@ -428,10 +446,10 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto DFE_PK = max_get_constant_uint64t(max_file, "conv_PK");
   auto DFE_K = max_get_constant_uint64t(max_file, "conv_K");
 #ifdef USE_WINO
-  auto DFE_USE_WINO = max_get_constant_uint64t(max_file, "USE_WINO") == 1;
+  constexpr bool DFE_USE_WINO = true;
   auto DFE_WINO_M = max_get_constant_uint64t(max_file, "WINO_M");
 #else
-  auto DFE_USE_WINO = false;
+  constexpr bool DFE_USE_WINO = false;
   auto DFE_WINO_M = 1;
 #endif
   auto DFE_POH = DFE_USE_WINO ? DFE_WINO_M : 1;
@@ -464,8 +482,10 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
 
   // perform tiling
   // duplicate input with N_TF times
-  auto tiled_input = CreateConvLayerTiledInput<T>(input, H, W, C, K, P, S, T_OH,
-                                                  T_OW, TC, DFE_PC, N_TF);
+  auto tiled_input = CreateConvLayerTiledInput<T, DFE_USE_WINO>(
+      input, H, W, C, K, P, S, T_OH, T_OW, TC, DFE_PC, N_TF);
+  LOG(INFO) << "Tiled input size: " << tiled_input.size();
+
   auto tiled_weights = CreateConvLayerTiledWeights<T>(
       weights, C, F, K, TC, TF, DFE_PC, DFE_PF, N_TOH * N_TOW);
 
@@ -492,7 +512,10 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   constexpr size_t num_bytes_per_burst = 384;
   size_t base_addr = 0;
 
-  BurstAlign(tiled_input, num_bytes_per_burst * DFE_PC * DFE_PK);
+  BurstAlign(tiled_input,
+             num_bytes_per_burst * DFE_PC *
+                 (DFE_USE_WINO ? WINO_TILE_SIZE * WINO_TILE_SIZE : DFE_PK));
+  LOG(INFO) << "Tiled input size (burst aligned): " << tiled_input.size();
   BurstAlign(tiled_weights, num_bytes_per_burst * DFE_PC * DFE_PF);
   BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF *
                                (DFE_USE_WINO ? DFE_POH * DFE_POW : DFE_PK));

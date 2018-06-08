@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
 import com.custom_computing_ic.maxdeep.lib.LayerParameters;
@@ -48,6 +49,10 @@ class ConvLayerParameters extends LayerParameters {
 
  public
   static final int WINOGRAD_TILE_SIZE = 4;
+ public
+  int winoH;
+ public
+  int winoW;
 
  public
   PoolingLayerParameters pool;
@@ -95,6 +100,8 @@ class ConvLayerParameters extends LayerParameters {
     this.pool = builder.pool;
     this.useDRAM = builder.useDRAM;
     this.useWinograd = builder.useWinograd;
+    this.winoH = H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
+    this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
   }
 
  public
@@ -127,6 +134,13 @@ class ConvLayerParameters extends LayerParameters {
 
  public
   long getNumCycles() {
+    if (useWinograd) {
+      int PH = WinogradTransform.M;
+      int PW = WinogradTransform.M;
+
+      return ((long)winoH * winoW * C * F) / (PC * PF * PH * PW);
+    }
+
     if (type == Type.STANDARD) return ((long)H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
       return ((long)H * W * C * F) / (PC * PF * PK);
@@ -141,11 +155,11 @@ class ConvLayerParameters extends LayerParameters {
   int getPoolNumCycles() { return (OH * OW * F) / (PK * PF); }
 
   @Override public long getIfmapStreamNumElems() {
-    return C * H * W;
+    return useWinograd ? C * winoH * winoW : C * H * W;
   }
 
   @Override public int getIfmapVecSize() {
-    return PC * PK;
+    return useWinograd ? PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES : PC * PK;
   }
 
   @Override public long getCoeffStreamNumElems() {
