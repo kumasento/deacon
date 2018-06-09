@@ -61,7 +61,7 @@ int GetNumTiles(int num_elems, int tile_size) {
 }
 
 template <typename T>
-std::vector<T> CreateRandomArray(int N, int min_val = 0, int max_val = 1) {
+std::vector<T> CreateRandomArray(int N, float min_val = 0, float max_val = 1) {
   CHECK_GT(N, 0);
   CHECK_GE(max_val, min_val);
 
@@ -72,14 +72,33 @@ std::vector<T> CreateRandomArray(int N, int min_val = 0, int max_val = 1) {
     float rand_val = static_cast<float>(rand()) / RAND_MAX;
     rand_val = rand_val * range + min_val;
 
-    if (std::is_same<T, int16_t>::value) rand_val *= (1 << 8);
-
     arr[i] = static_cast<T>(rand_val);
   }
 
   return arr;
 }
 
+template <typename T>
+std::vector<T> FloatToFixed(std::vector<float>& data, int num_frac_bits) {
+  std::vector<T> arr(data.size());
+  auto scale = static_cast<float>(1 << num_frac_bits);
+
+  for (int i = 0; i < (int)data.size(); i++) {
+    arr[i] = static_cast<T>(data[i] * scale);
+  }
+  return arr;
+}
+
+template <typename T>
+std::vector<float> FixedToFloat(std::vector<T>& data, int num_frac_bits) {
+  std::vector<float> arr(data.size());
+  auto scale = 1 << num_frac_bits;
+
+  for (int i = 0; i < (int)data.size(); i++) {
+    arr[i] = static_cast<float>(data[i]) / scale;
+  }
+  return arr;
+}
 template <typename T>
 std::vector<T> CreateRandomTensor(int C, int H, int W, int pad_size = 0,
                                   int min_val = 0, int max_val = 1) {

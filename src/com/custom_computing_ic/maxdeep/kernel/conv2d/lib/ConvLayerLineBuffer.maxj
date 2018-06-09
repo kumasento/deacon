@@ -145,16 +145,16 @@ class ConvLayerLineBuffer extends KernelComponent {
 
                 int xj = xi - WINO_LBUF_PADDING_WIDTH;
                 int yj = yi - WINO_LBUF_PADDING_WIDTH;
-                int srcIdx = t * WINO_LBUF_TILE_SIZE * WINO_LBUF_TILE_SIZE +
-                             x * WINO_LBUF_TILE_SIZE + y;
+                int srcIdx =
+                    (x * WINO_LBUF_TILE_SIZE + y) * numTilesPerChunk + t;
                 int dstIdx = i * WinogradTransform.TILE_SIZE *
                                  WinogradTransform.TILE_SIZE +
                              xj * WinogradTransform.TILE_SIZE + yj;
 
                 owner.getManager().logMsg(String.format(
                     "Connect FROM line buffer output (%d, %d, %d) TO " +
-                        "final output (%d, %d, %d)",
-                    i, xi, yi, i, xj, yj));
+                        "final output (%d, %d, %d) dst %d src %d",
+                    i, xi, yi, i, xj, yj, dstIdx, srcIdx));
                 outputVec[dstIdx].connect(lbufOutputChunk[srcIdx]);
               }
             }

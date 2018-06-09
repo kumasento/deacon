@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 #include <glog/logging.h>
 
@@ -85,6 +86,13 @@ int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
   return (input_dim - K + 2 * P) / S + 1;
 }
 
+template <typename T>
+inline int32_t Saturate(int32_t num) {
+  if (num > std::numeric_limits<T>::max()) return std::numeric_limits<T>::max();
+  if (num < std::numeric_limits<T>::min()) return std::numeric_limits<T>::min();
+  return num;
+}
+
 /*! An implementation of convolution layer in software.
  *
  * No tiling involved in this implementation.
@@ -92,7 +100,8 @@ int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
 template <typename T>
 void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
                   std::vector<T> &bias, std::vector<T> &output, int H, int W,
-                  int C, int F, int K, int P, int S, bool use_bias = true) {
+                  int C, int F, int K, int P, int S, bool use_bias = true,
+                  int num_frac_bits = 0) {
   CHECK_GT(H, 0);
   CHECK_GT(W, 0);
   CHECK_GT(C, 0);
@@ -103,6 +112,8 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
 
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
+
+  int32_t round_value = 1 << (num_frac_bits - 1);
 
   for (int f = 0; f < F; f++) {
     for (int oh = 0; oh < OH; oh++) {
@@ -129,7 +140,18 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
                   "% 2d weight = % 2d\n",
                   f, c, oh, ow, kh, kw, input_val, weights_val);
 #endif
-              output[oi] += input_val * weights_val;
+
+              if (std::is_same<T, float>::value) {
+                output[oi] += (input_val * weights_val);
+              } else {
+                auto tmp = static_cast<int32_t>(input_val) *
+                           static_cast<int32_t>(weights_val);
+                tmp += round_value;
+                tmp = Saturate<int16_t>(tmp >> num_frac_bits);
+                tmp = Saturate<int16_t>(tmp + static_cast<int32_t>(output[oi]));
+
+                output[oi] = static_cast<T>(tmp);
+              }
             }
           }
         }
@@ -172,6 +194,7 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
 
+  auto PW = use_wino ? WINO_TILE_SIZE : 1;
   auto PH = use_wino ? WINO_TILE_SIZE : 1;
 
   auto top_left_pad = use_wino ? WINO_PAD : 0;
@@ -211,43 +234,50 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
 
           for (int c = 0; c < TC; c += PC) {
             for (int h = 0; h < TH; h += PH) {
-              for (int w = 0; w < TW; w++) {
+              for (int w = 0; w < TW; w += PW) {
                 // The inner loops for building parallelised input
                 // data.
                 for (int pc = 0; pc < PC; pc++) {
                   for (int ph = 0; ph < PH; ph++) {
-                    // index in the tiled result
-                    auto base_idx =
-                        td * total_size +
-                        (tc * N_TOH * N_TOW + t_oh * N_TOW + t_ow) * tile_size;
-                    auto dst_idx =
-                        (((c / PC) * (TH / PH) * TW + (h / PH) * TW + w) * PC *
-                         PH) +
-                        (pc * PH + ph);
-                    // index in the input data
-                    // hi and wi are padded
-                    auto src_ci = tc * TC + c + pc;
-                    auto src_hi = t_oh * TH + h + ph - 2 * hk * t_oh -
-                                  t_oh * top_left_pad;
-                    auto src_wi =
-                        t_ow * TW + w - 2 * hk * t_ow - t_ow * top_left_pad;
-                    auto src_idx =
-                        src_ci * H * W + (src_hi - P) * W + (src_wi - P);
+                    for (int pw = 0; pw < PW; pw++) {
+                      // index in the tiled result
+                      auto base_idx = td * total_size + (tc * N_TOH * N_TOW +
+                                                         t_oh * N_TOW + t_ow) *
+                                                            tile_size;
+                      auto dst_idx =
+                          (((c / PC) * (TH / PH) * TW + (h / PH) * TW + w) *
+                           PC * PH) +
+                          (pc * PH * PW + ph * PW + pw);
+                      // index in the input data
+                      // hi and wi are padded
+                      auto src_ci = tc * TC + c + pc;
+                      auto src_hi = t_oh * TH + h + ph - 2 * hk * t_oh -
+                                    (t_oh + 1) * top_left_pad;
+                      auto src_wi = t_ow * TW + w + pw - 2 * hk * t_ow -
+                                    (t_ow + 1) * top_left_pad;
+                      auto src_idx =
+                          src_ci * H * W + (src_hi - P) * W + (src_wi - P);
 
-#if 0
-                  printf(
-                      "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = %3d w = %3d "
-                      "pc "
-                      "= %3d src_hi = %3d src_wi = %3d src_idx = %3d\n",
-                      tc, t_oh, t_ow, c, h, w, pc, src_hi, src_wi, src_idx);
+#if 1
+                      if (c == 0 && h == 0)
+                        printf(
+                            "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = %3d w "
+                            "= "
+                            "%3d pc = %3d ph = %3d pw = %3d src_hi = %3d "
+                            "src_wi = %3d "
+                            "src_idx = "
+                            "%3d\n",
+                            tc, t_oh, t_ow, c, h, w, pc, ph, pw, src_hi, src_wi,
+                            src_idx);
 #endif
 
-                    // input index lies in the padding range
-                    if (src_ci >= C || src_hi < P || src_hi >= H + P ||
-                        src_wi < P || src_wi >= W + P)
-                      tiled_input[base_idx + dst_idx] = static_cast<T>(0.0f);
-                    else
-                      tiled_input[base_idx + dst_idx] = input[src_idx];
+                      // input index lies in the padding range
+                      if (src_ci >= C || src_hi < P || src_hi >= H + P ||
+                          src_wi < P || src_wi >= W + P)
+                        tiled_input[base_idx + dst_idx] = static_cast<T>(0.0f);
+                      else
+                        tiled_input[base_idx + dst_idx] = input[src_idx];
+                    }
                   }
                 }
               }

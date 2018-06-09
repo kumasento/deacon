@@ -40,6 +40,7 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
   auto TC = max_get_constant_uint64t(max_file, "conv_C");
   auto TF = max_get_constant_uint64t(max_file, "conv_F");
   auto K = static_cast<int>(max_get_constant_uint64t(max_file, "conv_K"));
+  auto NUM_FRAC_BITS = max_get_constant_uint64t(max_file, "conv_num_frac_bits");
 
   auto TH = GetConvLayerOutputDim(DFE_TH, K, 0, S);
   auto TW = GetConvLayerOutputDim(DFE_TW, K, 0, S);
@@ -55,32 +56,48 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
             << " x " << OW;
 
   // initialise test array
-  int max_val = 10, min_val = -10;
+  // use max_val and min_val to prevent overflow
+  float max_val = 2, min_val = -2;
 
-  auto input = CreateRandomArray<T>(C * H * W, min_val, max_val);
-  auto weights = CreateRandomArray<T>(F * C * K * K, min_val, max_val);
-  auto bias = CreateRandomArray<T>(F, min_val, max_val);
+  auto input = CreateRandomArray<float>(C * H * W, min_val, max_val);
+  auto weights = CreateRandomArray<float>(F * C * K * K, min_val, max_val);
+  auto bias = CreateRandomArray<float>(F, min_val, max_val);
+
+  auto input_dfe = FloatToFixed<T>(input, NUM_FRAC_BITS);
+  auto weights_dfe = FloatToFixed<T>(weights, NUM_FRAC_BITS);
+  auto bias_dfe = FloatToFixed<T>(bias, NUM_FRAC_BITS);
+
   auto output_cpu = std::vector<T>(F * OH * OW);
   auto output_dfe = std::vector<T>(F * OH * OW);
 
   LOG(INFO) << "Running CPU reference ...";
-  ConvLayerCpu(input, weights, bias, output_cpu, H, W, C, F, K, P, S, false);
+  ConvLayerCpu<T>(input_dfe, weights_dfe, bias_dfe, output_cpu, H, W, C, F, K,
+                  P, S, false, NUM_FRAC_BITS);
 
   LOG(INFO) << "Running DFE reference ...";
-  ConvLayerDfe<T, Dfe>(input, weights, bias, output_dfe, H, W, C, F, K, P, S,
-                       max_file, engine);
+  ConvLayerDfe<T, Dfe>(input_dfe, weights_dfe, bias_dfe, output_dfe, H, W, C, F,
+                       K, P, S, max_file, engine);
 
-#ifndef USE_WINO
-  for (int i = 0; i < (int)(TF * TH * TW); i++)
-    if (output_cpu[i] != output_dfe[i]) {
-      fprintf(stderr, "Result mis-matched at %6d: cpu %6d dfe %6d\n", i,
-              output_cpu[i], output_dfe[i]);
+  // skip tests for Winograd, due to the low-accuracy caused by 1/6
+  bool failed = false;
+  auto output_cpu_float = FixedToFloat(output_cpu, NUM_FRAC_BITS);
+  auto output_dfe_float = FixedToFloat(output_dfe, NUM_FRAC_BITS);
+  for (int i = 0; i < (int)(TF * TH * TW); i++) {
+    auto diff = std::abs((output_cpu_float[i] - output_dfe_float[i]) /
+                         output_cpu_float[i]);
+
+    if (diff > 0.1f) {
+      fprintf(stderr,
+              "Result mis-matched at %6d: cpu %20.6f dfe %20.6f diff %10.6f\n",
+              i, output_cpu_float[i], output_dfe_float[i], diff);
+      failed = true;
       exit(1);
     }
-#endif
+  }
 
-  LOG(INFO) << "TEST single tile: " << ANSI_COLOR_GREEN << "PASSED!"
-            << ANSI_COLOR_RESET;
+  if (!failed)
+    LOG(INFO) << "TEST single tile: " << ANSI_COLOR_GREEN << "PASSED!"
+              << ANSI_COLOR_RESET;
 }
 
 int main(int argc, char *argv[]) {
@@ -92,9 +109,16 @@ int main(int argc, char *argv[]) {
   max_file = ConvSingleLayer_init();
   engine = max_load(max_file, "*");
 
+  auto DTYPE = max_get_constant_string(max_file, "conv_dtype");
+
 #ifdef __SIM__
-  TestTiles<int16_t>(1, 1, 1, 1);
-  TestTiles<int16_t>(2, 2, 2, 2);
+  if (!strcmp(DTYPE, "float")) {
+    TestTiles<float>(1, 1, 1, 1);
+    TestTiles<float>(2, 2, 2, 2);
+  } else if (!strcmp(DTYPE, "fixed")) {
+    TestTiles<int16_t>(1, 1, 1, 1);
+    TestTiles<int16_t>(2, 2, 2, 2);
+  }
 #else
   TestTiles<int16_t>(1, 1, 2, 2);
 #endif

@@ -32,6 +32,7 @@ APPPKG=conv_single_layer
 DEVICE=Maia
 
 bitWidth?=16
+DTYPE?=fixed
 H?=32
 W?=32
 C?=32
@@ -66,7 +67,7 @@ DEBUG_SUFFIX:=_DEBUG
 endif
 
 
-BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) DEBUG=$(DEBUG) USE_WINOGRAD=$(USE_WINO)
+BUILD_PARAMS:=bitWidth=$(bitWidth) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) DEBUG=$(DEBUG) USE_WINOGRAD=$(USE_WINO) DTYPE=$(DTYPE)
 BUILD_NAME_OPTION:=_b$(bitWidth)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)$(USE_WINO_SUFFIX)$(DEBUG_SUFFIX)
 
 # Using known hardware settings

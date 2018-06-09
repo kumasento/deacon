@@ -66,6 +66,8 @@ class ConvSingleLayerManager extends CustomManager {
                                  .PF(params.getPF())
                                  .PK(params.getPK())
                                  .BW(params.getBitWidth())
+                                 .dtype(params.getDType())
+                                 .numFracBits(params.getNumFracBits())
                                  .seq(CompSeq.values()[params.getSeq()])
                                  .dbg(params.getDebug())
                                  .useWinograd(params.getUseWinograd())

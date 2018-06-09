@@ -7,6 +7,9 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
 import com.custom_computing_ic.maxdeep.lib.LayerParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 
 /**
  * Parameters used for building a convolution layer.
@@ -80,7 +83,14 @@ class ConvLayerParameters extends LayerParameters {
     STANDARD,
     DEPTHWISE_SEPARABLE,
     DEPTHWISE_SEPARABLE_V2
-  } public ConvLayerParameters(Builder builder) {
+  }
+
+  public ConvLayerParameters(Builder builder) {
+    // inherited from the parent
+    this.BW = builder.BW;
+    this.dtype = builder.dtype;
+    this.numFracBits = builder.numFracBits;
+
     this.H = builder.H;
     this.W = builder.W;
     this.C = builder.C;
@@ -88,7 +98,6 @@ class ConvLayerParameters extends LayerParameters {
     this.K = builder.K;
     this.OH = builder.OH;
     this.OW = builder.OW;
-    this.BW = builder.BW;
     this.PC = builder.PC;
     this.PF = builder.PF;
     this.PK = builder.PK;
@@ -130,6 +139,30 @@ class ConvLayerParameters extends LayerParameters {
         .seq(CompSeq.FILTER_MAJOR)
         .dbg(dbg)
         .build();
+  }
+
+  /**
+   * Create DFEType from ConvLayerParameters.
+   *
+   * @return Created DFEType instance.
+   */
+ public
+  DFEType getDFEType() {
+    if (dtype.equals("float")) {
+      if (this.BW != 32)
+        throw new IllegalArgumentException(
+            String.format("If dtype is float, BW should be 32. Got: %d", BW));
+
+      return DFETypeFactory.dfeFloat(8, 24);
+    } else if (dtype.equals("fixed")) {
+      return DFETypeFactory.dfeFix(BW - numFracBits, numFracBits,
+                                   SignMode.TWOSCOMPLEMENT);
+    } else if (dtype.equals("int")) {
+      return DFETypeFactory.dfeInt(BW);
+    }
+
+    throw new IllegalArgumentException("BW " + BW + " and dtype " + dtype +
+                                       " don't give a valid type definition.");
   }
 
  public
@@ -310,6 +343,10 @@ class ConvLayerParameters extends LayerParameters {
    private
     String name;
    private
+    String dtype;
+   private
+    int numFracBits;
+   private
     Type type;
    private
     PoolingLayerParameters pool;
@@ -333,6 +370,10 @@ class ConvLayerParameters extends LayerParameters {
       if (K <= 0)
         throw new IllegalArgumentException("K should be larger than 0");
 
+      this.BW = 8;
+      this.dtype = "fixed";
+      this.numFracBits = 8;
+
       // TODO: make S and P variable
       this.S = 1;
       this.P = 1;
@@ -343,7 +384,6 @@ class ConvLayerParameters extends LayerParameters {
       this.C = C;
       this.F = F;
       this.K = K;
-      this.BW = 8;
       this.PF = 1;
       this.PC = 1;
       this.PK = 1;
@@ -359,6 +399,31 @@ class ConvLayerParameters extends LayerParameters {
       if (BW <= 0)
         throw new IllegalArgumentException("BW should be larger than 0");
       this.BW = BW;
+      return this;
+    }
+
+   public
+    Builder dtype(String dtype) {
+      if (dtype.equals("float") || dtype.equals("fixed") ||
+          dtype.equals("int")) {
+        this.dtype = dtype;
+        return this;
+      }
+
+      throw new IllegalArgumentException(
+          String.format("dtype cannot be recognised, should be one of float, " +
+                            "fixed, int. Got \"%s\"",
+                        dtype));
+    }
+
+   public
+    Builder numFracBits(int numFracBits) {
+      if (numFracBits < 0 || numFracBits > BW)
+        throw new IllegalArgumentException(
+            "Number of fraction bits should >= 0 and <= bit width. Got " +
+            numFracBits + " while BW is " + BW);
+
+      this.numFracBits = numFracBits;
       return this;
     }
 

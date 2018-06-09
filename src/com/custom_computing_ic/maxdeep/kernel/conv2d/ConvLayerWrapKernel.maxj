@@ -4,6 +4,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.RoundingMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
@@ -43,15 +44,15 @@ class ConvLayerWrapKernel extends Kernel {
     this.cp = cp;
 
     // TODO: This type will return a signed integer when BW > 1
-    DFEType scalarT =
-        (cp.BW == 1) ? dfeUInt(1)
-                     : dfeFix(cp.BW / 2, cp.BW / 2, SignMode.TWOSCOMPLEMENT);
+    DFEType scalarT = (cp.BW == 1) ? dfeUInt(1) : cp.getDFEType();
 
     /**
      * TODO: what is the proper way to initialise conv and cast the type?
      */
     if (cp.type == Type.STANDARD) {
+      optimization.pushRoundingMode(RoundingMode.TRUNCATE);
       ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
+      optimization.popRoundingMode();
 
       DFEVector<DFEVar> ifmap =
           io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());

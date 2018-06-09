@@ -67,6 +67,15 @@ class ConvLayerEngineParameters extends EngineParameters {
   static boolean USE_WINOGRAD = false;
 
  private
+  static final String DTYPE_NAME = "DTYPE";
+ private
+  static String DTYPE = "fixed";
+ private
+  static final String NUM_FRAC_BITS_NAME = "NUM_FRAC_BITS";
+ private
+  static int NUM_FRAC_BITS = 8;
+
+ private
   static final String DEBUG_NAME = "DEBUG";
  private
   static final boolean DEBUG = false;
@@ -76,6 +85,8 @@ class ConvLayerEngineParameters extends EngineParameters {
 
   @Override protected void declarations() {
     declareParam(BIT_WIDTH_NAME, DataType.INT, BIT_WIDTH);
+    declareParam(DTYPE_NAME, DataType.STRING, DTYPE);
+    declareParam(NUM_FRAC_BITS_NAME, DataType.INT, NUM_FRAC_BITS);
 
     declareParam(PF_NAME, DataType.INT, PF);
     declareParam(PC_NAME, DataType.INT, PC);
@@ -99,6 +110,10 @@ class ConvLayerEngineParameters extends EngineParameters {
 
  public
   int getBitWidth() { return getParam(BIT_WIDTH_NAME); }
+ public
+  int getNumFracBits() { return getParam(NUM_FRAC_BITS_NAME); }
+ public
+  String getDType() { return getParam(DTYPE_NAME); }
 
  public
   int getPF() { return getParam(PF_NAME); }
