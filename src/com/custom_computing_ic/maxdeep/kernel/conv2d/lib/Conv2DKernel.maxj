@@ -85,7 +85,7 @@ class Conv2DKernel extends KernelComponent {
     /**
      * Setup size of vectors in interface.
      */
-    int coeffVecSize = K * K * PC * PF;
+    int coeffVecSize = cp.getCoeffVecSize();
     int ifmapVecSize = (cp.useWinograd) ? (WinogradTransform.TILE_SIZE *
                                            WinogradTransform.TILE_SIZE * cp.PC)
                                         : (K * (K + PK - 1) * PC);
@@ -171,10 +171,14 @@ class Conv2DKernel extends KernelComponent {
   void computeWinograd(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,
                        DFEVector<DFEVar> ofmap) {
     getOwner().getManager().logMsg("Using WINOGRAD compute function ...");
+    if (cp.winogradWeightsOffline)
+      getOwner().getManager().logMsg("Winograd weights are computed offline");
 
     // transform ifmap and coefficient
     DFEVector<DFEVar> ifmapWino = createWinogradTransformedIfmap(ifmap);
-    DFEVector<DFEVar> coeffWino = createWinogradTransformedCoeff(coeff);
+    DFEVector<DFEVar> coeffWino = (cp.winogradWeightsOffline)
+                                      ? coeff
+                                      : createWinogradTransformedCoeff(coeff);
 
     if (cp.dbg) {
       debug.simPrintf("[Conv2DKernel] ifmap WINO = %KObj%\n", ifmapWino);

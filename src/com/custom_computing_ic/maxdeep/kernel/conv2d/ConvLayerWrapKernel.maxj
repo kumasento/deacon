@@ -9,6 +9,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * Kernel for generating Conv2DKernel different parameters
@@ -34,6 +35,12 @@ class ConvLayerWrapKernel extends Kernel {
 
  public
   ConvLayerWrapKernel(KernelParameters params, ConvLayerParameters cp) {
+    this(params, cp, 1);
+  }
+
+ public
+  ConvLayerWrapKernel(KernelParameters params, ConvLayerParameters cp,
+                      int numCoeffFifoSplits) {
     super(params);
 
     // KernelConfiguration config = getKernelConfig();
@@ -56,8 +63,27 @@ class ConvLayerWrapKernel extends Kernel {
 
       DFEVector<DFEVar> ifmap =
           io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
-      DFEVector<DFEVar> coeff =
-          io.input(COEFF_NAME, conv.getCoeffVecT(), conv.getCoeffEn());
+
+      DFEVector<DFEVar> coeff;
+
+      // We try to reduce the size of each FIFO
+      if (numCoeffFifoSplits > 1) {
+        int splitVecSize = conv.getCoeffVecSize() / numCoeffFifoSplits;
+        DFEVectorType<DFEVar> CT =
+            new DFEVectorType<DFEVar>(scalarT, splitVecSize);
+
+        coeff = conv.getCoeffVecT().newInstance(this);
+        for (int i = 0; i < numCoeffFifoSplits; i++) {
+          DFEVector<DFEVar> tmp =
+              io.input(COEFF_NAME + "_" + i, CT, conv.getCoeffEn());
+          for (int j = 0; j < splitVecSize; j++) {
+            coeff[i * splitVecSize + j].connect(tmp[i]);
+          }
+        }
+      } else {
+        // Just use the normal way
+        coeff = io.input(COEFF_NAME, conv.getCoeffVecT(), conv.getCoeffEn());
+      }
 
       conv.setInputs(ifmap, coeff);
       io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn())

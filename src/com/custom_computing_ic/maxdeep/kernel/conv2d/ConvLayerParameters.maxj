@@ -49,6 +49,8 @@ class ConvLayerParameters extends LayerParameters {
   boolean useDRAM;
  public
   boolean useWinograd;
+ public
+  boolean winogradWeightsOffline;
 
  public
   static final int WINOGRAD_TILE_SIZE = 4;
@@ -109,6 +111,7 @@ class ConvLayerParameters extends LayerParameters {
     this.pool = builder.pool;
     this.useDRAM = builder.useDRAM;
     this.useWinograd = builder.useWinograd;
+    this.winogradWeightsOffline = builder.winogradWeightsOffline;
     this.winoH = H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
   }
@@ -196,12 +199,20 @@ class ConvLayerParameters extends LayerParameters {
   }
 
   @Override public long getCoeffStreamNumElems() {
+    if (useWinograd && winogradWeightsOffline)
+      return C * F * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
     if (type == Type.STANDARD) return C * F * K * K;
 
     return C * (F / PF + 1) * Math.max(K * K, PF);
   }
 
   @Override public int getCoeffVecSize() {
+    // The weights offline mode of Winograd will increase the vector size of
+    // coefficients.
+    if (useWinograd && winogradWeightsOffline)
+      return PC * PF * WinogradTransform.TILE_SIZE *
+             WinogradTransform.TILE_SIZE;
+
     return (type == Type.DEPTHWISE_SEPARABLE_V2) ? (PC * Math.max(K * K, PF))
                                                  : (PC * PF * K * K);
   }
@@ -269,10 +280,7 @@ class ConvLayerParameters extends LayerParameters {
   }
 
  public
-  int getCoeffStreamChunkSize() {
-    return (type == Type.DEPTHWISE_SEPARABLE_V2) ? Math.max(K * K, PF)
-                                                 : (K * K);
-  }
+  int getCoeffStreamChunkSize() { return getCoeffVecSize() / (PC * PF); }
 
  public
   int getCoeffStreamLMemBitWidth() {
@@ -356,6 +364,8 @@ class ConvLayerParameters extends LayerParameters {
     boolean dbg;
    private
     boolean useWinograd;
+   private
+    boolean winogradWeightsOffline;
 
    public
     Builder(int OH, int OW, int C, int F, int K) {
@@ -391,6 +401,7 @@ class ConvLayerParameters extends LayerParameters {
       this.type = Type.STANDARD;
       this.useDRAM = true;
       this.useWinograd = false;
+      this.winogradWeightsOffline = false;
       this.dbg = false;
     }
 
@@ -500,6 +511,12 @@ class ConvLayerParameters extends LayerParameters {
    public
     Builder useWinograd(boolean useWinograd) {
       this.useWinograd = useWinograd;
+      return this;
+    }
+
+   public
+    Builder winogradWeightsOffline(boolean offline) {
+      this.winogradWeightsOffline = offline;
       return this;
     }
 

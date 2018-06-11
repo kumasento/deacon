@@ -233,7 +233,7 @@ class ConvLayerKernel extends KernelComponent {
   int getIfmapVecSize() { return cp.getIfmapVecSize(); }
 
  public
-  int getCoeffVecSize() { return cp.PF * cp.PC * cp.K * cp.K; }
+  int getCoeffVecSize() { return cp.getCoeffVecSize(); }
 
  public
   int getOfmapVecSize() { return cp.getOfmapVecSize(); }
@@ -298,7 +298,7 @@ class ConvLayerKernel extends KernelComponent {
     }
 
     if (cp.dbg) {
-      debug.simPrintf("[%s]\n", cp.name);
+      debug.simPrintf("%s: \n", cp.name);
       debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
       debug.simPrintf("ifmapEn = %d\n", getIfmapEn());
       debug.simPrintf("ofmapEn = %d\n", getOfmapEn());

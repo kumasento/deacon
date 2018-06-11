@@ -82,11 +82,12 @@ class ConvLayerManagerUtils {
  public
   static Map<String, KernelBlock> createKernelBlocks(CustomManager mgr,
                                                      ConvLayerParameters cp,
+                                                     int numCoeffFifoSplits,
                                                      boolean useDRAM) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
-    return createKernelBlocks(mgr, cps, useDRAM);
+    return createKernelBlocks(mgr, cps, numCoeffFifoSplits, useDRAM);
   }
 
   /**
@@ -100,7 +101,8 @@ class ConvLayerManagerUtils {
    */
  public
   static Map<String, KernelBlock> createKernelBlocks(
-      CustomManager mgr, List<ConvLayerParameters> cps, boolean useDRAM) {
+      CustomManager mgr, List<ConvLayerParameters> cps, int numCoeffFifoSplits,
+      boolean useDRAM) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
 
     // create computing blocks
@@ -108,8 +110,8 @@ class ConvLayerManagerUtils {
       String knlName = getKernelName(cp);
 
       mgr.logMsg("Generating kernel %s ...", knlName);
-      KernelBlock knl = mgr.addKernel(
-          new ConvLayerWrapKernel(mgr.makeKernelParameters(knlName), cp));
+      KernelBlock knl = mgr.addKernel(new ConvLayerWrapKernel(
+          mgr.makeKernelParameters(knlName), cp, numCoeffFifoSplits));
       knls.put(knlName, knl);
     }
 
@@ -117,7 +119,7 @@ class ConvLayerManagerUtils {
     Map<String, KernelBlock> padKnls = null;
     if (useDRAM) {
       mgr.logMsg("Generating padding kernels for DRAM access");
-      padKnls = createPaddingKernels(mgr, cps);
+      padKnls = createPaddingKernels(mgr, cps, numCoeffFifoSplits);
     }
 
     KernelBlock knl = null;
@@ -151,8 +153,23 @@ class ConvLayerManagerUtils {
       if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
         if (useDRAM) {
           KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
-          knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
-              .connect(coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+          if (numCoeffFifoSplits == 1) {
+            mgr.logMsg("There is only one coefficient stream in the design");
+            knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
+                .connect(coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+          } else {
+            for (int s = 0; s < numCoeffFifoSplits; s++) {
+              String coeffStrName = ConvLayerWrapKernel.COEFF_NAME + "_" + s;
+              String unpadStrName = UnpaddingKernel.OUT_NAME + "_" + s;
+
+              mgr.logMsg(String.format(
+                  "Connecting coefficient split FIFO from %s to %s.",
+                  unpadStrName, coeffStrName));
+
+              knl.getInput(coeffStrName)
+                  .connect(coeffUnpadKnl.getOutput(unpadStrName));
+            }
+          }
         } else {
           knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
               .connect(mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
@@ -204,7 +221,8 @@ class ConvLayerManagerUtils {
    */
  public
   static Map<String, KernelBlock> createPaddingKernels(
-      CustomManager mgr, List<ConvLayerParameters> cps) {
+      CustomManager mgr, List<ConvLayerParameters> cps,
+      int numCoeffFifoSplits) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
 
     // create unpadding kernels for coefficients
@@ -216,7 +234,7 @@ class ConvLayerManagerUtils {
         KernelBlock knl = mgr.addKernel(new UnpaddingKernel(
             mgr.makeKernelParameters(knlName),
             cp.getCoeffStreamBitWidth() / cp.getCoeffStreamChunkSize(),
-            cp.dbg));
+            numCoeffFifoSplits, cp.dbg));
         knls.put(knlName, knl);
 
       } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
@@ -601,7 +619,6 @@ class ConvLayerManagerUtils {
   static void setupConstants(CustomManager mgr, List<ConvLayerParameters> cps,
                              ConvLayerEngineParameters ep) {
     // setup the definition of constants of the currrent hardware build
-
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
 
@@ -621,6 +638,8 @@ class ConvLayerManagerUtils {
     mgr.addMaxFileConstant("USE_WINO", ep.getUseWinograd() ? 1 : 0);
     mgr.addMaxFileConstant("WINO_TILE_SIZE", WinogradTransform.TILE_SIZE);
     mgr.addMaxFileConstant("WINO_M", WinogradTransform.M);
+    mgr.addMaxFileConstant("WINO_COEFF_OFFLINE",
+                           ep.getWinogradWeightsOffline() ? 1 : 0);
 
     ConvLayerParameters cp = cps.get(0);
     mgr.addMaxFileConstant("conv_PC", cp.PC);

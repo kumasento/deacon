@@ -258,7 +258,7 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
                       auto src_idx =
                           src_ci * H * W + (src_hi - P) * W + (src_wi - P);
 
-#if 1
+#if 0
                       if (c == 0 && h == 0)
                         printf(
                             "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = %3d w "
@@ -300,17 +300,21 @@ template <typename T>
 std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
                                            int F, int K, int TC, int TF,
                                            int PC = 1, int PF = 1,
+                                           bool winograd_coeff_offline = false,
                                            int duplicate = 1) {
   std::vector<T> tiled_weights;
 
   auto N_TF = GetNumTiles(F, TF);
   auto N_TC = GetNumTiles(C, TC);
   auto N_T = N_TF * N_TC * duplicate;
-  auto tile_size = TC * TF * K * K;
+  auto WINO_R = WINO_TILE_SIZE + K - 1;
+  auto KERN_SIZE = winograd_coeff_offline ? WINO_R : K;
+  auto tile_size = TC * TF * KERN_SIZE * KERN_SIZE;
   auto total_size = tile_size * N_T;
 
   LOG(INFO) << "Tiling weights into " << N_TF << " x " << N_TC << " number of "
-            << TF << " x " << TC << " x " << K << " x " << K << " tiles ...";
+            << TF << " x " << TC << " x " << KERN_SIZE << " x " << KERN_SIZE
+            << " tiles ...";
 
   tiled_weights.resize(total_size);
 
@@ -324,21 +328,24 @@ std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
             // considering parallelisation
             for (int pf = 0; pf < PF; pf++) {
               for (int pc = 0; pc < PC; pc++) {
-                for (int k = 0; k < K * K; k++) {
+                for (int k = 0; k < KERN_SIZE * KERN_SIZE; k++) {
                   auto src_fi = tf * TF + f + pf;
                   auto src_ci = tc * TC + c + pc;
                   if (src_fi >= F || src_ci >= C) continue;
 
-                  auto src_idx = src_fi * C * K * K + src_ci * K * K + k;
+                  auto src_idx = src_fi * C * KERN_SIZE * KERN_SIZE +
+                                 src_ci * KERN_SIZE * KERN_SIZE + k;
                   auto dst_idx =
                       ((((((f / PF) * (TC / PC) + (c / PC)) * PC * PF) +
                          (pf * PC + pc)) *
-                        K * K) +
+                        KERN_SIZE * KERN_SIZE) +
                        k);
                   auto base_idx =
                       ((tf * N_TC + tc) * duplicate + td) * tile_size;
 
-                  tiled_weights[base_idx + dst_idx] = weights[src_idx];
+                  // TODO(vince): implement coefficient offline transform
+                  if (!winograd_coeff_offline)
+                    tiled_weights[base_idx + dst_idx] = weights[src_idx];
                 }
               }
             }
@@ -475,6 +482,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto DFE_PF = max_get_constant_uint64t(max_file, "conv_PF");
   auto DFE_PK = max_get_constant_uint64t(max_file, "conv_PK");
   auto DFE_K = max_get_constant_uint64t(max_file, "conv_K");
+  auto DFE_WINO_COEFF_OFFLINE =
+      max_get_constant_uint64t(max_file, "WINO_COEFF_OFFLINE") == 1;
 #ifdef USE_WINO
   constexpr bool DFE_USE_WINO = true;
   auto DFE_WINO_M = max_get_constant_uint64t(max_file, "WINO_M");
@@ -516,8 +525,10 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
       input, H, W, C, K, P, S, T_OH, T_OW, TC, DFE_PC, N_TF);
   LOG(INFO) << "Tiled input size: " << tiled_input.size();
 
-  auto tiled_weights = CreateConvLayerTiledWeights<T>(
-      weights, C, F, K, TC, TF, DFE_PC, DFE_PF, N_TOH * N_TOW);
+  auto tiled_weights =
+      CreateConvLayerTiledWeights<T>(weights, C, F, K, TC, TF, DFE_PC, DFE_PF,
+                                     DFE_WINO_COEFF_OFFLINE, N_TOH * N_TOW);
+  LOG(INFO) << "Tiled weights size: " << tiled_weights.size();
 
 #ifdef DUMP_ARRAY
   DumpArray<T>("input.txt", input.data(), input.size());
@@ -546,7 +557,12 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
              num_bytes_per_burst * DFE_PC *
                  (DFE_USE_WINO ? WINO_TILE_SIZE * WINO_TILE_SIZE : DFE_PK));
   LOG(INFO) << "Tiled input size (burst aligned): " << tiled_input.size();
-  BurstAlign(tiled_weights, num_bytes_per_burst * DFE_PC * DFE_PF);
+  BurstAlign(tiled_weights,
+             num_bytes_per_burst *
+                 ((DFE_USE_WINO && DFE_WINO_COEFF_OFFLINE)
+                      ? (WINO_TILE_SIZE + K - 1) * (WINO_TILE_SIZE + K - 1)
+                      : K * K));
+  LOG(INFO) << "Tiled weights size (burst aligned): " << tiled_weights.size();
   BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF *
                                (DFE_USE_WINO ? DFE_POH * DFE_POW : DFE_PK));
 

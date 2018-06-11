@@ -65,6 +65,16 @@ class ConvLayerEngineParameters extends EngineParameters {
   static final String USE_WINOGRAD_NAME = "USE_WINOGRAD";
  private
   static boolean USE_WINOGRAD = false;
+ private
+  static final String WINOGRAD_WEIGHTS_OFFLINE_NAME =
+      "WINOGRAD_WEIGHTS_OFFLINE";
+ private
+  static boolean WINOGRAD_WEIGHTS_OFFLINE = false;
+
+ private
+  static final String NUM_COEFF_FIFO_SPLITS_NAME = "NUM_COEFF_FIFO_SPLITS";
+ private
+  static final int NUM_COEFF_FIFO_SPLITS = 1;
 
  private
   static final String DTYPE_NAME = "DTYPE";
@@ -104,6 +114,10 @@ class ConvLayerEngineParameters extends EngineParameters {
     declareParam(USE_DRAM_NAME, DataType.BOOL, USE_DRAM);
     declareParam(USE_BNN_NAME, DataType.BOOL, USE_BNN);
     declareParam(USE_WINOGRAD_NAME, DataType.BOOL, USE_WINOGRAD);
+    declareParam(WINOGRAD_WEIGHTS_OFFLINE_NAME, DataType.BOOL,
+                 WINOGRAD_WEIGHTS_OFFLINE);
+    declareParam(NUM_COEFF_FIFO_SPLITS_NAME, DataType.INT,
+                 NUM_COEFF_FIFO_SPLITS);
 
     declareParam(DEBUG_NAME, DataType.BOOL, DEBUG);
   }
@@ -153,6 +167,14 @@ class ConvLayerEngineParameters extends EngineParameters {
 
  public
   boolean getUseWinograd() { return getParam(USE_WINOGRAD_NAME); }
+
+ public
+  boolean getWinogradWeightsOffline() {
+    return getParam(WINOGRAD_WEIGHTS_OFFLINE_NAME);
+  }
+
+ public
+  int getNumCoeffFifoSplits() { return getParam(NUM_COEFF_FIFO_SPLITS_NAME); }
 
  public
   boolean getDebug() { return getParam(DEBUG_NAME); }
