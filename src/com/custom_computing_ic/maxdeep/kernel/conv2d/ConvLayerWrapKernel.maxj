@@ -69,6 +69,11 @@ class ConvLayerWrapKernel extends Kernel {
       // We try to reduce the size of each FIFO
       if (numCoeffFifoSplits > 1) {
         int splitVecSize = conv.getCoeffVecSize() / numCoeffFifoSplits;
+        getManager().logMsg(String.format(
+            "Split coefficient stream: vec size %d " +
+                "FIFO splits %d split vec size %d.",
+            conv.getCoeffVecSize(), numCoeffFifoSplits, splitVecSize));
+
         DFEVectorType<DFEVar> CT =
             new DFEVectorType<DFEVar>(scalarT, splitVecSize);
 
@@ -77,7 +82,7 @@ class ConvLayerWrapKernel extends Kernel {
           DFEVector<DFEVar> tmp =
               io.input(COEFF_NAME + "_" + i, CT, conv.getCoeffEn());
           for (int j = 0; j < splitVecSize; j++) {
-            coeff[i * splitVecSize + j].connect(tmp[i]);
+            coeff[i * splitVecSize + j].connect(tmp[j]);
           }
         }
       } else {

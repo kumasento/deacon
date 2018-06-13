@@ -588,8 +588,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() << "s";
   auto gflops =
-      (2 * OH * OW * C * F * K * K) / (elapsed_seconds.count()) * 1e-9;
-  auto tiled_gflops = (2 * T_OH * T_OW * TC * TF * K * K) * N_T /
+      (2.0 * OH * OW * C * F * K * K) / (elapsed_seconds.count()) * 1e-9;
+  auto tiled_gflops = (2.0 * T_OH * T_OW * TC * TF * K * K) * N_T /
                       (elapsed_seconds.count()) * 1e-9;
   LOG(INFO) << "GFLOPS: " << gflops;
   LOG(INFO) << "Tiled GFLOPS: " << tiled_gflops;

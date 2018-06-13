@@ -196,38 +196,41 @@ class Conv2DKernel extends KernelComponent {
 
     getOwner().getManager().logMsg(
         String.format("CORE consume %d number of multipliers ...",
-                      cp.PF * TILE_SIZE * TILE_SIZE));
+                      cp.PC * cp.PF * TILE_SIZE * TILE_SIZE));
 
     for (int f = 0; f < cp.PF; f++) {
-      DFEVectorType<DFEVar> TT = new DFEVectorType<DFEVar>(T, M * M);
-      DFEVector<DFEVar> tmp = TT.newInstance(getOwner());
+      DFEVector<DFEVar> TO = TOT.newInstance(getOwner());
 
       for (int c = 0; c < cp.PC; c++) {
-        DFEVector<DFEVar> TO = TOT.newInstance(getOwner());
+        getOwner().getManager().logMsg(
+            String.format("CORE setting up element-wise multiply (#%03d) ...",
+                          f * cp.PC + c));
 
-        getOwner().optimization.pushDSPFactor(1.0);
+        DFEVector<DFEVar> tmp = TOT.newInstance(getOwner());
+
         for (int j = 0; j < TILE_SIZE * TILE_SIZE; j++) {
           int ifmapIdx = c * TILE_SIZE * TILE_SIZE + j;
           int coeffIdx = (f * cp.PC + c) * TILE_SIZE * TILE_SIZE + j;
 
+          // getOwner().optimization.pushDSPFactor(1.0);
           DFEVar r = ifmapWino[ifmapIdx] * coeffWino[coeffIdx];
+          // getOwner().optimization.popDSPFactor();
 
-          TO[j].connect(r);
+          tmp[j].connect(r);
         }
-        getOwner().optimization.popDSPFactor();
-
-        WinogradInverseTransform transform = new WinogradInverseTransform(
-            getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM);
-        transform.setInputMatrix(TO);
-        DFEVector<DFEVar> trans = transform.getOutput();
 
         if (c == 0)
-          tmp.connect(trans);
+          TO.connect(tmp);
         else
-          tmp += trans;
+          TO += tmp;
       }
 
-      for (int j = 0; j < M * M; j++) ofmap[f * M * M + j].connect(tmp[j]);
+      WinogradInverseTransform transform = new WinogradInverseTransform(
+          getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM);
+      transform.setInputMatrix(TO);
+      DFEVector<DFEVar> trans = transform.getOutput();
+
+      for (int j = 0; j < M * M; j++) ofmap[f * M * M + j].connect(trans[j]);
     }
   }
 
