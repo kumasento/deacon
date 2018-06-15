@@ -79,26 +79,212 @@ std::vector<T> CreateRandomArray(int N, float min_val = 0, float max_val = 1) {
 }
 
 template <typename T>
+inline T RoundToNearest(float data) {
+  return static_cast<T>(std::round(data));
+}
+
+template <typename T>
+T FloatToFixed(float data, int num_frac_bits) {
+  return static_cast<T>(
+      RoundToNearest<T>(data * static_cast<float>(1 << num_frac_bits)));
+}
+
+template <typename T>
+float FixedToFloat(T data, int num_frac_bits) {
+  return static_cast<float>(data) / static_cast<float>(1 << num_frac_bits);
+}
+
+template <typename T>
 std::vector<T> FloatToFixed(std::vector<float>& data, int num_frac_bits) {
   std::vector<T> arr(data.size());
-  auto scale = static_cast<float>(1 << num_frac_bits);
 
-  for (int i = 0; i < (int)data.size(); i++) {
-    arr[i] = static_cast<T>(data[i] * scale);
-  }
+  for (int i = 0; i < (int)data.size(); i++)
+    arr[i] = FloatToFixed<T>(data[i], num_frac_bits);
+
   return arr;
 }
 
 template <typename T>
 std::vector<float> FixedToFloat(std::vector<T>& data, int num_frac_bits) {
   std::vector<float> arr(data.size());
-  auto scale = 1 << num_frac_bits;
 
-  for (int i = 0; i < (int)data.size(); i++) {
-    arr[i] = static_cast<float>(data[i]) / scale;
-  }
+  for (int i = 0; i < (int)data.size(); i++)
+    arr[i] = FixedToFloat(data[i], num_frac_bits);
+
   return arr;
 }
+
+template <typename T>
+inline float ConvertToFloat(T data, bool use_fixed_point, int num_frac_bits) {
+  return !use_fixed_point ? static_cast<float>(data)
+                          : FixedToFloat<float>(data, num_frac_bits);
+}
+
+template <typename T>
+inline T Saturate(int32_t num) {
+  if (num > static_cast<int32_t>(std::numeric_limits<T>::max()))
+    return std::numeric_limits<T>::max();
+  if (num < static_cast<int32_t>(std::numeric_limits<T>::min()))
+    return std::numeric_limits<T>::min();
+  return static_cast<T>(num);
+}
+
+template <typename T>
+inline T FixedPointAdd(T a, T b) {
+  auto ans = static_cast<int32_t>(a) + static_cast<int32_t>(b);
+  return Saturate<T>(ans);
+}
+
+template <typename T>
+inline T FixedPointMul(T a, T b, int num_frac_bits) {
+  int32_t round_value = 1 << (num_frac_bits - 1);
+  auto tmp = static_cast<int32_t>(a) * static_cast<int32_t>(b);
+  tmp += round_value;
+  return Saturate<T>(tmp >> num_frac_bits);
+}
+
+template <typename T>
+inline std::vector<T> FixedPointMatMul(std::vector<T>& A, std::vector<T>& B,
+                                       int M, int N, int K, int num_frac_bits) {
+  std::vector<T> C(M * N);
+
+  for (int i = 0; i < M; i++)
+    for (int j = 0; j < N; j++)
+      for (int k = 0; k < K; k++) {
+        C[i * N + j] = FixedPointAdd<T>(
+            C[i * N + j],
+            FixedPointMul<T>(A[i * K + k], B[k * N + j], num_frac_bits));
+      }
+
+  return C;
+}
+
+template <typename T>
+inline std::vector<T> Transpose(std::vector<T>& A, int M, int N) {
+  std::vector<T> B(M * N);
+  for (int i = 0; i < M; i++)
+    for (int j = 0; j < N; j++) B[j * M + i] = A[i * N + j];
+  return B;
+}
+
+template <typename T>
+inline void PrintMatrix(std::vector<T>& A, int M, int N, const char* name,
+                        int num_frac_bits) {
+  printf("%s = {\n", name);
+  for (int i = 0; i < M; i++) {
+    for (int j = 0; j < N; j++) {
+      printf("%10.6f, ", FixedToFloat<T>(A[i * N + j], num_frac_bits));
+    }
+    printf("\n");
+  }
+  printf("}\n");
+}
+
+template <typename T>
+inline std::vector<T> WinogradInputTransform(std::vector<T>& input, int R,
+                                             bool use_fixed_point = false,
+                                             int num_frac_bits = 0) {
+  std::vector<T> trans(R * R);
+  std::vector<float> B = {4,  0,  0,  0,  0,  0,   //
+                          0,  -4, 4,  -2, 2,  4,   //
+                          -5, -4, -4, -1, -1, 0,   //
+                          0,  1,  -1, 2,  -2, -5,  //
+                          1,  1,  1,  1,  1,  0,   //
+                          0,  0,  0,  0,  0,  1};
+
+  if (use_fixed_point) {
+    std::vector<T> BB = FloatToFixed<T>(B, num_frac_bits);
+    std::vector<T> BT = Transpose<T>(BB, R, R);
+    std::vector<T> BTd = FixedPointMatMul<T>(BT, input, R, R, R, num_frac_bits);
+    std::vector<T> BTdB = FixedPointMatMul<T>(BTd, BB, R, R, R, num_frac_bits);
+
+#ifdef TRACE
+    PrintMatrix<T>(BTdB, R, R, "BTdB", num_frac_bits);
+    PrintMatrix<T>(BB, R, R, "BB", num_frac_bits);
+    PrintMatrix<T>(BT, R, R, "BT", num_frac_bits);
+    PrintMatrix<T>(input, R, R, "d", num_frac_bits);
+    PrintMatrix<T>(BTd, R, R, "BTd", num_frac_bits);
+#endif
+
+    for (int i = 0; i < R * R; i++) trans[i] = BTdB[i];
+  } else {
+    LOG(FATAL) << "Only support fixed-point winograd offline computation";
+  }
+
+  return trans;
+}
+
+template <typename T>
+inline std::vector<T> WinogradWeightsTransform(std::vector<T>& weights, int K,
+                                               int R,
+                                               bool use_fixed_point = false,
+                                               int num_frac_bits = 0) {
+  std::vector<T> trans(R * R);
+
+  std::vector<float> G = {0.25f,    0.0f,     0.0f,     -1.f / 6,  -1.f / 6,
+                          -1.f / 6, -1.f / 6, 1.f / 6,  -1.f / 6,  1.f / 24,
+                          1.f / 12, 1.f / 6,  1.f / 24, -1.f / 12, 1.f / 6,
+                          0.0f,     0.0f,     1.0f};
+
+  if (use_fixed_point) {
+    std::vector<T> GG = FloatToFixed<T>(G, num_frac_bits);
+    std::vector<T> Gg =
+        FixedPointMatMul<T>(GG, weights, R, K, K, num_frac_bits);
+    std::vector<T> GT = Transpose<T>(GG, R, K);
+    std::vector<T> GgG = FixedPointMatMul<T>(Gg, GT, R, R, K, num_frac_bits);
+
+#ifdef TRACE
+    PrintMatrix<T>(GG, R, K, "G", num_frac_bits);
+    PrintMatrix<T>(weights, K, K, "g", num_frac_bits);
+    PrintMatrix<T>(Gg, R, K, "Gg", num_frac_bits);
+    PrintMatrix<T>(GT, K, R, "GT", num_frac_bits);
+    PrintMatrix<T>(GgG, R, R, "GgG", num_frac_bits);
+#endif
+
+    for (int i = 0; i < R * R; i++) trans[i] = GgG[i];
+  } else {
+    LOG(FATAL) << "Only support fixed-point winograd offline computation";
+  }
+
+  return trans;
+}
+
+template <typename T>
+inline std::vector<T> WinogradOutputTransform(std::vector<T>& output, int R,
+                                              int M,
+                                              bool use_fixed_point = false,
+                                              int num_frac_bits = 0) {
+  std::vector<T> trans(M * M);
+  std::vector<float> A = {1, 0,  0, 0,   //
+                          1, 1,  1, 1,   //
+                          1, -1, 1, -1,  //
+                          1, 2,  4, 8,   //
+                          1, -2, 4, -8,  //
+                          0, 0,  0, 1};
+
+  if (use_fixed_point) {
+    std::vector<T> AA = FloatToFixed<T>(A, num_frac_bits);
+    std::vector<T> AT = Transpose<T>(AA, R, M);
+    std::vector<T> ATo =
+        FixedPointMatMul<T>(AT, output, M, R, R, num_frac_bits);
+    std::vector<T> AToA = FixedPointMatMul<T>(ATo, AA, M, M, R, num_frac_bits);
+
+#ifdef TRACE
+    PrintMatrix<T>(AA, R, M, "A", num_frac_bits);
+    PrintMatrix<T>(AT, M, R, "AT", num_frac_bits);
+    PrintMatrix<T>(output, R, R, "o", num_frac_bits);
+    PrintMatrix<T>(ATo, M, R, "ATo", num_frac_bits);
+    PrintMatrix<T>(AToA, M, M, "AToA", num_frac_bits);
+#endif
+
+    for (int i = 0; i < M * M; i++) trans[i] = AToA[i];
+  } else {
+    LOG(FATAL) << "Only support fixed-point winograd offline computation";
+  }
+
+  return trans;
+}
+
 template <typename T>
 std::vector<T> CreateRandomTensor(int C, int H, int W, int pad_size = 0,
                                   int min_val = 0, int max_val = 1) {

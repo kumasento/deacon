@@ -29,7 +29,7 @@ struct Dfe {
   }
 };
 
-template <typename T>
+template <typename T, bool use_fixed_point = false>
 void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
                int D_W = 0, int D_C = 0, int D_F = 0) {
   // get tile size
@@ -54,10 +54,11 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
 
   LOG(INFO) << C << " x " << H << " x " << W << " -> " << F << " x " << OH
             << " x " << OW;
+  LOG(INFO) << "Number of fraction bits: " << NUM_FRAC_BITS;
 
   // initialise test array
   // use max_val and min_val to prevent overflow
-  float max_val = 2, min_val = -2;
+  float max_val = 1, min_val = -1;
 
   auto input = CreateRandomArray<float>(C * H * W, min_val, max_val);
   auto weights = CreateRandomArray<float>(F * C * K * K, min_val, max_val);
@@ -71,31 +72,88 @@ void TestTiles(int N_TOH, int N_TOW, int N_TC, int N_TF, int D_H = 0,
   auto output_dfe = std::vector<T>(F * OH * OW);
 
   LOG(INFO) << "Running CPU reference ...";
+#ifdef USE_WINO
+  auto output_win = std::vector<T>(F * OH * OW);
   ConvLayerCpu<T>(input_dfe, weights_dfe, bias_dfe, output_cpu, H, W, C, F, K,
-                  P, S, false, NUM_FRAC_BITS);
+                  P, S, false, true, NUM_FRAC_BITS);
+  ConvLayerCpuWinograd<T>(input_dfe, weights_dfe, bias_dfe, output_win, H, W, C,
+                          F, K, P, S, 6, false, true, NUM_FRAC_BITS);
+#else
+  ConvLayerCpu<T>(input_dfe, weights_dfe, bias_dfe, output_cpu, H, W, C, F, K,
+                  P, S, false, true, NUM_FRAC_BITS);
+#endif
 
   LOG(INFO) << "Running DFE reference ...";
   ConvLayerDfe<T, Dfe>(input_dfe, weights_dfe, bias_dfe, output_dfe, H, W, C, F,
-                       K, P, S, max_file, engine);
+                       K, P, S, max_file, engine, true, NUM_FRAC_BITS);
 
   // skip tests for Winograd, due to the low-accuracy caused by 1/6
-  bool failed = false;
-  auto output_cpu_float = FixedToFloat(output_cpu, NUM_FRAC_BITS);
-  auto output_dfe_float = FixedToFloat(output_dfe, NUM_FRAC_BITS);
-  for (int i = 0; i < (int)(TF * TH * TW); i++) {
-    auto diff = std::abs((output_cpu_float[i] - output_dfe_float[i]) /
-                         output_cpu_float[i]);
+  auto output_cpu_float = FixedToFloat<T>(output_cpu, NUM_FRAC_BITS);
+  auto output_dfe_float = FixedToFloat<T>(output_dfe, NUM_FRAC_BITS);
+#ifdef USE_WINO
+  auto output_win_float = FixedToFloat<T>(output_win, NUM_FRAC_BITS);
+#endif
 
-    if (diff > 0.1f) {
-      fprintf(stderr,
-              "Result mis-matched at %6d: cpu %20.6f dfe %20.6f diff %10.6f\n",
-              i, output_cpu_float[i], output_dfe_float[i], diff);
-      failed = true;
-      exit(1);
+#ifdef TRACE
+  for (int i = 0; i < (int)(TF * TH * TW); i++) {
+#ifdef USE_WINO
+    printf(
+        "At %6d CPU = %10.6f (0x%08x) WIN = %10.6f (0x%08x) DFE = %10.6f "
+        "(0x%08x)\n",
+        i, output_cpu_float[i], output_cpu[i], output_win_float[i],
+        output_win[i], output_dfe_float[i],
+        static_cast<int16_t>(output_dfe[i]));
+#else
+    printf("At %6d CPU = %10.6f (0x%08x) DFE = %10.6f (0x%08x)\n", i,
+           output_cpu_float[i], output_cpu[i], output_dfe_float[i],
+           output_dfe[i]);
+#endif
+  }
+#endif
+
+  const int16_t mask = (1 << (NUM_FRAC_BITS + 1)) - 1;
+  LOG(INFO) << "Evaluating difference ...";
+  LOG(INFO) << "Mask: " << std::setw(8) << std::showbase << std::setfill('0')
+            << std::hex << mask;
+
+  int num_failed = 0;
+  for (int i = 0; i < (int)(TF * TH * TW); i++) {
+    if (use_fixed_point) {
+#ifdef USE_WINO
+      if ((static_cast<int16_t>(std::abs(output_win[i] - output_dfe[i])) |
+           mask) != mask) {
+        fprintf(stderr,
+                "%sERROR%s at %6d: wino %10.6f (0x%08x) dfe %10.6f (0x%08x)\n",
+                ANSI_COLOR_RED, ANSI_COLOR_RESET, i, output_win_float[i],
+                output_win[i], output_dfe_float[i], output_dfe[i]);
+        num_failed++;
+        if (num_failed > 10) break;
+      }
+#else
+      if ((static_cast<int16_t>(std::abs(output_cpu[i] - output_dfe[i])) |
+           mask) != mask) {
+        fprintf(stderr, "Result mis-matched at %6d: cpu %10.6f dfe %10.6f\n", i,
+                output_cpu_float[i], output_dfe_float[i]);
+        num_failed++;
+        exit(1);
+      }
+#endif
+    } else {
+      auto diff = std::abs((output_cpu_float[i] - output_dfe_float[i]) /
+                           output_cpu_float[i]);
+
+      if (diff > 0.1f) {
+        fprintf(
+            stderr,
+            "Result mis-matched at %6d: cpu %10.6f dfe %10.6f diff %10.6f\n", i,
+            output_cpu_float[i], output_dfe_float[i], diff);
+        num_failed++;
+        exit(1);
+      }
     }
   }
 
-  if (!failed)
+  if (num_failed == 0)
     LOG(INFO) << "TEST single tile: " << ANSI_COLOR_GREEN << "PASSED!"
               << ANSI_COLOR_RESET;
 }
@@ -116,11 +174,11 @@ int main(int argc, char *argv[]) {
     TestTiles<float>(1, 1, 1, 1);
     TestTiles<float>(2, 2, 2, 2);
   } else if (!strcmp(DTYPE, "fixed")) {
-    TestTiles<int16_t>(1, 1, 1, 1);
-    TestTiles<int16_t>(2, 2, 2, 2);
+    TestTiles<int16_t, true>(1, 1, 1, 1);
+    // TestTiles<int16_t>(2, 2, 2, 2);
   }
 #else
-  TestTiles<int16_t>(1, 1, 2, 2);
+  TestTiles<int16_t, true>(1, 1, 2, 2);
 #endif
 
   max_unload(engine);

@@ -86,13 +86,6 @@ int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
   return (input_dim - K + 2 * P) / S + 1;
 }
 
-template <typename T>
-inline int32_t Saturate(int32_t num) {
-  if (num > std::numeric_limits<T>::max()) return std::numeric_limits<T>::max();
-  if (num < std::numeric_limits<T>::min()) return std::numeric_limits<T>::min();
-  return num;
-}
-
 /*! An implementation of convolution layer in software.
  *
  * No tiling involved in this implementation.
@@ -101,7 +94,7 @@ template <typename T>
 void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
                   std::vector<T> &bias, std::vector<T> &output, int H, int W,
                   int C, int F, int K, int P, int S, bool use_bias = true,
-                  int num_frac_bits = 0) {
+                  bool use_fixed_point = false, int num_frac_bits = 0) {
   CHECK_GT(H, 0);
   CHECK_GT(W, 0);
   CHECK_GT(C, 0);
@@ -112,8 +105,6 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
 
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
-
-  int32_t round_value = 1 << (num_frac_bits - 1);
 
   for (int f = 0; f < F; f++) {
     for (int oh = 0; oh < OH; oh++) {
@@ -131,27 +122,112 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
               if (ih < 0 || ih >= H || iw < 0 || iw >= W) continue;
 
               auto input_val = input[c * H * W + ih * W + iw];
-              auto weights_val =
+              auto weight_val =
                   weights[f * C * K * K + c * K * K + kh * K + kw];
 
-#if 0
+#ifdef TRACE
+              printf("f = %d c = %d oh = %d ow = %d kh = %d kw = %d: ", f, c,
+                     oh, ow, kh, kw);
               printf(
-                  "f = %3d c = %3d oh = %3d ow = %3d kh = %3d kw = %3d input = "
-                  "% 2d weight = % 2d\n",
-                  f, c, oh, ow, kh, kw, input_val, weights_val);
+                  "input = %10.6f weight = %10.6f\n",
+                  ConvertToFloat<T>(input_val, use_fixed_point, num_frac_bits),
+                  ConvertToFloat<T>(weight_val, use_fixed_point,
+                                    num_frac_bits));
+
 #endif
 
-              if (std::is_same<T, float>::value) {
-                output[oi] += (input_val * weights_val);
+              if (!use_fixed_point) {
+                output[oi] += (input_val * weight_val);
               } else {
-                auto tmp = static_cast<int32_t>(input_val) *
-                           static_cast<int32_t>(weights_val);
-                tmp += round_value;
-                tmp = Saturate<int16_t>(tmp >> num_frac_bits);
-                tmp = Saturate<int16_t>(tmp + static_cast<int32_t>(output[oi]));
+                auto mul_val =
+                    FixedPointMul<T>(input_val, weight_val, num_frac_bits);
 
-                output[oi] = static_cast<T>(tmp);
+#ifdef TRACE
+                printf(
+                    "output[%d] = %10.6f + %10.6f = ", oi,
+                    ConvertToFloat<T>(output[oi], use_fixed_point,
+                                      num_frac_bits),
+                    ConvertToFloat<T>(mul_val, use_fixed_point, num_frac_bits));
+#endif
+
+                output[oi] = FixedPointAdd<T>(output[oi], mul_val);
+#ifdef TRACE
+                printf("%10.6f\n",
+                       ConvertToFloat<T>(output[oi], use_fixed_point,
+                                         num_frac_bits));
+#endif
               }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+template <typename T>
+void ConvLayerCpuWinograd(std::vector<T> &input, std::vector<T> &weights,
+                          std::vector<T> &bias, std::vector<T> &output, int H,
+                          int W, int C, int F, int K, int P, int S, int R,
+                          bool use_bias = true, bool use_fixed_point = false,
+                          int num_frac_bits = 0) {
+  CHECK_GT(H, 0);
+  CHECK_GT(W, 0);
+  CHECK_GT(C, 0);
+  CHECK_GT(F, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
+
+  auto OH = GetConvLayerOutputDim(H, K, P, S);
+  auto OW = GetConvLayerOutputDim(W, K, P, S);
+  auto M = R - K + 1;
+
+  for (int f = 0; f < F; f++) {
+    for (int oh = 0; oh < OH; oh += M) {
+      for (int ow = 0; ow < OW; ow += M) {
+        for (int c = 0; c < C; c++) {
+          std::vector<T> inputs_tile(R * R);
+          std::vector<T> weights_tile(K * K);
+          std::vector<T> outputs_tile(R * R);
+
+          // prepare inputs tile
+          for (int kh = 0; kh < R; kh++) {
+            for (int kw = 0; kw < R; kw++) {
+              auto ih = oh + kh - P;
+              auto iw = ow + kw - P;
+
+              inputs_tile[kh * R + kw] =
+                  (ih < 0 || ih >= H || iw < 0 || iw >= W)
+                      ? static_cast<T>(0)
+                      : input[c * H * W + ih * W + iw];
+            }
+          }
+
+          // prepare weights tile
+          for (int kh = 0; kh < K; kh++)
+            for (int kw = 0; kw < K; kw++)
+              weights_tile[kh * K + kw] =
+                  weights[f * C * K * K + c * K * K + kh * K + kw];
+
+          // transform
+          auto inputs_wino = WinogradInputTransform<T>(
+              inputs_tile, R, use_fixed_point, num_frac_bits);
+          auto weights_wino = WinogradWeightsTransform<T>(
+              weights_tile, K, R, use_fixed_point, num_frac_bits);
+
+          for (int k = 0; k < R * R; k++)
+            outputs_tile[k] = FixedPointMul<T>(inputs_wino[k], weights_wino[k],
+                                               num_frac_bits);
+
+          auto outputs_wino = WinogradOutputTransform<T>(
+              outputs_tile, R, M, use_fixed_point, num_frac_bits);
+
+          for (int kh = 0; kh < M; kh++) {
+            for (int kw = 0; kw < M; kw++) {
+              auto oi = f * OH * OW + (oh + kh) * OW + (ow + kw);
+              output[oi] =
+                  FixedPointAdd<T>(output[oi], outputs_wino[kh * M + kw]);
             }
           }
         }
@@ -258,7 +334,7 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
                       auto src_idx =
                           src_ci * H * W + (src_hi - P) * W + (src_wi - P);
 
-#if 0
+#ifdef TRACE
                       if (c == 0 && h == 0)
                         printf(
                             "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = %3d w "
@@ -297,11 +373,10 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
  * duplicate parameter.
  */
 template <typename T>
-std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
-                                           int F, int K, int TC, int TF,
-                                           int PC = 1, int PF = 1,
-                                           bool winograd_coeff_offline = false,
-                                           int duplicate = 1) {
+std::vector<T> CreateConvLayerTiledWeights(
+    std::vector<T> &weights, int C, int F, int K, int TC, int TF, int PC = 1,
+    int PF = 1, bool winograd_coeff_offline = false,
+    bool use_fixed_point = false, int num_frac_bits = 0, int duplicate = 1) {
   std::vector<T> tiled_weights;
 
   auto N_TF = GetNumTiles(F, TF);
@@ -328,24 +403,48 @@ std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
             // considering parallelisation
             for (int pf = 0; pf < PF; pf++) {
               for (int pc = 0; pc < PC; pc++) {
-                for (int k = 0; k < KERN_SIZE * KERN_SIZE; k++) {
-                  auto src_fi = tf * TF + f + pf;
-                  auto src_ci = tc * TC + c + pc;
-                  if (src_fi >= F || src_ci >= C) continue;
+                auto src_fi = tf * TF + f + pf;
+                auto src_ci = tc * TC + c + pc;
+                if (src_fi >= F || src_ci >= C) continue;
 
-                  auto src_idx = src_fi * C * KERN_SIZE * KERN_SIZE +
-                                 src_ci * KERN_SIZE * KERN_SIZE + k;
-                  auto dst_idx =
-                      ((((((f / PF) * (TC / PC) + (c / PC)) * PC * PF) +
-                         (pf * PC + pc)) *
-                        KERN_SIZE * KERN_SIZE) +
-                       k);
-                  auto base_idx =
-                      ((tf * N_TC + tc) * duplicate + td) * tile_size;
+                if (winograd_coeff_offline) {
+                  std::vector<T> kern(K * K);
 
-                  // TODO(vince): implement coefficient offline transform
-                  if (!winograd_coeff_offline)
+                  // prepare a single kernel
+                  for (int k = 0; k < K * K; k++) {
+                    auto src_idx = src_fi * C * K * K + src_ci * K * K + k;
+                    kern[k] = weights[src_idx];
+                  }
+
+                  auto trans_weights = WinogradWeightsTransform<T>(
+                      kern, K, WINO_R, use_fixed_point, num_frac_bits);
+
+                  for (int k = 0; k < WINO_R * WINO_R; k++) {
+                    auto dst_idx =
+                        ((((((f / PF) * (TC / PC) + (c / PC)) * PC * PF) +
+                           (pf * PC + pc)) *
+                          WINO_R * WINO_R) +
+                         k);
+                    auto base_idx =
+                        ((tf * N_TC + tc) * duplicate + td) * tile_size;
+
+                    // TODO(vince): implement coefficient offline transform
+                    tiled_weights[base_idx + dst_idx] = trans_weights[k];
+                  }
+
+                } else {
+                  for (int k = 0; k < K * K; k++) {
+                    auto src_idx = src_fi * C * K * K + src_ci * K * K + k;
+                    auto dst_idx =
+                        ((((((f / PF) * (TC / PC) + (c / PC)) * PC * PF) +
+                           (pf * PC + pc)) *
+                          K * K) +
+                         k);
+                    auto base_idx =
+                        ((tf * N_TC + tc) * duplicate + td) * tile_size;
+
                     tiled_weights[base_idx + dst_idx] = weights[src_idx];
+                  }
                 }
               }
             }
@@ -359,11 +458,10 @@ std::vector<T> CreateConvLayerTiledWeights(std::vector<T> &weights, int C,
 }
 
 template <typename T>
-std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
-                                             int OH, int OW, int F, int T_OH,
-                                             int T_OW, int T_F, int P_F = 1,
-                                             int P_OH = 1, int P_OW = 1,
-                                             int N_TC = 1) {
+std::vector<T> TransformConvLayerTiledOutput(
+    std::vector<T> &tiled_output, int OH, int OW, int F, int T_OH, int T_OW,
+    int T_F, int P_F = 1, int P_OH = 1, int P_OW = 1, int N_TC = 1,
+    bool use_fixed_point = false, int num_frac_bits = 0) {
   std::vector<T> output;
 
   auto N_TOH = GetNumTiles(OH, T_OH);
@@ -408,7 +506,11 @@ std::vector<T> TransformConvLayerTiledOutput(std::vector<T> &tiled_output,
                            t_oh * N_TOW + t_ow) *
                           tile_size;
 
-                      output[dst_idx] += tiled_output[base_idx + src_idx];
+                      if (!use_fixed_point)
+                        output[dst_idx] += tiled_output[base_idx + src_idx];
+                      else
+                        output[dst_idx] = FixedPointAdd<T>(
+                            output[dst_idx], tiled_output[base_idx + src_idx]);
                     }
                   }
                 }
@@ -470,7 +572,8 @@ template <typename T, typename DfeT>
 void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
                   std::vector<T> &bias, std::vector<T> &output, int H, int W,
                   int C, int F, int K, int P, int S, max_file_t *max_file,
-                  max_engine_t *engine) {
+                  max_engine_t *engine, bool use_fixed_point = false,
+                  int num_frac_bits = 0) {
   // get constants from the max_file
   auto DFE_TH = max_get_constant_uint64t(max_file, "conv_H");
   auto DFE_TW = max_get_constant_uint64t(max_file, "conv_W");
@@ -525,9 +628,9 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
       input, H, W, C, K, P, S, T_OH, T_OW, TC, DFE_PC, N_TF);
   LOG(INFO) << "Tiled input size: " << tiled_input.size();
 
-  auto tiled_weights =
-      CreateConvLayerTiledWeights<T>(weights, C, F, K, TC, TF, DFE_PC, DFE_PF,
-                                     DFE_WINO_COEFF_OFFLINE, N_TOH * N_TOW);
+  auto tiled_weights = CreateConvLayerTiledWeights<T>(
+      weights, C, F, K, TC, TF, DFE_PC, DFE_PF, DFE_WINO_COEFF_OFFLINE,
+      use_fixed_point, num_frac_bits, N_TOH * N_TOW);
   LOG(INFO) << "Tiled weights size: " << tiled_weights.size();
 
 #ifdef DUMP_ARRAY
@@ -557,11 +660,7 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
              num_bytes_per_burst * DFE_PC *
                  (DFE_USE_WINO ? WINO_TILE_SIZE * WINO_TILE_SIZE : DFE_PK));
   LOG(INFO) << "Tiled input size (burst aligned): " << tiled_input.size();
-  BurstAlign(tiled_weights,
-             num_bytes_per_burst *
-                 ((DFE_USE_WINO && DFE_WINO_COEFF_OFFLINE)
-                      ? (WINO_TILE_SIZE + K - 1) * (WINO_TILE_SIZE + K - 1)
-                      : K * K));
+  BurstAlign(tiled_weights, num_bytes_per_burst * DFE_PC * DFE_PF);
   LOG(INFO) << "Tiled weights size (burst aligned): " << tiled_weights.size();
   BurstAlign(tiled_output, num_bytes_per_burst * DFE_PF *
                                (DFE_USE_WINO ? DFE_POH * DFE_POW : DFE_PK));
@@ -583,7 +682,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
 
   // transform the the final output
   output = TransformConvLayerTiledOutput<T>(tiled_output, OH, OW, F, T_OH, T_OW,
-                                            TF, DFE_PF, DFE_POH, DFE_POW, N_TC);
+                                            TF, DFE_PF, DFE_POH, DFE_POW, N_TC,
+                                            use_fixed_point, num_frac_bits);
 
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() << "s";

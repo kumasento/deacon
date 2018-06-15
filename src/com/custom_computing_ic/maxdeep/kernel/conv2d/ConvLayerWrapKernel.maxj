@@ -57,9 +57,11 @@ class ConvLayerWrapKernel extends Kernel {
      * TODO: what is the proper way to initialise conv and cast the type?
      */
     if (cp.type == Type.STANDARD) {
-      optimization.pushRoundingMode(RoundingMode.TRUNCATE);
+      // debug.pushEnableNumericExceptions(true);
+      // optimization.pushRoundingMode(RoundingMode.TRUNCATE);
       ConvLayerKernel conv = new ConvLayerKernel(getKernel(), cp, scalarT);
-      optimization.popRoundingMode();
+      // optimization.popRoundingMode();
+      // debug.popEnableNumericExceptions();
 
       DFEVector<DFEVar> ifmap =
           io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());

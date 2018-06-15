@@ -208,6 +208,10 @@ class Conv2DKernel extends KernelComponent {
 
         DFEVector<DFEVar> tmp = TOT.newInstance(getOwner());
 
+        if (cp.dbg) {
+          debug.simPrintf("[Conv2DKernel] ifmap x coeff = %KObj%\n", tmp);
+        }
+
         for (int j = 0; j < TILE_SIZE * TILE_SIZE; j++) {
           int ifmapIdx = c * TILE_SIZE * TILE_SIZE + j;
           int coeffIdx = (f * cp.PC + c) * TILE_SIZE * TILE_SIZE + j;
@@ -225,8 +229,12 @@ class Conv2DKernel extends KernelComponent {
           TO += tmp;
       }
 
+      if (cp.dbg) {
+        debug.simPrintf("[Conv2DKernel] o = %KObj%\n", TO);
+      }
+
       WinogradInverseTransform transform = new WinogradInverseTransform(
-          getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM);
+          getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM, cp.dbg);
       transform.setInputMatrix(TO);
       DFEVector<DFEVar> trans = transform.getOutput();
 
@@ -247,7 +255,7 @@ class Conv2DKernel extends KernelComponent {
 
     for (int i = 0; i < cp.PC; i++) {
       WinogradIfmapTransform winogradTransform = new WinogradIfmapTransform(
-          getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM);
+          getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM, cp.dbg);
 
       // the original input, split into TILE_SIZE^2 tiles
       DFEVector<DFEVar> input =
@@ -305,7 +313,8 @@ class Conv2DKernel extends KernelComponent {
 
  public
   DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
-    DotProductKernel dp = new DotProductKernel(this.getOwner(), cp.K * cp.K, T);
+    DotProductKernel dp =
+        new DotProductKernel(this.getOwner(), cp.K * cp.K, T, cp.dbg);
     dp.setInputs(ifmap, coeff);
 
     return dp.getOutput();
