@@ -369,7 +369,7 @@ class BasicDesign(Design):
       if self.params.block_type == 'Bottleneck':
         num_mult = (self.params.P_C1 * self.params.P_C2 +
                     self.params.P_C2 * self.params.P_C3 * 36 +
-                    self.params.P_C3 * self.params.P_F)
+                    self.params.P_C3 * self.params.P_FF)
       elif self.params.block_type == 'DepthwiseSeparable':
         num_mult = (self.params.P_C1 * self.params.P_FF +
                     self.params.P_C1 * 36)

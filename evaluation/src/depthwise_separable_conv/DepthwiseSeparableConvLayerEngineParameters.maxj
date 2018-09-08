@@ -1,6 +1,6 @@
 package depthwise_separable_conv;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 
 public class DepthwiseSeparableConvLayerEngineParameters extends
     ConvLayerEngineParameters {

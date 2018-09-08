@@ -1,11 +1,11 @@
 package bconv;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.BinaryPackKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.BinaryUnpackKernel;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;

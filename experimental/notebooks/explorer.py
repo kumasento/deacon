@@ -82,8 +82,8 @@ class FusedBlockExplorer(Explorer):
 
   def bottleneck_candidates(self, use_winograd=False):
     tile_shapes = OrderedDict({
-        "T_H": [7, 14],  # , 112, 224],
-        "T_W": [7, 14],  # , 112, 224],
+        "T_H": [7, 14, 28],  # , 112, 224],
+        "T_W": [7, 14, 28],  # , 112, 224],
         'T_C': [1024, 2048],
         'T_F': [1024, 2048],
         'T_C2': [1024, 2048],

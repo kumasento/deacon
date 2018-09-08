@@ -1,6 +1,6 @@
 package conv_two_layers;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 
 public class ConvTwoLayersEngineParameters extends ConvLayerEngineParameters {
 

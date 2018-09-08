@@ -1,6 +1,6 @@
 package bconv;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 
 public class BinarisedConvLayerEngineParameters extends
     ConvLayerEngineParameters {

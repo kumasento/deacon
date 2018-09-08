@@ -16,7 +16,7 @@ class Platform(object):
 
 
 class StratixVPlatform(Platform):
-  DSP_BIT_WIDTH = 18
+  DSP_BIT_WIDTH = 27
   BRAM_BLOCK_SIZE = 20 * 1024
 
   @property
@@ -33,7 +33,7 @@ class StratixVPlatform(Platform):
 
   @staticmethod
   def get_DSP(num_mult, bit_width):
-    return num_mult * int_ceil(bit_width, StratixVPlatform.DSP_BIT_WIDTH)
+    return num_mult / int_ceil(StratixVPlatform.DSP_BIT_WIDTH, bit_width)
 
   @staticmethod
   def get_BRAM(size):

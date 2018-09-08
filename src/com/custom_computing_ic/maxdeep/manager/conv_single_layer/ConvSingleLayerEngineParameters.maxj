@@ -1,6 +1,7 @@
-package conv_single_layer;
+package com.custom_computing_ic.maxdeep.manager.conv_single_layer;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
+
 
 public
 class ConvSingleLayerEngineParameters extends ConvLayerEngineParameters {

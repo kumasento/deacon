@@ -1,8 +1,8 @@
 package conv;
 
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
+import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
@@ -21,8 +21,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
  */
 public class ConvLayerManager extends CustomManager {
 
-  public ConvLayerManager(ConvLayerEngineParameters params,
-      ConvLayerParameters cp) {
+  public ConvLayerManager(ConvLayerEngineParameters params, ConvLayerParameters cp) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -32,8 +31,7 @@ public class ConvLayerManager extends CustomManager {
     ConvLayerManagerUtils.setupConstants(this, cp, params);
   }
 
-  public EngineInterface interfaceDefault(ConvLayerParameters cp,
-      ConvLayerEngineParameters ep) {
+  public EngineInterface interfaceDefault(ConvLayerParameters cp, ConvLayerEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
@@ -55,9 +53,8 @@ public class ConvLayerManager extends CustomManager {
     int K = params.getK();
 
     ConvLayerParameters cp =
-        new ConvLayerParameters.Builder(H, W, C, F, K)
-            .name("conv").PC(params.getPC()).PF(params.getPF())
-            .PK(params.getPK()).BW(params.getBitWidth())
+        new ConvLayerParameters.Builder(H, W, C, F, K).name("conv").PC(params.getPC())
+            .PF(params.getPF()).PK(params.getPK()).BW(params.getBitWidth())
             .seq(CompSeq.values()[params.getSeq()]).build();
 
     ConvLayerManager mgr = new ConvLayerManager(params, cp);
