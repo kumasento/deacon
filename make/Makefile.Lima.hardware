@@ -1,4 +1,5 @@
 # ---- Available DFE hardware settings ----
+# MAX5CManager will simply ignore this value
 DFEModel=MAX5C
 
 MPCX=false

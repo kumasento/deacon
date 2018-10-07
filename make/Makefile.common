@@ -24,6 +24,14 @@ BUILD_DATE?=$(shell date +"%d-%m-%y")
 # 	MAXCOMPILER_BUILD_DIR=.
 # endif
 
+ifeq ($(DFEModel), MAX5C)
+	# maxJavaRun cannot accept MAX5C as a parameter since it is deprecated.
+	# But we can fix this by replacing it with MAIA.
+	DFEMODELPARAM=MAIA
+else
+	DFEMODELPARAM=$(DFEModel)
+endif
+
 SIMMAXNAME=$(PRJ)_$(DFEModel)_DFE_SIM$(BUILD_NAME_OPTION)
 DFEMAXNAME=$(PRJ)_$(DFEModel)_DFE$(BUILD_NAME_OPTION)
 SIMMAXDIR=$(MAXCOMPILER_BUILD_DIR)/$(SIMMAXNAME)/results
@@ -146,7 +154,7 @@ $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) \
 		MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) \
 		$(MAXJAVARUN) -v -m 8192 $(MANAGER) \
-		DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) \
+		DFEModel=$(DFEMODELPARAM) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) \
 		$(BUILD_PARAMS)
 	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
@@ -176,7 +184,11 @@ gdbsim:
 $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	@ echo "Running maxjc ..."
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
+	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) \
+		MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) \
+		$(MAXJAVARUN) -v -m 8192 $(MANAGER) \
+		DFEModel=$(DFEMODELPARAM) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) \
+		$(BUILD_PARAMS)
 	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
 	cp $(DFEMAXDIR)/$(PRJ).max $(DFEMAXDIR)/$(PRJ)_backup.max
 	rm $(DFEMAXDIR)/$(PRJ).h

@@ -9,11 +9,14 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.platform.max5.manager.MAX5CManager;
 
-public class Max5StrmMultManager extends MAX5CManager {
+public
+class Max5StrmMultManager extends MAX5CManager {
 
-  public static final String knlName = "max5_strm_mult_kernel";
+ public
+  static final String knlName = "max5_strm_mult_kernel";
 
-  public Max5StrmMultManager(EngineParameters params) {
+ public
+  Max5StrmMultManager(EngineParameters params) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -25,13 +28,14 @@ public class Max5StrmMultManager extends MAX5CManager {
         new Max5StrmMultKernel(this.makeKernelParameters(knlName)));
 
     // connect them to external environment
-    for (String inputName: Max5StrmMultKernel.INPUTS)
+    for (String inputName : Max5StrmMultKernel.INPUTS)
       knl.getInput(inputName).connect(this.addStreamFromCPU(inputName));
-    for (String outputName: Max5StrmMultKernel.OUTPUTS)
+    for (String outputName : Max5StrmMultKernel.OUTPUTS)
       this.addStreamToCPU(outputName).connect(knl.getOutput(outputName));
   }
 
-  public EngineInterface interfaceDefault() {
+ public
+  EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
 
     // number of ticks
@@ -41,15 +45,16 @@ public class Max5StrmMultManager extends MAX5CManager {
     ei.setTicks(knlName, N);
 
     // set streams
-    for (String inputName: Max5StrmMultKernel.INPUTS)
-      ei.setStream(inputName, CPUTypes.UINT8, N);
-    for (String outputName: Max5StrmMultKernel.OUTPUTS)
-      ei.setStream(outputName, CPUTypes.UINT8, N);
+    for (String inputName : Max5StrmMultKernel.INPUTS)
+      ei.setStream(inputName, CPUTypes.FLOAT, N * 4);
+    for (String outputName : Max5StrmMultKernel.OUTPUTS)
+      ei.setStream(outputName, CPUTypes.FLOAT, N * 4);
 
     return ei;
   }
 
-  public static void main(String[] args) {
+ public
+  static void main(String[] args) {
     EngineParameters params = new EngineParameters(args);
 
     Max5StrmMultManager mgr = new Max5StrmMultManager(params);
@@ -61,5 +66,4 @@ public class Max5StrmMultManager extends MAX5CManager {
     // cfg.setMPPRParallelism(4);
     mgr.build();
   }
-
 }

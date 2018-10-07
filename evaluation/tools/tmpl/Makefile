@@ -22,7 +22,7 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
+MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/
 WHEREISROOT=../../..
 SRCROOT=../../src
 
