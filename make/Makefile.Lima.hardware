@@ -1,0 +1,6 @@
+# ---- Available DFE hardware settings ----
+DFEModel=LIMA
+
+MPCX=false
+DEVICENUM=LIMA
+SLIC_CONF="default_engine_resource=rz3515^192.168.0.1"

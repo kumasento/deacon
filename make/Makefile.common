@@ -92,7 +92,9 @@ MAXOS_SIM=$(MAXELEROSDIR_SIM)/lib/libmaxeleros.so
 # ---- Build flags ----
 
 MAXCOMPILER_PLUGINS=$(MAXCOMPILERDIR)/lib/MaxIDE/plugins
-JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(WHEREISROOT)/lib/dfe-snippets/src:$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar -1.6 -d . -nowarn
+MAX4PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max4Platform.jar
+MAX5PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max5Platform.jar
+JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(MAXCOMPILERDIR)/lib/Max4Platform.jar:$(MAXCOMPILERDIR)/lib/Max5Platform.jar:$(WHEREISROOT)/lib/dfe-snippets/src:$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar -1.6 -d . -nowarn
 CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I/usr/local/include -I$(HOME)/.local/include -I../src -I../src/include -I$(RUNTIME)/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_$(DESIGN_NAME)
 LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -L$(HOME)/.local/lib -lmaxeleros -lglog -lgflags -lslic -lm -lpthread
 
@@ -141,7 +143,7 @@ all: runsim build
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	@ echo "Running maxjc ..."
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
+	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
 	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
 $(PRJBUILDNAME)_sim.o: $(SIMMAXDIR)/$(PRJ).max
