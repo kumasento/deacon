@@ -1,8 +1,8 @@
 # MaxDeep: A Deep Learning Framework on Maxeler Platform
 
-Please consider citing the following paper(s) if you use this framework, cheers!
+Please consider citing the following paper(s) if you use this framework, cheers! :heart:
 
-```bibtex
+```tex
 @inproceedings{arc17rz,
   author    = {Ruizhe Zhao and Xinyu Niu and Yajie Wu and Wayne Luk and Qiang Liu},
   title     = {Optimizing CNN-based Object Detection Algorithms on Embedded FPGA Platforms},
@@ -14,6 +14,12 @@ Please consider citing the following paper(s) if you use this framework, cheers!
   title     = {{DeepPump}: Multi-Pumping Deep Neural Networks},
   booktitle = {{ASAP}},
   year      = {2017}
+}
+@inproceedings{zhao18towards,
+  author    = {Zhao, Ruizhe and Ng, Ho-cheung and Luk, Wayne and Niu, Xinyu},
+  title     = {{Towards Efficient Convolutional Neural Network for Domain-Specific Applications on FPGA}},
+  year      = {2018}
+  booktitle = {{FPL},
 }
 ```
 
