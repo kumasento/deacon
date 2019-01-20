@@ -11,14 +11,19 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
-public final class DotProdManager extends CustomManager {
+public
+final class DotProdManager extends CustomManager {
+ private
+  final DFEType dfeT = DFETypeFactory.dfeFloat(8, 24);
+ private
+  final CPUTypes cpuT = CPUTypes.FLOAT;
+ private
+  final String KERNEL_NAME = "DOT_PROD_KERNEL";
+ private
+  final int vecSize;
 
-  private final DFEType dfeT = DFETypeFactory.dfeFloat(8, 24);
-  private final CPUTypes cpuT = CPUTypes.FLOAT;
-  private final String KERNEL_NAME = "DOT_PROD_KERNEL";
-  private final int vecSize;
-
-  public DotProdManager(DotProdEngineParameters params) {
+ public
+  DotProdManager(DotProdEngineParameters params) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -27,9 +32,9 @@ public final class DotProdManager extends CustomManager {
 
     this.vecSize = params.getVecSize();
 
-    KernelBlock blk =
-        addKernel(new DotProdKernel(makeKernelParameters(KERNEL_NAME), params.getVecSize(),
-            params.getBitWidth(), dfeT));
+    KernelBlock blk = addKernel(
+        new DotProdKernel(makeKernelParameters(KERNEL_NAME),
+                          params.getVecSize(), params.getBitWidth(), dfeT));
 
     blk.getInput(DotProdKernel.VEC_A).connect(addStreamFromCPU("VEC_A"));
     blk.getInput(DotProdKernel.VEC_B).connect(addStreamFromCPU("VEC_B"));
@@ -38,16 +43,18 @@ public final class DotProdManager extends CustomManager {
     addMaxFileConstant("VEC_LEN", vecSize);
   }
 
-  public EngineInterface interfaceDefault() {
+ public
+  EngineInterface interfaceDefault() {
     EngineInterface ei = new EngineInterface();
 
-
-    InterfaceParam M = ei.addParam("M", CPUTypes.INT64); // total number of vectors
-    InterfaceParam N = ei.addParam("N", CPUTypes.INT64); // vector length
+    InterfaceParam M =
+        ei.addParam("M", CPUTypes.INT64);  // total number of vectors
+    InterfaceParam N = ei.addParam("N", CPUTypes.INT64);  // vector length
     InterfaceParam L = ei.getAutoLoopOffset(KERNEL_NAME, DotProdKernel.OFFSET);
     InterfaceParam numVecs =
-        InterfaceMath.ceil(N.cast(CPUTypes.DOUBLE) / ei.addConstant((double) vecSize)).cast(
-            CPUTypes.UINT32);
+        InterfaceMath
+            .ceil(N.cast(CPUTypes.DOUBLE) / ei.addConstant((double)vecSize))
+            .cast(CPUTypes.UINT32);
     ei.setTicks(KERNEL_NAME, M * numVecs * L);
     ei.setStream("VEC_A", cpuT, cpuT.sizeInBytes() * M * N);
     ei.setStream("VEC_B", cpuT, cpuT.sizeInBytes() * M * N);
@@ -61,7 +68,8 @@ public final class DotProdManager extends CustomManager {
   /**
    * @param args
    */
-  public static void main(String[] args) {
+ public
+  static void main(String[] args) {
     DotProdEngineParameters params = new DotProdEngineParameters(args);
     DotProdManager mgr = new DotProdManager(params);
     mgr.createSLiCinterface(mgr.interfaceDefault());

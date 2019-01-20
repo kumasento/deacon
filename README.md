@@ -19,7 +19,7 @@ Please consider citing the following paper(s) if you use this framework, cheers!
   author    = {Zhao, Ruizhe and Ng, Ho-cheung and Luk, Wayne and Niu, Xinyu},
   title     = {{Towards Efficient Convolutional Neural Network for Domain-Specific Applications on FPGA}},
   year      = {2018}
-  booktitle = {{FPL},
+  booktitle = {{FPL}},
 }
 ```
 

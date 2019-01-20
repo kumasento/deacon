@@ -22,15 +22,21 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
+MAXCOMPILER_BUILD_DIR:=$(NAS_HOME)/maxcompiler_builds
 WHEREISROOT=../../..
-SRCROOT=../../src
+SRCROOT=$(WHEREISROOT)/evaluation/src
+
+DEVICE?=Maia
 
 # Assuming Kernel and Manager class names follow the pattern below:
 PRJ=DotProd
-MANAGER=$(PRJ)Manager
 APPPKG=dotprod
-DEVICE=Maia
+
+ifeq ($(DEVICE),Lima)
+	MANAGER=$(PRJ)Max5Manager
+else
+	MANAGER=$(PRJ)Manager
+endif
 
 BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) vecSize=$(VEC_SIZE)
 BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_n$(VEC_SIZE)

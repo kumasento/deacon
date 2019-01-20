@@ -1,0 +1,7 @@
+# ---- Available DFE hardware settings ----
+# DFEModel value will be ignored when building Lima
+DFEModel=MAIA
+
+MPCX=false
+DEVICENUM=MAX5C
+SLIC_CONF=""
