@@ -3,13 +3,13 @@
  * \author Ruizhe Zhao
  */
 
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include <vector>
 #include <chrono>
-#include <glog/logging.h>
+#include <cmath>
+#include <cstdlib>
 #include <getopt.h>
+#include <glog/logging.h>
+#include <iostream>
+#include <vector>
 
 #include "Maxfiles.h"
 
@@ -97,7 +97,9 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < (int)golden.size(); i++)
     printf("golden[%4d] = %.6f\n", i, golden[i]);
   std::cout << "elapsed time: " << elapsed_cpu.count() << " sec" << std::endl;
-  std::cout << "Throughput: " << get_throughput(total_vec_elems, elapsed_cpu.count(), 2.0) << " GFLOPs" << std::endl;
+  std::cout << "Throughput: "
+            << get_throughput(total_vec_elems, elapsed_cpu.count(), 2.0)
+            << " GFLOPs" << std::endl;
 
   // Run DFE
   std::cout << "Starting DFE ..." << std::endl;
@@ -110,8 +112,11 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < (int)result.size(); i++)
     printf("result[%4d] = %.6f\n", i, result[i]);
   std::cout << "elapsed time: " << elapsed_dfe.count() << " sec" << std::endl;
-  std::cout << "Throughput: " << get_throughput(total_vec_elems, elapsed_dfe.count(), 2.0) << " GFLOPs" << std::endl;
-  std::cout << "Speed up: " << elapsed_cpu.count() / elapsed_dfe.count() << std::endl;
+  std::cout << "Throughput: "
+            << get_throughput(total_vec_elems, elapsed_dfe.count(), 2.0)
+            << " GFLOPs" << std::endl;
+  std::cout << "Speed up: " << elapsed_cpu.count() / elapsed_dfe.count()
+            << std::endl;
 
   // Test
   CHECK_EQ(result.size(), golden.size());

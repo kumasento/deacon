@@ -61,6 +61,9 @@ ifneq ($(findstring cpp, $(CPUFILES)), )
     COMPILER_CFLAGS = -fopenmp -lrt
     OPT_FLAGS = -O3 -std=c++11 #-march=native 
 
+		# C++ ABI problem
+		COMPILER_CFLAGS := $(COMPILER_CFLAGS) -D_GLIBCXX_USE_CXX11_ABI=0
+
     ifeq ($(CXX), icpc)
       COMPILER_CFLAGS = -openmp
       OPT_FLAGS = -xHost -O3
@@ -103,8 +106,8 @@ MAXCOMPILER_PLUGINS=$(MAXCOMPILERDIR)/lib/MaxIDE/plugins
 MAX4PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max4Platform.jar
 MAX5PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max5Platform.jar
 JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(MAXCOMPILERDIR)/lib/Max4Platform.jar:$(MAXCOMPILERDIR)/lib/Max5Platform.jar:$(WHEREISROOT)/lib/dfe-snippets/src:$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar -1.6 -d . -nowarn
-CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I/usr/local/include -I$(HOME)/.local/include -I../src -I../src/include -I$(RUNTIME)/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_$(DESIGN_NAME)
-LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -L$(HOME)/.local/lib -lmaxeleros -lglog -lgflags -lslic -lm -lpthread
+CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I$(RUNTIME)/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_$(DESIGN_NAME)
+LFLAGS= -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread
 
 # Add this on the command line to pass to make when compiling
 # Useful for debug/optimization flags
