@@ -28,9 +28,9 @@ SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
 PRJ=DotProd
-MANAGER=$(PRJ)Manager
+MANAGER=$(PRJ)Max5LimaManager
 APPPKG=dotprod
-DEVICE=Maia
+DEVICE=Lima
 
 BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) vecSize=$(VEC_SIZE)
 BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_n$(VEC_SIZE)
