@@ -22,7 +22,7 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
+# MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
@@ -30,7 +30,7 @@ SRCROOT=../../src
 PRJ=PointwiseConvolution
 MANAGER=$(PRJ)Manager
 APPPKG=pointwise_convolution
-DEVICE=Maia
+DEVICE=Lima
 
 TILE_WIDTH?=32
 TILE_HEIGHT?=32
