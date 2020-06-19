@@ -20,9 +20,10 @@ BUILD_DATE?=$(shell date +"%d-%m-%y")
 # ---- Paths ----
 # MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/$(BUILD_DATE)
 # MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
-# ifndef $(MAXCOMPILER_BUILD_DIR)
-# 	MAXCOMPILER_BUILD_DIR=.
-# endif
+ifndef $(MAXCOMPILER_BUILD_DIR)
+	MAXCOMPILER_BUILD_DIR=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
+endif
+
 
 ifeq ($(DFEModel), MAX5C)
 	# maxJavaRun cannot accept MAX5C as a parameter since it is deprecated.
@@ -53,34 +54,34 @@ CPUFILES=$(wildcard $(SRCROOT)/*.c $(SRCROOT)/$(APPPKG)/*.cpp $(RUNTIME)/include
 
 # detect the language: do we have .cpp extensions?
 ifneq ($(findstring cpp, $(CPUFILES)), )
-    # language: C++
-    CXX ?= icpc
-    CPUCOMPILER = $(CXX)
+		# language: C++
+		CXX ?= icpc
+		CPUCOMPILER = $(CXX)
 
-    # Assuming CXX points to g++/c++ by default
-    COMPILER_CFLAGS = -fopenmp -lrt
-    OPT_FLAGS = -O3 -std=c++11 #-march=native 
+		# Assuming CXX points to g++/c++ by default
+		COMPILER_CFLAGS = -fopenmp -lrt
+		OPT_FLAGS = -O3 -std=c++11 #-march=native 
 
 		# C++ ABI problem
 		COMPILER_CFLAGS := $(COMPILER_CFLAGS) -D_GLIBCXX_USE_CXX11_ABI=0
 
-    ifeq ($(CXX), icpc)
-      COMPILER_CFLAGS = -openmp
-      OPT_FLAGS = -xHost -O3
-    endif
+		ifeq ($(CXX), icpc)
+			COMPILER_CFLAGS = -openmp
+			OPT_FLAGS = -xHost -O3
+		endif
 else
-    # language: C
-    CC ?= icc
-    CPUCOMPILER = $(CC)
+		# language: C
+		CC ?= icc
+		CPUCOMPILER = $(CC)
 
-    # Assuming CC points to gcc/cc by default
-    COMPILER_CFLAGS = -std=c99 -fopenmp
-    OPT_FLAGS = -march=native -O3
+		# Assuming CC points to gcc/cc by default
+		COMPILER_CFLAGS = -std=c99 -fopenmp
+		OPT_FLAGS = -march=native -O3
 
-    ifeq ($(CC), icc)
-      COMPILER_CFLAGS = -std=c99 -openmp
-      OPT_FLAGS = -xHost -O3
-    endif
+		ifeq ($(CC), icc)
+			COMPILER_CFLAGS = -std=c99 -openmp
+			OPT_FLAGS = -xHost -O3
+		endif
 endif
 
 PRJBUILDNAME:=$(PRJ)$(BUILD_NAME_OPTION)

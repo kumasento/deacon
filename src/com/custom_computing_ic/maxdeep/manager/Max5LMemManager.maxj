@@ -12,11 +12,11 @@ class Max5LMemManager extends Max5LimaManager implements ManagerInterface {
   LMemInterface iface;
 
  public
-  Max5LMemManager(EngineParameters params) {
-    super(params);
-    iface = addLMemInterface();
-  }
+  Max5LMemManager(EngineParameters params) { super(params); }
 
  public
-  LMemInterface getLMemInterface() { return iface; }
+  LMemInterface getLMemInterface() {
+    if (iface == null) iface = addLMemInterface();
+    return iface;
+  }
 }

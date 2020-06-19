@@ -12,7 +12,7 @@ class CustomLMemManager extends CustomManager implements ManagerInterface {
   LMemInterface iface;
 
  public
-  CustomLMemManager(ConvSingleLayerEngineParameters params) { super(params); }
+  CustomLMemManager(ConvLayerEngineParameters params) { super(params); }
  public
   LMemInterface getLMemInterface() { return iface; }
 }
