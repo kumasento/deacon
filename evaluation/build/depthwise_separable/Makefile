@@ -22,40 +22,34 @@
 
 # ---- Project settings ----
 
-# MAXCOMPILER_BUILD_DIR?=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
+MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=ConvTwoLayers
+PRJ=DepthwiseSeparable
 MANAGER=$(PRJ)Manager
-APPPKG=conv_two_layers
-DEVICE=Lima
+APPPKG=depthwise_separable
+DEVICE=Maia
 
-
-BIT_WIDTH?=16
-H?=32
-W?=32
-C?=32
-F?=32
-K?=3
-P_F?=1
-P_C?=1
-P_K?=1
-SEQ?=0
+TILE_WIDTH?=32
+TILE_HEIGHT?=32
+TILE_IN_DEPTH?=32
+TILE_OUT_DEPTH?=32
+KERNEL_SIZE?=3
+PAR_WIDTH?=1
+PAR_IN_DEPTH?=1
+PAR_OUT_DEPTH?=1
 FREQ?=200
-USE_DRAM?=false
-USE_DRAM_SUFFIX:=PCIe
-ifeq ($(USE_DRAM), true)
+DEBUG?=false
+DEBUG_STR?=
 
-USE_DRAM_SUFFIX:=DRAM
-EXTRA_CFLAGS:=-DUSE_DRAM
-
+ifeq (${DEBUG},true)
+	DEBUG_STR=_debug
 endif
 
-BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ)
-BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)
-
+BUILD_PARAMS:=TILE_HEIGHT=${TILE_HEIGHT} TILE_WIDTH=${TILE_WIDTH} TILE_IN_DEPTH=${TILE_IN_DEPTH} TILE_OUT_DEPTH=${TILE_OUT_DEPTH} PAR_WIDTH=${PAR_WIDTH} PAR_IN_DEPTH=${PAR_IN_DEPTH} PAR_OUT_DEPTH=${PAR_OUT_DEPTH} FREQ=${FREQ} KERNEL_SIZE=${KERNEL_SIZE} DEBUG=${DEBUG}
+BUILD_NAME_OPTION:=_th${TILE_HEIGHT}_tw${TILE_WIDTH}_tc${TILE_IN_DEPTH}_tf${TILE_OUT_DEPTH}_k${KERNEL_SIZE}_pw${PAR_WIDTH}_pc${PAR_IN_DEPTH}_pf${PAR_OUT_DEPTH}_${FREQ}MHz${DEBUG_STR}
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

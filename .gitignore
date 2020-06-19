@@ -15,12 +15,15 @@ hs_err_pid*
 # C and C++ generated files
 *.o
 
+################ MaxJ related #####################
+
+# Auxiliary files
+.maxdc*
+
 # simulation
 *_sim
-
 # built dfe
 *_dfe
-
 # debug
 debug*
 
@@ -40,6 +43,10 @@ venv
 .ipynb_checkpoints/
 
 # CMake
-build/
+/build/
 
 .vscode/
+
+# include all the Makefiles
+/evaluataion/build/
+!/evaluataion/build/**/Makefile
