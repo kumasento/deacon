@@ -4,3 +4,6 @@
 # [submodule "lib/maxpower"]
 # 	path = lib/maxpower
 # 	url = git@github.com:maxeler/maxpower.git
+[submodule "build/lib/googletest"]
+	path = build/lib/googletest
+	url = git@github.com:google/googletest
