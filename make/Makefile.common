@@ -20,11 +20,21 @@ BUILD_DATE?=$(shell date +"%d-%m-%y")
 # ---- Paths ----
 # MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/$(BUILD_DATE)
 # MAXCOMPILER_BUILD_DIR:=/mnt/data/scratch/rz3515/builds/
-# ifndef $(MAXCOMPILER_BUILD_DIR)
-# 	MAXCOMPILER_BUILD_DIR=# endif
+ifndef $(MAXCOMPILER_BUILD_DIR)
+	MAXCOMPILER_BUILD_DIR=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
+endif
 
-SIMMAXNAME=$(PRJ)_$(DFEModel)_DFE_SIM$(BUILD_NAME_OPTION)
-DFEMAXNAME=$(PRJ)_$(DFEModel)_DFE$(BUILD_NAME_OPTION)
+
+ifeq ($(DFEModel), MAX5C)
+	# maxJavaRun cannot accept MAX5C as a parameter since it is deprecated.
+	# But we can fix this by replacing it with MAIA.
+	DFEMODELPARAM=MAIA
+else
+	DFEMODELPARAM=$(DFEModel)
+endif
+
+SIMMAXNAME=$(PRJ)_$(DFEMODELPARAM)_DFE_SIM$(BUILD_NAME_OPTION)
+DFEMAXNAME=$(PRJ)_$(DFEMODELPARAM)_DFE$(BUILD_NAME_OPTION)
 SIMMAXDIR=$(MAXCOMPILER_BUILD_DIR)/$(SIMMAXNAME)/results
 DFEMAXDIR=$(MAXCOMPILER_BUILD_DIR)/$(DFEMAXNAME)/results
 MAXELEROSDIR_SIM:=$(MAXCOMPILERDIR)/lib/maxeleros-sim
@@ -44,31 +54,34 @@ CPUFILES=$(wildcard $(SRCROOT)/*.c $(SRCROOT)/$(APPPKG)/*.cpp $(RUNTIME)/include
 
 # detect the language: do we have .cpp extensions?
 ifneq ($(findstring cpp, $(CPUFILES)), )
-    # language: C++
-    CXX ?= icpc
-    CPUCOMPILER = $(CXX)
+		# language: C++
+		CXX ?= icpc
+		CPUCOMPILER = $(CXX)
 
-    # Assuming CXX points to g++/c++ by default
-    COMPILER_CFLAGS = -fopenmp -lrt
-    OPT_FLAGS = -O3 -std=c++11 #-march=native 
+		# Assuming CXX points to g++/c++ by default
+		COMPILER_CFLAGS = -fopenmp -lrt
+		OPT_FLAGS = -O3 -std=c++11 #-march=native 
 
-    ifeq ($(CXX), icpc)
-      COMPILER_CFLAGS = -openmp
-      OPT_FLAGS = -xHost -O3
-    endif
+		# C++ ABI problem
+		COMPILER_CFLAGS := $(COMPILER_CFLAGS) -D_GLIBCXX_USE_CXX11_ABI=0
+
+		ifeq ($(CXX), icpc)
+			COMPILER_CFLAGS = -openmp
+			OPT_FLAGS = -xHost -O3
+		endif
 else
-    # language: C
-    CC ?= icc
-    CPUCOMPILER = $(CC)
+		# language: C
+		CC ?= icc
+		CPUCOMPILER = $(CC)
 
-    # Assuming CC points to gcc/cc by default
-    COMPILER_CFLAGS = -std=c99 -fopenmp
-    OPT_FLAGS = -march=native -O3
+		# Assuming CC points to gcc/cc by default
+		COMPILER_CFLAGS = -std=c99 -fopenmp
+		OPT_FLAGS = -march=native -O3
 
-    ifeq ($(CC), icc)
-      COMPILER_CFLAGS = -std=c99 -openmp
-      OPT_FLAGS = -xHost -O3
-    endif
+		ifeq ($(CC), icc)
+			COMPILER_CFLAGS = -std=c99 -openmp
+			OPT_FLAGS = -xHost -O3
+		endif
 endif
 
 PRJBUILDNAME:=$(PRJ)$(BUILD_NAME_OPTION)
@@ -91,10 +104,11 @@ MAXOS_SIM=$(MAXELEROSDIR_SIM)/lib/libmaxeleros.so
 # ---- Build flags ----
 
 MAXCOMPILER_PLUGINS=$(MAXCOMPILERDIR)/lib/MaxIDE/plugins
+MAX4PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max4Platform.jar
+MAX5PLATFORM_JAR=$(MAXCOMPILERDIR)/lib/Max5Platform.jar
 JFLAGS=-cp $(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(MAXCOMPILERDIR)/lib/Max4Platform.jar:$(MAXCOMPILERDIR)/lib/Max5Platform.jar:$(WHEREISROOT)/lib/dfe-snippets/src:$(MAXCOMPILER_PLUGINS)/org.junit4/junit.jar:$(MAXCOMPILER_PLUGINS)/org.hamcrest.core_1.1.0.v20090501071000.jar -1.6 -d . -nowarn
-CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I/usr/local/include -I$(NAS_HOME)/cccad/opt/include -I../src -I../src/include -I$(RUNTIME)/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_$(DESIGN_NAME)
-LFLAGS=-L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -L$(NAS_HOME)/cccad/opt/lib -lmaxeleros -lglog -lgflags -lslic -lm -lpthread
-MAXCOMPILERJCP=$(MAXCOMPILERDIR)/lib/MaxCompiler.jar:$(MAXCOMPILERDIR)/lib/Max4Platform.jar:$(MAXCOMPILERDIR)/lib/Max5Platform.jar
+CFLAGS= $(COMPILER_CFLAGS) $(OPT_FLAGS) -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I$(RUNTIME)/include -I${MAXCOMPILERDIR}/include -I${MAXCOMPILERDIR}/include/slic -I${MAXELEROSDIR}/include -I${WHEREISROOT}/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_$(DESIGN_NAME)
+LFLAGS= -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L${MAXCOMPILERDIR}/lib -L${MAXELEROSDIR}/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread
 
 # Add this on the command line to pass to make when compiling
 # Useful for debug/optimization flags
@@ -141,9 +155,11 @@ all: runsim build
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	@ echo "Running maxjc ..."
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) \
-	MAXCOMPILERJCP=$(MAXCOMPILERJCP) \
-	MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) $(BUILD_PARAMS)
+	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) \
+		MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) \
+		$(MAXJAVARUN) -v -m 8192 $(MANAGER) \
+		DFEModel=$(DFEMODELPARAM) maxFileName=$(PRJ) target='DFE_SIM' enableMPCX=$(MPCX) \
+		$(BUILD_PARAMS)
 	cp $(SIMMAXDIR)/$(PRJ).h $(SIMMAXDIR)/Maxfiles.h
 
 $(PRJBUILDNAME)_sim.o: $(SIMMAXDIR)/$(PRJ).max
@@ -172,7 +188,11 @@ gdbsim:
 $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	@ echo "Running maxjc ..."
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
-	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST) MAXCOMPILERJCP=$(MAXCOMPILERJCP) MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) $(MAXJAVARUN) -v -m 8192 $(MANAGER) DFEModel=$(DFEModel) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) $(BUILD_PARAMS)
+	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) \
+		MAXAPPPKG=$(APPPKG) MAXSOURCEDIRS=$(SRCROOT):$(MAXDEEP) \
+		$(MAXJAVARUN) -v -m 8192 $(MANAGER) \
+		DFEModel=$(DFEMODELPARAM) maxFileName=$(PRJ) target='DFE' enableMPCX=$(MPCX) \
+		$(BUILD_PARAMS)
 	cp $(DFEMAXDIR)/$(PRJ).h $(DFEMAXDIR)/Maxfiles.h
 	cp $(DFEMAXDIR)/$(PRJ).max $(DFEMAXDIR)/$(PRJ)_backup.max
 	rm $(DFEMAXDIR)/$(PRJ).h

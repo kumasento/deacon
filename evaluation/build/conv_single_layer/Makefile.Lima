@@ -26,9 +26,9 @@ SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
 PRJ=ConvSingleLayer
-MANAGER=$(PRJ)Manager
+MANAGER=$(PRJ)Max5LimaManager
 APPPKG=conv_single_layer
-DEVICE?=Maia
+DEVICE?=Lima
 
 bitWidth?=16
 DTYPE?=fixed

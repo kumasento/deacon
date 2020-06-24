@@ -6,37 +6,43 @@ import java.util.List;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
+import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
+import com.custom_computing_ic.maxdeep.manager.CustomLMemManager;
+import com.custom_computing_ic.maxdeep.manager.Max5LMemManager;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.platform.max5.manager.BuildConfig;
+import com.maxeler.platform.max5.manager.BuildConfig.Effort;
+import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
 
 /**
- * 
- */
-
-/**
+ * The manager that builds two consecutive Convolution layers.
+ *
+ * This has been adapted to Max5.
+ *
  * @author Ruizhe Zhao
- * 
+ *
  */
-public class ConvTwoLayersManager extends CustomManager {
-
-  public ConvTwoLayersManager(ConvTwoLayersEngineParameters params,
-      List<ConvLayerParameters> cps) {
+public
+class ConvTwoLayersManager extends Max5LMemManager implements ManagerInterface {
+ public
+  ConvTwoLayersManager(ConvTwoLayersEngineParameters params,
+                       List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
-    config.setAllowNonMultipleTransitions(true);
-    config.setDefaultStreamClockFrequency(params.getFreq());
+    this.setAllowNonMultipleTransitions(true);
+    this.setDefaultStreamClockFrequency(params.getFreq());
 
-    ConvLayerManagerUtils.createKernelBlocks(this, cps, params.getUseDRAM());
+    ConvLayerManagerUtils.createKernelBlocks(this, cps, 1, params.getUseDRAM());
     ConvLayerManagerUtils.setupConstants(this, cps, params);
   }
 
-  public EngineInterface interfaceDefault(List<ConvLayerParameters> cps,
-      ConvTwoLayersEngineParameters ep) {
+ public
+  EngineInterface interfaceDefault(List<ConvLayerParameters> cps,
+                                   ConvTwoLayersEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
@@ -46,8 +52,7 @@ public class ConvTwoLayersManager extends CustomManager {
     return ei;
   }
 
-  @SuppressWarnings("deprecation")
-  public static void main(String[] args) {
+  @SuppressWarnings("deprecation") public static void main(String[] args) {
     ConvTwoLayersEngineParameters ep = new ConvTwoLayersEngineParameters(args);
     int H = ep.getH();
     int W = ep.getW();
@@ -59,29 +64,25 @@ public class ConvTwoLayersManager extends CustomManager {
 
     /* resolve the computation sequence */
     CompSeq seq0 = CompSeq.values()[ep.getSeq()];
-    CompSeq seq1 =
-        (seq0 == CompSeq.CHANNEL_MAJOR)
-            ? CompSeq.FILTER_MAJOR
-            : CompSeq.CHANNEL_MAJOR;
+    CompSeq seq1 = (seq0 == CompSeq.CHANNEL_MAJOR) ? CompSeq.FILTER_MAJOR
+                                                   : CompSeq.CHANNEL_MAJOR;
 
-    cps.add(
-        0,
-        new ConvLayerParameters.Builder(H, W, C, F, K)
-            .BW(ep.getBitWidth())
-            .name("conv0")
-            .PC(ep.getPC())
-            .PF(ep.getPF())
-            .PK(ep.getPK())
-            .seq(seq0)
-            .build());
+    cps.add(0, new ConvLayerParameters.Builder(H, W, C, F, K)
+                   .BW(ep.getBitWidth())
+                   .name("conv0")
+                   .PC(ep.getPC())
+                   .PF(ep.getPF())
+                   .PK(ep.getPK())
+                   .seq(seq0)
+                   .build());
     cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
-        .BW(ep.getBitWidth())
-        .seq(seq1)
-        .PC(ep.getPF())
-        .PF(ep.getPF())
-        .PK(ep.getPK())
-        .name("conv1")
-        .build());
+                   .BW(ep.getBitWidth())
+                   .seq(seq1)
+                   .PC(ep.getPF())
+                   .PF(ep.getPF())
+                   .PK(ep.getPK())
+                   .name("conv1")
+                   .build());
 
     ConvTwoLayersManager mgr = new ConvTwoLayersManager(ep, cps);
 
@@ -89,9 +90,6 @@ public class ConvTwoLayersManager extends CustomManager {
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
-    buildConfig.setMPPRCostTableSearchRange(1, 4);
-    buildConfig.setMPPRParallelism(4);
     mgr.build();
   }
-
 }

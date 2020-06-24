@@ -22,18 +22,38 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/
+
+# MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=${PROJ}
+PRJ=DepthwiseConvolution
 MANAGER=$(PRJ)Manager
-APPPKG=${PKG}
-DEVICE=Maia
+APPPKG=depthwise_convolution
+DEVICE=Lima
 
-BUILD_PARAMS:=
-BUILD_NAME_OPTION:=
+TILE_WIDTH?=32
+TILE_HEIGHT?=32
+TILE_DEPTH?=32
+KERNEL_SIZE?=3
+PAR_WIDTH?=1
+PAR_DEPTH?=1
+FREQ?=200
+DEBUG?=false
+USE_WINOGRAD?=false
+WINOGRAD?=0
+DEBUG_STR?=
+
+ifeq (${DEBUG},true)
+	DEBUG_STR=_debug
+endif
+ifeq (${USE_WINOGRAD},true)
+	WINOGRAD=1
+endif
+
+BUILD_PARAMS:=TILE_HEIGHT=${TILE_HEIGHT} TILE_WIDTH=${TILE_WIDTH} TILE_DEPTH=${TILE_DEPTH} PAR_WIDTH=${PAR_WIDTH} PAR_DEPTH=${PAR_DEPTH} FREQ=${FREQ} KERNEL_SIZE=${KERNEL_SIZE} DEBUG=${DEBUG} USE_WINOGRAD=${USE_WINOGRAD}
+BUILD_NAME_OPTION:=_th${TILE_HEIGHT}_tw${TILE_WIDTH}_tc${TILE_DEPTH}_pw${PAR_WIDTH}_pc${PAR_DEPTH}_wg${WINOGRAD}_${FREQ}MHz${DEBUG_STR}
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

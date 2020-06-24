@@ -1,0 +1,18 @@
+#!/bin/sh
+
+MAXCOMPILERSIM=maxcompilersim
+MAXELEROSDIR_SIM=${MAXCOMPILERDIR}/lib/maxeleros-sim
+MAXOS_SIM=${MAXELEROSDIR_SIM}/lib/libmaxeleros.so
+USER=${USER}
+DEVICENUM=MAIA
+NUMDEVICES=1
+
+# restart the simulation system
+${MAXCOMPILERSIM} -n ${USER}a -c${DEVICENUM} -d${NUMDEVICES} restart
+# run the simulation
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;use_simulation=${USER}a" \
+  LD_PRELOAD=${MAXOS_SIM} \
+  ./"$@"
+# stop simulation
+${MAXCOMPILERSIM} -n ${USER}a -c${DEVICENUM} stop
+

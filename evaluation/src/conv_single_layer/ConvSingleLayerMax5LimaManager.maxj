@@ -1,29 +1,34 @@
 package conv_single_layer;
 
-import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
+import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
+import com.custom_computing_ic.maxdeep.manager.Max5LMemManager;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
-import com.custom_computing_ic.maxdeep.manager.CustomLMemManager;
 import com.custom_computing_ic.maxdeep.manager.conv_single_layer.ConvSingleLayerEngineParameters;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationGoal;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
+import com.maxeler.platform.max5.manager.Max5LimaManager;
+import com.maxeler.platform.max5.manager.BuildConfig;
+import com.maxeler.platform.max5.manager.BuildConfig.Effort;
+import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
+import com.custom_computing_ic.maxdeep.manager.CustomLMemManager;
 
 public
-class ConvSingleLayerManager extends CustomLMemManager {
+class ConvSingleLayerMax5LimaManager extends Max5LMemManager implements
+    ManagerInterface {
  public
-  ConvSingleLayerManager(ConvSingleLayerEngineParameters params,
-                         ConvLayerParameters cp) {
+  ConvSingleLayerMax5LimaManager(ConvSingleLayerEngineParameters params,
+                                 ConvLayerParameters cp) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
-    config.setAllowNonMultipleTransitions(true);
-    config.setDefaultStreamClockFrequency(params.getFreq());
+    this.setAllowNonMultipleTransitions(true);
+    this.setDefaultStreamClockFrequency(params.getFreq());
 
     ConvLayerManagerUtils.createKernelBlocks(
         this, cp, params.getNumCoeffFifoSplits(), params.getUseDRAM());
@@ -74,7 +79,8 @@ class ConvSingleLayerManager extends CustomLMemManager {
             .winogradWeightsOffline(params.getWinogradWeightsOffline())
             .build();
 
-    ConvSingleLayerManager mgr = new ConvSingleLayerManager(params, cp);
+    ConvSingleLayerMax5LimaManager mgr =
+        new ConvSingleLayerMax5LimaManager(params, cp);
     mgr.createSLiCinterface(mgr.interfaceDefault(cp, params));
     // iface should be accessible from the parent class
     mgr.createSLiCinterface(ManagerUtils.dramRead(mgr, mgr.iface));
@@ -82,9 +88,7 @@ class ConvSingleLayerManager extends CustomLMemManager {
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
-    buildConfig.setMPPRCostTableSearchRange(1, 16);
     buildConfig.setOptimizationGoal(OptimizationGoal.SPEED);
-    buildConfig.setMPPRParallelism(4);
 
     mgr.build();
   }

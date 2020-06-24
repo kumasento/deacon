@@ -22,14 +22,14 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/
+MAXCOMPILER_BUILD_DIR:=$(HOME)/Desktop/MaxCompiler-Builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=${PROJ}
+PRJ=ShiftMultCompare
 MANAGER=$(PRJ)Manager
-APPPKG=${PKG}
+APPPKG=shift_mult_compare
 DEVICE=Maia
 
 BUILD_PARAMS:=

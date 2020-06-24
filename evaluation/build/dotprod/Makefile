@@ -22,7 +22,7 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=$(NAS_HOME)/maxcompiler_builds
+MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
 WHEREISROOT=../../..
 SRCROOT=$(WHEREISROOT)/evaluation/src
 
@@ -30,13 +30,9 @@ DEVICE?=Maia
 
 # Assuming Kernel and Manager class names follow the pattern below:
 PRJ=DotProd
+MANAGER=$(PRJ)Max5LimaManager
 APPPKG=dotprod
-
-ifeq ($(DEVICE),Lima)
-	MANAGER=$(PRJ)Max5Manager
-else
-	MANAGER=$(PRJ)Manager
-endif
+DEVICE=Lima
 
 BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) vecSize=$(VEC_SIZE)
 BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_n$(VEC_SIZE)

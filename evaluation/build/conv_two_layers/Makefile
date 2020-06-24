@@ -22,7 +22,7 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR?=$(HOME)/Desktop/MaxCompiler-Builds
+# MAXCOMPILER_BUILD_DIR?=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
@@ -30,7 +30,8 @@ SRCROOT=../../src
 PRJ=ConvTwoLayers
 MANAGER=$(PRJ)Manager
 APPPKG=conv_two_layers
-DEVICE=Maia
+DEVICE=Lima
+
 
 BIT_WIDTH?=16
 H?=32

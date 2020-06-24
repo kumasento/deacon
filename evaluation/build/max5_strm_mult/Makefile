@@ -22,15 +22,15 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/
+MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
 WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=${PROJ}
+PRJ=Max5StrmMult
 MANAGER=$(PRJ)Manager
-APPPKG=${PKG}
-DEVICE=Maia
+APPPKG=max5_strm_mult
+DEVICE=Lima
 
 BUILD_PARAMS:=
 BUILD_NAME_OPTION:=

@@ -22,14 +22,14 @@
 
 # ---- Project settings ----
 
-MAXCOMPILER_BUILD_DIR:=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/
+MAXCOMPILER_BUILD_DIR:=$(MAXCOMPILER_BUILD_DIR)
 WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=${PROJ}
+PRJ=ResidualNetwork
 MANAGER=$(PRJ)Manager
-APPPKG=${PKG}
+APPPKG=resnet
 DEVICE=Maia
 
 BUILD_PARAMS:=
