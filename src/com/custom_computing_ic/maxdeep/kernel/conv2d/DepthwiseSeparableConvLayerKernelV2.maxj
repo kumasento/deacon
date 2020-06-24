@@ -18,18 +18,25 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
-public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
+public
+class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
 
-  public Map<String, BaseStream> streams;
+ public
+  Map<String, BaseStream> streams;
 
-  public static final String IFMAP = "ifmap";
-  public static final String OFMAP = "ofmap";
-  public static final String COEFF = "coeff";
+ public
+  static final String IFMAP = "ifmap";
+ public
+  static final String OFMAP = "ofmap";
+ public
+  static final String COEFF = "coeff";
 
-  private final DFEVector<DFEVar> coeff;
-  private DFEVar f, c, h, w, oh, ow;
+ private
+  final DFEVector<DFEVar> coeff;
+ private
+  DFEVar f, c, h, w, oh, ow;
 
-  public DepthwiseSeparableConvLayerKernelV2(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
+ public DepthwiseSeparableConvLayerKernelV2(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
     super(owner, cp, T);
 
     DFEVar ifmapEn = dfeBool().newInstance(owner);
@@ -37,7 +44,8 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     DFEVar ofmapEn = dfeBool().newInstance(owner);
 
     streams = new HashMap<String, BaseStream>();
-    streams[COEFF] = new BaseStream(COEFF, cp.PC * Math.max(cp.K * cp.K, cp.PF), T, coeffEn);
+    streams[COEFF] =
+        new BaseStream(COEFF, cp.PC * Math.max(cp.K * cp.K, cp.PF), T, coeffEn);
     streams[IFMAP] = new BaseStream(IFMAP, cp.PC * cp.PK, T, ifmapEn);
     streams[OFMAP] = new BaseStream(OFMAP, cp.PF * cp.PK, T, ofmapEn, false);
 
@@ -55,7 +63,8 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     coeffEn.connect(h.eq(0) & w.eq(0));
     ofmapEn.connect(f > 0 & c.eq(cp.C / cp.PC - 1) & getObufWriteEn());
     if (cp.dbg)
-      debug.simPrintf("Enable: ifmap %d coeff %d ofmap %d\n", ifmapEn, coeffEn, ofmapEn);
+      debug.simPrintf("Enable: ifmap %d coeff %d ofmap %d\n", ifmapEn, coeffEn,
+                      ofmapEn);
 
     // list of multipliers
     int numMuls = cp.PC * cp.PK * Math.max(cp.PF, cp.K * cp.K);
@@ -80,8 +89,8 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     }
 
     // create ibuf
-    ConvLayerIfmapBuffer ibuf =
-        new ConvLayerIfmapBuffer(getOwner(), cp.createPointwiseParameters(), T, true, cp.name);
+    ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(
+        getOwner(), cp.createPointwiseParameters(), T, true, cp.name);
     DFEVector<DFEVar> ibufOut =
         ibuf.port(depthOfmap, getIbufAddr(ibuf.getAddrT()), getIbufWriteEn());
     DFEVector<DFEVar> ibufOutForked = fork(ibufOut, cp.PF);
@@ -89,10 +98,11 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
       debug.simPrintf("ibufOut = %KObj%\n", ibufOut);
     }
     // create obuf and connect output
-    ConvLayerOfmapBuffer obuf =
-        new ConvLayerOfmapBuffer(getOwner(), cp.createPointwiseParameters(), T, cp.name);
+    ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(
+        getOwner(), cp.createPointwiseParameters(), T, cp.name + "_ofmap");
     obuf.setReset(getObufReset());
-    ofmap.connect(obuf.port(pointOfmap, getObufAddr(obuf.getAddrT()), getObufWriteEn()));
+    ofmap.connect(
+        obuf.port(pointOfmap, getObufAddr(obuf.getAddrT()), getObufWriteEn()));
 
     // at last, deal with input
     ConvLayerLineBuffer lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
@@ -106,26 +116,28 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     connectMulsCoeff(mulsWgt, coeff);
   }
 
-  public void setIO(Kernel owner) {
-    for (BaseStream stream : streams.values())
-      stream.setIO(owner);
+ public
+  void setIO(Kernel owner) {
+    for (BaseStream stream : streams.values()) stream.setIO(owner);
   }
 
-  private List<DFEVector<DFEVar>> splitMulsVec(DFEVector<DFEVar> muls) {
+ private
+  List<DFEVector<DFEVar>> splitMulsVec(DFEVector<DFEVar> muls) {
     List<DFEVector<DFEVar>> splits = new ArrayList<DFEVector<DFEVar>>();
 
     // for adder tree
-    DFEVectorType<DFEVar> aT = new DFEVectorType<DFEVar>(T, cp.PC * cp.PK * cp.K * cp.K);
+    DFEVectorType<DFEVar> aT =
+        new DFEVectorType<DFEVar>(T, cp.PC * cp.PK * cp.K * cp.K);
     DFEVector<DFEVar> a = aT.newInstance(getOwner());
-    for (int i = 0; i < a.getSize(); i++)
-      a[i].connect(muls[i]);
+    for (int i = 0; i < a.getSize(); i++) a[i].connect(muls[i]);
 
     // for pointwise convolution
     DFEVectorType<DFEVar> bT = new DFEVectorType<DFEVar>(T, cp.PK * cp.PF);
     DFEVector<DFEVar> b = bT.newInstance(getOwner());
     for (int k = 0; k < cp.PF; k++) {
       for (int j = 0; j < cp.PK; j++) {
-        DFEVector<DFEVar> tmp = (new DFEVectorType<DFEVar>(T, cp.PC)).newInstance(getOwner());
+        DFEVector<DFEVar> tmp =
+            (new DFEVectorType<DFEVar>(T, cp.PC)).newInstance(getOwner());
 
         for (int i = 0; i < cp.PC; i++)
           tmp[i].connect(muls[i * cp.PK * cp.PF + j * cp.PF + k]);
@@ -140,12 +152,14 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     return splits;
   }
 
-  private DFEVector<DFEVar> reduceByAdderTree(DFEVector<DFEVar> inp) {
+ private
+  DFEVector<DFEVar> reduceByAdderTree(DFEVector<DFEVar> inp) {
     DFEVector<DFEVar> result =
         (new DFEVectorType<DFEVar>(T, cp.PC * cp.PK)).newInstance(getOwner());
 
     for (int i = 0; i < cp.PC * cp.PK; i++) {
-      DFEVector<DFEVar> tmp = (new DFEVectorType<DFEVar>(T, cp.K * cp.K)).newInstance(getOwner());
+      DFEVector<DFEVar> tmp =
+          (new DFEVectorType<DFEVar>(T, cp.K * cp.K)).newInstance(getOwner());
       for (int j = 0; j < cp.K * cp.K; j++)
         tmp[j].connect(inp[i * cp.K * cp.K + j]);
 
@@ -155,7 +169,8 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     return result;
   }
 
-  private void createCounters() {
+ private
+  void createCounters() {
     DFEType countT = dfeInt(32);
 
     CounterChain chain = getOwner().control.count.makeCounterChain();
@@ -173,13 +188,14 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     ow = ((rw < cp.K - 1) ? ZERO : (rw + 1 - cp.K) / cp.PK);
     ow = ow.cast(countT);
 
-    if (cp.dbg)
-      debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
+    if (cp.dbg) debug.simPrintf("f = %d c = %d h = %d w = %d\n", f, c, h, w);
   }
 
-  private DFEVector<DFEVar> fork(DFEVector<DFEVar> inp, int numCopies) {
+ private
+  DFEVector<DFEVar> fork(DFEVector<DFEVar> inp, int numCopies) {
     DFEVector<DFEVar> result =
-        (new DFEVectorType<DFEVar>(T, numCopies * inp.getSize())).newInstance(getOwner());
+        (new DFEVectorType<DFEVar>(T, numCopies * inp.getSize()))
+            .newInstance(getOwner());
 
     for (int i = 0; i < numCopies; i++)
       for (int j = 0; j < inp.getSize(); j++)
@@ -188,7 +204,8 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     return result;
   }
 
-  private DFEVar getIbufAddr(DFEType addrT) {
+ private
+  DFEVar getIbufAddr(DFEType addrT) {
     DFEVar addr = c * cp.OH * cp.OW / cp.PK;
     addr += oh * cp.OW / cp.PK;
     addr += ow;
@@ -196,34 +213,40 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     return addr.cast(addrT);
   }
 
-  private DFEVar getIbufWriteEn() {
+ private
+  DFEVar getIbufWriteEn() {
     // only in the depthwise convolution step we need write ibuf
     return f.eq(0);
   }
 
-  private DFEVar getObufReset() {
+ private
+  DFEVar getObufReset() {
     // TODO: support different sequence
     return c.eq(0);
   }
 
-  private DFEVar getObufAddr(DFEType addrT) {
+ private
+  DFEVar getObufAddr(DFEType addrT) {
     return (oh * cp.OW / cp.PK + ow).cast(addrT);
   }
 
-  private DFEVar getObufWriteEn() {
-    return (h >= cp.K - 1) & (w * cp.PK >= cp.K - 1);
-  }
+ private
+  DFEVar getObufWriteEn() { return (h >= cp.K - 1) & (w * cp.PK >= cp.K - 1); }
 
-  private DFEVector<DFEVar> forkLbufOut(DFEVector<DFEVar> lbufOut) {
+ private
+  DFEVector<DFEVar> forkLbufOut(DFEVector<DFEVar> lbufOut) {
     DFEVector<DFEVar> result =
-        (new DFEVectorType<DFEVar>(T, cp.PC * cp.PK * cp.K * cp.K)).newInstance(getOwner());
+        (new DFEVectorType<DFEVar>(T, cp.PC * cp.PK * cp.K * cp.K))
+            .newInstance(getOwner());
 
     for (int i = 0; i < cp.PC; i++) {
       for (int j = 0; j < cp.PK; j++) {
         for (int x = 0; x < cp.K; x++) {
           for (int y = 0; y < cp.K; y++) {
-            int dstIdx = i * cp.PK * cp.K * cp.K + j * cp.K * cp.K + x * cp.K + y;
-            int srcIdx = i * cp.K * (cp.K + cp.PK - 1) + x * (cp.K + cp.PK - 1) + (j + y);
+            int dstIdx =
+                i * cp.PK * cp.K * cp.K + j * cp.K * cp.K + x * cp.K + y;
+            int srcIdx = i * cp.K * (cp.K + cp.PK - 1) +
+                         x * (cp.K + cp.PK - 1) + (j + y);
             result[dstIdx].connect(lbufOut[srcIdx]);
           }
         }
@@ -233,18 +256,20 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
     return result;
   }
 
-  private void connectMulsInput(DFEVector<DFEVar> mulsInp, DFEVector<DFEVar> lbufOut,
-      DFEVector<DFEVar> ibufOut) {
+ private
+  void connectMulsInput(DFEVector<DFEVar> mulsInp, DFEVector<DFEVar> lbufOut,
+                        DFEVector<DFEVar> ibufOut) {
 
     int minIdx = cp.PC * cp.PK * Math.min(cp.K * cp.K, cp.PF);
     int maxIdx = cp.PC * cp.PK * Math.max(cp.K * cp.K, cp.PF);
 
     for (int i = 0; i < minIdx; i++) {
-      // When f equals 0 (select index should be 1), select the line buffer output.
+      // When f equals 0 (select index should be 1), select the line buffer
+      // output.
       DFEVar muxOut = getOwner().control.mux(f.eq(0), ibufOut[i], lbufOut[i]);
       // if (cp.dbg) {
-      // debug.simPrintf("muxOut = %KObj% lbuf = %KObj% ibuf = %KObj%\n", muxOut, lbufOut[i],
-      // ibufOut[i]);
+      // debug.simPrintf("muxOut = %KObj% lbuf = %KObj% ibuf = %KObj%\n",
+      // muxOut, lbufOut[i], ibufOut[i]);
       // }
       mulsInp[i].connect(muxOut);
     }
@@ -255,13 +280,13 @@ public class DepthwiseSeparableConvLayerKernelV2 extends ConvLayerKernel {
         mulsInp[i].connect(lbufOut[i]);
   }
 
-  private void connectMulsCoeff(DFEVector<DFEVar> mulsWgt, DFEVector<DFEVar> coeff) {
+ private
+  void connectMulsCoeff(DFEVector<DFEVar> mulsWgt, DFEVector<DFEVar> coeff) {
 
     int N = Math.max(cp.K * cp.K, cp.PF);
     for (int i = 0; i < cp.PK; i++)
       for (int j = 0; j < cp.PC; j++)
         for (int k = 0; k < N; k++)
           mulsWgt[j * cp.PK * N + i * N + k].connect(coeff[j * N + k]);
-
   }
 }

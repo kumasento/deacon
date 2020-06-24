@@ -29,7 +29,7 @@ SRCROOT=../../src
 PRJ=DepthwiseSeparableConvLayer
 MANAGER=$(PRJ)Manager
 APPPKG=depthwise_separable_conv
-DEVICE=Maia
+DEVICE=Lima
 
 BW?=16
 P_F?=1
