@@ -1,5 +1,7 @@
 # MaxDeep: A Deep Learning Library for MaxCompiler
 
+[![Build and Test](https://github.com/kumasento/maxdeep/actions/workflows/buildAndTest.yml/badge.svg)](https://github.com/kumasento/maxdeep/actions/workflows/buildAndTest.yml)
+
 MaxDeep is a DL library. It has building blocks for constructing DNN with [MaxCompiler](https://www.maxeler.com/products/software/maxcompiler/). MaxCompiler enforces a data-flow paradigm for hardware description (using its internal Java-based HDL [MaxJ](https://www.doc.ic.ac.uk/~georgig/OpenSPL2014/)), on which there is no publicly DL library yet.
 
 With MaxDeep, you can leverage better powerful FPGA accelerators in Maxeler platforms within the DL application domain.
