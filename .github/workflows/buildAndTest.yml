@@ -29,5 +29,6 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake ..
+          cmake .. -DWITH_MAXCOMPILER=OFF
+          make
           
