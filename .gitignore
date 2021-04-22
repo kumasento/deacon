@@ -35,8 +35,9 @@ MaxDeep/build/*
 *.bin
 
 # eclipse
-.settings/
+# We don't check-in updates to .classpath and .project. They are frozen.
 .classpath
+.project
 
 # Python
 venv
@@ -50,3 +51,6 @@ venv
 # include all the Makefiles
 /evaluataion/build/
 !/evaluataion/build/**/Makefile
+
+# Gradle
+.gradle

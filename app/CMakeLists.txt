@@ -1,1 +1,1 @@
-add_subdirectory(dot-product)
+add_subdirectory(dot_product)
