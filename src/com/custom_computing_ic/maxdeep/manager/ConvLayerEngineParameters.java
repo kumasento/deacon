@@ -50,6 +50,9 @@ public class ConvLayerEngineParameters extends EngineParameters {
   private static final String DEBUG_NAME = "DEBUG";
   private static final boolean DEBUG = false;
 
+  private static final String COEFF_ON_CHIP_NAME = "COEFF_ON_CHIP";
+  private static final boolean COEFF_ON_CHIP = false;
+
   public ConvLayerEngineParameters(String[] args) {
     super(args);
   }
@@ -80,6 +83,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
     declareParam(NUM_COEFF_FIFO_SPLITS_NAME, DataType.INT, NUM_COEFF_FIFO_SPLITS);
 
     declareParam(DEBUG_NAME, DataType.BOOL, DEBUG);
+    declareParam(COEFF_ON_CHIP_NAME, DataType.BOOL, COEFF_ON_CHIP);
   }
 
   public int getBitWidth() {
@@ -158,6 +162,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
     return getParam(DEBUG_NAME);
   }
 
+  public boolean getCoeffOnChip() {
+    return getParam(COEFF_ON_CHIP_NAME);
+  }
+
   @Override
   protected void validate() {
     if (getBitWidth() <= 0)
@@ -187,8 +195,8 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   @Override
   public String getBuildName() {
-    return String.format("%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d_%s", getMaxFileName(),
+    return String.format("%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d_%s-COEFF_%s", getMaxFileName(),
         getDFEModel(), getTarget(), getBitWidth(), getH(), getW(), getC(), getF(), getK(), getPF(),
-        getPC(), getPK(), getSeq(), (getUseDRAM() ? "DRAM" : "PCIe"));
+        getPC(), getPK(), getSeq(), (getUseDRAM() ? "DRAM" : "PCIe"), (getCoeffOnChip() ? "FMEM" : "LMEM"));
   }
 }

@@ -45,8 +45,9 @@ MAXDEEPTEST?=$(WHEREISROOT)/test
 RUNTIME?=$(WHEREISROOT)/runtime
 
 # ---- Source files ----
-MAXDEEPFILES=$(shell find $(MAXDEEP)/ -type f -name '*.maxj')
-ENGINEFILES=$(wildcard $(SRCROOT)/$(APPPKG)/*.maxj $(SRCROOT)/$(APPPKG)/**/*.maxj $(MAXDEEPFILES))
+MAXDEEPFILES=$(shell find $(MAXDEEP)/ -type f -name '*.maxj') $(shell find $(MAXDEEP)/ -type f -name '*.java')
+ENGINEFILES=$(wildcard $(SRCROOT)/$(APPPKG)/*.maxj $(SRCROOT)/$(APPPKG)/**/*.maxj)
+ENGINEFILES+= $(wildcard $(SRCROOT)/$(APPPKG)/*.java $(SRCROOT)/$(APPPKG)/**/*.java)  $(MAXDEEPFILES)
 CPUFILES=$(wildcard $(SRCROOT)/*.c $(SRCROOT)/$(APPPKG)/*.cpp $(RUNTIME)/include/maxdeep/*.h)
 # TESTENGINEFILES=$(wildcard ../test/maxdeep/*.maxj) $(ENGINEFILES)
 
