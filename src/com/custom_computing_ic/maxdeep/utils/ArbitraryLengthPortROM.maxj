@@ -62,7 +62,7 @@ public class ArbitraryLengthPortROM extends KernelComponent {
         new DFEVectorType<DFEVar>(scalarT, currentNumElems);
       romVecTList.add(vecT);
       Memory<DFEVector<DFEVar>> mem =
-        new Memory<DFEVector<DFEVar>>(getOwner(), depth, vecT);
+        new Memory<DFEVector<DFEVar>>(getOwner(), depth, vecT, null);
       romList.add(mem);
     }
   }

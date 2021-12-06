@@ -49,7 +49,7 @@ public class Conv2DFactorizedModuleCache extends KernelComponent {
         params.getIfmapNumParaChnl());
     
     Memory<DFEVector<DFEVar>> mem = new Memory<DFEVector<DFEVar>>(getOwner(),
-        memSize, vectorT);
+        memSize, vectorT, null);
    
     addr = getAddr();
     dataIn = vectorT.newInstance(owner);
