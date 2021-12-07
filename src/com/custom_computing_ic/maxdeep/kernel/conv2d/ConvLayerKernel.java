@@ -12,7 +12,10 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 
@@ -22,70 +25,107 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
  * @author Ruizhe Zhao
  *
  */
-public
-class ConvLayerKernel extends BaseConvLayerKernel {
- public
-  final int H, W, PH, PW;
- protected
-  final String prefix;
+public class ConvLayerKernel extends BaseConvLayerKernel {
+  public final int H, W, PH, PW;
+  protected final String prefix;
 
   /* counters */
- protected
-  DFEVar h;
- protected
-  DFEVar w;
- protected
-  DFEVar c;
- protected
-  DFEVar f;
- protected
-  DFEVar oh, ow;
+  protected DFEVar h;
+  protected DFEVar w;
+  protected DFEVar c;
+  protected DFEVar f;
+  protected DFEVar oh, ow;
 
- protected
-  ConvLayerIfmapBuffer ibuf;
- protected
-  ConvLayerLineBuffer lbuf;
- protected
-  ConvLayerOfmapBuffer obuf;
+  protected ConvLayerIfmapBuffer ibuf;
+  protected ConvLayerLineBuffer lbuf;
+  protected ConvLayerOfmapBuffer obuf;
 
- private
-  final DFEVector<DFEVar> coeff;
+  private final DFEVector<DFEVar> coeff;
 
- public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams, DFEType T) {
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams, DFEType T) {
     this(owner, convParams, T, convParams.name);
   }
 
- public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, String prefix) {
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, String prefix) {
     super(owner, cp, T);
+
+    owner.getManager().logMsg("coeffOnChip = %b\n", cp.coeffOnChip);
 
     this.prefix = prefix;
 
-    if (coeffList.size() != 1)
-      throw new IllegalArgumentException(
-          String.format("There should be only one coefficient vector" +
-                            " of standard convolutional layer kernel, got %d",
-                        coeffList.size()));
-    this.coeff = coeffList.get(0);
-
     this.H = cp.useWinograd
-                 ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                 : cp.H;
+        ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+        : cp.H;
     this.W = cp.useWinograd
-                 ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                 : cp.W;
+        ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+        : cp.W;
     this.PH = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : 1;
     this.PW = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : cp.PK;
 
     initCounters();
+
+    if (!cp.coeffOnChip) {
+      if (coeffList.size() != 1)
+        throw new IllegalArgumentException(
+            String.format("There should be only one coefficient vector" +
+                " of standard convolutional layer kernel, got %d",
+                coeffList.size()));
+      this.coeff = coeffList.get(0);
+    } else {
+      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(T);
+
+      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(T))));
+      this.coeff = readCoeffFMemList(addr, coeffFMemList, T);
+    }
+
     initConvLayer();
   }
 
- public
-  void initConvLayer() {
+  public int getCoeffFMemSize(DFEType T) {
+    return ((int) Math.ceil((double) cp.C / cp.PC))
+        * ((int) Math.ceil((double) cp.F / cp.PF));
+
+  }
+
+  public List<Memory<DFEVar>> buildCoeffFMemList(DFEType T) {
+    List<Memory<DFEVar>> coeffFMemList = new ArrayList<Memory<DFEVar>>();
+
+    for (int pf = 0; pf < cp.PF; ++pf)
+      for (int pc = 0; pc < cp.PC; ++pc)
+        for (int k = 0; k < cp.K * cp.K; ++k) {
+          Memory<DFEVar> memory = mem.alloc(T, getCoeffFMemSize(T));
+          String name = String.format("%s_coeff_f%d_c%d_k%d", cp.name, pf, pc, k);
+          memory.mapToCPU(name);
+
+          getOwner().getManager().logMsg("Created new memory for coeff: %s", name);
+
+          coeffFMemList.add(memory);
+        }
+
+    return coeffFMemList;
+  }
+
+  public DFEVector<DFEVar> readCoeffFMemList(DFEVar addr, List<Memory<DFEVar>> coeffFMemList, DFEType T) {
+    int vecSize = coeffFMemList.size();
+    if (vecSize < 1)
+      throw new IllegalArgumentException(String.format("coeffFMemList should have at least one element, got: %d.",
+          vecSize));
+
+    DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(T, vecSize);
+    DFEVector<DFEVar> vec = vecT.newInstance(this.getOwner());
+
+    for (int i = 0; i < vecSize; ++i) {
+      DFEVar value = coeffFMemList.get(i).read(addr);
+      vec.get(i).connect(value);
+    }
+
+    return vec;
+  }
+
+  public void initConvLayer() {
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T);
-    DFEVector<DFEVar> ifmapBufVec =
-        ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
+    DFEVector<DFEVar> ifmapBufVec = ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
@@ -110,20 +150,18 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     obuf.setReset(getOfmapReset());
 
     if (cp.BW == 1) {
-      DFEVector<DFEVar> rawOfmap =
-          obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+      DFEVector<DFEVar> rawOfmap = obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
       for (int i = 0; i < rawOfmap.getSize(); i++)
         this.ofmap[i].connect((rawOfmap[i] > 1).cast(T));
 
     } else {
       // TODO: change 1 here to be a real threshold value
       this.ofmap.connect(obuf.port(conv2dOfmap, getOfmapBufferAddr(),
-                                   getOfmapBufferWriteEn()));
+          getOfmapBufferWriteEn()));
     }
   }
 
- public
-  DFEVar getOfmapReset() {
+  public DFEVar getOfmapReset() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return constant.var(0).cast(dfeBool());
@@ -135,7 +173,8 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
-  @Override public DFEVar getOfmapEn() {
+  @Override
+  public DFEVar getOfmapEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return c.eq(cp.C / cp.PC - 1) & getOfmapBufferWriteEn();
@@ -147,20 +186,19 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
- public
-  DFEVar getOfmapBufferWriteEn() {
+  public DFEVar getOfmapBufferWriteEn() {
     if (cp.useWinograd) {
       return (h >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1) &
-             (w >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1);
+          (w >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1);
     } else
       return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
   }
 
- public
-  DFEVar getOfmapBufferAddr() { return getOfmapBufferAddr(obuf.getAddrT()); }
+  public DFEVar getOfmapBufferAddr() {
+    return getOfmapBufferAddr(obuf.getAddrT());
+  }
 
- public
-  DFEVar getOfmapBufferAddr(DFEType addrT) {
+  public DFEVar getOfmapBufferAddr(DFEType addrT) {
     if (cp.useWinograd) {
       int M = WinogradTransform.M;
       switch (cp.seq) {
@@ -192,11 +230,18 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
-  @Override public DFEVar getIfmapEn() {
+  private DFEVar getCoeffFMemAddr(DFEType addrT) {
+    // TODO: support cases that the weights are in channel major.
+    return (f * ((int) Math.ceil((double) cp.C / cp.PC)) + c).cast(addrT);
+  }
+
+  @Override
+  public DFEVar getIfmapEn() {
     return getIfmapBufferWriteEn();
   }
 
-  @Override public List<DFEVar> getCoeffEnList() {
+  @Override
+  public List<DFEVar> getCoeffEnList() {
     List<DFEVar> coeffEnList = new ArrayList<DFEVar>();
     DFEVar coeffEn;
 
@@ -216,23 +261,25 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     return coeffEnList;
   }
 
-  @Override public int getIfmapVecSize() {
+  @Override
+  public int getIfmapVecSize() {
     return cp.getIfmapVecSize();
   }
 
-  @Override public List<Integer> getCoeffVecSizeList() {
+  @Override
+  public List<Integer> getCoeffVecSizeList() {
     List<Integer> coeffVecSizeList = new ArrayList<Integer>();
     coeffVecSizeList.add(cp.getCoeffVecSize());
 
     return coeffVecSizeList;
   }
 
-  @Override public int getOfmapVecSize() {
+  @Override
+  public int getOfmapVecSize() {
     return cp.getOfmapVecSize();
   }
 
- private
-  void initCounters() {
+  private void initCounters() {
     DFEType countT = dfeInt(32);
     CounterChain chain = getOwner().control.count.makeCounterChain();
 
@@ -289,7 +336,7 @@ class ConvLayerKernel extends BaseConvLayerKernel {
       ow = (w <= lbufHeight - 1) ? constant.var(0) : w - lbufHeight + 1;
     } else {
       ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0)
-                                    : (w * cp.PK + 1 - cp.K) / cp.PK;
+          : (w * cp.PK + 1 - cp.K) / cp.PK;
     }
     ow = ow.cast(countT);
 
@@ -298,8 +345,7 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
- protected
-  DFEVar getIfmapBufferAddr() {
+  protected DFEVar getIfmapBufferAddr() {
     DFEVar addr;
     switch (cp.seq) {
       case CHANNEL_MAJOR:
@@ -320,8 +366,7 @@ class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
- protected
-  DFEVar getIfmapBufferWriteEn() {
+  protected DFEVar getIfmapBufferWriteEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         return f.eq(0);

@@ -154,6 +154,7 @@ all: runsim build
 # ---- Simulation ----
 
 $(SIMMAXDIR)/$(PRJ).max: $(ENGINEFILES)
+	@ echo "BUILD_NAME_OPTION = $(BUILD_NAME_OPTION)"
 	@ echo "Running maxjc ..."
 	@ $(MAXJC) $(JFLAGS) $(ENGINEFILES)
 	MAXAPPJCP=.:$(MAXDEEP):$(MAXDEEPTEST):$(MAX4PLATFORM_JAR):$(MAX5PLATFORM_JAR) \

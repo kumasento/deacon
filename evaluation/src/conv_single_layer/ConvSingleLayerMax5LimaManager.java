@@ -71,6 +71,7 @@ public class ConvSingleLayerMax5LimaManager extends Max5LMemManager implements
         .dbg(params.getDebug())
         .useWinograd(params.getUseWinograd())
         .winogradWeightsOffline(params.getWinogradWeightsOffline())
+        .coeffOnChip(params.getCoeffOnChip())
         .build();
 
     ConvSingleLayerMax5LimaManager mgr = new ConvSingleLayerMax5LimaManager(params, cp);

@@ -4,14 +4,14 @@
  * Layers - implemented software version of various CNN layers.
  */
 
+#include <glog/logging.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <limits>
-
-#include <glog/logging.h>
 
 #ifndef NO_DFE
 #include "MaxSLiCInterface.h"
@@ -575,6 +575,7 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
                   max_engine_t *engine, bool use_fixed_point = false,
                   int num_frac_bits = 0) {
   // get constants from the max_file
+  // TODO: make sure to replace the conv with their name.
   auto DFE_TH = max_get_constant_uint64t(max_file, "conv_H");
   auto DFE_TW = max_get_constant_uint64t(max_file, "conv_W");
   auto DFE_TOH = GetConvLayerOutputDim(DFE_TH, K, 0, S);
@@ -587,6 +588,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto DFE_K = max_get_constant_uint64t(max_file, "conv_K");
   auto DFE_WINO_COEFF_OFFLINE =
       max_get_constant_uint64t(max_file, "WINO_COEFF_OFFLINE") == 1;
+  auto DFE_COEFF_ON_CHIP =
+      max_get_constant_uint64t(max_file, "conv_COEFF_ON_CHIP");
 #ifdef USE_WINO
   constexpr bool DFE_USE_WINO = true;
   auto DFE_WINO_M = max_get_constant_uint64t(max_file, "WINO_M");
@@ -646,6 +649,30 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   // create actions for DFE call
   typename DfeT::dfe_run_actions_t actions;
   actions.param_batch_size = N_T;
+
+  if (DFE_COEFF_ON_CHIP) {
+    uint64_t cols = (uint64_t)std::ceil(static_cast<double>(C) / DFE_PC);
+    uint64_t fmem_size =
+        cols * (uint64_t)std::ceil(static_cast<double>(F) / DFE_PF);
+
+    double **ptr = (double **)(&(actions.param_batch_size) + 1);
+    for (uint64_t pf = 0; pf < DFE_PF; ++pf)
+      for (uint64_t pc = 0; pc < DFE_PC; ++pc)
+        for (uint64_t kx = 0; kx < DFE_K; ++kx)
+          for (uint64_t ky = 0; ky < DFE_K; ++ky) {
+            double *arr = (double *)malloc(sizeof(double) * fmem_size);
+            for (int f = 0; f < F; f += DFE_PF)
+              for (int c = 0; c < C; c += DFE_PC)
+                arr[f / DFE_PF * cols + c / DFE_PC] =
+                    FixedToFloat<T>(weights[(f + pf) * (C * K * K) +
+                                            (c + pc) * (K * K) + (kx * K) + ky],
+                                    num_frac_bits);
+
+            *ptr = (double *)arr;
+            ++ptr;
+          }
+  }
+
 #ifndef USE_DRAM
   actions.instream_ifmap = tiled_input.data();
   actions.instream_coeff_0 = tiled_weights.data();
@@ -666,7 +693,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
                                (DFE_USE_WINO ? DFE_POH * DFE_POW : DFE_PK));
 
   base_addr = WriteDRAM<T, DfeT>(tiled_input, base_addr, engine);
-  base_addr = WriteDRAM<T, DfeT>(tiled_weights, base_addr, engine);
+  if (!DFE_COEFF_ON_CHIP)
+    base_addr = WriteDRAM<T, DfeT>(tiled_weights, base_addr, engine);
 #endif
 
   LOG(INFO) << "Running " << N_T << " convolution on DFE ...";

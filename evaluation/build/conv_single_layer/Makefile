@@ -81,7 +81,7 @@ ifeq ($(DEBUG), true)
 DEBUG_SUFFIX:=_DEBUG
 endif
 
-ifneq ($(COEFF_ON_CHIP), true)
+ifeq ($(COEFF_ON_CHIP), true)
 COEFF_ON_CHIP_SUFFIX:=_COC
 endif
 

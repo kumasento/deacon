@@ -53,21 +53,19 @@ public class ConvLayerWrapKernel extends Kernel {
       // optimization.popRoundingMode();
       // debug.popEnableNumericExceptions();
 
-      DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
-      List<DFEVector<DFEVar>> coeffList = createCoeffList(conv, numCoeffFifoSplits);
-
-      conv.setInputs(ifmap, coeffList);
+      conv.setIfmap(io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn()));
+      if (!cp.coeffOnChip)
+        conv.setCoeffList(createCoeffListInput(conv, numCoeffFifoSplits));
       io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(conv.getOfmap());
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-      DepthwiseSeparableConvLayerKernel conv =
-          new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T);
+      DepthwiseSeparableConvLayerKernel conv = new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T);
 
       DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
-      DFEVector<DFEVar> depthwiseCoeff =
-          io.input(DEPTHWISE_COEFF_NAME, conv.getDepthwiseCoeffVecT(), conv.getDepthwiseCoeffEn());
-      DFEVector<DFEVar> pointwiseCoeff =
-          io.input(POINTWISE_COEFF_NAME, conv.getPointwiseCoeffVecT(), conv.getPointwiseCoeffEn());
+      DFEVector<DFEVar> depthwiseCoeff = io.input(DEPTHWISE_COEFF_NAME, conv.getDepthwiseCoeffVecT(),
+          conv.getDepthwiseCoeffEn());
+      DFEVector<DFEVar> pointwiseCoeff = io.input(POINTWISE_COEFF_NAME, conv.getPointwiseCoeffVecT(),
+          conv.getPointwiseCoeffEn());
 
       conv.setInputs(ifmap, depthwiseCoeff, pointwiseCoeff);
       io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(conv.getOfmap());
@@ -80,15 +78,14 @@ public class ConvLayerWrapKernel extends Kernel {
       // create the kernel for depthwise separable convolution V2
       getManager().logMsg("Initializing kernel for Depthwise Separable Convolution V2");
 
-      DepthwiseSeparableConvLayerKernelV2 conv =
-          new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, T);
+      DepthwiseSeparableConvLayerKernelV2 conv = new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, T);
       conv.setIO(getKernel());
     } else {
       throw new IllegalArgumentException("type has no been supported");
     }
   }
 
-  public List<DFEVector<DFEVar>> createCoeffList(BaseConvLayerKernel conv, int numCoeffFifoSplits) {
+  public List<DFEVector<DFEVar>> createCoeffListInput(BaseConvLayerKernel conv, int numCoeffFifoSplits) {
     List<DFEVector<DFEVar>> coeffList = new ArrayList<DFEVector<DFEVar>>();
     List<DFEVectorType<DFEVar>> coeffVecTList = conv.getCoeffVecTList();
     List<Integer> coeffVecSizeList = conv.getCoeffVecSizeList();
@@ -119,9 +116,8 @@ public class ConvLayerWrapKernel extends Kernel {
         DFEVector<DFEVar> coeff = coeffVecT.newInstance(this);
         for (int i = 0; i < numCoeffFifoSplits; i++) {
           DFEVector<DFEVar> tmp = io.input(COEFF_NAME + "_" + i, CT, coeffEn);
-          for (int j = 0; j < splitVecSize; j++) {
-            coeff[i * splitVecSize + j].connect(tmp[j]);
-          }
+          for (int j = 0; j < splitVecSize; j++)
+            coeff.get(i * splitVecSize + j).connect(tmp.get(j));
         }
         coeffList.add(coeff);
       } else {

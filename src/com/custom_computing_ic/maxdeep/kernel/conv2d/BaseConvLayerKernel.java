@@ -21,7 +21,6 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   protected DFEVectorType<DFEVar> ifmapVecT, ofmapVecT;
   protected List<DFEVectorType<DFEVar>> coeffVecTList;
 
-
   public BaseConvLayerKernel(KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T,
       boolean useIfmapBuffer) {
     super(owner);
@@ -42,8 +41,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     coeffVecTList = new ArrayList<DFEVectorType<DFEVar>>();
     coeffList = new ArrayList<DFEVector<DFEVar>>();
     for (int i = 0; i < coeffVecSizeList.size(); i++) {
-      coeffVecTList.add(new DFEVectorType<DFEVar>(T, coeffVecSizeList[i]));
-      coeffList.add(coeffVecTList[i].newInstance(owner));
+      coeffVecTList.add(new DFEVectorType<DFEVar>(T, coeffVecSizeList.get(i)));
+      coeffList.add(coeffVecTList.get(i).newInstance(owner));
     }
   }
 
@@ -63,7 +62,6 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   public BaseConvLayerKernel(KernelBase<?> owner, FusedConvLayerParameters fcp, DFEType T) {
     this(owner, fcp.cps, T);
   }
-
 
   public DFEVector<DFEVar> getIfmap() {
     return ifmap;
@@ -101,8 +99,11 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return ofmap;
   }
 
-  public void setInputs(DFEVector<DFEVar> ifmap, List<DFEVector<DFEVar>> coeffList) {
+  public void setIfmap(DFEVector<DFEVar> ifmap) {
     this.ifmap.connect(ifmap);
+  }
+
+  public void setCoeffList(List<DFEVector<DFEVar>> coeffList) {
 
     if (this.coeffList.size() != coeffList.size())
       throw new IllegalArgumentException(String.format(
@@ -110,6 +111,11 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
           this.coeffList.size(), coeffList.size()));
 
     for (int i = 0; i < coeffList.size(); i++)
-      this.coeffList[i].connect(coeffList[i]);
+      this.coeffList.get(i).connect(coeffList.get(i));
+  }
+
+  public void setInputs(DFEVector<DFEVar> ifmap, List<DFEVector<DFEVar>> coeffList) {
+    this.setIfmap(ifmap);
+    this.setCoeffList(coeffList);
   }
 }

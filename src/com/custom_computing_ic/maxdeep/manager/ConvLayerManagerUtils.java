@@ -26,70 +26,59 @@ import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
  *
  * @author rz3515
  */
-public
-class ConvLayerManagerUtils {
- public
-  static final String IFMAP_NAME = "ifmap";
- public
-  static final String OFMAP_NAME = "ofmap";
- public
-  static final String COEFF_PREFIX = "coeff";
- public
-  static final String DEPTHWISE_COEFF_PREFIX = "depthwise_coeff";
- public
-  static final String POINTWISE_COEFF_PREFIX = "pointwise_coeff";
+public class ConvLayerManagerUtils {
+  public static final String IFMAP_NAME = "ifmap";
+  public static final String OFMAP_NAME = "ofmap";
+  public static final String COEFF_PREFIX = "coeff";
+  public static final String DEPTHWISE_COEFF_PREFIX = "depthwise_coeff";
+  public static final String POINTWISE_COEFF_PREFIX = "pointwise_coeff";
 
- public
-  static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
-                                                int sizeInBytes,
-                                                InterfaceParam burstFactor,
-                                                EngineInterface ei) {
+  public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
+      int sizeInBytes,
+      InterfaceParam burstFactor,
+      EngineInterface ei) {
     return getBurstAlignedNumElems(numElems, sizeInBytes, burstFactor, ei, 384);
   }
 
- public
-  static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
-                                                int sizeInBytes,
-                                                InterfaceParam burstFactor,
-                                                EngineInterface ei,
-                                                int rawBurstSize) {
+  public static InterfaceParam getBurstAlignedNumElems(InterfaceParam numElems,
+      int sizeInBytes,
+      InterfaceParam burstFactor,
+      EngineInterface ei,
+      int rawBurstSize) {
     InterfaceParam burstSize = ei.addConstant(rawBurstSize) * burstFactor;
     burstSize = burstSize.cast(CPUTypes.INT64);
 
     InterfaceParam totalSizeInBytes = numElems * sizeInBytes;
 
-    InterfaceParam burstAlignedTotalSizeInBytes =
-        InterfaceMath
-            .ceil(totalSizeInBytes.cast(CPUTypes.DOUBLE) /
-                  burstSize.cast(CPUTypes.DOUBLE))
-            .cast(CPUTypes.INT64) *
+    InterfaceParam burstAlignedTotalSizeInBytes = InterfaceMath
+        .ceil(totalSizeInBytes.cast(CPUTypes.DOUBLE) /
+            burstSize.cast(CPUTypes.DOUBLE))
+        .cast(CPUTypes.INT64) *
         burstSize;
 
-    InterfaceParam burstAlignedNumElems =
-        burstAlignedTotalSizeInBytes / sizeInBytes;
+    InterfaceParam burstAlignedNumElems = burstAlignedTotalSizeInBytes / sizeInBytes;
 
     return burstAlignedNumElems;
   }
 
-  @SuppressWarnings("unused") private static boolean
-      hasBNN(List<ConvLayerParameters> cps) {
+  @SuppressWarnings("unused")
+  private static boolean hasBNN(List<ConvLayerParameters> cps) {
     for (ConvLayerParameters cp : cps)
-      if (cp.BW == 1) return true;
+      if (cp.BW == 1)
+        return true;
     return false;
   }
 
- public
-  static Map<String, KernelBlock> createKernelBlocks(ManagerInterface mgr,
-                                                     ConvLayerParameters cp,
-                                                     boolean useDRAM) {
+  public static Map<String, KernelBlock> createKernelBlocks(ManagerInterface mgr,
+      ConvLayerParameters cp,
+      boolean useDRAM) {
     return createKernelBlocks(mgr, cp, 1, useDRAM);
   }
 
- public
-  static Map<String, KernelBlock> createKernelBlocks(ManagerInterface mgr,
-                                                     ConvLayerParameters cp,
-                                                     int numCoeffFifoSplits,
-                                                     boolean useDRAM) {
+  public static Map<String, KernelBlock> createKernelBlocks(ManagerInterface mgr,
+      ConvLayerParameters cp,
+      int numCoeffFifoSplits,
+      boolean useDRAM) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
@@ -105,8 +94,7 @@ class ConvLayerManagerUtils {
    * @param cps
    * @return
    */
- public
-  static Map<String, KernelBlock> createKernelBlocks(
+  public static Map<String, KernelBlock> createKernelBlocks(
       ManagerInterface mgr, List<ConvLayerParameters> cps,
       int numCoeffFifoSplits, boolean useDRAM) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
@@ -152,60 +140,60 @@ class ConvLayerManagerUtils {
       } else {
         knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
             .connect(knls.get(cps.get(i - 1).name)
-                         .getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+                .getOutput(ConvLayerWrapKernel.OFMAP_NAME));
       }
 
       // connect coeff
-      if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
-        if (useDRAM) {
-          KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
-          if (numCoeffFifoSplits == 1) {
-            mgr.logMsg("There is only one coefficient stream in the design");
-            knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
-                .connect(coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
-          } else {
-            for (int s = 0; s < numCoeffFifoSplits; s++) {
-              String coeffStrName = ConvLayerWrapKernel.COEFF_NAME + "_" + s;
-              String unpadStrName = UnpaddingKernel.OUT_NAME + "_" + s;
+      if (!cp.coeffOnChip) {
+        if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
+          if (useDRAM) {
+            KernelBlock coeffUnpadKnl = padKnls.get(getCoeffUnpadKernelName(cp));
+            if (numCoeffFifoSplits == 1) {
+              mgr.logMsg("There is only one coefficient stream in the design");
+              knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
+                  .connect(coeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+            } else {
+              for (int s = 0; s < numCoeffFifoSplits; s++) {
+                String coeffStrName = ConvLayerWrapKernel.COEFF_NAME + "_" + s;
+                String unpadStrName = UnpaddingKernel.OUT_NAME + "_" + s;
 
-              mgr.logMsg(String.format(
-                  "Connecting coefficient split FIFO from %s to %s.",
-                  unpadStrName, coeffStrName));
+                mgr.logMsg(String.format(
+                    "Connecting coefficient split FIFO from %s to %s.",
+                    unpadStrName, coeffStrName));
 
-              knl.getInput(coeffStrName)
-                  .connect(coeffUnpadKnl.getOutput(unpadStrName));
+                knl.getInput(coeffStrName)
+                    .connect(coeffUnpadKnl.getOutput(unpadStrName));
+              }
             }
+          } else {
+            knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
+                .connect(mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
           }
+
+        } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+          if (useDRAM) {
+            KernelBlock depthCoeffUnpadKnl = padKnls.get(getDepthwiseCoeffUnpadKernelName(cp));
+            knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
+                .connect(depthCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+
+            KernelBlock pointCoeffUnpadKnl = padKnls.get(getPointwiseCoeffUnpadKernelName(cp));
+            knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME)
+                .connect(pointCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
+
+          } else {
+            knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
+                .connect(mgr.addStreamFromCPU(DEPTHWISE_COEFF_PREFIX + "_" + i));
+            knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME)
+                .connect(mgr.addStreamFromCPU(POINTWISE_COEFF_PREFIX + "_" + i));
+          }
+
         } else {
-          knl.getInput(ConvLayerWrapKernel.COEFF_NAME)
-              .connect(mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
+          throw new IllegalArgumentException("type is not supported");
         }
 
-      } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-        if (useDRAM) {
-          KernelBlock depthCoeffUnpadKnl =
-              padKnls.get(getDepthwiseCoeffUnpadKernelName(cp));
-          knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
-              .connect(depthCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
-
-          KernelBlock pointCoeffUnpadKnl =
-              padKnls.get(getPointwiseCoeffUnpadKernelName(cp));
-          knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME)
-              .connect(pointCoeffUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
-
-        } else {
-          knl.getInput(ConvLayerWrapKernel.DEPTHWISE_COEFF_NAME)
-              .connect(mgr.addStreamFromCPU(DEPTHWISE_COEFF_PREFIX + "_" + i));
-          knl.getInput(ConvLayerWrapKernel.POINTWISE_COEFF_NAME)
-              .connect(mgr.addStreamFromCPU(POINTWISE_COEFF_PREFIX + "_" + i));
-        }
-
-      } else {
-        throw new IllegalArgumentException("type is not supported");
+        // knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
+        // mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
       }
-
-      // knl.getInput(ConvLayerWrapKernel.COEFF_NAME).connect(
-      // mgr.addStreamFromCPU(COEFF_PREFIX + "_" + i));
     }
 
     if (useDRAM) {
@@ -225,8 +213,7 @@ class ConvLayerManagerUtils {
    * @param mgr
    * @param cps
    */
- public
-  static Map<String, KernelBlock> createPaddingKernels(
+  public static Map<String, KernelBlock> createPaddingKernels(
       ManagerInterface mgr, List<ConvLayerParameters> cps,
       int numCoeffFifoSplits) {
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
@@ -235,6 +222,8 @@ class ConvLayerManagerUtils {
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
 
+      if (cp.coeffOnChip)
+        continue;
       if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
         String knlName = getCoeffUnpadKernelName(cp);
         KernelBlock knl = mgr.addKernel(new UnpaddingKernel(
@@ -254,7 +243,7 @@ class ConvLayerManagerUtils {
 
         KernelBlock pointwiseKnl = mgr.addKernel(
             new UnpaddingKernel(mgr.makeKernelParameters(pointwiseKnlName),
-                                cp.getPointwiseCoeffStreamBitWidth(), cp.dbg));
+                cp.getPointwiseCoeffStreamBitWidth(), cp.dbg));
         knls.put(pointwiseKnlName, pointwiseKnl);
 
       } else {
@@ -268,13 +257,13 @@ class ConvLayerManagerUtils {
     String ifmapUnpadKnlName = getIfmapUnpadKernelName();
     KernelBlock ifmapUnpadKnl = mgr.addKernel(
         new UnpaddingKernel(mgr.makeKernelParameters(ifmapUnpadKnlName),
-                            cpf.getIfmapStreamBitWidth(), cpf.dbg));
+            cpf.getIfmapStreamBitWidth(), cpf.dbg));
     knls.put(ifmapUnpadKnlName, ifmapUnpadKnl);
 
     String ofmapPadKnlName = getOfmapPadKernelName();
     KernelBlock ofmapPadKnl = mgr.addKernel(
         new PaddingKernel(mgr.makeKernelParameters(ofmapPadKnlName),
-                          cpl.getOfmapStreamBitWidth(), cpl.dbg));
+            cpl.getOfmapStreamBitWidth(), cpl.dbg));
     knls.put(ofmapPadKnlName, ofmapPadKnl);
 
     // setup connections to the LMem
@@ -287,6 +276,9 @@ class ConvLayerManagerUtils {
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
 
+      if (cp.coeffOnChip)
+        continue;
+
       if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
         LMemCommandGroup groupCoeff = iface.addCommandGroup(
             "GROUP_COEFF" + "_" + i,
@@ -295,8 +287,8 @@ class ConvLayerManagerUtils {
         KernelBlock coeffUnpadKnl = knls.get(coeffUnpadKnlName);
 
         ManagerUtils.addLinearStreamFromLMemToKernel(groupCoeff, coeffUnpadKnl,
-                                                     COEFF_PREFIX + "_" + i,
-                                                     UnpaddingKernel.INP_NAME);
+            COEFF_PREFIX + "_" + i,
+            UnpaddingKernel.INP_NAME);
 
       } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
         LMemCommandGroup groupDepthCoeff = iface.addCommandGroup(
@@ -331,46 +323,42 @@ class ConvLayerManagerUtils {
     return knls;
   }
 
- public
-  static String getDepthwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
+  public static String getDepthwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
     return String.format("%s_depthwise_coeff_unpad", getKernelName(cp));
   }
 
- public
-  static String getPointwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
+  public static String getPointwiseCoeffUnpadKernelName(ConvLayerParameters cp) {
     return String.format("%s_pointwise_coeff_unpad", getKernelName(cp));
   }
 
- public
-  static String getCoeffUnpadKernelName(ConvLayerParameters cp) {
+  public static String getCoeffUnpadKernelName(ConvLayerParameters cp) {
     return String.format("%s_coeff_unpad", getKernelName(cp));
   }
 
- public
-  static String getIfmapUnpadKernelName() { return "ifmap_unpad"; }
+  public static String getIfmapUnpadKernelName() {
+    return "ifmap_unpad";
+  }
 
- public
-  static String getOfmapPadKernelName() { return "ofmap_pad"; }
+  public static String getOfmapPadKernelName() {
+    return "ofmap_pad";
+  }
 
- public
-  static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
-                           InterfaceParam batchSize, boolean useDRAM) {
+  public static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
+      InterfaceParam batchSize, boolean useDRAM) {
     setupStreams(ei, cp, batchSize, useDRAM, null);
   }
 
- public
-  static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
-                           InterfaceParam batchSize, boolean useDRAM,
-                           ManagerInterface mgr) {
+  public static void setupStreams(EngineInterface ei, ConvLayerParameters cp,
+      InterfaceParam batchSize, boolean useDRAM,
+      ManagerInterface mgr) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
     setupStreams(ei, cps, batchSize, useDRAM, mgr);
   }
 
- public
-  static void setupStreams(EngineInterface ei, List<ConvLayerParameters> cps,
-                           InterfaceParam batchSize, boolean useDRAM) {
+  public static void setupStreams(EngineInterface ei, List<ConvLayerParameters> cps,
+      InterfaceParam batchSize, boolean useDRAM) {
     setupStreams(ei, cps, batchSize, useDRAM, null);
   }
 
@@ -381,12 +369,12 @@ class ConvLayerManagerUtils {
    * @param cps
    * @param batchSize
    */
- public
-  static void setupStreams(EngineInterface ei, List<ConvLayerParameters> cps,
-                           InterfaceParam batchSize, boolean useDRAM,
-                           ManagerInterface mgr) {
+  public static void setupStreams(EngineInterface ei, List<ConvLayerParameters> cps,
+      InterfaceParam batchSize, boolean useDRAM,
+      ManagerInterface mgr) {
     if (useDRAM) {
-      if (mgr != null) mgr.logMsg("DRAM will be used to build the design");
+      if (mgr != null)
+        mgr.logMsg("DRAM will be used to build the design");
 
       // base address of the memory space, will be updated once
       // a new block is allocated.
@@ -410,24 +398,23 @@ class ConvLayerManagerUtils {
           mgr.logMsg("coeff vec size: %d", cp.getCoeffVecSize());
           mgr.logMsg("coeff stream bit width: %d", cp.getCoeffStreamBitWidth());
           mgr.logMsg("coeff stream chunk size: %d",
-                     cp.getCoeffStreamChunkSize());
+              cp.getCoeffStreamChunkSize());
         }
 
-        if (cp.type == Type.STANDARD ||
-            cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
-          baseAddr = setupCoeffStream(ei, cp, i, batchSize, baseAddr);
-        } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-          baseAddr =
-              setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr, true);
-          baseAddr =
-              setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr, false);
-        } else {
-          throw new IllegalArgumentException("type is not supported");
+        if (!cp.coeffOnChip) {
+          if (cp.type == Type.STANDARD ||
+              cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
+            baseAddr = setupCoeffStream(ei, cp, i, batchSize, baseAddr);
+          } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+            baseAddr = setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr, true);
+            baseAddr = setupCoeffStream(ei, cps.get(i), i, batchSize, baseAddr, false);
+          } else {
+            throw new IllegalArgumentException("type is not supported");
+          }
         }
       }
 
-      baseAddr =
-          setupOfmapStream(ei, cps.get(cps.size() - 1), batchSize, baseAddr);
+      baseAddr = setupOfmapStream(ei, cps.get(cps.size() - 1), batchSize, baseAddr);
 
     } else {
       for (int i = 0; i < cps.size(); i++) {
@@ -446,12 +433,12 @@ class ConvLayerManagerUtils {
 
         if (cp.type == Type.STANDARD || cp.type == Type.DEPTHWISE_SEPARABLE_V2)
           ei.setStream(COEFF_PREFIX + "_" + i, cp.getCPUTypes(),
-                       cp.getCoeffStreamSize() * batchSize);
+              cp.getCoeffStreamSize() * batchSize);
         else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
           ei.setStream(DEPTHWISE_COEFF_PREFIX + "_" + i, cp.getCPUTypes(),
-                       cp.getDepthwiseCoeffStreamSize() * batchSize);
+              cp.getDepthwiseCoeffStreamSize() * batchSize);
           ei.setStream(POINTWISE_COEFF_PREFIX + "_" + i, cp.getCPUTypes(),
-                       cp.getPointwiseCoeffStreamSize() * batchSize);
+              cp.getPointwiseCoeffStreamSize() * batchSize);
         } else {
           throw new IllegalArgumentException("type is not supported");
         }
@@ -463,44 +450,39 @@ class ConvLayerManagerUtils {
       System.out.printf("ifmap size = %d\n", cpf.getIfmapStreamSize());
 
       ei.setStream(IFMAP_NAME, cpf.getCPUTypes(),
-                   cpf.getIfmapStreamSize() * batchSize);
+          cpf.getIfmapStreamSize() * batchSize);
       ei.setStream(OFMAP_NAME, cpl.getCPUTypes(),
-                   cpl.getOfmapStreamSize() * batchSize);
+          cpl.getOfmapStreamSize() * batchSize);
     }
   }
 
- public
-  static InterfaceParam setupIfmapStream(EngineInterface ei,
-                                         ConvLayerParameters cp,
-                                         InterfaceParam batchSize) {
+  public static InterfaceParam setupIfmapStream(EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize) {
     String ifmapUnpadKnlName = getIfmapUnpadKernelName();
     String LMemStreamName = IFMAP_NAME;
 
     return setupIfmapStream(ei, cp, batchSize, LMemStreamName,
-                            ifmapUnpadKnlName);
+        ifmapUnpadKnlName);
   }
 
- public
-  static InterfaceParam setupIfmapStream(EngineInterface ei,
-                                         ConvLayerParameters cp,
-                                         InterfaceParam batchSize,
-                                         String LMemStreamName,
-                                         String ifmapUnpadKnlName) {
-    InterfaceParam ifmapNumElems =
-        ei.addConstant(cp.getIfmapStreamNumElems()).cast(CPUTypes.INT64);
+  public static InterfaceParam setupIfmapStream(EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize,
+      String LMemStreamName,
+      String ifmapUnpadKnlName) {
+    InterfaceParam ifmapNumElems = ei.addConstant(cp.getIfmapStreamNumElems()).cast(CPUTypes.INT64);
     ifmapNumElems *= batchSize;
 
-    InterfaceParam burstFactor =
-        ei.addConstant(cp.getIfmapVecSize()).cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(cp.getIfmapVecSize()).cast(CPUTypes.INT64);
     InterfaceParam burstAlignedIfmapNumElems = getBurstAlignedNumElems(
         ifmapNumElems, cp.getCPUTypes().sizeInBytes(), burstFactor, ei);
-    InterfaceParam burstAlignedIfmapSize =
-        burstAlignedIfmapNumElems * cp.getCPUTypes().sizeInBytes();
+    InterfaceParam burstAlignedIfmapSize = burstAlignedIfmapNumElems * cp.getCPUTypes().sizeInBytes();
 
     ei.setScalar(ifmapUnpadKnlName, UnpaddingKernel.SCALAR_NUM_INP,
-                 ifmapNumElems / burstFactor);
+        ifmapNumElems / burstFactor);
     ei.setScalar(ifmapUnpadKnlName, UnpaddingKernel.SCALAR_TOTAL_CYCLES,
-                 burstAlignedIfmapNumElems / burstFactor);
+        burstAlignedIfmapNumElems / burstFactor);
 
     ei.setTicks(ifmapUnpadKnlName, burstAlignedIfmapNumElems / burstFactor);
 
@@ -510,68 +492,59 @@ class ConvLayerManagerUtils {
     return burstAlignedIfmapSize;
   }
 
- public
-  static InterfaceParam setupCoeffStream(EngineInterface ei,
-                                         ConvLayerParameters cp, int index,
-                                         InterfaceParam batchSize,
-                                         InterfaceParam baseAddr,
-                                         boolean isDepthwise) {
+  public static InterfaceParam setupCoeffStream(EngineInterface ei,
+      ConvLayerParameters cp, int index,
+      InterfaceParam batchSize,
+      InterfaceParam baseAddr,
+      boolean isDepthwise) {
     String knlName = (isDepthwise) ? getDepthwiseCoeffUnpadKernelName(cp)
-                                   : getPointwiseCoeffUnpadKernelName(cp);
+        : getPointwiseCoeffUnpadKernelName(cp);
     long numElemsValue = (isDepthwise) ? cp.getDepthwiseCoeffStreamNumElems()
-                                       : cp.getPointwiseCoeffStreamNumElems();
-    InterfaceParam numElems =
-        ei.addConstant(numElemsValue).cast(CPUTypes.INT64);
+        : cp.getPointwiseCoeffStreamNumElems();
+    InterfaceParam numElems = ei.addConstant(numElemsValue).cast(CPUTypes.INT64);
     numElems *= batchSize;
 
     int burstFactorSize = (isDepthwise) ? (cp.PC) : (cp.PC * cp.PF);
-    InterfaceParam burstFactor =
-        ei.addConstant(burstFactorSize).cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(burstFactorSize).cast(CPUTypes.INT64);
 
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(
         numElems, cp.getCPUTypes().sizeInBytes(), burstFactor, ei);
-    InterfaceParam burstAlignedSize =
-        burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
+    InterfaceParam burstAlignedSize = burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
 
     ei.setScalar(knlName, UnpaddingKernel.SCALAR_NUM_INP,
-                 numElems / burstFactor);
+        numElems / burstFactor);
     ei.setScalar(knlName, UnpaddingKernel.SCALAR_TOTAL_CYCLES,
-                 burstAlignedNumElems / burstFactor);
+        burstAlignedNumElems / burstFactor);
 
     InterfaceParam numTicks = (isDepthwise)
-                                  ? (burstAlignedNumElems / burstFactor)
-                                  : (burstAlignedNumElems / burstFactor);
+        ? (burstAlignedNumElems / burstFactor)
+        : (burstAlignedNumElems / burstFactor);
     ei.setTicks(knlName, numTicks);
 
-    String prefix =
-        (isDepthwise) ? DEPTHWISE_COEFF_PREFIX : POINTWISE_COEFF_PREFIX;
+    String prefix = (isDepthwise) ? DEPTHWISE_COEFF_PREFIX : POINTWISE_COEFF_PREFIX;
     ei.setLMemLinear(prefix + "_" + index, baseAddr, burstAlignedSize);
 
     return baseAddr + burstAlignedSize;
   }
 
- public
-  static InterfaceParam setupCoeffStream(EngineInterface ei,
-                                         ConvLayerParameters cp, int index,
-                                         InterfaceParam batchSize,
-                                         InterfaceParam baseAddr) {
+  public static InterfaceParam setupCoeffStream(EngineInterface ei,
+      ConvLayerParameters cp, int index,
+      InterfaceParam batchSize,
+      InterfaceParam baseAddr) {
     String knlName = getCoeffUnpadKernelName(cp);
-    InterfaceParam numElems =
-        ei.addConstant(cp.getCoeffStreamNumElems()).cast(CPUTypes.INT64);
+    InterfaceParam numElems = ei.addConstant(cp.getCoeffStreamNumElems()).cast(CPUTypes.INT64);
     numElems *= batchSize;
 
-    InterfaceParam burstFactor =
-        ei.addConstant(cp.getCoeffVecSize() / cp.getCoeffStreamChunkSize())
-            .cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(cp.getCoeffVecSize() / cp.getCoeffStreamChunkSize())
+        .cast(CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(
         numElems, cp.getCPUTypes().sizeInBytes(), burstFactor, ei);
-    InterfaceParam burstAlignedSize =
-        burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
+    InterfaceParam burstAlignedSize = burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
 
     ei.setScalar(knlName, UnpaddingKernel.SCALAR_NUM_INP,
-                 numElems / burstFactor);
+        numElems / burstFactor);
     ei.setScalar(knlName, UnpaddingKernel.SCALAR_TOTAL_CYCLES,
-                 burstAlignedNumElems / burstFactor);
+        burstAlignedNumElems / burstFactor);
 
     ei.setTicks(knlName, burstAlignedNumElems / burstFactor);
 
@@ -580,26 +553,22 @@ class ConvLayerManagerUtils {
     return baseAddr + burstAlignedSize;
   }
 
- public
-  static InterfaceParam setupOfmapStream(EngineInterface ei,
-                                         ConvLayerParameters cp,
-                                         InterfaceParam batchSize,
-                                         InterfaceParam baseAddr) {
+  public static InterfaceParam setupOfmapStream(EngineInterface ei,
+      ConvLayerParameters cp,
+      InterfaceParam batchSize,
+      InterfaceParam baseAddr) {
     String knlName = getOfmapPadKernelName();
-    InterfaceParam numElems =
-        ei.addConstant(cp.getOfmapStreamNumElems()).cast(CPUTypes.INT64);
+    InterfaceParam numElems = ei.addConstant(cp.getOfmapStreamNumElems()).cast(CPUTypes.INT64);
     numElems *= batchSize;
 
-    InterfaceParam burstFactor =
-        ei.addConstant(cp.getOfmapVecSize()).cast(CPUTypes.INT64);
+    InterfaceParam burstFactor = ei.addConstant(cp.getOfmapVecSize()).cast(CPUTypes.INT64);
     InterfaceParam burstAlignedNumElems = getBurstAlignedNumElems(
         numElems, cp.getCPUTypes().sizeInBytes(), burstFactor, ei);
-    InterfaceParam burstAlignedSize =
-        burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
+    InterfaceParam burstAlignedSize = burstAlignedNumElems * cp.getCPUTypes().sizeInBytes();
 
     ei.setScalar(knlName, PaddingKernel.SCALAR_NUM_INP, numElems / burstFactor);
     ei.setScalar(knlName, PaddingKernel.SCALAR_TOTAL_CYCLES,
-                 burstAlignedNumElems / burstFactor);
+        burstAlignedNumElems / burstFactor);
 
     ei.setTicks(knlName, burstAlignedNumElems / burstFactor);
 
@@ -608,19 +577,17 @@ class ConvLayerManagerUtils {
     return baseAddr + burstAlignedNumElems;
   }
 
- public
-  static void setupConstants(ManagerInterface mgr, ConvLayerParameters cp,
-                             ConvLayerEngineParameters ep) {
+  public static void setupConstants(ManagerInterface mgr, ConvLayerParameters cp,
+      ConvLayerEngineParameters ep) {
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
     cps.add(cp);
 
     setupConstants(mgr, cps, ep);
   }
 
- public
-  static void setupConstants(ManagerInterface mgr,
-                             List<ConvLayerParameters> cps,
-                             ConvLayerEngineParameters ep) {
+  public static void setupConstants(ManagerInterface mgr,
+      List<ConvLayerParameters> cps,
+      ConvLayerEngineParameters ep) {
     // setup the definition of constants of the currrent hardware build
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
@@ -635,6 +602,7 @@ class ConvLayerManagerUtils {
       mgr.addMaxFileConstant(name + "_BW", cp.BW);
       mgr.addMaxFileConstant(name + "_num_frac_bits", cp.numFracBits);
       mgr.addMaxFileStringConstant(name + "_dtype", cp.dtype);
+      mgr.addMaxFileConstant(name + "_COEFF_ON_CHIP", cp.coeffOnChip ? 1 : 0);
     }
 
     mgr.addMaxFileConstant("USE_DRAM", ep.getUseDRAM() ? 1 : 0);
@@ -642,7 +610,7 @@ class ConvLayerManagerUtils {
     mgr.addMaxFileConstant("WINO_TILE_SIZE", WinogradTransform.TILE_SIZE);
     mgr.addMaxFileConstant("WINO_M", WinogradTransform.M);
     mgr.addMaxFileConstant("WINO_COEFF_OFFLINE",
-                           ep.getWinogradWeightsOffline() ? 1 : 0);
+        ep.getWinogradWeightsOffline() ? 1 : 0);
 
     ConvLayerParameters cp = cps.get(0);
     mgr.addMaxFileConstant("conv_PC", cp.PC);
@@ -650,6 +618,7 @@ class ConvLayerManagerUtils {
     mgr.addMaxFileConstant("conv_PK", cp.PK);
   }
 
- public
-  static String getKernelName(ConvLayerParameters cp) { return cp.name; }
+  public static String getKernelName(ConvLayerParameters cp) {
+    return cp.name;
+  }
 }
