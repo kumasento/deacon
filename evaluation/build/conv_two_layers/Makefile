@@ -42,19 +42,25 @@ K?=3
 P_F?=1
 P_C?=1
 P_K?=1
-SEQ?=0
+SEQ0?=0
+SEQ1?=0
 FREQ?=200
 USE_DRAM?=false
 USE_DRAM_SUFFIX:=PCIe
-ifeq ($(USE_DRAM), true)
+COEFF_ON_CHIP?=false
+COEFF_ON_CHIP_SUFFIX:=
 
+ifeq ($(USE_DRAM), true)
 USE_DRAM_SUFFIX:=DRAM
 EXTRA_CFLAGS:=-DUSE_DRAM
-
 endif
 
-BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ)
-BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)_FREQ_$(FREQ)
+ifeq ($(COEFF_ON_CHIP), true)
+COEFF_ON_CHIP_SUFFIX:=_COC
+endif
+
+BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ0=$(SEQ0) SEQ1=$(SEQ1) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) COEFF_ON_CHIP=$(COEFF_ON_CHIP)
+BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ0)_$(SEQ1)_$(USE_DRAM_SUFFIX)$(COEFF_ON_CHIP_SUFFIX)_FREQ_$(FREQ)
 
 
 # Using known hardware settings

@@ -49,6 +49,7 @@ public class ConvSingleLayerMax5LimaManager extends Max5LMemManager implements
     return ei;
   }
 
+  @SuppressWarnings("deprecation")
   public static void main(String[] args) {
     ConvSingleLayerEngineParameters params = new ConvSingleLayerEngineParameters(args);
 

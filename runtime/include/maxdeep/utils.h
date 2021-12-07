@@ -1,10 +1,13 @@
 /**
  * Utility functions for MaxDeep
  */
+#ifndef MAXDEEP_UTILS_H
+#define MAXDEEP_UTILS_H
 
 #include <glog/logging.h>
 #include <math.h>
 #include <stdlib.h>
+
 #include <fstream>
 #include <iostream>
 #include <type_traits>
@@ -17,6 +20,27 @@
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN "\x1b[36m"
 #define ANSI_COLOR_RESET "\x1b[0m"
+
+int GetConvLayerInputDim(int output_dim, int K, int P, int S) {
+  // sanity checks
+  CHECK_GT(output_dim, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
+
+  return (output_dim - 1) * S + K - 2 * P;
+}
+
+int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
+  // sanity checks
+  CHECK_GT(input_dim, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
+  CHECK_EQ((input_dim - K + 2 * P) % S, 0);
+
+  return (input_dim - K + 2 * P) / S + 1;
+}
 
 template <typename T, int burst_size = 16>
 T* create_array(int num, int* burst_aligned_num = nullptr) {
@@ -336,3 +360,5 @@ void BurstAlign(std::vector<T>& arr, size_t num_bytes_per_burst) {
   // the input vector is resized (side effect)
   arr.resize(burst_aligned_num_elems);
 }
+
+#endif

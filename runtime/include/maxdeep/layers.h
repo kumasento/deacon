@@ -12,16 +12,20 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <type_traits>
 
 #ifndef NO_DFE
 #include "MaxSLiCInterface.h"
 #endif
 
+#include "maxdeep/types.h"
 #include "maxdeep/utils.h"
 
 #define DUMP_ARRAY
 #define WINO_PAD 2
 #define WINO_TILE_SIZE 4
+
+// #define TRACE
 
 template <typename T>
 void depthwise_separable_conv_layer(T *ifmap, T *coeff, T *ofmap, int H, int W,
@@ -63,27 +67,6 @@ void depthwise_separable_conv_layer(T *ifmap, T *coeff, T *ofmap, int H, int W,
       }
     }
   }
-}
-
-int GetConvLayerInputDim(int output_dim, int K, int P, int S) {
-  // sanity checks
-  CHECK_GT(output_dim, 0);
-  CHECK_GT(K, 0);
-  CHECK_GE(P, 0);
-  CHECK_GT(S, 0);
-
-  return (output_dim - 1) * S + K - 2 * P;
-}
-
-int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
-  // sanity checks
-  CHECK_GT(input_dim, 0);
-  CHECK_GT(K, 0);
-  CHECK_GE(P, 0);
-  CHECK_GT(S, 0);
-  CHECK_EQ((input_dim - K + 2 * P) % S, 0);
-
-  return (input_dim - K + 2 * P) / S + 1;
 }
 
 /*! An implementation of convolution layer in software.
@@ -562,6 +545,35 @@ size_t ReadDRAM(std::vector<T> &arr, size_t base_addr, max_engine_t *engine) {
   return base_addr + arr.size() * sizeof(T);
 }
 
+template <typename T>
+double **SplitCoeffAndAssign(double **ptr, T *data,
+                             const ConvLayerParameters &cp) {
+  uint64_t cols = (uint64_t)std::ceil(static_cast<double>(cp.C) / cp.dfe.PC);
+  uint64_t fmem_size =
+      cols * (uint64_t)std::ceil(static_cast<double>(cp.F) / cp.dfe.PF);
+
+  for (uint64_t pf = 0; pf < cp.dfe.PF; ++pf)
+    for (uint64_t pc = 0; pc < cp.dfe.PC; ++pc)
+      for (int kx = 0; kx < cp.K; ++kx)
+        for (int ky = 0; ky < cp.K; ++ky) {
+          double *arr = (double *)malloc(sizeof(double) * fmem_size);
+
+          for (int f = 0; f < cp.F; f += cp.dfe.PF)
+            for (int c = 0; c < cp.C; c += cp.dfe.PC) {
+              T value = data[(f + pf) * (cp.C * cp.K * cp.K) +
+                             (c + pc) * (cp.K * cp.K) + (kx * cp.K) + ky];
+              if (!std::is_same<T, float>::value)
+                value = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
+              arr[f / cp.dfe.PF * cols + c / cp.dfe.PC] = value;
+            }
+
+          *ptr = (double *)arr;
+          ++ptr;
+        }
+
+  return ptr;
+}
+
 /*! Run convolution layer on DFE.
  *
  * We will do tiling within this function.
@@ -615,6 +627,8 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto OH = GetConvLayerOutputDim(H, K, P, S);
   auto OW = GetConvLayerOutputDim(W, K, P, S);
 
+  ConvLayerParameters cp{C, F, K, P, S, DFE_PF, DFE_PC, DFE_PK, num_frac_bits};
+
   // get number of total tiles
   auto N_TOH = GetNumTiles(OH, T_OH);
   auto N_TOW = GetNumTiles(OW, T_OW);
@@ -650,29 +664,9 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   typename DfeT::dfe_run_actions_t actions;
   actions.param_batch_size = N_T;
 
-  if (DFE_COEFF_ON_CHIP) {
-    uint64_t cols = (uint64_t)std::ceil(static_cast<double>(C) / DFE_PC);
-    uint64_t fmem_size =
-        cols * (uint64_t)std::ceil(static_cast<double>(F) / DFE_PF);
-
-    double **ptr = (double **)(&(actions.param_batch_size) + 1);
-    for (uint64_t pf = 0; pf < DFE_PF; ++pf)
-      for (uint64_t pc = 0; pc < DFE_PC; ++pc)
-        for (uint64_t kx = 0; kx < DFE_K; ++kx)
-          for (uint64_t ky = 0; ky < DFE_K; ++ky) {
-            double *arr = (double *)malloc(sizeof(double) * fmem_size);
-            for (int f = 0; f < F; f += DFE_PF)
-              for (int c = 0; c < C; c += DFE_PC)
-                arr[f / DFE_PF * cols + c / DFE_PC] =
-                    FixedToFloat<T>(weights[(f + pf) * (C * K * K) +
-                                            (c + pc) * (K * K) + (kx * K) + ky],
-                                    num_frac_bits);
-
-            *ptr = (double *)arr;
-            ++ptr;
-          }
-  }
-
+  if (DFE_COEFF_ON_CHIP)
+    SplitCoeffAndAssign<T>((double **)(&(actions.param_batch_size) + 1),
+                           weights.data(), cp);
 #ifndef USE_DRAM
   actions.instream_ifmap = tiled_input.data();
   actions.instream_coeff_0 = tiled_weights.data();

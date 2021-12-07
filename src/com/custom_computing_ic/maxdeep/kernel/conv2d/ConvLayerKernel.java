@@ -11,6 +11,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.RoundingMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -78,7 +79,9 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       this.coeff = readCoeffFMemList(addr, coeffFMemList, T);
     }
 
+    // getOwner().optimization.pushRoundingMode(RoundingMode.TRUNCATE);
     initConvLayer();
+    // getOwner().optimization.popRoundingMode();
   }
 
   public int getCoeffFMemSize(DFEType T) {
