@@ -614,11 +614,6 @@ public class ConvLayerManagerUtils {
     mgr.addMaxFileConstant("WINO_M", WinogradTransform.M);
     mgr.addMaxFileConstant("WINO_COEFF_OFFLINE",
         ep.getWinogradWeightsOffline() ? 1 : 0);
-
-    ConvLayerParameters cp = cps.get(0);
-    mgr.addMaxFileConstant("conv_PC", cp.PC);
-    mgr.addMaxFileConstant("conv_PF", cp.PF);
-    mgr.addMaxFileConstant("conv_PK", cp.PK);
   }
 
   public static String getKernelName(ConvLayerParameters cp) {

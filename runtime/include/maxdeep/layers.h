@@ -552,6 +552,8 @@ double **SplitCoeffAndAssign(double **ptr, T *data,
   uint64_t fmem_size =
       cols * (uint64_t)std::ceil(static_cast<double>(cp.F) / cp.dfe.PF);
 
+  bool convert = (!std::is_same<T, float>::value);
+
   for (uint64_t pf = 0; pf < cp.dfe.PF; ++pf)
     for (uint64_t pc = 0; pc < cp.dfe.PC; ++pc)
       for (int kx = 0; kx < cp.K; ++kx)
@@ -562,9 +564,11 @@ double **SplitCoeffAndAssign(double **ptr, T *data,
             for (int c = 0; c < cp.C; c += cp.dfe.PC) {
               T value = data[(f + pf) * (cp.C * cp.K * cp.K) +
                              (c + pc) * (cp.K * cp.K) + (kx * cp.K) + ky];
-              if (!std::is_same<T, float>::value)
-                value = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
-              arr[f / cp.dfe.PF * cols + c / cp.dfe.PC] = value;
+              auto idx = f / cp.dfe.PF * cols + c / cp.dfe.PC;
+              if (!convert)
+                arr[idx] = value;
+              else
+                arr[idx] = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
             }
 
           *ptr = (double *)arr;
@@ -628,6 +632,7 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   auto OW = GetConvLayerOutputDim(W, K, P, S);
 
   ConvLayerParameters cp{C, F, K, P, S, DFE_PF, DFE_PC, DFE_PK, num_frac_bits};
+  cp.dfe = DfeConvLayerParameters::get(max_file, "conv");
 
   // get number of total tiles
   auto N_TOH = GetNumTiles(OH, T_OH);

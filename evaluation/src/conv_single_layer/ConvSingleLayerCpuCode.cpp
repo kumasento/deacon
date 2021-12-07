@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
     // TestTiles<int16_t>(2, 2, 2, 2);
   }
 #else
-  TestTiles<int16_t, true>(1, 1, 2, 2);
+  TestTiles<int16_t, true>(1, 1, 1, 1);
 #endif
 
   max_unload(engine);
