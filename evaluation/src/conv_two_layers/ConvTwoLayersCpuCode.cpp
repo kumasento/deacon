@@ -95,12 +95,12 @@ int main(int argc, char *argv[]) {
   auto input_dfe = FloatToFixed<data_t>(input, cp0.dfe.num_frac_bits);
   auto weights_0_dfe = FloatToFixed<data_t>(weights_0, cp0.dfe.num_frac_bits);
   auto weights_1_dfe = FloatToFixed<data_t>(weights_1, cp1.dfe.num_frac_bits);
-  auto output_0_cpu =
-      std::vector<data_t>(cp0.F * cp0.getOutputHeight() * cp0.getOutputWidth());
-  auto output_1_cpu =
-      std::vector<data_t>(cp1.F * cp1.getOutputHeight() * cp1.getOutputWidth());
-  auto output_dfe =
-      std::vector<data_t>(cp1.F * cp1.getOutputHeight() * cp1.getOutputWidth());
+  auto output_0_cpu = std::vector<data_t>(cp0.F * cp0.getOutputHeight() *
+                                          cp0.getOutputWidth() * batch_size);
+  auto output_1_cpu = std::vector<data_t>(cp1.F * cp1.getOutputHeight() *
+                                          cp1.getOutputWidth() * batch_size);
+  auto output_dfe = std::vector<data_t>(cp1.F * cp1.getOutputHeight() *
+                                        cp1.getOutputWidth() * batch_size);
   auto dummy_bias = std::vector<data_t>();
 
   LOG(INFO) << "Created and converted input and weights\n";
@@ -110,17 +110,19 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << cp0.C << " x " << cp0.H << " x " << cp0.W << " -> " << cp0.F
             << " x " << cp0.getOutputHeight() << " x " << cp0.getOutputWidth()
             << '\n';
-  ConvLayerCpu<data_t>(input_dfe, weights_0_dfe, dummy_bias, output_0_cpu,
-                       cp0.H, cp0.W, cp0.C, cp0.F, cp0.K, cp0.P, cp0.S,
-                       /*use_bias=*/false,
-                       /*use_fixed_point=*/true, cp0.dfe.num_frac_bits);
+  ConvLayerCpuBatched<data_t>(input_dfe, weights_0_dfe, dummy_bias,
+                              output_0_cpu, batch_size, cp0.H, cp0.W, cp0.C,
+                              cp0.F, cp0.K, cp0.P, cp0.S,
+                              /*use_bias=*/false,
+                              /*use_fixed_point=*/true, cp0.dfe.num_frac_bits);
   LOG(INFO) << cp1.C << " x " << cp1.H << " x " << cp1.W << " -> " << cp1.F
             << " x " << cp1.getOutputHeight() << " x " << cp1.getOutputWidth()
             << '\n';
-  ConvLayerCpu<data_t>(output_0_cpu, weights_1_dfe, dummy_bias, output_1_cpu,
-                       cp1.H, cp1.W, cp1.C, cp1.F, cp1.K, cp1.P, cp1.S,
-                       /*use_bias=*/false,
-                       /*use_fixed_point=*/true, cp1.dfe.num_frac_bits);
+  ConvLayerCpuBatched<data_t>(output_0_cpu, weights_1_dfe, dummy_bias,
+                              output_1_cpu, batch_size, cp1.H, cp1.W, cp1.C,
+                              cp1.F, cp1.K, cp1.P, cp1.S,
+                              /*use_bias=*/false,
+                              /*use_fixed_point=*/true, cp1.dfe.num_frac_bits);
   LOG(INFO) << "Done\n";
 
   // data_t *ifmap = (data_t *)malloc(sizeof(data_t) * ifmap_num_elems);

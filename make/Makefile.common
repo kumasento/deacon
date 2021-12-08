@@ -24,6 +24,7 @@ ifndef $(MAXCOMPILER_BUILD_DIR)
 	MAXCOMPILER_BUILD_DIR=/mnt/ccnas2/bdp/rz3515/maxcompiler_builds
 endif
 
+CLI_OPTIONS?=
 
 ifeq ($(DFEModel), MAX5C)
 	# maxJavaRun cannot accept MAX5C as a parameter since it is deprecated.
@@ -175,7 +176,7 @@ $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
 
 runsim: $(PRJBUILDNAME)_sim
 	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
-	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim
+	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(CLI_OPTIONS)
 	make stopsim
 
 stopsim:
@@ -202,7 +203,7 @@ $(DFEMAXDIR)/$(PRJ).max: $(ENGINEFILES)
 	mv $(DFEMAXDIR)/$(PRJ)_backup.max $(DFEMAXDIR)/$(PRJ).max
 	# cp $(DFEMAXDIR)/../scratch/$(PRJ).h $(DFEMAXDIR)/$(PRJ).h
 	# cp $(DFEMAXDIR)/../scratch/$(PRJ).max $(DFEMAXDIR)/$(PRJ).max
-	rm -rf $(DFEMAXDIR)/../scratch
+	# rm -rf $(DFEMAXDIR)/../scratch
 
 $(PRJBUILDNAME)_dfe.o: $(DFEMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@
@@ -216,7 +217,7 @@ $(PRJBUILDNAME)_dfe: $(PRJBUILDNAME)_dfe.o $(PRJBUILDNAME)_dfec.o
 build: $(PRJBUILDNAME)_dfe
 
 run:
-	SLIC_CONF=$(SLIC_CONF) LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe
+	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=$(MAXOS_HW) ./$(PRJBUILDNAME)_dfe $(CLI_OPTIONS)
 
 gdbdfe:
 	DEBUG_FLAGS="-O0 -g" mmke build

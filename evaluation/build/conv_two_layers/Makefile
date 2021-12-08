@@ -62,6 +62,7 @@ endif
 BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ0=$(SEQ0) SEQ1=$(SEQ1) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) COEFF_ON_CHIP=$(COEFF_ON_CHIP)
 BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ0)_$(SEQ1)_$(USE_DRAM_SUFFIX)$(COEFF_ON_CHIP_SUFFIX)_FREQ_$(FREQ)
 
+CLI_OPTIONS:=-n 10
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware
