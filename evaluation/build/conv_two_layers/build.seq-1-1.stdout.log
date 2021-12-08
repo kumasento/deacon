@@ -1,0 +1,174 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=conv_two_layers MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 ConvTwoLayersManager \
+	DFEModel=MAIA maxFileName=ConvTwoLayers target='DFE' enableMPCX=false \
+	bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 SEQ0=1 SEQ1=1 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+]0; maxJavaRun: ConvTwoLayersManager DFEModel=MAIA maxFileName=ConvTwoLayers target=DFE enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 SEQ0=1 SEQ1=1 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : conv_two_layers
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : conv_two_layers.ConvTwoLayersManager
+Class arguments     : DFEModel=MAIA maxFileName=ConvTwoLayers target=DFE enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 SEQ0=1 SEQ1=1 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Wed 13:19: MaxCompiler version: 2021.1
+Wed 13:19: Build "ConvTwoLayers" start time: Wed Dec 08 13:19:31 GMT 2021
+Wed 13:19: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Wed 13:20: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ1_1_DRAM_COC_FREQ_200
+Wed 13:20: Detailed build log available in "_build.log"
+Wed 13:20: 
+Wed 13:20: ENGINE BUILD PARAMETERS
+Wed 13:20: 	              Build name: ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ1_1_DRAM_COC_FREQ_200
+Wed 13:20: 	             maxFileName: ConvTwoLayers                                                                  
+Wed 13:20: 	                  target: DFE                                                                            
+Wed 13:20: 	                DFEModel: MAIA                                                                           
+Wed 13:20: 	              enableMPCX: false                                                                          
+Wed 13:20: 	                bitWidth: 16                                                                             
+Wed 13:20: 	                   DTYPE: fixed                                                                          
+Wed 13:20: 	           NUM_FRAC_BITS: 8                                                                              
+Wed 13:20: 	                      PF: 1                                                                              
+Wed 13:20: 	                      PC: 1                                                                              
+Wed 13:20: 	                      PK: 1                                                                              
+Wed 13:20: 	                       H: 32                                                                             
+Wed 13:20: 	                       W: 32                                                                             
+Wed 13:20: 	                       C: 32                                                                             
+Wed 13:20: 	                       F: 32                                                                             
+Wed 13:20: 	                       K: 3                                                                              
+Wed 13:20: 	                     SEQ: 0                                                                              
+Wed 13:20: 	                    FREQ: 200                                                                            
+Wed 13:20: 	                USE_DRAM: true                                                                           
+Wed 13:20: 	                 USE_BNN: false                                                                          
+Wed 13:20: 	            USE_WINOGRAD: false                                                                          
+Wed 13:20: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                          
+Wed 13:20: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                              
+Wed 13:20: 	                   DEBUG: false                                                                          
+Wed 13:20: 	           COEFF_ON_CHIP: true                                                                           
+Wed 13:20: 	                    SEQ0: 1                                                                              
+Wed 13:20: 	                    SEQ1: 1                                                                              
+Wed 13:21: Generating kernel conv0 ...
+Wed 13:21: Instantiating kernel "conv0"
+Wed 13:21: coeffOnChip = true
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k0
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k1
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k2
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k3
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k4
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k5
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k6
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k7
+Wed 13:21: Created new memory for coeff: conv0_coeff_f0_c0_k8
+Wed 13:21: Ifmap buffer configuration 1156 x 1
+Wed 13:21: loop = false
+Wed 13:21: Building line buffer for "conv0" ...
+Wed 13:21: Line buffer shape 3 x 34, produces 1 number of 3 x 3 tiles per cycle
+Wed 13:21: Line buffer input vector size: 1, output vector size: 9.
+Wed 13:21: Number of separated line buffers: 1
+Wed 13:21: Initialising line buffer kernel with 3 x 34 x 1
+Wed 13:21: Size of line buffer output: 3
+Wed 13:21: Number of line buffer output chunks: 3
+Wed 13:21: Connecting outputs from chunk (#000) ...
+Wed 13:21: Connecting outputs from chunk (#001) ...
+Wed 13:21: Connecting outputs from chunk (#002) ...
+Wed 13:21: Building the CORE arithmetic unit for "conv0" ...
+Wed 13:21: CORE ifmap vector size: 9
+Wed 13:21: CORE coefficient vector size: 9
+Wed 13:21: CORE ofmap vector size: 1
+Wed 13:21: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Wed 13:21: Compiling kernel "conv0"
+Wed 13:21: 
+Wed 13:21: Generating kernel conv1 ...
+Wed 13:21: Instantiating kernel "conv1"
+Wed 13:21: coeffOnChip = true
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k0
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k1
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k2
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k3
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k4
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k5
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k6
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k7
+Wed 13:21: Created new memory for coeff: conv1_coeff_f0_c0_k8
+Wed 13:21: Ifmap buffer configuration 1024 x 1
+Wed 13:21: loop = false
+Wed 13:21: Building line buffer for "conv1" ...
+Wed 13:21: Line buffer shape 3 x 32, produces 1 number of 3 x 3 tiles per cycle
+Wed 13:21: Line buffer input vector size: 1, output vector size: 9.
+Wed 13:21: Number of separated line buffers: 1
+Wed 13:21: Initialising line buffer kernel with 3 x 32 x 1
+Wed 13:21: Size of line buffer output: 3
+Wed 13:21: Number of line buffer output chunks: 3
+Wed 13:21: Connecting outputs from chunk (#000) ...
+Wed 13:21: Connecting outputs from chunk (#001) ...
+Wed 13:21: Connecting outputs from chunk (#002) ...
+Wed 13:21: Building the CORE arithmetic unit for "conv1" ...
+Wed 13:21: CORE ifmap vector size: 9
+Wed 13:21: CORE coefficient vector size: 9
+Wed 13:21: CORE ofmap vector size: 1
+Wed 13:21: [ConvLayerOfmapBuffer] depth = 28800 addr_bits =    15
+Wed 13:21: Compiling kernel "conv1"
+Wed 13:21: 
+Wed 13:21: Generating padding kernels for DRAM access
+Wed 13:21: Instantiating kernel "ifmap_unpad"
+Wed 13:21: Compiling kernel "ifmap_unpad"
+Wed 13:21: 
+Wed 13:21: Instantiating kernel "ofmap_pad"
+Wed 13:21: Compiling kernel "ofmap_pad"
+Wed 13:21: 
+Wed 13:21: Setting up stream connections for conv0
+Wed 13:21: Setting up stream connections for conv1
+Wed 13:21: Generating input files (VHDL, netlists, vendor specific IP cores)
+Wed 15:05: Running back-end  build (15 phases)
+Wed 15:05: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Wed 15:05: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Wed 15:05: Executing Synthesis Strategy VIVADO_DEFAULT
+Wed 15:22: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 15:22: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 15:22: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Wed 15:22: 
+Wed 15:22: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Wed 15:22: For this compile, we estimate this process may take longer than 1 hour.
+Wed 15:22: We recommend running in simulation to verify correctness before building hardware.
+Wed 15:22: 
+Wed 15:22: PRELIMINARY RESOURCE USAGE
+Wed 15:22: FPGA: xcVU9P-FLGB2104-2-E
+Wed 15:22: Logic utilization:      219182 / 3546720 (6.18%)
+Wed 15:22:   LUTs:                  86569 / 1182240 (7.32%)
+Wed 15:22:   Primary FFs:          132613 / 2364480 (5.61%)
+Wed 15:22: DSP blocks:                 27 / 6840    (0.39%)
+Wed 15:22: Block memory (BRAM18):     579 / 4320    (13.40%)
+Wed 15:22: Block memory (URAM):         6 / 960     (0.63%)
+Wed 15:22: 
+Wed 15:22: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Wed 15:22: 
+Wed 15:22: PRELIMINARY POWER REPORT
+Wed 15:22: Total On-Chip Power (W) 9.73 (budget: 91.80) 
+Wed 15:22: Dynamic Power (W)       7.07 
+Wed 15:22: Device Static Power(W)  2.66 
+Wed 15:22: 
+Wed 15:22: (7/15) - Place DFE (VivadoImplementation)
+Wed 15:22: Executing the following 1 Implementation Strategy in 1 thread:
+Wed 15:22:  - VIVADO_DEFAULT

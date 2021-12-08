@@ -167,7 +167,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public DFEVar getOfmapReset() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        return constant.var(0).cast(dfeBool());
+        return c.eq(0);
       case FILTER_MAJOR:
         return c.eq(0);
       default:
