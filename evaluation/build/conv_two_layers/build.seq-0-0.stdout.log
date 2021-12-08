@@ -172,3 +172,45 @@ Wed 15:22:
 Wed 15:22: (7/15) - Place DFE (VivadoImplementation)
 Wed 15:22: Executing the following 1 Implementation Strategy in 1 thread:
 Wed 15:22:  - VIVADO_DEFAULT
+Wed 16:44: Implementation: Strategy "VIVADO_DEFAULT" met timing with score 0 (best score 0)
+Wed 16:44: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 16:44: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 16:45: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Wed 16:45: 
+Wed 16:45: FINAL POWER REPORT
+Wed 16:45: Total On-Chip Power (W) 10.79 (budget: 91.80) 
+Wed 16:45: Dynamic Power (W)        8.11 
+Wed 16:45: Device Static Power(W)   2.68 
+Wed 16:45: 
+Wed 16:45: (11/15) - Generate Configuration (VivadoBitgen)
+Wed 16:54: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Wed 16:55: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Wed 16:56: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Wed 16:56: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Wed 16:56: 
+Wed 16:56: FINAL RESOURCE USAGE
+Wed 16:56: FPGA: xcVU9P-FLGB2104-2-E
+Wed 16:56: Logic utilization:      201302 / 3546720 (5.68%)
+Wed 16:56:   LUTs:                  77686 / 1182240 (6.57%)
+Wed 16:56:   Primary FFs:          123616 / 2364480 (5.23%)
+Wed 16:56: DSP blocks:                 27 / 6840    (0.39%)
+Wed 16:56: Block memory (BRAM18):     646 / 4320    (14.95%)
+Wed 16:56: Block memory (URAM):         4 / 960     (0.42%)
+Wed 16:56: 
+Wed 16:56: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max (MD5Sum: a18d257a9c6913f72b1ca9045d556ae1)
+Wed 16:56: Build completed: Wed Dec 08 16:56:17 GMT 2021 (took 3 hours, 36 mins, 46 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/../scratch/ConvTwoLayers.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/../scratch/ConvTwoLayers.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max ConvTwoLayers_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_2497189918171891666/cobject/max_1303383045854466699.c -o /tmp/sliccompile_2497189918171891666/cobject/max_1303383045854466699.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_6738404310826888567.o 
+ld -r /tmp/sliccompile_2497189918171891666/cobject/max_1303383045854466699.c.o max_6738404310826888567.o -o ConvTwoLayers_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/conv_two_layers'
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -o ConvTwoLayers_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200_dfe ConvTwoLayers_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200_dfe.o ConvTwoLayers_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

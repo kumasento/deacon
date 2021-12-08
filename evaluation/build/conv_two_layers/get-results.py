@@ -37,20 +37,22 @@ def parse_build_log(path: str):
     return data
 
 
-def get_perf(cfg: List[int]):
+def get_perf(cfg: List[int]) -> float:
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    print(
-        subprocess.run(
-            [
-                "ssh",
-                "-t",
-                "lima01",
-                f'cd {dir_path}; zsh -ic "make run COEFF_ON_CHIP=true USE_DRAM=true SEQ0={cfg[0]} SEQ1={cfg[1]}"',
-            ],
-            capture_output=True,
-        )
+    ret = subprocess.run(
+        [
+            "ssh",
+            "-t",
+            "lima01",
+            f'cd {dir_path}; zsh -ic "make run COEFF_ON_CHIP=true USE_DRAM=true SEQ0={cfg[0]} SEQ1={cfg[1]}"',
+        ],
+        capture_output=True,
     )
+    lines = ret.stdout.decode("utf-8").split("\n")
+    lines = [line.strip() for line in lines]
+    line = next(iter([line for line in lines if line.startswith("GOP/s")]))
+    return float(line.split(":")[1].strip())
 
 
 def main():
@@ -67,12 +69,13 @@ def main():
         for key, value in res.items():
             data[key].append(value)
 
-        get_perf(cfg)
+        perf = get_perf(cfg)
+        data["GOP/s"].append(perf)
 
     df = pd.DataFrame(data)
     print(df)
 
-    df.to_csv("resource-usage.csv")
+    df.to_csv("results.csv")
 
 
 if __name__ == "__main__":
