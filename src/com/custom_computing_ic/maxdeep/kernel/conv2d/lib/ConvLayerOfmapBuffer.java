@@ -143,17 +143,12 @@ public class ConvLayerOfmapBuffer extends ConvLayerBaseFmapBuffer {
   }
 
   public int getDepth() {
-    if (cp.type == Type.POINTWISE) {
+    if (cp.seq == CompSeq.CHANNEL_MAJOR)
+      return cp.F * cp.OH * cp.OW / getWidth();
+    else if (cp.seq == CompSeq.FILTER_MAJOR)
       return cp.PF * cp.OH * cp.OW / getWidth();
-    } else {
-      if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-        return cp.F * cp.OH * cp.OW / getWidth();
-      } else if (cp.seq == CompSeq.FILTER_MAJOR) {
-        return cp.PF * cp.OH * cp.OW / getWidth();
-      } else {
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
-      }
-    }
+    else
+      throw new IllegalArgumentException(String.format(
+          "Computation sequence %s has not been supported yet", cp.seq));
   }
 }

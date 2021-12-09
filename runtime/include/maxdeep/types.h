@@ -54,6 +54,12 @@ struct DfeConvLayerParameters {
     return dcp;
   }
 #endif
+
+  void dump() {
+    LOG(INFO) << "\n + DFE parameters:"
+              << "\n   * PC = " << PC << "\n   * PF = " << PF
+              << "\n   * PK = " << PK << '\n';
+  }
 };
 
 struct ConvLayerParameters {
@@ -63,6 +69,8 @@ struct ConvLayerParameters {
   ConvLayerParameters(max_file_t *max_file, std::string name)
       : dfe{DfeConvLayerParameters::get(max_file, name)} {
     // Initialise other parameters from the design spec.
+    // H = GetConvLayerInputDim(dfe.TH, dfe.K, 0, 1);
+    // W = GetConvLayerInputDim(dfe.TW, dfe.K, 0, 1);
     H = dfe.TH;
     W = dfe.TW;
     C = dfe.TC;
@@ -77,6 +85,14 @@ struct ConvLayerParameters {
 
   int getOutputHeight() const { return GetConvLayerOutputDim(H, K, P, S); }
   int getOutputWidth() const { return GetConvLayerOutputDim(W, K, P, S); }
+
+  void dump() {
+    LOG(INFO) << "ConvLayerParameters:"
+              << "\n + H = " << H << "\n + W = " << W << "\n + K = " << K
+              << "\n + P = " << P << "\n + S = " << S << '\n';
+
+    dfe.dump();
+  }
 };
 
 #endif

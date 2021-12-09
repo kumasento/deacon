@@ -84,47 +84,6 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     // getOwner().optimization.popRoundingMode();
   }
 
-  public int getCoeffFMemSize(DFEType T) {
-    return ((int) Math.ceil((double) cp.C / cp.PC))
-        * ((int) Math.ceil((double) cp.F / cp.PF));
-
-  }
-
-  public List<Memory<DFEVar>> buildCoeffFMemList(DFEType T) {
-    List<Memory<DFEVar>> coeffFMemList = new ArrayList<Memory<DFEVar>>();
-
-    for (int pf = 0; pf < cp.PF; ++pf)
-      for (int pc = 0; pc < cp.PC; ++pc)
-        for (int k = 0; k < cp.K * cp.K; ++k) {
-          Memory<DFEVar> memory = mem.alloc(T, getCoeffFMemSize(T));
-          String name = String.format("%s_coeff_f%d_c%d_k%d", cp.name, pf, pc, k);
-          memory.mapToCPU(name);
-
-          getOwner().getManager().logMsg("Created new memory for coeff: %s", name);
-
-          coeffFMemList.add(memory);
-        }
-
-    return coeffFMemList;
-  }
-
-  public DFEVector<DFEVar> readCoeffFMemList(DFEVar addr, List<Memory<DFEVar>> coeffFMemList, DFEType T) {
-    int vecSize = coeffFMemList.size();
-    if (vecSize < 1)
-      throw new IllegalArgumentException(String.format("coeffFMemList should have at least one element, got: %d.",
-          vecSize));
-
-    DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(T, vecSize);
-    DFEVector<DFEVar> vec = vecT.newInstance(this.getOwner());
-
-    for (int i = 0; i < vecSize; ++i) {
-      DFEVar value = coeffFMemList.get(i).read(addr);
-      vec.get(i).connect(value);
-    }
-
-    return vec;
-  }
-
   public void initConvLayer() {
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T);
@@ -233,9 +192,10 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
-  private DFEVar getCoeffFMemAddr(DFEType addrT) {
+  public DFEVar getCoeffFMemAddr(DFEType addrT) {
     // TODO: support cases that the weights are in channel major.
-    return (f * ((int) Math.ceil((double) cp.C / cp.PC)) + c).cast(addrT);
+    return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT) + c.cast(addrT))
+        .cast(addrT);
   }
 
   @Override

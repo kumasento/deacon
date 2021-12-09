@@ -1,0 +1,76 @@
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1209 09:13:41.436239 176379 types.h:90] ConvLayerParameters:
+ + H = 32
+ + W = 32
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 09:13:41.436488 176379 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 09:13:41.436504 176379 types.h:90] ConvLayerParameters:
+ + H = 32
+ + W = 32
+ + K = 3
+ + P = 0
+ + S = 1
+I1209 09:13:41.436515 176379 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 09:13:41.436525 176379 types.h:90] ConvLayerParameters:
+ + H = 30
+ + W = 30
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 09:13:41.436534 176379 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 09:13:41.439760 176379 BottleneckCpuCode.cpp:101] Created and converted input and weights
+I1209 09:13:41.439776 176379 BottleneckCpuCode.cpp:104] Run ConvLayerCpu ...
+I1209 09:13:41.439786 176379 BottleneckCpuCode.cpp:105] 32 x 32 x 32 -> 32 x 32 x 32
+I1209 09:13:41.452863 176379 BottleneckCpuCode.cpp:113] 32 x 32 x 32 -> 32 x 30 x 30
+I1209 09:13:41.479401 176379 BottleneckCpuCode.cpp:121] 32 x 30 x 30 -> 32 x 30 x 30
+I1209 09:13:41.483637 176379 BottleneckCpuCode.cpp:129] Done
+I1209 09:14:35.148372 176379 types.h:90] ConvLayerParameters:
+ + H = 32
+ + W = 32
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 09:14:35.148437 176379 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 09:14:35.148488 176379 BottleneckCpuCode.cpp:150] Initialized coefficients from weights_0, ptr = 0x7fff67805880
+I1209 09:14:35.148823 176379 BottleneckCpuCode.cpp:152] Initialized coefficients from weights_1, ptr = 0x7fff678058c8
+I1209 09:14:35.148874 176379 BottleneckCpuCode.cpp:154] Initialized coefficients from weights_2, ptr = 0x7fff678058d0
+I1209 09:14:35.148883 176379 BottleneckCpuCode.cpp:156] Initialized actions
+I1209 09:14:35.148893 176379 utils.h:357] Burst aligning input array of size: 32768 to 32832
+I1209 09:14:35.149075 176379 BottleneckCpuCode.cpp:168] Tiled input size (burst aligned): 32832
+I1209 09:14:35.149086 176379 utils.h:357] Burst aligning input array of size: 28800 to 28800
+I1209 09:14:35.149096 176379 BottleneckCpuCode.cpp:170] Tiled output size (burst aligned): 28800
+I1209 09:14:35.149106 176379 layers.h:603] Writing DRAM to 0 with size 0x10080
+I1209 09:14:49.577733 176379 layers.h:620] Reading DRAM from 0x10080 with size 0xe100
+I1209 09:14:49.623308 176379 BottleneckCpuCode.cpp:189] Examine results ...
+I1209 09:14:49.623350 176379 BottleneckCpuCode.cpp:191] output_2_cpu[0] = 7.03125
+I1209 09:14:49.623369 176379 BottleneckCpuCode.cpp:191] output_2_cpu[1] = 11.8477
+I1209 09:14:49.623381 176379 BottleneckCpuCode.cpp:191] output_2_cpu[2] = 3.52344
+I1209 09:14:49.623390 176379 BottleneckCpuCode.cpp:191] output_2_cpu[3] = -3.625
+I1209 09:14:49.623399 176379 BottleneckCpuCode.cpp:191] output_2_cpu[4] = 1.27344
+I1209 09:14:49.623409 176379 BottleneckCpuCode.cpp:196] output_dfe[0] = 7.07812
+I1209 09:14:49.623418 176379 BottleneckCpuCode.cpp:196] output_dfe[1] = 11.8359
+I1209 09:14:49.623898 176379 BottleneckCpuCode.cpp:196] output_dfe[2] = 3.61719
+I1209 09:14:49.623908 176379 BottleneckCpuCode.cpp:196] output_dfe[3] = -3.73047
+I1209 09:14:49.623917 176379 BottleneckCpuCode.cpp:196] output_dfe[4] = 1.30469
+I1209 09:14:49.624286 176379 BottleneckCpuCode.cpp:206] Evaluating difference ...
+I1209 09:14:49.624435 176379 BottleneckCpuCode.cpp:207] Mask: 0000x1ff
+I1209 09:14:49.624963 176379 BottleneckCpuCode.cpp:225] num_failed: 0 total: 28800 avg_diff: 0.0739853

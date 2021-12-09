@@ -1,12 +1,2 @@
-Wed 13:21: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 13:21: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 13:21: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 13:21: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 13:21: WARNING: to that of a similar bitstream.
-Wed 13:21: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 13:21: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 13:21: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 13:21: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 13:21: WARNING: to that of a similar bitstream.
-/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
-/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+make: maxjc: Command not found
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvTwoLayers_MAIA_DFE_b16_H32_W32_C32_F32_K3_f1_c1_k1_SEQ0_0_DRAM_COC_FREQ_200/results/ConvTwoLayers.max] Error 127

@@ -14,7 +14,8 @@
 
 # ---- Common Configuration Defaults ----
 
-NUMDEVICES ?= 1
+NUMDEVICES?=1
+SIMDEVICEID?=a
 
 BUILD_DATE?=$(shell date +"%d-%m-%y")
 # ---- Paths ----
@@ -169,18 +170,18 @@ $(PRJBUILDNAME)_sim.o: $(SIMMAXDIR)/$(PRJ).max
 	$(SLICCOMPILE) $< $@
 
 $(PRJBUILDNAME)_simc.o: $(CPUFILES)
-	$(CPUCOMPILER) $< $(ALL_FLAGS) -I$(SIMMAXDIR) -D__SIM__ -DDESIGN_NAME=$(PRJ) -c -o $@
+	$(CPUCOMPILER) $< $(ALL_FLAGS) -g -I$(SIMMAXDIR) -D__SIM__ -DDESIGN_NAME=$(PRJ) -c -o $@
 
 $(PRJBUILDNAME)_sim: $(PRJBUILDNAME)_sim.o $(PRJBUILDNAME)_simc.o
-	$(CPUCOMPILER) $(ALL_FLAGS) -o $@ $^ $(LFLAGS)
+	$(CPUCOMPILER) $(ALL_FLAGS) -g -o $@ $^ $(LFLAGS)
 
 runsim: $(PRJBUILDNAME)_sim
-	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) -d$(NUMDEVICES) restart
-	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)a" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(CLI_OPTIONS)
+	$(MAXCOMPILERSIM) -n $(USER)$(SIMDEVICEID) -c$(DEVICENUM) -d$(NUMDEVICES) restart
+	SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=$(USER)$(SIMDEVICEID)" LD_PRELOAD=$(MAXOS_SIM) ./$(PRJBUILDNAME)_sim $(CLI_OPTIONS)
 	make stopsim
 
 stopsim:
-	$(MAXCOMPILERSIM) -n $(USER)a -c$(DEVICENUM) stop
+	$(MAXCOMPILERSIM) -n $(USER)$(SIMDEVICEID) -c$(DEVICENUM) stop
 
 gdbsim:
 	DEBUG_FLAGS="-O0 -g" make $(PRJBUILDNAME)_sim

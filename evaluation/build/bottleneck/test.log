@@ -1,0 +1,278 @@
+BUILD_NAME_OPTION = _b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=bottleneck MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 BottleneckManager \
+	DFEModel=MAIA maxFileName=Bottleneck target='DFE_SIM' enableMPCX=false \
+	bitWidth=16 PF=1 PC=1 PK=1 H=4 W=4 C=2 F=2 K=3 SEQ0=1 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+]0; maxJavaRun: BottleneckManager DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=4 W=4 C=2 F=2 K=3 SEQ0=1 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : bottleneck
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : bottleneck.BottleneckManager
+Class arguments     : DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=4 W=4 C=2 F=2 K=3 SEQ0=1 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Thu 08:47: MaxCompiler version: 2021.1
+Thu 08:47: Build "Bottleneck" start time: Thu Dec 09 08:47:32 GMT 2021
+Thu 08:47: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 08:47: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200
+Thu 08:47: Detailed build log available in "_build.log"
+Thu 08:47: 
+Thu 08:47: ENGINE BUILD PARAMETERS
+Thu 08:47: 	              Build name: Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200
+Thu 08:47: 	             maxFileName: Bottleneck                                                                    
+Thu 08:47: 	                  target: DFE_SIM                                                                       
+Thu 08:47: 	                DFEModel: MAIA                                                                          
+Thu 08:47: 	              enableMPCX: false                                                                         
+Thu 08:47: 	                bitWidth: 16                                                                            
+Thu 08:47: 	                   DTYPE: fixed                                                                         
+Thu 08:47: 	           NUM_FRAC_BITS: 8                                                                             
+Thu 08:47: 	                      PF: 1                                                                             
+Thu 08:47: 	                      PC: 1                                                                             
+Thu 08:47: 	                      PK: 1                                                                             
+Thu 08:47: 	                       H: 4                                                                             
+Thu 08:47: 	                       W: 4                                                                             
+Thu 08:47: 	                       C: 2                                                                             
+Thu 08:47: 	                       F: 2                                                                             
+Thu 08:47: 	                       K: 3                                                                             
+Thu 08:47: 	                     SEQ: 0                                                                             
+Thu 08:47: 	                    FREQ: 200                                                                           
+Thu 08:47: 	                USE_DRAM: true                                                                          
+Thu 08:47: 	                 USE_BNN: false                                                                         
+Thu 08:47: 	            USE_WINOGRAD: false                                                                         
+Thu 08:47: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                         
+Thu 08:47: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                             
+Thu 08:47: 	                   DEBUG: false                                                                         
+Thu 08:47: 	           COEFF_ON_CHIP: true                                                                          
+Thu 08:47: 	                    SEQ0: 1                                                                             
+Thu 08:47: 	                    SEQ1: 0                                                                             
+Thu 08:47: 	                    SEQ2: 0                                                                             
+Thu 08:47: Generating kernel conv0 ...
+Thu 08:47: Instantiating kernel "conv0"
+Thu 08:47: Building pointwise convolution:
+Thu 08:47: F = 2 C = 2 PF = 1 PC = 1
+Thu 08:47: Seq = CHANNEL_MAJOR
+Thu 08:47: Created new memory for coeff: conv0_coeff_f0_c0_k0
+Thu 08:47: Ifmap buffer configuration 32 x 1
+Thu 08:47: loop = false
+Thu 08:47: [ConvLayerOfmapBuffer] depth =    32 addr_bits =     5
+Thu 08:47: Compiling kernel "conv0"
+Thu 08:47: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 08:47: WARNING: Unconnected elements in design 'conv0'
+Thu 08:47: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/scratch/conv0_graph_warnings.txt
+Thu 08:47: 
+Thu 08:47: Generating kernel conv1 ...
+Thu 08:47: Instantiating kernel "conv1"
+Thu 08:47: coeffOnChip = true
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k0
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k1
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k2
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k3
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k4
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k5
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k6
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k7
+Thu 08:47: Created new memory for coeff: conv1_coeff_f0_c0_k8
+Thu 08:47: Ifmap buffer configuration 32 x 1
+Thu 08:47: loop = false
+Thu 08:47: Building line buffer for "conv1" ...
+Thu 08:47: Line buffer shape 3 x 4, produces 1 number of 3 x 3 tiles per cycle
+Thu 08:47: Line buffer input vector size: 1, output vector size: 9.
+Thu 08:47: Number of separated line buffers: 1
+Thu 08:47: Initialising line buffer kernel with 3 x 4 x 1
+Thu 08:47: Size of line buffer output: 3
+Thu 08:47: Number of line buffer output chunks: 3
+Thu 08:47: Connecting outputs from chunk (#000) ...
+Thu 08:47: Connecting outputs from chunk (#001) ...
+Thu 08:47: Connecting outputs from chunk (#002) ...
+Thu 08:47: Building the CORE arithmetic unit for "conv1" ...
+Thu 08:47: CORE ifmap vector size: 9
+Thu 08:47: CORE coefficient vector size: 9
+Thu 08:47: CORE ofmap vector size: 1
+Thu 08:47: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Thu 08:47: Compiling kernel "conv1"
+Thu 08:47: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 08:47: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 08:47: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 08:47: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 08:47: WARNING: to that of a similar bitstream.
+Thu 08:47: 
+Thu 08:47: Generating kernel conv2 ...
+Thu 08:47: Instantiating kernel "conv2"
+Thu 08:47: Building pointwise convolution:
+Thu 08:47: F = 2 C = 2 PF = 1 PC = 1
+Thu 08:47: Seq = FILTER_MAJOR
+Thu 08:47: Created new memory for coeff: conv2_coeff_f0_c0_k0
+Thu 08:47: Ifmap buffer configuration 8 x 1
+Thu 08:47: loop = false
+Thu 08:47: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Thu 08:47: Compiling kernel "conv2"
+Thu 08:47: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 08:47: WARNING: Unconnected elements in design 'conv2'
+Thu 08:47: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/scratch/conv2_graph_warnings.txt
+Thu 08:47: 
+Thu 08:47: Generating padding kernels for DRAM access
+Thu 08:47: Instantiating kernel "ifmap_unpad"
+Thu 08:47: Compiling kernel "ifmap_unpad"
+Thu 08:47: 
+Thu 08:47: Instantiating kernel "ofmap_pad"
+Thu 08:47: Compiling kernel "ofmap_pad"
+Thu 08:47: 
+Thu 08:47: Setting up stream connections for conv0
+Thu 08:47: Setting up stream connections for conv1
+Thu 08:47: Setting up stream connections for conv2
+Thu 08:47: Running back-end simulation build (3 phases)
+Thu 08:47: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 08:47: (2/3) - Compile Simulation Modules (SimCompilePass)
+Thu 08:47: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Thu 08:47: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max (MD5Sum: a647a3db3ca1f4ed5c41f6bbc1bcc1f9)
+Thu 08:47: Build completed: Thu Dec 09 08:47:45 GMT 2021 (took 12 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Bottleneck.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Maxfiles.h
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_sim.o
+Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_839658825139911933/cobject/max_6792432386375267143.c -o /tmp/sliccompile_839658825139911933/cobject/max_6792432386375267143.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_573570958474923381.o 
+ld -r /tmp/sliccompile_839658825139911933/cobject/max_6792432386375267143.c.o max_573570958474923381.o -o Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_sim.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'
+g++ ../../src/bottleneck/BottleneckCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200/results -D__SIM__ -DDESIGN_NAME=Bottleneck -c -o Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_simc.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -g -o Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_sim Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_sim.o Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+maxcompilersim -n rz3515a -cLIMA -d1 restart
+
+Simulated system 'rz3515a' started:
+    Board:                   MAX5C (default: 48GB RAM)
+    RAM size for simulation: 51539607552 bytes.
+    Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515a-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515a-cccad5_daemon.log
+
+Simulated devices available:
+    rz3515a0:rz3515a
+
+To use simulated devices you need to set the environment variables
+LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
+you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
+tutorial for details).  Also, ensure that you add the correct simulated
+system name (namely "rz3515a") to your SLiC configuration. The following
+examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
+Example for BASH:
+    export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
+    export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515a"
+Example for CSH:
+    setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
+    setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515a"
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515a" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Bottleneck_b16_H4_W4_C2_F2_K3_f1_c1_k1_SEQ1_0_0_DRAM_COC_FREQ_200_sim -n 1
+I1209 08:47:48.942371 394368 types.h:90] ConvLayerParameters:
+ + H = 4
+ + W = 4
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 08:47:48.942618 394368 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 08:47:48.942634 394368 types.h:90] ConvLayerParameters:
+ + H = 4
+ + W = 4
+ + K = 3
+ + P = 0
+ + S = 1
+I1209 08:47:48.942646 394368 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 08:47:48.942656 394368 types.h:90] ConvLayerParameters:
+ + H = 2
+ + W = 2
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 08:47:48.942665 394368 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 08:47:48.942710 394368 BottleneckCpuCode.cpp:101] Created and converted input and weights
+I1209 08:47:48.942721 394368 BottleneckCpuCode.cpp:104] Run ConvLayerCpu ...
+I1209 08:47:48.942731 394368 BottleneckCpuCode.cpp:105] 2 x 4 x 4 -> 2 x 4 x 4
+I1209 08:47:48.942749 394368 BottleneckCpuCode.cpp:113] 2 x 4 x 4 -> 2 x 2 x 2
+I1209 08:47:48.942761 394368 BottleneckCpuCode.cpp:121] 2 x 2 x 2 -> 2 x 2 x 2
+I1209 08:47:48.942772 394368 BottleneckCpuCode.cpp:129] Done
+I1209 08:47:48.952498 394368 types.h:90] ConvLayerParameters:
+ + H = 4
+ + W = 4
+ + K = 1
+ + P = 0
+ + S = 1
+I1209 08:47:48.952519 394368 types.h:59] 
+ + DFE parameters:
+   * PC = 1
+   * PF = 1
+   * PK = 1
+I1209 08:47:48.952531 394368 BottleneckCpuCode.cpp:150] Initialized coefficients from weights_0, ptr = 0x7ffc52e754e0
+I1209 08:47:48.952741 394368 BottleneckCpuCode.cpp:152] Initialized coefficients from weights_1, ptr = 0x7ffc52e75528
+I1209 08:47:48.952950 394368 BottleneckCpuCode.cpp:154] Initialized coefficients from weights_2, ptr = 0x7ffc52e75530
+I1209 08:47:48.952960 394368 BottleneckCpuCode.cpp:156] Initialized actions
+I1209 08:47:48.953167 394368 utils.h:357] Burst aligning input array of size: 32 to 192
+I1209 08:47:48.953387 394368 BottleneckCpuCode.cpp:168] Tiled input size (burst aligned): 192
+I1209 08:47:48.953580 394368 utils.h:357] Burst aligning input array of size: 8 to 192
+I1209 08:47:48.953593 394368 BottleneckCpuCode.cpp:170] Tiled output size (burst aligned): 192
+I1209 08:47:48.953794 394368 layers.h:603] Writing DRAM to 0 with size 0x180
+I1209 08:47:48.966621 394368 layers.h:620] Reading DRAM from 0x180 with size 0x180
+I1209 08:47:48.969000 394368 BottleneckCpuCode.cpp:189] Examine results ...
+I1209 08:47:48.969036 394368 BottleneckCpuCode.cpp:191] output_2_cpu[0] = -0.167969
+I1209 08:47:48.969069 394368 BottleneckCpuCode.cpp:191] output_2_cpu[1] = -1.35156
+I1209 08:47:48.969080 394368 BottleneckCpuCode.cpp:191] output_2_cpu[2] = 0.367188
+I1209 08:47:48.969091 394368 BottleneckCpuCode.cpp:191] output_2_cpu[3] = -3.05469
+I1209 08:47:48.969102 394368 BottleneckCpuCode.cpp:191] output_2_cpu[4] = -0.347656
+I1209 08:47:48.969112 394368 BottleneckCpuCode.cpp:196] output_dfe[0] = -0.160156
+I1209 08:47:48.969123 394368 BottleneckCpuCode.cpp:196] output_dfe[1] = -1.35156
+I1209 08:47:48.969578 394368 BottleneckCpuCode.cpp:196] output_dfe[2] = 0.367188
+I1209 08:47:48.969954 394368 BottleneckCpuCode.cpp:196] output_dfe[3] = -3.05078
+I1209 08:47:48.970216 394368 BottleneckCpuCode.cpp:196] output_dfe[4] = -0.347656
+I1209 08:47:48.970458 394368 BottleneckCpuCode.cpp:206] Evaluating difference ...
+I1209 08:47:48.970715 394368 BottleneckCpuCode.cpp:207] Mask: 0000x1ff
+I1209 08:47:48.970958 394368 BottleneckCpuCode.cpp:225] num_failed: 0 total: 8 avg_diff: 0.00244141
+Running ...
+Done
+elapsed time: 0.00993079s
+GOP/s: 0.000132114
+make stopsim
+make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'
+maxcompilersim -n rz3515a -cLIMA stop
+Terminating MaxelerOS daemon (PID 394364)...
+MaxelerOS daemon killed
+Terminating simulated system (PID 394357)...
+Simulated system killed
+make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'

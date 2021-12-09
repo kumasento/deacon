@@ -67,21 +67,18 @@ T* random_initialize(int num, float scale = 1.0) {
   return arr;
 }
 
-template <typename T>
-void DumpArray(const char* file_name, T* data, int num) {
-  std::ofstream out(file_name);
-
-  if (!out) {
-    fprintf(stderr, "Cannot open file for writing: %s\n", file_name);
-    exit(1);
-  }
-
-  for (int i = 0; i < num; i++) out << static_cast<float>(data[i]) << std::endl;
-}
-
 /*! Get number of tiles */
 int GetNumTiles(int num_elems, int tile_size) {
   return static_cast<int>(ceil(static_cast<float>(num_elems) / tile_size));
+}
+
+template <typename T>
+std::vector<T> CreateConstantArray(int N, T value) {
+  CHECK_GT(N, 0);
+
+  std::vector<T> arr(N);
+  for (int i = 0; i < N; i++) arr[i] = static_cast<T>(value);
+  return arr;
 }
 
 template <typename T>
@@ -357,8 +354,26 @@ template <typename T>
 void BurstAlign(std::vector<T>& arr, size_t num_bytes_per_burst) {
   auto burst_aligned_num_elems =
       GetBurstAlignedNumElems(arr.size(), sizeof(T), num_bytes_per_burst);
+  LOG(INFO) << "Burst aligning input array of size: " << arr.size() << " to "
+            << burst_aligned_num_elems << '\n';
   // the input vector is resized (side effect)
   arr.resize(burst_aligned_num_elems);
+}
+
+template <typename T>
+void DumpArray(const char* file_name, T* data, int num, int num_frac_bits = 0) {
+  std::ofstream out(file_name);
+
+  if (!out) {
+    fprintf(stderr, "Cannot open file for writing: %s\n", file_name);
+    exit(1);
+  }
+
+  for (int i = 0; i < num; i++)
+    out << (std::is_same<T, float>::value
+                ? static_cast<float>(data[i])
+                : FixedToFloat<T>(data[i], num_frac_bits))
+        << std::endl;
 }
 
 #endif

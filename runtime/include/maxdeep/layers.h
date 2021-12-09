@@ -650,6 +650,8 @@ double **SplitCoeffAndAssign(double **ptr, T *data,
                 arr[idx] = value;
               else
                 arr[idx] = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
+              // LOG(INFO) << "idx = " << idx << " arr[idx] = " << arr[idx]
+              //           << '\n';
             }
 
           *ptr = (double *)arr;

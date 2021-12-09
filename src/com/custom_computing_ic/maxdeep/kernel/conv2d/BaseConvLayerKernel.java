@@ -10,6 +10,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 
 public abstract class BaseConvLayerKernel extends KernelComponent {
 
@@ -61,6 +62,51 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
   public BaseConvLayerKernel(KernelBase<?> owner, FusedConvLayerParameters fcp, DFEType T) {
     this(owner, fcp.cps, T);
+  }
+
+  /* ------------------- Coeff on chip ------------------------------- */
+
+  public int getCoeffFMemSize(DFEType T) {
+    return ((int) Math.ceil((double) cp.C / cp.PC))
+        * ((int) Math.ceil((double) cp.F / cp.PF));
+
+  }
+
+  public abstract DFEVar getCoeffFMemAddr(DFEType addrT);
+
+  public List<Memory<DFEVar>> buildCoeffFMemList(DFEType T) {
+    List<Memory<DFEVar>> coeffFMemList = new ArrayList<Memory<DFEVar>>();
+
+    for (int pf = 0; pf < cp.PF; ++pf)
+      for (int pc = 0; pc < cp.PC; ++pc)
+        for (int k = 0; k < cp.K * cp.K; ++k) {
+          Memory<DFEVar> memory = mem.alloc(T, getCoeffFMemSize(T));
+          String name = String.format("%s_coeff_f%d_c%d_k%d", cp.name, pf, pc, k);
+          memory.mapToCPU(name);
+
+          getOwner().getManager().logMsg("Created new memory for coeff: %s", name);
+
+          coeffFMemList.add(memory);
+        }
+
+    return coeffFMemList;
+  }
+
+  public DFEVector<DFEVar> readCoeffFMemList(DFEVar addr, List<Memory<DFEVar>> coeffFMemList, DFEType T) {
+    int vecSize = coeffFMemList.size();
+    if (vecSize < 1)
+      throw new IllegalArgumentException(String.format("coeffFMemList should have at least one element, got: %d.",
+          vecSize));
+
+    DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(T, vecSize);
+    DFEVector<DFEVar> vec = vecT.newInstance(this.getOwner());
+
+    for (int i = 0; i < vecSize; ++i) {
+      DFEVar value = coeffFMemList.get(i).read(addr);
+      vec.get(i).connect(value);
+    }
+
+    return vec;
   }
 
   public DFEVector<DFEVar> getIfmap() {

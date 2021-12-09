@@ -307,8 +307,8 @@ public class ConvLayerParameters extends LayerParameters {
    *
    */
   public static class Builder {
-    private final int H;
-    private final int W;
+    private int H;
+    private int W;
     private final int C;
     private final int F;
     private final int K;
@@ -320,8 +320,8 @@ public class ConvLayerParameters extends LayerParameters {
     private int PK;
     private int PH;
     private int PW;
-    private final int S;
-    private final int P;
+    private int S;
+    private int P;
     private CompSeq seq;
     private String name;
     private String dtype;
@@ -355,11 +355,11 @@ public class ConvLayerParameters extends LayerParameters {
       this.P = 1;
       this.OH = OH;
       this.OW = OW;
-      this.H = (this.OH - 1) * this.S + 2 * this.P + 1;
-      this.W = (this.OW - 1) * this.S + 2 * this.P + 1;
       this.C = C;
       this.F = F;
       this.K = K;
+      this.H = this.OH - 2 * this.P - 1 + this.K;
+      this.W = this.OW - 2 * this.P - 1 + this.K;
       this.PF = 1;
       this.PC = 1;
       this.PK = 1;
@@ -372,6 +372,13 @@ public class ConvLayerParameters extends LayerParameters {
       this.winogradWeightsOffline = false;
       this.dbg = false;
       this.coeffOnChip = false;
+    }
+
+    public Builder pad(int pad) {
+      this.P = pad;
+      this.H = this.OH - 2 * this.P - 1 + this.K;
+      this.W = this.OW - 2 * this.P - 1 + this.K;
+      return this;
     }
 
     public Builder BW(int BW) {
