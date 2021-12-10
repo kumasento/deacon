@@ -599,6 +599,7 @@ public class ConvLayerManagerUtils {
       mgr.addMaxFileConstant(name + "_C", cp.C);
       mgr.addMaxFileConstant(name + "_F", cp.F);
       mgr.addMaxFileConstant(name + "_K", cp.K);
+      mgr.addMaxFileConstant(name + "_PAD", cp.PAD);
       mgr.addMaxFileConstant(name + "_BW", cp.BW);
       mgr.addMaxFileConstant(name + "_num_frac_bits", cp.numFracBits);
       mgr.addMaxFileStringConstant(name + "_dtype", cp.dtype);

@@ -16,6 +16,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.Mux;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -51,19 +52,34 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     super(owner, cp, T);
 
     owner.getManager().logMsg("coeffOnChip = %b\n", cp.coeffOnChip);
+    owner.getManager().logMsg("Input height = %d, output height = %d, pad = %d\n", cp.H, cp.W, cp.PAD);
+
+    if (cp.useWinograd && cp.PAD > 0)
+      throw new IllegalArgumentException("Padding should be 0 when using winograd.");
 
     this.prefix = prefix;
 
+    /**
+     * NOTE: Unlike cp.H, which represents the actual input feature map height,
+     * this.H indicates the maximum range of the counter on the H axis. Therefore,
+     * it should be padded if cp.PAD is larger than 0.
+     */
     this.H = cp.useWinograd
         ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-        : cp.H;
+        : (cp.H + 2 * cp.PAD);
     this.W = cp.useWinograd
         ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-        : cp.W;
+        : (cp.W + 2 * cp.PAD);
     this.PH = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : 1;
     this.PW = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : cp.PK;
 
+    owner.getManager().logMsg("Counter H = %d W = %d\n", this.H, this.W);
+
     initCounters();
+
+    if (cp.dbg) {
+      debug.simPrintf("isInPaddedArea = %KObj%\n", isInPaddedArea(h, w));
+    }
 
     if (!cp.coeffOnChip) {
       if (coeffList.size() != 1)
@@ -85,9 +101,18 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   }
 
   public void initConvLayer() {
+    DFEVector<DFEVar> zeroVec = ifmapVecT.newInstance(getOwner());
+    for (int i = 0; i < ifmapVecT.getSize(); ++i)
+      zeroVec.connect(constant.var(0).cast(T));
+
+    if (cp.dbg) {
+      debug.simPrintf("ifmap = %KObj%\n", ifmap);
+    }
+    DFEVector<DFEVar> input = control.mux(isInPaddedArea(h, w), ifmap, zeroVec);
+
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T);
-    DFEVector<DFEVar> ifmapBufVec = ibuf.port(ifmap, getIfmapBufferAddr(), getIfmapBufferWriteEn());
+    DFEVector<DFEVar> ifmapBufVec = ibuf.port(input, getIfmapBufferAddr(), getIfmapBufferWriteEn());
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
@@ -123,6 +148,13 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
+  public DFEVar isInPaddedArea(DFEVar h, DFEVar w) {
+    DFEVar pad = constant.var(cp.PAD).cast(dfeInt(32));
+    DFEVar cnt_max_h = constant.var(this.H).cast(dfeInt(32));
+    DFEVar cnt_max_w = constant.var(this.W).cast(dfeInt(32));
+    return h.lt(pad).or(h.gte(cnt_max_h.sub(pad))).or(w.lt(pad)).or(w.gte(cnt_max_w.sub(pad)));
+  }
+
   public DFEVar getOfmapReset() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
@@ -153,7 +185,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       return (h >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1) &
           (w >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1);
     } else
-      return (h >= (cp.K - 1)) & (w * cp.PK >= (cp.K - 1));
+      return (h >= (cp.K - cp.K / 2)) & (w * cp.PK >= (cp.K - cp.K / 2));
   }
 
   public DFEVar getOfmapBufferAddr() {
@@ -200,7 +232,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
   @Override
   public DFEVar getIfmapEn() {
-    return getIfmapBufferWriteEn();
+    return getIfmapBufferWriteEn().and(~isInPaddedArea(h, w));
   }
 
   @Override
@@ -298,12 +330,13 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (cp.useWinograd) {
       ow = (w <= lbufHeight - 1) ? constant.var(0) : w - lbufHeight + 1;
     } else {
-      ow = (w * cp.PK < (cp.K - 1)) ? constant.var(0)
-          : (w * cp.PK + 1 - cp.K) / cp.PK;
+      ow = (w * cp.PK < (cp.K - cp.K / 2)) ? constant.var(0)
+          : (w * cp.PK + cp.K / 2 - cp.K) / cp.PK;
     }
     ow = ow.cast(countT);
 
     if (cp.dbg) {
+      debug.simPrintf("oh = %KObj% ow = %KObj%\n", oh, ow);
       debug.simPrintf("ofmap buffer addr = %KObj%\n", oh * cp.OW / cp.PK + ow);
     }
   }

@@ -1,0 +1,42 @@
+g++ ../../src/conv_pad/ConvPadCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_SIM_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results -D__SIM__ -DDESIGN_NAME=ConvPad -c -o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_simc.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -g -o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_sim ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_sim.o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
+maxcompilersim -n rz3515a -cLIMA -d1 restart
+
+Simulated system 'rz3515a' started:
+    Board:                   MAX5C (default: 48GB RAM)
+    RAM size for simulation: 51539607552 bytes.
+    Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515a-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515a-cccad5_daemon.log
+
+Simulated devices available:
+    rz3515a0:rz3515a
+
+To use simulated devices you need to set the environment variables
+LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
+you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
+tutorial for details).  Also, ensure that you add the correct simulated
+system name (namely "rz3515a") to your SLiC configuration. The following
+examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
+Example for BASH:
+    export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
+    export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515a"
+Example for CSH:
+    setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
+    setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515a"
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515a" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_sim -n 1
+Running ...
+Done
+elapsed time: 8.87707s
+GOP/s: 0.00212619
+make stopsim
+make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/conv_pad'
+maxcompilersim -n rz3515a -cLIMA stop
+Terminating MaxelerOS daemon (PID 141633)...
+MaxelerOS daemon killed
+Terminating simulated system (PID 141615)...
+Simulated system killed
+make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/conv_pad'
