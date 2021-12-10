@@ -1,0 +1,122 @@
+BUILD_NAME_OPTION = _b16_H3_W3_C2_F2_K3_PAD1_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=conv_pad MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 ConvPadManager \
+	DFEModel=MAIA maxFileName=ConvPad target='DFE_SIM' enableMPCX=false \
+	bitWidth=16 PF=1 PC=1 PK=1 H=3 W=3 C=2 F=2 K=3 PAD=1 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+]0; maxJavaRun: ConvPadManager DFEModel=MAIA maxFileName=ConvPad target=DFE_SIM enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=3 W=3 C=2 F=2 K=3 PAD=1 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : conv_pad
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : conv_pad.ConvPadManager
+Class arguments     : DFEModel=MAIA maxFileName=ConvPad target=DFE_SIM enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=3 W=3 C=2 F=2 K=3 PAD=1 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Fri 16:09: MaxCompiler version: 2021.1
+Fri 16:09: Build "ConvPad" start time: Fri Dec 10 16:09:48 GMT 2021
+Fri 16:09: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 16:09: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_SIM_b16_H3_W3_C2_F2_K3_PAD1_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200
+Fri 16:09: Detailed build log available in "_build.log"
+Fri 16:09: 
+Fri 16:09: ENGINE BUILD PARAMETERS
+Fri 16:09: 	              Build name: ConvPad_MAIA_DFE_SIM_b16_H3_W3_C2_F2_K3_PAD1_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200
+Fri 16:09: 	             maxFileName: ConvPad                                                                     
+Fri 16:09: 	                  target: DFE_SIM                                                                     
+Fri 16:09: 	                DFEModel: MAIA                                                                        
+Fri 16:09: 	              enableMPCX: false                                                                       
+Fri 16:09: 	                bitWidth: 16                                                                          
+Fri 16:09: 	                   DTYPE: fixed                                                                       
+Fri 16:09: 	           NUM_FRAC_BITS: 8                                                                           
+Fri 16:09: 	                      PF: 1                                                                           
+Fri 16:09: 	                      PC: 1                                                                           
+Fri 16:09: 	                      PK: 1                                                                           
+Fri 16:09: 	                       H: 3                                                                           
+Fri 16:09: 	                       W: 3                                                                           
+Fri 16:09: 	                       C: 2                                                                           
+Fri 16:09: 	                       F: 2                                                                           
+Fri 16:09: 	                       K: 3                                                                           
+Fri 16:09: 	                     PAD: 1                                                                           
+Fri 16:09: 	                     SEQ: 0                                                                           
+Fri 16:09: 	                    FREQ: 200                                                                         
+Fri 16:09: 	                USE_DRAM: true                                                                        
+Fri 16:09: 	                 USE_BNN: false                                                                       
+Fri 16:09: 	            USE_WINOGRAD: false                                                                       
+Fri 16:09: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                       
+Fri 16:09: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                           
+Fri 16:09: 	                   DEBUG: false                                                                       
+Fri 16:09: 	           COEFF_ON_CHIP: true                                                                        
+Fri 16:09: Generating kernel conv0 ...
+Fri 16:09: Instantiating kernel "conv0"
+Fri 16:09: coeffOnChip = true
+Fri 16:09: Input height = 3, output height = 3, pad = 1
+Fri 16:09: Counter H = 5 W = 5
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k0
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k1
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k2
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k3
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k4
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k5
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k6
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k7
+Fri 16:09: Created new memory for coeff: conv0_coeff_f0_c0_k8
+Fri 16:09: Ifmap buffer configuration 50 x 1
+Fri 16:09: loop = false
+Fri 16:09: Building line buffer for "conv0" ...
+Fri 16:09: Line buffer shape 3 x 3, produces 1 number of 3 x 3 tiles per cycle
+Fri 16:09: Line buffer input vector size: 1, output vector size: 9.
+Fri 16:09: Number of separated line buffers: 1
+Fri 16:09: Initialising line buffer kernel with 3 x 5 x 1
+Fri 16:09: Size of line buffer output: 3
+Fri 16:09: Number of line buffer output chunks: 3
+Fri 16:09: Connecting outputs from chunk (#000) ...
+Fri 16:09: Connecting outputs from chunk (#001) ...
+Fri 16:09: Connecting outputs from chunk (#002) ...
+Fri 16:09: Building the CORE arithmetic unit for "conv0" ...
+Fri 16:09: CORE ifmap vector size: 9
+Fri 16:09: CORE coefficient vector size: 9
+Fri 16:09: CORE ofmap vector size: 1
+Fri 16:09: [ConvLayerOfmapBuffer] depth =     9 addr_bits =     4
+Fri 16:09: Compiling kernel "conv0"
+Fri 16:09: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 16:09: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 16:09: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 16:09: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 16:09: WARNING: to that of a similar bitstream.
+Fri 16:09: 
+Fri 16:09: Generating padding kernels for DRAM access
+Fri 16:09: Instantiating kernel "ifmap_unpad"
+Fri 16:09: Compiling kernel "ifmap_unpad"
+Fri 16:09: 
+Fri 16:09: Instantiating kernel "ofmap_pad"
+Fri 16:09: Compiling kernel "ofmap_pad"
+Fri 16:09: 
+Fri 16:09: Setting up stream connections for conv0
+Fri 16:09: Running back-end simulation build (3 phases)
+Fri 16:09: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Fri 16:09: (2/3) - Compile Simulation Modules (SimCompilePass)
+Fri 16:09: ERROR: Prematurely halting process: make -f $MAXCOMPILERDIR/lib/simulator/bitstream/Makefile -j4
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_SIM_b16_H3_W3_C2_F2_K3_PAD1_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max] Error 130

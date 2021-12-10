@@ -26,6 +26,7 @@ public class ConvLayerParameters extends LayerParameters {
   public final int C; // number of channels
   public final int F; // number of filters
   public final int K; // kernel size
+  public final int PAD; // padding size
   public final CompSeq seq; // computation sequence
   public final String name;
   public final boolean dbg;
@@ -80,6 +81,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.PK = builder.PK;
     this.PH = builder.PH;
     this.PW = builder.PW;
+    this.PAD = builder.P;
     this.seq = builder.seq;
     this.name = builder.name;
     this.dbg = builder.dbg;
@@ -142,6 +144,14 @@ public class ConvLayerParameters extends LayerParameters {
         "BW " + BW + " and dtype " + dtype + " don't give a valid type definition.");
   }
 
+  public int getPaddedHeight() {
+    return H + 2 * PAD;
+  }
+
+  public int getPaddedWidth() {
+    return W + 2 * PAD;
+  }
+
   public long getNumCycles() {
     if (useWinograd) {
       int PH = WinogradTransform.M;
@@ -149,6 +159,9 @@ public class ConvLayerParameters extends LayerParameters {
 
       return ((long) winoH * winoW * C * F) / (PC * PF * PH * PW);
     }
+
+    long H = getPaddedHeight();
+    long W = getPaddedWidth();
 
     if (type == Type.STANDARD)
       return ((long) H * W * C * F) / (PC * PF * PK);
@@ -352,7 +365,7 @@ public class ConvLayerParameters extends LayerParameters {
 
       // TODO: make S and P variable
       this.S = 1;
-      this.P = 1;
+      this.P = 0;
       this.OH = OH;
       this.OW = OW;
       this.C = C;
@@ -457,6 +470,8 @@ public class ConvLayerParameters extends LayerParameters {
         throw new IllegalArgumentException("PW should be larger than 0, got " + PW);
       if (W % PW != 0)
         throw new IllegalArgumentException(String.format("W (%d) % PW (%d) != 0", W, PW));
+      if (PW > 1 && P != 0)
+        throw new IllegalArgumentException("Padding should be 0 if PW is larger than 1");
 
       this.PW = PW;
 

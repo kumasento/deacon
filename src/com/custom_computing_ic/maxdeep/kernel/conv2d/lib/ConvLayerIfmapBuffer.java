@@ -27,34 +27,24 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  * @author Ruizhe Zhao
  *
  */
-public
-class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
- private
-  final ConvLayerParameters cp;
+public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
+  private final ConvLayerParameters cp;
 
- private
-  final DFEType scalarT;
- private
-  final DFEVectorType<DFEVar> portVecT;
- private
-  final DFEType addrT;
+  private final DFEType scalarT;
+  private final DFEVectorType<DFEVar> portVecT;
+  private final DFEType addrT;
 
- private
-  final Memory<DFEVector<DFEVar>> mem;
- private
-  final DFEVector<DFEVar> port;
- private
-  final DFEVar addr;
- private
-  final DFEVector<DFEVar> data;
- private
-  final DFEVar writeEn;
+  private final Memory<DFEVector<DFEVar>> mem;
+  private final DFEVector<DFEVar> port;
+  private final DFEVar addr;
+  private final DFEVector<DFEVar> data;
+  private final DFEVar writeEn;
 
- public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
+  public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
     this(owner, params, scalarT, false, "");
   }
 
- public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT,
+  public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT,
       boolean loop, String prefix) {
     super(owner);
 
@@ -77,8 +67,7 @@ class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
 
-    OffsetExpr writeLatency =
-        stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
+    OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
 
     owner.getManager().logMsg(String.format("loop = %s", loop));
     if (!loop)
@@ -87,60 +76,63 @@ class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
       this.port = mem.read(addr);
 
       mem.write(stream.offset(addr, -writeLatency),
-                stream.offset(data, -writeLatency),
-                stream.offset(writeEn, -writeLatency));
+          stream.offset(data, -writeLatency),
+          stream.offset(writeEn, -writeLatency));
     }
 
     if (cp.dbg) {
       debug.simPrintf("[ConvLayerIfmapBuffer] input = %KObj%\n", data);
       debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
       debug.simPrintf("[ConvLayerIfmapBuffer] addr = %KObj% %KObj%\n", addr,
-                      stream.offset(addr, -writeLatency));
+          stream.offset(addr, -writeLatency));
       debug.simPrintf("[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n",
-                      writeEn, stream.offset(writeEn, -writeLatency));
+          writeEn, stream.offset(writeEn, -writeLatency));
     }
   }
 
- public
-  DFEType getAddrT() { return addrT; }
+  public DFEType getAddrT() {
+    return addrT;
+  }
 
- public
-  DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
+  public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
     this.data.connect(data);
     this.addr.connect(addr);
     this.writeEn.connect(writeEn);
     return this.port;
   }
 
- public
-  DFEVectorType<DFEVar> getPortVecT() { return portVecT; }
-
- public
-  int getWidth() {
-    if (cp.type == Type.POINTWISE) return cp.PH * cp.PW * cp.PC;
-
-    return cp.useWinograd ? cp.PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES
-                          : cp.PC * cp.PK;
+  public DFEVectorType<DFEVar> getPortVecT() {
+    return portVecT;
   }
 
- public
-  int getDepth() {
+  public int getWidth() {
+    if (cp.type == Type.POINTWISE)
+      return cp.PH * cp.PW * cp.PC;
+
+    return cp.useWinograd ? cp.PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES
+        : cp.PC * cp.PK;
+  }
+
+  public int getDepth() {
     if (cp.type == Type.POINTWISE) {
       return cp.H * cp.W * cp.C / (cp.PH * cp.PW * cp.PC);
     } else {
+      int height = cp.H + 2 * cp.PAD;
+      int width = cp.W + 2 * cp.PAD;
+
       if (cp.seq == CompSeq.CHANNEL_MAJOR) {
         return cp.useWinograd
-                   ? ((cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
-                      (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
-                      ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
-                   : cp.H * (cp.W / cp.PK);
+            ? ((height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
+                (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
+                ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
+            : height * (width / cp.PK);
       } else if (cp.seq == CompSeq.FILTER_MAJOR) {
         return cp.useWinograd
-                   ? ((cp.C / cp.PC) *
-                      (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
-                      (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
-                      ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
-                   : (cp.C / cp.PC) * cp.H * (cp.W / cp.PK);
+            ? ((cp.C / cp.PC) *
+                (height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
+                (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
+                ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
+            : (cp.C / cp.PC) * height * (width / cp.PK);
       } else {
         throw new IllegalArgumentException(String.format(
             "Computation sequence %s has not been supported yet", cp.seq));

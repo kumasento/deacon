@@ -16,38 +16,25 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  * @author Ruizhe Zhao
  *
  */
-public
-class ConvLayerLineBuffer extends KernelComponent {
- private
-  final ConvLayerParameters cp;
+public class ConvLayerLineBuffer extends KernelComponent {
+  private final ConvLayerParameters cp;
 
-  @SuppressWarnings("unused") private final DFEType T;
- private
-  final DFEVectorType<DFEVar> inputVecT;
- private
-  final DFEVectorType<DFEVar> outputVecT;
+  @SuppressWarnings("unused")
+  private final DFEType T;
+  private final DFEVectorType<DFEVar> inputVecT;
+  private final DFEVectorType<DFEVar> outputVecT;
 
- private
-  final DFEVector<DFEVar> inputVec;
- private
-  final DFEVector<DFEVar> outputVec;
+  private final DFEVector<DFEVar> inputVec;
+  private final DFEVector<DFEVar> outputVec;
 
- private
-  final int lineBufferHeight;
- private
-  final int lineBufferWidth;
- private
-  final int lineBufferNumPipes;
+  private final int lineBufferHeight;
+  private final int lineBufferWidth;
+  private final int lineBufferNumPipes;
 
- public
-  static final int WINO_LBUF_HEIGHT = 2;
- public
-  static final int WINO_LBUF_TILE_SIZE = 4;
- public
-  static final int WINO_LBUF_NUM_PIPES =
-      WINO_LBUF_TILE_SIZE * WINO_LBUF_TILE_SIZE;
- public
-  static final int WINO_LBUF_PADDING_WIDTH = 2;
+  public static final int WINO_LBUF_HEIGHT = 2;
+  public static final int WINO_LBUF_TILE_SIZE = 4;
+  public static final int WINO_LBUF_NUM_PIPES = WINO_LBUF_TILE_SIZE * WINO_LBUF_TILE_SIZE;
+  public static final int WINO_LBUF_PADDING_WIDTH = 2;
 
   /**
    * constructor
@@ -56,7 +43,7 @@ class ConvLayerLineBuffer extends KernelComponent {
    * @param params
    * @param T
    */
- public ConvLayerLineBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType T) {
+  public ConvLayerLineBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType T) {
     super(owner);
 
     this.cp = params;
@@ -93,11 +80,10 @@ class ConvLayerLineBuffer extends KernelComponent {
       /* initialise one line buffer */
       owner.getManager().logMsg(
           String.format("Initialising line buffer kernel with %d x %d x %d",
-                        lineBufferHeight, lineBufferWidth, lineBufferNumPipes));
+              lineBufferHeight, lineBufferWidth, lineBufferNumPipes));
 
-      LineBufferKernel lbuf =
-          new LineBufferKernel(getOwner(), lineBufferHeight, lineBufferWidth,
-                               lineBufferNumPipes, T, false);
+      LineBufferKernel lbuf = new LineBufferKernel(getOwner(), lineBufferHeight, lineBufferWidth,
+          lineBufferNumPipes, T, false);
 
       lbuf.setWidth(constant.var(lineBufferWidth).cast(lbuf.getIndexT()));
       lbuf.setInput(createLineBufferInputVector(i));
@@ -110,11 +96,10 @@ class ConvLayerLineBuffer extends KernelComponent {
       // here chunk means the number of output vectors per cycle from the line
       // buffer kernel.
       int lbufOutputChunkSize = lbufOutput.getSize();
-      int numLbufOutputChunks =
-          cp.useWinograd ? WINO_LBUF_HEIGHT : (tileSize + cp.PK - 1) / cp.PK;
+      int numLbufOutputChunks = cp.useWinograd ? WINO_LBUF_HEIGHT : (tileSize + cp.PK - 1) / cp.PK;
 
       owner.getManager().logMsg(String.format("Size of line buffer output: %d",
-                                              lbufOutput.getSize()));
+          lbufOutput.getSize()));
       owner.getManager().logMsg(String.format(
           "Number of line buffer output chunks: %d", numLbufOutputChunks));
 
@@ -123,13 +108,11 @@ class ConvLayerLineBuffer extends KernelComponent {
         // reverse chunk, the less j is the older the chunk is in the stream.
         owner.getManager().logMsg(
             String.format("Connecting outputs from chunk (#%03d) ...", j));
-        DFEVector<DFEVar> lbufOutputChunk =
-            stream.offset(lbufOutput, -(numLbufOutputChunks - j - 1));
+        DFEVector<DFEVar> lbufOutputChunk = stream.offset(lbufOutput, -(numLbufOutputChunks - j - 1));
 
         if (cp.useWinograd) {
           // outputVec: (PC, 6, 6)
-          int numTilesPerChunk =
-              lbufOutputChunkSize / (WINO_LBUF_TILE_SIZE * WINO_LBUF_TILE_SIZE);
+          int numTilesPerChunk = lbufOutputChunkSize / (WINO_LBUF_TILE_SIZE * WINO_LBUF_TILE_SIZE);
 
           // iterate every element in the output chunk and assign them to the
           // final output
@@ -145,11 +128,10 @@ class ConvLayerLineBuffer extends KernelComponent {
 
                 int xj = xi - WINO_LBUF_PADDING_WIDTH;
                 int yj = yi - WINO_LBUF_PADDING_WIDTH;
-                int srcIdx =
-                    (x * WINO_LBUF_TILE_SIZE + y) * numTilesPerChunk + t;
+                int srcIdx = (x * WINO_LBUF_TILE_SIZE + y) * numTilesPerChunk + t;
                 int dstIdx = i * WinogradTransform.TILE_SIZE *
-                                 WinogradTransform.TILE_SIZE +
-                             xj * WinogradTransform.TILE_SIZE + yj;
+                    WinogradTransform.TILE_SIZE +
+                    xj * WinogradTransform.TILE_SIZE + yj;
 
                 owner.getManager().logMsg(String.format(
                     "Connect FROM line buffer output (%d, %d, %d) TO " +
@@ -163,8 +145,7 @@ class ConvLayerLineBuffer extends KernelComponent {
           /* outputVec: (PC, K, K + PK - 1) */
           for (int p = 0; p < cp.PK; p++) {
             for (int k = 0; k < lineBufferHeight; k++) {
-              int idx =
-                  i * (lineBufferHeight * (lineBufferHeight + cp.PK - 1)) +
+              int idx = i * (lineBufferHeight * (lineBufferHeight + cp.PK - 1)) +
                   k * (lineBufferHeight + cp.PK - 1) + j * cp.PK + p;
 
               outputVec[idx].connect(lbufOutputChunk[p * lineBufferHeight + k]);
@@ -180,8 +161,7 @@ class ConvLayerLineBuffer extends KernelComponent {
     }
   }
 
- public
-  int getOutputVecSize() {
+  public int getOutputVecSize() {
     if (cp.useWinograd) {
       // Return a 6 x 6 tile for each parallel channel
       return cp.PC * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
@@ -190,14 +170,15 @@ class ConvLayerLineBuffer extends KernelComponent {
     }
   }
 
- public
-  DFEVectorType<DFEVar> getOutputVecT() { return outputVecT; }
+  public DFEVectorType<DFEVar> getOutputVecT() {
+    return outputVecT;
+  }
 
- public
-  DFEVector<DFEVar> getOutputVec() { return outputVec; }
+  public DFEVector<DFEVar> getOutputVec() {
+    return outputVec;
+  }
 
- public
-  int getInputVecSize() {
+  public int getInputVecSize() {
     if (cp.useWinograd) {
       // 4 x 4 x PC
       return WINO_LBUF_NUM_PIPES * cp.PC;
@@ -206,22 +187,24 @@ class ConvLayerLineBuffer extends KernelComponent {
     }
   }
 
- public
-  DFEVectorType<DFEVar> getInputVecT() { return inputVecT; }
+  public DFEVectorType<DFEVar> getInputVecT() {
+    return inputVecT;
+  }
 
- public
-  void setInput(DFEVector<DFEVar> inputVec) { this.inputVec.connect(inputVec); }
+  public void setInput(DFEVector<DFEVar> inputVec) {
+    this.inputVec.connect(inputVec);
+  }
 
- public
-  int getNumLineBuffers() { return cp.PC; }
+  public int getNumLineBuffers() {
+    return cp.PC;
+  }
 
   /**
    * Decide the height of line buffer.
    *
    * @return Line buffer height
    */
- public
-  static int getLineBufferHeight(ConvLayerParameters cp) {
+  public static int getLineBufferHeight(ConvLayerParameters cp) {
     if (cp.useWinograd) {
       // a customised constant
       return WINO_LBUF_HEIGHT;
@@ -231,28 +214,26 @@ class ConvLayerLineBuffer extends KernelComponent {
     }
   }
 
- public
-  static int getLineBufferWidth(ConvLayerParameters cp) {
+  public static int getLineBufferWidth(ConvLayerParameters cp) {
     return cp.useWinograd
-               ? (cp.W + WINO_LBUF_PADDING_WIDTH) * WINO_LBUF_TILE_SIZE
-               : cp.W;
+        ? (cp.W + WINO_LBUF_PADDING_WIDTH) * WINO_LBUF_TILE_SIZE
+        : cp.W + cp.PAD * 2;
   }
 
- public
-  static int getLineBufferNumPipes(ConvLayerParameters cp) {
+  public static int getLineBufferNumPipes(ConvLayerParameters cp) {
     return cp.useWinograd ? WINO_LBUF_NUM_PIPES : cp.PK;
   }
 
- public
-  int getLineBufferTileSize() { return lineBufferHeight; }
+  public int getLineBufferTileSize() {
+    return lineBufferHeight;
+  }
 
   /**
    * Build the input vector to the line buffer.
    *
    * @return An input vector.
    */
- private
-  DFEVector<DFEVar> createLineBufferInputVector(int ci) {
+  private DFEVector<DFEVar> createLineBufferInputVector(int ci) {
     // vector per line buffer
     int vecSize = getInputVecSize() / cp.PC;
     DFEVectorType<DFEVar> VT = new DFEVectorType<DFEVar>(T, vecSize);
