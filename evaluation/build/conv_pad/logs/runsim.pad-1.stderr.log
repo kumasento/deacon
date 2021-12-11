@@ -1,28 +1,33 @@
+Fri 21:46: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 21:46: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 21:46: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 21:46: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 21:46: WARNING: to that of a similar bitstream.
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1210 21:44:50.113023 141639 ConvPadCpuCode.cpp:73] Created and converted input and weights
-I1210 21:44:50.113199 141639 ConvPadCpuCode.cpp:76] Run ConvLayerCpu ...
-I1210 21:44:50.113435 141639 ConvPadCpuCode.cpp:77] 32 x 32 x 32 -> 32 x 32 x 32 PAD = 1
-I1210 21:44:50.152246 141639 ConvPadCpuCode.cpp:85] Done
-I1210 21:44:50.152398 141639 ConvPadCpuCode.cpp:94] Initialized coefficients from weights_0_dfe, ptr = 0x7fffd68290a0
-I1210 21:44:50.152598 141639 ConvPadCpuCode.cpp:96] Initialized actions
-I1210 21:44:50.152606 141639 utils.h:357] Burst aligning input array of size: 32768 to 32832
-I1210 21:44:50.152871 141639 ConvPadCpuCode.cpp:105] Tiled input size (burst aligned): 32832
-I1210 21:44:50.153038 141639 utils.h:357] Burst aligning input array of size: 32768 to 32832
-I1210 21:44:50.153306 141639 ConvPadCpuCode.cpp:107] Tiled output size (burst aligned): 32832
-I1210 21:44:50.153467 141639 layers.h:603] Writing DRAM to 0 with size 0x10080
-I1210 21:44:58.986558 141639 layers.h:620] Reading DRAM from 0x10080 with size 0x10080
-I1210 21:44:59.037964 141639 ConvPadCpuCode.cpp:126] Examine results ...
-I1210 21:44:59.038025 141639 ConvPadCpuCode.cpp:128] output_1_cpu[0] = 2.65625
-I1210 21:44:59.038043 141639 ConvPadCpuCode.cpp:128] output_1_cpu[1] = -17.4766
-I1210 21:44:59.038060 141639 ConvPadCpuCode.cpp:128] output_1_cpu[2] = -11.625
-I1210 21:44:59.038066 141639 ConvPadCpuCode.cpp:128] output_1_cpu[3] = 13.0664
-I1210 21:44:59.038072 141639 ConvPadCpuCode.cpp:128] output_1_cpu[4] = -6.71484
-I1210 21:44:59.038079 141639 ConvPadCpuCode.cpp:133] output_dfe[0] = 2.66406
-I1210 21:44:59.038084 141639 ConvPadCpuCode.cpp:133] output_dfe[1] = -17.4844
-I1210 21:44:59.038089 141639 ConvPadCpuCode.cpp:133] output_dfe[2] = -11.6367
-I1210 21:44:59.038094 141639 ConvPadCpuCode.cpp:133] output_dfe[3] = 13.0547
-I1210 21:44:59.038100 141639 ConvPadCpuCode.cpp:133] output_dfe[4] = -6.70703
-I1210 21:44:59.038277 141639 ConvPadCpuCode.cpp:143] Evaluating difference ...
-I1210 21:44:59.038497 141639 ConvPadCpuCode.cpp:144] Mask: 0000x1ff
-I1210 21:44:59.038615 141639 ConvPadCpuCode.cpp:162] num_failed: 0 total: 32768 avg_diff: 0.0182161
+I1210 21:47:04.463443 163399 ConvPadCpuCode.cpp:73] Created and converted input and weights
+I1210 21:47:04.463620 163399 ConvPadCpuCode.cpp:76] Run ConvLayerCpu ...
+I1210 21:47:04.463626 163399 ConvPadCpuCode.cpp:77] 32 x 32 x 32 -> 32 x 32 x 32 PAD = 1
+I1210 21:47:04.491570 163399 ConvPadCpuCode.cpp:85] Done
+I1210 21:47:04.491724 163399 ConvPadCpuCode.cpp:94] Initialized coefficients from weights_0_dfe, ptr = 0x7ffec495efc0
+I1210 21:47:04.491951 163399 ConvPadCpuCode.cpp:96] Initialized actions
+I1210 21:47:04.491955 163399 utils.h:357] Burst aligning input array of size: 32768 to 32832
+I1210 21:47:04.492024 163399 ConvPadCpuCode.cpp:105] Tiled input size (burst aligned): 32832
+I1210 21:47:04.492167 163399 utils.h:357] Burst aligning input array of size: 32768 to 32832
+I1210 21:47:04.492223 163399 ConvPadCpuCode.cpp:107] Tiled output size (burst aligned): 32832
+I1210 21:47:04.492446 163399 layers.h:603] Writing DRAM to 0 with size 0x10080
+I1210 21:47:13.724040 163399 layers.h:620] Reading DRAM from 0x10080 with size 0x10080
+I1210 21:47:13.767465 163399 ConvPadCpuCode.cpp:126] Examine results ...
+I1210 21:47:13.767503 163399 ConvPadCpuCode.cpp:128] output_1_cpu[0] = 2.65625
+I1210 21:47:13.767518 163399 ConvPadCpuCode.cpp:128] output_1_cpu[1] = -17.4766
+I1210 21:47:13.767526 163399 ConvPadCpuCode.cpp:128] output_1_cpu[2] = -11.625
+I1210 21:47:13.767829 163399 ConvPadCpuCode.cpp:128] output_1_cpu[3] = 13.0664
+I1210 21:47:13.768023 163399 ConvPadCpuCode.cpp:128] output_1_cpu[4] = -6.71484
+I1210 21:47:13.768028 163399 ConvPadCpuCode.cpp:133] output_dfe[0] = 2.66406
+I1210 21:47:13.768249 163399 ConvPadCpuCode.cpp:133] output_dfe[1] = -17.4844
+I1210 21:47:13.768483 163399 ConvPadCpuCode.cpp:133] output_dfe[2] = -11.6367
+I1210 21:47:13.768697 163399 ConvPadCpuCode.cpp:133] output_dfe[3] = 13.0547
+I1210 21:47:13.768920 163399 ConvPadCpuCode.cpp:133] output_dfe[4] = -6.70703
+I1210 21:47:13.769107 163399 ConvPadCpuCode.cpp:143] Evaluating difference ...
+I1210 21:47:13.769162 163399 ConvPadCpuCode.cpp:144] Mask: 0000x1ff
+I1210 21:47:13.769481 163399 ConvPadCpuCode.cpp:162] num_failed: 0 total: 32768 avg_diff: 0.0182161

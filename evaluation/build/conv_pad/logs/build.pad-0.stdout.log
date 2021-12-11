@@ -1,2 +1,186 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=conv_pad MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 ConvPadManager \
+	DFEModel=MAIA maxFileName=ConvPad target='DFE' enableMPCX=false \
+	bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 PAD=0 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+]0; maxJavaRun: ConvPadManager DFEModel=MAIA maxFileName=ConvPad target=DFE enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 PAD=0 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : conv_pad
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : conv_pad.ConvPadManager
+Class arguments     : DFEModel=MAIA maxFileName=ConvPad target=DFE enableMPCX=false bitWidth=16 PF=1 PC=1 PK=1 H=32 W=32 C=32 F=32 K=3 PAD=0 SEQ=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Fri 21:47: MaxCompiler version: 2021.1
+Fri 21:47: Build "ConvPad" start time: Fri Dec 10 21:47:18 GMT 2021
+Fri 21:47: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 21:47: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200
+Fri 21:47: Detailed build log available in "_build.log"
+Fri 21:47: 
+Fri 21:47: ENGINE BUILD PARAMETERS
+Fri 21:47: 	              Build name: ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200
+Fri 21:47: 	             maxFileName: ConvPad                                                                     
+Fri 21:47: 	                  target: DFE                                                                         
+Fri 21:47: 	                DFEModel: MAIA                                                                        
+Fri 21:47: 	              enableMPCX: false                                                                       
+Fri 21:47: 	                bitWidth: 16                                                                          
+Fri 21:47: 	                   DTYPE: fixed                                                                       
+Fri 21:47: 	           NUM_FRAC_BITS: 8                                                                           
+Fri 21:47: 	                      PF: 1                                                                           
+Fri 21:47: 	                      PC: 1                                                                           
+Fri 21:47: 	                      PK: 1                                                                           
+Fri 21:47: 	                       H: 32                                                                          
+Fri 21:47: 	                       W: 32                                                                          
+Fri 21:47: 	                       C: 32                                                                          
+Fri 21:47: 	                       F: 32                                                                          
+Fri 21:47: 	                       K: 3                                                                           
+Fri 21:47: 	                     PAD: 0                                                                           
+Fri 21:47: 	                     SEQ: 0                                                                           
+Fri 21:47: 	                    FREQ: 200                                                                         
+Fri 21:47: 	                USE_DRAM: true                                                                        
+Fri 21:47: 	                 USE_BNN: false                                                                       
+Fri 21:47: 	            USE_WINOGRAD: false                                                                       
+Fri 21:47: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                       
+Fri 21:47: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                           
+Fri 21:47: 	                   DEBUG: false                                                                       
+Fri 21:47: 	           COEFF_ON_CHIP: true                                                                        
+Fri 21:49: Generating kernel conv0 ...
+Fri 21:49: Instantiating kernel "conv0"
+Fri 21:49: coeffOnChip = true
+Fri 21:49: Input height = 34, output height = 34, pad = 0
+Fri 21:49: Counter H = 34 W = 34
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k0
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k1
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k2
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k3
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k4
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k5
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k6
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k7
+Fri 21:49: Created new memory for coeff: conv0_coeff_f0_c0_k8
+Fri 21:49: Ifmap buffer configuration 36992 x 1
+Fri 21:49: loop = false
+Fri 21:49: Building line buffer for "conv0" ...
+Fri 21:49: Line buffer shape 3 x 34, produces 1 number of 3 x 3 tiles per cycle
+Fri 21:49: Line buffer input vector size: 1, output vector size: 9.
+Fri 21:49: Number of separated line buffers: 1
+Fri 21:49: Initialising line buffer kernel with 3 x 34 x 1
+Fri 21:49: Size of line buffer output: 3
+Fri 21:49: Number of line buffer output chunks: 3
+Fri 21:49: Connecting outputs from chunk (#000) ...
+Fri 21:49: Connecting outputs from chunk (#001) ...
+Fri 21:49: Connecting outputs from chunk (#002) ...
+Fri 21:49: Building the CORE arithmetic unit for "conv0" ...
+Fri 21:49: CORE ifmap vector size: 9
+Fri 21:49: CORE coefficient vector size: 9
+Fri 21:49: CORE ofmap vector size: 1
+Fri 21:49: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Fri 21:49: Compiling kernel "conv0"
+Fri 21:49: 
+Fri 21:49: Generating padding kernels for DRAM access
+Fri 21:49: Instantiating kernel "ifmap_unpad"
+Fri 21:49: Compiling kernel "ifmap_unpad"
+Fri 21:49: 
+Fri 21:49: Instantiating kernel "ofmap_pad"
+Fri 21:49: Compiling kernel "ofmap_pad"
+Fri 21:49: 
+Fri 21:49: Setting up stream connections for conv0
+Fri 21:49: Generating input files (VHDL, netlists, vendor specific IP cores)
+Fri 21:49: Running back-end  build (15 phases)
+Fri 21:49: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Fri 21:49: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Fri 21:49: Executing Synthesis Strategy VIVADO_DEFAULT
+Fri 22:10: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Fri 22:10: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Fri 22:11: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Fri 22:11: 
+Fri 22:11: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Fri 22:11: For this compile, we estimate this process may take longer than 1 hour.
+Fri 22:11: We recommend running in simulation to verify correctness before building hardware.
+Fri 22:11: 
+Fri 22:11: PRELIMINARY RESOURCE USAGE
+Fri 22:11: FPGA: xcVU9P-FLGB2104-2-E
+Fri 22:11: Logic utilization:      216168 / 3546720 (6.09%)
+Fri 22:11:   LUTs:                  85716 / 1182240 (7.25%)
+Fri 22:11:   Primary FFs:          130452 / 2364480 (5.52%)
+Fri 22:11: DSP blocks:                 18 / 6840    (0.26%)
+Fri 22:11: Block memory (BRAM18):     604 / 4320    (13.98%)
+Fri 22:11: Block memory (URAM):         3 / 960     (0.31%)
+Fri 22:11: 
+Fri 22:11: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Fri 22:11: 
+Fri 22:11: PRELIMINARY POWER REPORT
+Fri 22:11: Total On-Chip Power (W) 9.72 (budget: 91.80) 
+Fri 22:11: Dynamic Power (W)       7.06 
+Fri 22:11: Device Static Power(W)  2.66 
+Fri 22:11: 
+Fri 22:11: (7/15) - Place DFE (VivadoImplementation)
+Fri 22:11: Executing the following 1 Implementation Strategy in 1 thread:
+Fri 22:11:  - VIVADO_DEFAULT
+Fri 23:50: Implementation: Strategy "VIVADO_DEFAULT" met timing with score 0 (best score 0)
+Fri 23:50: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Fri 23:50: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Fri 23:50: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Fri 23:50: 
+Fri 23:50: FINAL POWER REPORT
+Fri 23:50: Total On-Chip Power (W) 10.80 (budget: 91.80) 
+Fri 23:50: Dynamic Power (W)        8.12 
+Fri 23:50: Device Static Power(W)   2.68 
+Fri 23:50: 
+Fri 23:50: (11/15) - Generate Configuration (VivadoBitgen)
+Sat 00:01: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Sat 00:03: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Sat 00:03: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Sat 00:03: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Sat 00:03: 
+Sat 00:03: FINAL RESOURCE USAGE
+Sat 00:03: FPGA: xcVU9P-FLGB2104-2-E
+Sat 00:03: Logic utilization:      198642 / 3546720 (5.60%)
+Sat 00:03:   LUTs:                  76972 / 1182240 (6.51%)
+Sat 00:03:   Primary FFs:          121670 / 2364480 (5.15%)
+Sat 00:03: DSP blocks:                 18 / 6840    (0.26%)
+Sat 00:03: Block memory (BRAM18):     604 / 4320    (13.98%)
+Sat 00:03: Block memory (URAM):         3 / 960     (0.31%)
+Sat 00:03: 
+Sat 00:03: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max (MD5Sum: a4268ac46e5ab8fe5e73cbc4550bc2b6)
+Sat 00:03: Build completed: Sat Dec 11 00:03:44 GMT 2021 (took 2 hours, 16 mins, 25 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/../scratch/ConvPad.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/../scratch/ConvPad.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_1053754151008953281/cobject/max_8718862608526632065.c -o /tmp/sliccompile_1053754151008953281/cobject/max_8718862608526632065.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results/ConvPad.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_2432688905220567954.o 
+ld -r /tmp/sliccompile_1053754151008953281/cobject/max_8718862608526632065.c.o max_2432688905220567954.o -o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/conv_pad'
 g++ ../../src/conv_pad/ConvPadCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ConvPad_MAIA_DFE_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200/results -DDESIGN_NAME=ConvPad -c -o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfec.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM  -o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfe ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfe.o ConvPad_b16_H32_W32_C32_F32_K3_PAD0_f1_c1_k1_SEQ0_DRAM_COC_FREQ_200_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
