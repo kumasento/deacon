@@ -18,6 +18,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.platform.max5.manager.BuildConfig;
 import com.maxeler.platform.max5.manager.BuildConfig.Effort;
 import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
+import com.maxeler.platform.max5.manager.ImplementationStrategy;
 
 /**
  * The manager that builds three consecutive Convolution layers following the
@@ -68,43 +69,49 @@ public class BottleneckManager extends Max5LMemManager implements ManagerInterfa
     CompSeq seq0 = CompSeq.values()[ep.getSeq0()];
     CompSeq seq1 = CompSeq.values()[ep.getSeq1()];
     CompSeq seq2 = CompSeq.values()[ep.getSeq2()];
+    int stride = 2;
+    int numFracBits = ep.getBitWidth() - 8;
 
     // Pointwise
-    cps.add(0, new ConvLayerParameters.Builder(H, W, C, F, 1)
+    cps.add(0, new ConvLayerParameters.Builder(H * stride, W * stride, C, F, 1)
         .name("conv0")
+        .type(Type.POINTWISE)
         .BW(ep.getBitWidth())
+        .numFracBits(numFracBits)
         .PC(ep.getPC())
         .PF(ep.getPF())
         .PK(1)
         .pad(0)
         .seq(seq0)
-        .type(Type.POINTWISE)
         .coeffOnChip(ep.getCoeffOnChip())
-        // .dbg(true)
+        .dbg(ep.getDebug())
         .build());
     // Standard
-    cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+    cps.add(1, new ConvLayerParameters.Builder(H * stride, W * stride, F, F, K)
         .name("conv1")
         .BW(ep.getBitWidth())
+        .numFracBits(numFracBits)
         .PC(ep.getPF())
         .PF(ep.getPF())
         .PK(ep.getPK())
-        .pad(0)
+        .pad(1)
         .seq(seq1)
         // .dbg(true)
         .coeffOnChip(ep.getCoeffOnChip())
         .build());
     // Pointwise
-    cps.add(2, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, 1)
+    cps.add(2, new ConvLayerParameters.Builder(H, W, F, F, 1)
         .name("conv2")
+        .type(Type.POINTWISE)
         .BW(ep.getBitWidth())
+        .numFracBits(numFracBits)
         .PC(ep.getPC())
         .PF(ep.getPF())
         .PK(1)
         .pad(0)
         .seq(seq2)
         // .dbg(true)
-        .type(Type.POINTWISE)
+        .stride(stride)
         .coeffOnChip(ep.getCoeffOnChip())
         .build());
 
@@ -116,6 +123,11 @@ public class BottleneckManager extends Max5LMemManager implements ManagerInterfa
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER4);
+    buildConfig.setParallelism(5);
     mgr.build();
   }
 }

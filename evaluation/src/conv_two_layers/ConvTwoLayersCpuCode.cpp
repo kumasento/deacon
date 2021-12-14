@@ -136,6 +136,8 @@ int main(int argc, char *argv[]) {
   // for (uint64_t i = 0; i < coeff_1_num_elems; i++)
   //   coeff_1[i] = (rand() % 10) - 5;
 
+  input_dfe = ReorderInput(input_dfe, cp0, batch_size);
+
   ConvTwoLayers_actions_t actions;
   actions.param_batch_size = batch_size;
 
@@ -181,6 +183,8 @@ int main(int argc, char *argv[]) {
 #ifdef USE_DRAM
   ReadDRAM<data_t, Dfe>(output_dfe, base_addr, engine);
 #endif
+
+  output_dfe = ReorderOutput(output_dfe, cp1, batch_size);
 
   LOG(INFO) << "Examine results ...\n";
   for (int i = 0; i < 5; ++i)

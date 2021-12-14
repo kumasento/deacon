@@ -10,7 +10,7 @@ public class ConvPadEngineParameters extends ConvLayerEngineParameters {
   @Override
   public String getBuildName() {
     return String.format(
-        "%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_PAD%d_f%d_c%d_k%d_SEQ%d_%s%s_FREQ_%d",
+        "%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_PAD%d_f%d_c%d_k%d_SEQ%d_%s%s_FREQ_%d%s",
         getMaxFileName(),
         getDFEModel(),
         getTarget(),
@@ -27,6 +27,7 @@ public class ConvPadEngineParameters extends ConvLayerEngineParameters {
         getSeq(),
         (getUseDRAM() ? "DRAM" : "PCIe"),
         (getCoeffOnChip() ? "_COC" : ""),
-        getFreq());
+        getFreq(),
+        (getDebug() ? "_DBG" : ""));
   }
 }

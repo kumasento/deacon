@@ -52,7 +52,7 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     this.scalarT = scalarT;
 
     int width = getWidth();
-    int depth = getDepth();
+    int depth = MathUtils.nextPowerOfTwo(getDepth());
 
     owner.getManager().logMsg(
         String.format("Ifmap buffer configuration %d x %d", depth, width));

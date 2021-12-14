@@ -15,6 +15,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.platform.max5.manager.BuildConfig;
+import com.maxeler.platform.max5.manager.ImplementationStrategy;
 import com.maxeler.platform.max5.manager.BuildConfig.Effort;
 import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
 
@@ -86,6 +87,11 @@ public class ConvPadManager extends Max5LMemManager implements ManagerInterface 
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER4);
+    buildConfig.setParallelism(5);
     mgr.build();
   }
 }

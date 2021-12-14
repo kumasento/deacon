@@ -28,6 +28,8 @@ int GetConvLayerInputDim(int output_dim, int K, int P, int S) {
   CHECK_GE(P, 0);
   CHECK_GT(S, 0);
 
+  if (K == 1) return output_dim * S;
+
   return (output_dim - 1) * S + K - 2 * P;
 }
 
@@ -37,9 +39,13 @@ int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
   CHECK_GT(K, 0);
   CHECK_GE(P, 0);
   CHECK_GT(S, 0);
-  CHECK_EQ((input_dim - K + 2 * P) % S, 0);
+  if (K != 1) {
+    CHECK_EQ((input_dim - K + 2 * P) % S, 0);
+    return (input_dim - K + 2 * P) / S + 1;
+  }
 
-  return (input_dim - K + 2 * P) / S + 1;
+  CHECK_EQ(input_dim % S, 0);
+  return input_dim / S;
 }
 
 template <typename T, int burst_size = 16>
@@ -158,7 +164,7 @@ inline T FixedPointAdd(T a, T b) {
 
 template <typename T>
 inline T FixedPointMul(T a, T b, int num_frac_bits) {
-  int32_t round_value = 1 << (num_frac_bits - 1);
+  int32_t round_value = num_frac_bits >= 1 ? (1 << (num_frac_bits - 1)) : 0;
   auto tmp = static_cast<int32_t>(a) * static_cast<int32_t>(b);
   tmp += round_value;
   return Saturate<T>(tmp >> num_frac_bits);

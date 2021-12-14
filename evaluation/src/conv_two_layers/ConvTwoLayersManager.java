@@ -17,6 +17,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 import com.maxeler.platform.max5.manager.BuildConfig;
 import com.maxeler.platform.max5.manager.BuildConfig.Effort;
 import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
+import com.maxeler.platform.max5.manager.ImplementationStrategy;
 
 /**
  * The manager that builds two consecutive Convolution layers.
@@ -72,16 +73,18 @@ public class ConvTwoLayersManager extends Max5LMemManager implements ManagerInte
         .PC(ep.getPC())
         .PF(ep.getPF())
         .PK(ep.getPK())
+        .pad(1)
         .seq(seq0)
         .coeffOnChip(ep.getCoeffOnChip())
         .build());
-    cps.add(1, new ConvLayerParameters.Builder(H - K + 1, W - K + 1, F, F, K)
+    cps.add(1, new ConvLayerParameters.Builder(H, W, F, F, K)
         .BW(ep.getBitWidth())
         .seq(seq1)
         .coeffOnChip(ep.getCoeffOnChip())
         .PC(ep.getPF())
         .PF(ep.getPF())
         .PK(ep.getPK())
+        .pad(1)
         .name("conv1")
         .build());
 
@@ -93,6 +96,11 @@ public class ConvTwoLayersManager extends Max5LMemManager implements ManagerInte
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER4);
+    buildConfig.setParallelism(5);
     mgr.build();
   }
 }

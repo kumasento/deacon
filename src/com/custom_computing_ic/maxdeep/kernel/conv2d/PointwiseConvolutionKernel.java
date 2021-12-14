@@ -34,10 +34,12 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     // if (cp.seq != ConvLayerParameters.CompSeq.FILTER_MAJOR)
     // throw new IllegalArgumentException("Only support filter major in Pointwise
     // convolution.");
+    if (cp.STRIDE != 1 && cp.STRIDE != 2)
+      throw new IllegalArgumentException("Stride should be 1 or 2.");
 
     owner.getManager().logMsg("Building pointwise convolution:");
     owner.getManager().logMsg(
-        "F = %d C = %d PF = %d PC = %d", cp.F, cp.C, cp.PF, cp.PC);
+        "H = %d W = %d F = %d C = %d PF = %d PC = %d", cp.H, cp.W, cp.F, cp.C, cp.PF, cp.PC);
     owner.getManager().logMsg("Seq = %s", cp.seq.name());
 
     // initialise counters
@@ -117,7 +119,7 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     obuf.setReset(getObufReset(c));
 
     // dot-product units
-    DFEVector<DFEVar> procResult = process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, c);
+    DFEVector<DFEVar> procResult = process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, c, cp.dbg);
 
     if (cp.dbg) {
       debug.simPrintf("dp_out[%3d, %3d, %3d] = %KObj%\n", f, h, w, procResult);
@@ -165,7 +167,7 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
   @Override
   public DFEVar getOfmapEn() {
-    return c.eq(cp.C / cp.PC - 1);
+    return c.eq(cp.C / cp.PC - 1).and(getObufWriteEn(cp, h, w));
   }
 
   @Override
@@ -175,7 +177,7 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
   public static DFEVector<DFEVar> process(KernelBase<?> owner, DFEVector<DFEVar> ifmap,
       DFEVector<DFEVar> weights, int parHeight, int parWidth, int parInDepth, int parOutDepth,
-      DFEType T, DFEVar c) {
+      DFEType T, DFEVar c, boolean dbg) {
     List<DFEVector<DFEVar>> ifmapPE = getIfmapPE(owner, ifmap, parHeight, parWidth, parInDepth, T);
     List<DFEVector<DFEVar>> weightsPE = getWeightsPE(owner, weights, parInDepth, parOutDepth, T);
 
@@ -186,12 +188,20 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
         for (int pf = 0; pf < parOutDepth; pf++) {
           DFEVector<DFEVar> currIfmap = ifmapPE.get(ph * parWidth + pw);
           DFEVector<DFEVar> currWeights = weightsPE.get(pf);
+          if (dbg) {
+            owner.debug.simPrintf("[Pointwise] ifmapPE = %KObj%\n", currIfmap);
+            owner.debug.simPrintf("[Pointwise] weightsPE = %KObj%\n", currWeights);
+          }
 
           // in total we instantiate parWidth * parOutDepth * parInDepth number of
           // multipliers
           DotProductKernel dp = new DotProductKernel(owner, parInDepth, T);
           dp.setInputs(currIfmap, currWeights);
           DFEVar out = dp.getOutput();
+
+          if (dbg) {
+            owner.debug.simPrintf("[Pointwise] out = %KObj%\n", out);
+          }
 
           result[pf * parWidth * parHeight + ph * parWidth + pw].connect(out);
         }
@@ -224,11 +234,11 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   }
 
   private DFEVar getObufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar h, DFEVar w, DFEVar f) {
-    DFEVar HEIGHT = constant.var(cp.H / cp.PH).cast(addrT);
-    DFEVar WIDTH = constant.var(cp.W / cp.PW).cast(addrT);
+    DFEVar HEIGHT = constant.var(cp.H / cp.PH / cp.STRIDE).cast(addrT);
+    DFEVar WIDTH = constant.var(cp.W / cp.PW / cp.STRIDE).cast(addrT);
     DFEVar base = (cp.seq == CompSeq.CHANNEL_MAJOR) ? HEIGHT.mul(WIDTH.mul(f.cast(addrT)))
         : constant.var(0).cast(addrT);
-    DFEVar offset = (h.cast(addrT).mul(WIDTH).add(w.cast(addrT)));
+    DFEVar offset = (h.shiftRight(cp.STRIDE - 1).cast(addrT).mul(WIDTH).add(w.shiftRight(cp.STRIDE - 1).cast(addrT)));
     DFEVar addr = base.add(offset);
 
     if (cp.dbg) {
@@ -240,7 +250,10 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   }
 
   private DFEVar getObufWriteEn(ConvLayerParameters cp, DFEVar h, DFEVar w) {
-    return constant.var(1).cast(dfeBool());
+    if (cp.STRIDE == 1)
+      return constant.var(1).cast(dfeBool());
+
+    return h.and(constant.var(1).cast(h.getType())).eq(0).and(w.and(constant.var(1).cast(w.getType())).eq(0));
   }
 
   public static List<DFEVector<DFEVar>> getIfmapPE(KernelBase<?> owner, DFEVector<DFEVar> ifmap,

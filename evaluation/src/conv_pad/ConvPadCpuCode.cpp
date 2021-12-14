@@ -34,12 +34,16 @@ int main(int argc, char *argv[]) {
 
   uint64_t batch_size = 1;
   uint64_t num_iters = 1;
-  while ((c = getopt(argc, argv, "i:n:")) != -1) switch (c) {
+  bool cpu_sim = false;
+  while ((c = getopt(argc, argv, "i:n:c")) != -1) switch (c) {
       case 'i':
         num_iters = atoi(optarg);
         break;
       case 'n':
         batch_size = atoi(optarg);
+        break;
+      case 'c':
+        cpu_sim = true;
         break;
       default:
         exit(1);
@@ -57,15 +61,13 @@ int main(int argc, char *argv[]) {
   // The input size is the same as what the processor support.
   float max_val = 5, min_val = -5;
   auto input = CreateRandomArray<float>(cp0.C * cp0.H * cp0.W * batch_size,
-                                        0.1 * min_val, 0.1 * max_val);
+                                        min_val / cp0.F, max_val / cp0.F);
   auto weights_0 =
       CreateRandomArray<float>(cp0.F * cp0.C * cp0.K * cp0.K, min_val, max_val);
 
   // assuming the processing type is fixed point.
   auto input_dfe = FloatToFixed<data_t>(input, cp0.dfe.num_frac_bits);
   auto weights_0_dfe = FloatToFixed<data_t>(weights_0, cp0.dfe.num_frac_bits);
-  auto output_0_cpu = std::vector<data_t>(cp0.F * cp0.getOutputHeight() *
-                                          cp0.getOutputWidth() * batch_size);
   auto output_dfe = std::vector<data_t>(cp0.F * cp0.getOutputHeight() *
                                         cp0.getOutputWidth() * batch_size);
   auto dummy_bias = std::vector<data_t>();
@@ -73,16 +75,23 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "Created and converted input and weights\n";
 
   // CPU execution.
-  LOG(INFO) << "Run ConvLayerCpu ...\n";
-  LOG(INFO) << cp0.C << " x " << cp0.H << " x " << cp0.W << " -> " << cp0.F
-            << " x " << cp0.getOutputHeight() << " x " << cp0.getOutputWidth()
-            << " PAD = " << cp0.P << '\n';
-  ConvLayerCpuBatched<data_t>(input_dfe, weights_0_dfe, dummy_bias,
-                              output_0_cpu, batch_size, cp0.H, cp0.W, cp0.C,
-                              cp0.F, cp0.K, cp0.P, cp0.S,
-                              /*use_bias=*/false,
-                              /*use_fixed_point=*/true, cp0.dfe.num_frac_bits);
-  LOG(INFO) << "Done\n";
+  std::vector<data_t> output_0_cpu;
+  if (cpu_sim) {
+    LOG(INFO) << "Run ConvLayerCpu ...\n";
+    output_0_cpu = std::vector<data_t>(cp0.F * cp0.getOutputHeight() *
+                                       cp0.getOutputWidth() * batch_size);
+    LOG(INFO) << cp0.C << " x " << cp0.H << " x " << cp0.W << " -> " << cp0.F
+              << " x " << cp0.getOutputHeight() << " x " << cp0.getOutputWidth()
+              << " PAD = " << cp0.P << '\n';
+    ConvLayerCpuBatched<data_t>(
+        input_dfe, weights_0_dfe, dummy_bias, output_0_cpu, batch_size, cp0.H,
+        cp0.W, cp0.C, cp0.F, cp0.K, cp0.P, cp0.S,
+        /*use_bias=*/false,
+        /*use_fixed_point=*/true, cp0.dfe.num_frac_bits);
+    LOG(INFO) << "Done\n";
+  }
+
+  input_dfe = ReorderInput(input_dfe, cp0, batch_size);
 
   ConvPad_actions_t actions;
   actions.param_batch_size = batch_size;
@@ -108,59 +117,76 @@ int main(int argc, char *argv[]) {
 
   base_addr = WriteDRAM<data_t, Dfe>(input_dfe, base_addr, engine);
 #endif
-
-  printf("Running ...\n");
   std::chrono::time_point<std::chrono::system_clock> start, end;
+  actions.param_batch_size = 1;
+  LOG(INFO) << "Initialise ...\n";
+  start = std::chrono::system_clock::now();
+  // if (batch_size > 1) ConvPad_run(engine, &actions);
+  end = std::chrono::system_clock::now();
+  std::chrono::duration<double> init_time = end - start;
+  std::cout << "elapsed time: " << init_time.count() / 1 << "s\n";
+
+  LOG(INFO) << "Running ...\n";
+  actions.param_batch_size = batch_size;
   start = std::chrono::system_clock::now();
   for (int i = 0; i < (int)num_iters; i++) ConvPad_run(engine, &actions);
   end = std::chrono::system_clock::now();
   printf("Done\n");
 
-  std::chrono::duration<double> elapsed_seconds = end - start;
-  std::cout << "elapsed time: " << elapsed_seconds.count() / 1 << "s\n";
+  std::chrono::duration<double> total_time = end - start;
+  std::cout << "elapsed time: " << total_time.count() / 1 << "s\n";
+
+  auto elapsed_time = batch_size == 1
+                          ? total_time.count()
+                          : ((total_time.count() - init_time.count()) *
+                             ((double)batch_size / (batch_size - 1)));
 
 #ifdef USE_DRAM
   ReadDRAM<data_t, Dfe>(output_dfe, base_addr, engine);
 #endif
+  output_dfe = ReorderOutput(output_dfe, cp0, batch_size);
 
-  LOG(INFO) << "Examine results ...\n";
-  for (int i = 0; i < 5; ++i)
-    LOG(INFO) << "output_1_cpu[" << i << "] = "
-              << FixedToFloat<data_t>(output_0_cpu[i], cp0.dfe.num_frac_bits)
-              << '\n';
+  if (cpu_sim) {
+    LOG(INFO) << "Examine results ...\n";
+    for (int i = 0; i < 5; ++i)
+      LOG(INFO) << "output_1_cpu[" << i << "] = "
+                << FixedToFloat<data_t>(output_0_cpu[i], cp0.dfe.num_frac_bits)
+                << '\n';
 
-  for (int i = 0; i < 5; ++i)
-    LOG(INFO) << "output_dfe[" << i << "] = "
-              << FixedToFloat<data_t>(output_dfe[i], cp0.dfe.num_frac_bits)
-              << '\n';
+    for (int i = 0; i < 5; ++i)
+      LOG(INFO) << "output_dfe[" << i << "] = "
+                << FixedToFloat<data_t>(output_dfe[i], cp0.dfe.num_frac_bits)
+                << '\n';
 
-  auto output_cpu_float =
-      FixedToFloat<data_t>(output_0_cpu, cp0.dfe.num_frac_bits);
-  auto output_dfe_float =
-      FixedToFloat<data_t>(output_dfe, cp0.dfe.num_frac_bits);
+    auto output_cpu_float =
+        FixedToFloat<data_t>(output_0_cpu, cp0.dfe.num_frac_bits);
+    auto output_dfe_float =
+        FixedToFloat<data_t>(output_dfe, cp0.dfe.num_frac_bits);
 
-  const int16_t mask = (1 << (cp0.dfe.num_frac_bits + 1)) - 1;
-  LOG(INFO) << "Evaluating difference ...";
-  LOG(INFO) << "Mask: " << std::setw(8) << std::showbase << std::setfill('0')
-            << std::hex << mask;
+    const int16_t mask = (1 << (cp0.dfe.num_frac_bits + 1)) - 1;
+    LOG(INFO) << "Evaluating difference ...";
+    LOG(INFO) << "Mask: " << std::setw(8) << std::showbase << std::setfill('0')
+              << std::hex << mask;
 
-  uint64_t num_failed = 0;
-  double total_diff = 0.0f;
-  for (uint64_t i = 0; i < output_0_cpu.size(); i++) {
-    auto diff = std::abs(output_0_cpu[i] - output_dfe[i]);
-    auto float_diff = std::abs(output_cpu_float[i] - output_dfe_float[i]);
-    total_diff += float_diff;
-    if ((static_cast<int16_t>(diff) | mask) != mask) {
-      if (num_failed < 10)
-        fprintf(stderr, "Result mis-matched at %6ld: cpu %10.6f dfe %10.6f\n",
-                i, output_cpu_float[i], output_dfe_float[i]);
-      num_failed++;
-      // exit(1);
+    uint64_t num_failed = 0;
+    double total_diff = 0.0f;
+    for (uint64_t i = 0; i < output_0_cpu.size(); i++) {
+      auto diff = std::abs(output_0_cpu[i] - output_dfe[i]);
+      auto float_diff = std::abs(output_cpu_float[i] - output_dfe_float[i]);
+      total_diff += float_diff;
+      if ((static_cast<int16_t>(diff) | mask) != mask) {
+        if (num_failed < 10)
+          fprintf(stderr, "Result mis-matched at %6ld: cpu %10.6f dfe %10.6f\n",
+                  i, output_cpu_float[i], output_dfe_float[i]);
+        num_failed++;
+        // exit(1);
+      }
     }
-  }
 
-  LOG(INFO) << "num_failed: " << num_failed << " total: " << output_0_cpu.size()
-            << " avg_diff: " << (total_diff / output_0_cpu.size()) << '\n';
+    LOG(INFO) << "num_failed: " << num_failed
+              << " total: " << output_0_cpu.size()
+              << " avg_diff: " << (total_diff / output_0_cpu.size()) << '\n';
+  }
 
   uint64_t num_ops = 0;
   // conv0
@@ -168,8 +194,7 @@ int main(int argc, char *argv[]) {
              cp0.K * cp0.K * 2;
 
   std::cout << "GOP/s: "
-            << num_ops * batch_size * 1e-9 /
-                   (elapsed_seconds.count() / num_iters)
+            << num_ops * batch_size * 1e-9 / (elapsed_time / num_iters)
             << std::endl;
 
   max_unload(engine);

@@ -21,10 +21,13 @@ struct DfeConvLayerParameters {
   uint64_t PK;
   uint64_t TH;
   uint64_t TW;
+  uint64_t TOH;
+  uint64_t TOW;
   uint64_t TC;
   uint64_t TF;
   uint64_t K;
   uint64_t PAD;
+  uint64_t STRIDE;
   bool wino_coeff_offline;
   bool coeff_on_chip;
   uint64_t num_frac_bits;
@@ -40,12 +43,15 @@ struct DfeConvLayerParameters {
 
     dcp.TH = GetConstant(max_file, name + "_H");
     dcp.TW = GetConstant(max_file, name + "_W");
+    dcp.TOH = GetConstant(max_file, name + "_OH");
+    dcp.TOW = GetConstant(max_file, name + "_OW");
     dcp.TC = GetConstant(max_file, name + "_C");
     dcp.TF = GetConstant(max_file, name + "_F");
     dcp.PC = GetConstant(max_file, name + "_PC");
     dcp.PF = GetConstant(max_file, name + "_PF");
     dcp.PK = GetConstant(max_file, name + "_PK");
     dcp.PAD = GetConstant(max_file, name + "_PAD");
+    dcp.STRIDE = GetConstant(max_file, name + "_STRIDE");
     dcp.K = GetConstant(max_file, name + "_K");
     dcp.coeff_on_chip = GetConstant(max_file, name + "_COEFF_ON_CHIP") == 1;
     dcp.num_frac_bits = GetConstant(max_file, name + "_num_frac_bits");
@@ -79,7 +85,7 @@ struct ConvLayerParameters {
     F = dfe.TF;
     K = dfe.K;
     P = dfe.PAD;  // TODO: change these
-    S = 1;
+    S = dfe.STRIDE;
   }
   ConvLayerParameters(int C, int F, int K, int P, int S, uint64_t PF,
                       uint64_t PC, uint64_t PK, int num_frac_bits)

@@ -25,6 +25,8 @@ public class ConvLayerEngineParameters extends EngineParameters {
   protected static final int K = 1;
   private static final String PAD_NAME = "PAD";
   protected static final int PAD = 0;
+  private static final String STRIDE_NAME = "S";
+  protected static final int STRIDE = 1;
 
   private static final String SEQ_NAME = "SEQ";
   private static final int SEQ = 0;
@@ -75,6 +77,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
     declareParam(F_NAME, DataType.INT, F);
     declareParam(K_NAME, DataType.INT, K);
     declareParam(PAD_NAME, DataType.INT, PAD);
+    declareParam(STRIDE_NAME, DataType.INT, STRIDE);
 
     declareParam(SEQ_NAME, DataType.INT, SEQ);
     declareParam(FREQ_NAME, DataType.INT, FREQ);
@@ -135,6 +138,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   public int getPad() {
     return getParam(PAD_NAME);
+  }
+
+  public int getStride() {
+    return getParam(STRIDE_NAME);
   }
 
   public int getSeq() {

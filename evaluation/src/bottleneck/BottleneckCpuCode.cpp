@@ -14,7 +14,11 @@
 #include "maxdeep/layers.h"
 
 // Can we reflect the types from Maxfiles.h?
+#if BIT_WIDTH == 16
 typedef int16_t data_t;
+#elif BIT_WIDTH == 8
+typedef int8_t data_t;
+#endif
 
 struct Dfe {
   typedef Bottleneck_actions_t dfe_run_actions_t;
@@ -64,7 +68,7 @@ int main(int argc, char *argv[]) {
 
   // generate input data
   // The input size is the same as what the processor support.
-  float max_val = 1.0, min_val = -1.0, input_scale = 0.1;
+  float max_val = 1.1, min_val = -1.1, input_scale = 1;
   auto input = CreateRandomArray<float>(
       cp0.dfe.TC * cp0.dfe.TH * cp0.dfe.TW * batch_size, input_scale * min_val,
       input_scale * max_val);
@@ -128,16 +132,15 @@ int main(int argc, char *argv[]) {
                               /*use_fixed_point=*/true, cp2.dfe.num_frac_bits);
   LOG(INFO) << "Done\n";
 
-  DumpArray<data_t>("input.txt", input_dfe.data(), input_dfe.size());
-  DumpArray<data_t>("output_0_cpu.txt", output_0_cpu.data(),
-                    output_0_cpu.size(), cp0.dfe.num_frac_bits);
-  DumpArray<data_t>("output_1_cpu.txt", output_1_cpu.data(),
-                    output_1_cpu.size(), cp1.dfe.num_frac_bits);
-  DumpArray<data_t>("output_2_cpu.txt", output_2_cpu.data(),
-                    output_2_cpu.size(), cp2.dfe.num_frac_bits);
+  // DumpArray<data_t>("input.txt", input_dfe.data(), input_dfe.size());
+  // DumpArray<data_t>("output_0_cpu.txt", output_0_cpu.data(),
+  //                   output_0_cpu.size(), cp0.dfe.num_frac_bits);
+  // DumpArray<data_t>("output_1_cpu.txt", output_1_cpu.data(),
+  //                   output_1_cpu.size(), cp1.dfe.num_frac_bits);
+  // DumpArray<data_t>("output_2_cpu.txt", output_2_cpu.data(),
+  //                   output_2_cpu.size(), cp2.dfe.num_frac_bits);
 
-  cp0.dump();
-
+  input_dfe = ReorderInput(input_dfe, cp0, batch_size);
   // Configure DFE run.
   Bottleneck_actions_t actions;
   actions.param_batch_size = batch_size;
@@ -145,6 +148,18 @@ int main(int argc, char *argv[]) {
   assert(cp0.dfe.coeff_on_chip && cp1.dfe.coeff_on_chip &&
          cp2.dfe.coeff_on_chip);
   // Split weights into the FMems
+  LOG(INFO) << "BIT_WIDTH = " << BIT_WIDTH << '\n';
+#if BIT_WIDTH == 8
+  LOG(INFO) << "Split into uint64_t ...";
+  uint64_t **ptr =
+      reinterpret_cast<uint64_t **>(&(actions.param_batch_size) + 1);
+  ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_0_dfe.data(), cp0);
+  LOG(INFO) << "Initialized coefficients from weights_0, ptr = " << ptr << '\n';
+  ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_1_dfe.data(), cp1);
+  LOG(INFO) << "Initialized coefficients from weights_1, ptr = " << ptr << '\n';
+  ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_2_dfe.data(), cp2);
+  LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
+#else
   double **ptr = reinterpret_cast<double **>(&(actions.param_batch_size) + 1);
   ptr = SplitCoeffAndAssign<float>(ptr, weights_0.data(), cp0);
   LOG(INFO) << "Initialized coefficients from weights_0, ptr = " << ptr << '\n';
@@ -152,6 +167,7 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "Initialized coefficients from weights_1, ptr = " << ptr << '\n';
   ptr = SplitCoeffAndAssign<float>(ptr, weights_2.data(), cp2);
   LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
+#endif
 
   LOG(INFO) << "Initialized actions\n";
 
@@ -186,6 +202,7 @@ int main(int argc, char *argv[]) {
   ReadDRAM<data_t, Dfe>(output_dfe, base_addr, engine);
 #endif
 
+  output_dfe = ReorderOutput(output_dfe, cp2, batch_size);
   LOG(INFO) << "Examine results ...\n";
   for (int i = 0; i < 5; ++i)
     LOG(INFO) << "output_2_cpu[" << i << "] = "

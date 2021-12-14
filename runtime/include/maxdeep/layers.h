@@ -230,6 +230,58 @@ void ConvLayerCpuBatched(std::vector<T> &input, std::vector<T> &weights,
 }
 
 template <typename T>
+std::vector<T> ReorderInput(std::vector<T> &input,
+                            const ConvLayerParameters &cp,
+                            const size_t batch_size) {
+  if (cp.dfe.PC <= 1) return input;
+
+  LOG(INFO) << "Reordering input for PC = " << cp.dfe.PC << '\n';
+
+  std::vector<T> reordered(input.size());
+  for (size_t i = 0; i < batch_size; ++i) {
+    auto offset = i * cp.dfe.TC * cp.dfe.TH * cp.dfe.TW;
+    for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      for (int h = 0; h < cp.dfe.TH; ++h)
+        for (int w = 0; w < cp.dfe.TW; ++w)
+          for (int p = 0; p < cp.dfe.PC; ++p) {
+            auto src =
+                offset + (c + p) * cp.dfe.TH * cp.dfe.TW + h * cp.dfe.TW + w;
+            auto dst = offset + c * cp.dfe.TH * cp.dfe.TW +
+                       h * cp.dfe.TW * cp.dfe.PC + w * cp.dfe.PC + p;
+            reordered[dst] = input[src];
+          }
+  }
+  return reordered;
+}
+
+template <typename T>
+std::vector<T> ReorderOutput(std::vector<T> &output,
+                             const ConvLayerParameters &cp,
+                             const size_t batch_size) {
+  if (cp.dfe.PF <= 1) return output;  // no need to reorder.
+
+  LOG(INFO) << "Reordering output for PF = " << cp.dfe.PF
+            << " TOH = " << cp.dfe.TOH << " TOW = " << cp.dfe.TOW << '\n';
+
+  std::vector<T> reordered(output.size());
+  for (size_t i = 0; i < batch_size; ++i) {
+    auto offset = i * cp.dfe.TF * cp.dfe.TOH * cp.dfe.TOW;
+    for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      for (int h = 0; h < cp.dfe.TOH; ++h)
+        for (int w = 0; w < cp.dfe.TOW; ++w)
+          for (int p = 0; p < cp.dfe.PF; ++p) {
+            auto dst =
+                offset + (f + p) * cp.dfe.TOH * cp.dfe.TOW + h * cp.dfe.TOW + w;
+            auto src = offset + f * cp.dfe.TOH * cp.dfe.TOW +
+                       h * cp.dfe.TOW * cp.dfe.PF + w * cp.dfe.PF + p;
+            reordered[dst] = output[src];
+          }
+  }
+  LOG(INFO) << "Done";
+  return reordered;
+}
+
+template <typename T>
 void ConvLayerCpuWinograd(std::vector<T> &input, std::vector<T> &weights,
                           std::vector<T> &bias, std::vector<T> &output, int H,
                           int W, int C, int F, int K, int P, int S, int R,
@@ -626,35 +678,41 @@ size_t ReadDRAM(std::vector<T> &arr, size_t base_addr, max_engine_t *engine) {
   return base_addr + arr.size() * sizeof(T);
 }
 
-template <typename T>
-double **SplitCoeffAndAssign(double **ptr, T *data,
-                             const ConvLayerParameters &cp) {
+template <typename T, typename S = double>
+S **SplitCoeffAndAssign(S **ptr, T *data, const ConvLayerParameters &cp) {
   uint64_t cols = (uint64_t)std::ceil(static_cast<double>(cp.C) / cp.dfe.PC);
   uint64_t fmem_size =
       cols * (uint64_t)std::ceil(static_cast<double>(cp.F) / cp.dfe.PF);
 
-  bool convert = (!std::is_same<T, float>::value);
+  // if (std::is_same<S, uint64_t>::value) fmem_size /= 8;
+
+  bool convert = (std::is_same<T, float>::value);
 
   for (uint64_t pf = 0; pf < cp.dfe.PF; ++pf)
     for (uint64_t pc = 0; pc < cp.dfe.PC; ++pc)
       for (int kx = 0; kx < cp.K; ++kx)
         for (int ky = 0; ky < cp.K; ++ky) {
-          double *arr = (double *)malloc(sizeof(double) * fmem_size);
+          S *arr = (S *)malloc(sizeof(S) * fmem_size);
 
           for (int f = 0; f < cp.F; f += cp.dfe.PF)
             for (int c = 0; c < cp.C; c += cp.dfe.PC) {
+              auto idx = f / cp.dfe.PF * cols + c / cp.dfe.PC;
               T value = data[(f + pf) * (cp.C * cp.K * cp.K) +
                              (c + pc) * (cp.K * cp.K) + (kx * cp.K) + ky];
-              auto idx = f / cp.dfe.PF * cols + c / cp.dfe.PC;
-              if (!convert)
-                arr[idx] = value;
-              else
+              if (convert) {
                 arr[idx] = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
-              // LOG(INFO) << "idx = " << idx << " arr[idx] = " << arr[idx]
-              //           << '\n';
+              } else {
+                // *((T *)arr + idx) = value;
+                arr[idx] = value;
+#ifdef TRACE
+                LOG(INFO) << "idx = " << idx << " value = " << std::hex
+                          << static_cast<int16_t>(value)
+                          << " arr[idx] = " << arr[idx] << '\n';
+#endif
+              }
             }
 
-          *ptr = (double *)arr;
+          *ptr = arr;
           ++ptr;
         }
 

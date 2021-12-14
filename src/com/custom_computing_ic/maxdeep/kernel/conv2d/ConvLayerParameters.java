@@ -27,6 +27,7 @@ public class ConvLayerParameters extends LayerParameters {
   public final int F; // number of filters
   public final int K; // kernel size
   public final int PAD; // padding size
+  public final int STRIDE; // stride
   public final CompSeq seq; // computation sequence
   public final String name;
   public final boolean dbg;
@@ -82,6 +83,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.PH = builder.PH;
     this.PW = builder.PW;
     this.PAD = builder.P;
+    this.STRIDE = builder.S;
     this.seq = builder.seq;
     this.name = builder.name;
     this.dbg = builder.dbg;
@@ -333,8 +335,8 @@ public class ConvLayerParameters extends LayerParameters {
     private int PK;
     private int PH;
     private int PW;
-    private int S;
-    private int P;
+    private int S; // stride
+    private int P; // pad
     private CompSeq seq;
     private String name;
     private String dtype;
@@ -387,10 +389,25 @@ public class ConvLayerParameters extends LayerParameters {
       this.coeffOnChip = false;
     }
 
+    private int getInputDim(int outputDim, int kernelDim, int pad, int stride) {
+      if (type == Type.POINTWISE)
+        return outputDim * stride;
+      return (outputDim - 1) * stride + kernelDim - 2 * pad;
+    }
+
     public Builder pad(int pad) {
+      if (type == Type.POINTWISE && pad != 0)
+        throw new IllegalArgumentException("pad should be 0 for pointwise");
       this.P = pad;
-      this.H = this.OH - 2 * this.P - 1 + this.K;
-      this.W = this.OW - 2 * this.P - 1 + this.K;
+      this.H = getInputDim(this.OH, this.K, this.P, this.S);
+      this.W = getInputDim(this.OW, this.K, this.P, this.S);
+      return this;
+    }
+
+    public Builder stride(int stride) {
+      this.S = stride;
+      this.H = getInputDim(this.OH, this.K, this.P, this.S);
+      this.W = getInputDim(this.OW, this.K, this.P, this.S);
       return this;
     }
 
@@ -491,6 +508,10 @@ public class ConvLayerParameters extends LayerParameters {
     }
 
     public Builder type(Type type) {
+      if (type == Type.POINTWISE && P != 0)
+        throw new IllegalArgumentException("pad should be 0 for pointwise");
+      if (type == Type.POINTWISE && K != 1)
+        throw new IllegalArgumentException("kernel should be 1 for pointwise");
       this.type = type;
 
       return this;

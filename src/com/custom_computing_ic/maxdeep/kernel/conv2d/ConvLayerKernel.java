@@ -56,6 +56,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
     if (cp.useWinograd && cp.PAD > 0)
       throw new IllegalArgumentException("Padding should be 0 when using winograd.");
+    if (cp.STRIDE != 1 && cp.STRIDE != 2)
+      throw new IllegalArgumentException("Stride should be 1 or 2.");
 
     this.prefix = prefix;
 
@@ -103,11 +105,10 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public void initConvLayer() {
     DFEVector<DFEVar> zeroVec = ifmapVecT.newInstance(getOwner());
     for (int i = 0; i < ifmapVecT.getSize(); ++i)
-      zeroVec.connect(constant.var(0).cast(T));
+      zeroVec.get(i).connect(constant.var(0).cast(T));
 
-    if (cp.dbg) {
+    if (cp.dbg)
       debug.simPrintf("ifmap = %KObj%\n", ifmap);
-    }
     DFEVector<DFEVar> input = control.mux(isInPaddedArea(h, w), ifmap, zeroVec);
 
     /* ifmap buffer */
@@ -184,8 +185,15 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (cp.useWinograd) {
       return (h >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1) &
           (w >= ConvLayerLineBuffer.WINO_LBUF_HEIGHT - 1);
-    } else
-      return (h >= (cp.K - cp.K / 2)) & (w * cp.PK >= (cp.K - cp.K / 2));
+    } else {
+      DFEVar cond = h.gte(cp.K - 1).and(w.mul(cp.PK).gte(cp.K - 1));
+      if (cp.STRIDE == 1)
+        return cond;
+
+      // STRIDE is 2, check output is mod 2 == 0.
+      return cond.and(oh.and(constant.var(1).cast(oh.getType())).eq(0))
+          .and(ow.and(constant.var(1).cast(oh.getType())).eq(0));
+    }
   }
 
   public DFEVar getOfmapBufferAddr() {
@@ -209,13 +217,13 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       }
 
     } else {
+
       switch (cp.seq) {
         case CHANNEL_MAJOR:
-          return (f * (cp.OH * cp.OW / cp.PK) + oh * cp.OW / cp.PK + ow)
-              .cast(addrT);
-
+          return f.mul(cp.OH * cp.OW / cp.PK).add(oh.shiftRight(cp.STRIDE - 1).mul(cp.OW / cp.PK))
+              .add(ow.shiftRight(cp.STRIDE - 1)).cast(addrT);
         case FILTER_MAJOR:
-          return (oh * cp.OW / cp.PK + ow).cast(addrT);
+          return oh.shiftRight(cp.STRIDE - 1).mul(cp.OW / cp.PK).add(ow.shiftRight(cp.STRIDE - 1)).cast(addrT);
 
         default:
           throw new IllegalArgumentException(String.format(
@@ -232,7 +240,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
   @Override
   public DFEVar getIfmapEn() {
-    return getIfmapBufferWriteEn().and(~isInPaddedArea(h, w));
+    return getIfmapBufferWriteEn().and(isInPaddedArea(h, w).complement());
   }
 
   @Override
