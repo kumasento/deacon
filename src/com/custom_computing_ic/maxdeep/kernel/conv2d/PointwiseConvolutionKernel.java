@@ -28,8 +28,8 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   private final DFEVar f, c, h, w;
   private final DFEVector<DFEVar> coeff;
 
-  public PointwiseConvolutionKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
-    super(owner, cp, T);
+  public PointwiseConvolutionKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
+    super(owner, cp, T, WT);
 
     // if (cp.seq != ConvLayerParameters.CompSeq.FILTER_MAJOR)
     // throw new IllegalArgumentException("Only support filter major in Pointwise
@@ -90,12 +90,12 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     if (!cp.coeffOnChip)
       this.coeff = coeffList.get(0);
     else {
-      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(T);
+      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
 
-      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(T))));
+      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
       if (cp.dbg)
         debug.simPrintf("coeff FMem addr = %KObj%\n", addr);
-      this.coeff = readCoeffFMemList(addr, coeffFMemList, T);
+      this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
     }
 
     if (cp.dbg) {
@@ -119,7 +119,7 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     obuf.setReset(getObufReset(c));
 
     // dot-product units
-    DFEVector<DFEVar> procResult = process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, c, cp.dbg);
+    DFEVector<DFEVar> procResult = process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, WT, c, cp.dbg);
 
     if (cp.dbg) {
       debug.simPrintf("dp_out[%3d, %3d, %3d] = %KObj%\n", f, h, w, procResult);
@@ -177,9 +177,9 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
   public static DFEVector<DFEVar> process(KernelBase<?> owner, DFEVector<DFEVar> ifmap,
       DFEVector<DFEVar> weights, int parHeight, int parWidth, int parInDepth, int parOutDepth,
-      DFEType T, DFEVar c, boolean dbg) {
+      DFEType T, DFEType WT, DFEVar c, boolean dbg) {
     List<DFEVector<DFEVar>> ifmapPE = getIfmapPE(owner, ifmap, parHeight, parWidth, parInDepth, T);
-    List<DFEVector<DFEVar>> weightsPE = getWeightsPE(owner, weights, parInDepth, parOutDepth, T);
+    List<DFEVector<DFEVar>> weightsPE = getWeightsPE(owner, weights, parInDepth, parOutDepth, WT);
 
     DFEVectorType<DFEVar> resT = new DFEVectorType<DFEVar>(T, parHeight * parWidth * parOutDepth);
     DFEVector<DFEVar> result = resT.newInstance(owner);
@@ -195,7 +195,7 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
           // in total we instantiate parWidth * parOutDepth * parInDepth number of
           // multipliers
-          DotProductKernel dp = new DotProductKernel(owner, parInDepth, T);
+          DotProductKernel dp = new DotProductKernel(owner, parInDepth, T, WT);
           dp.setInputs(currIfmap, currWeights);
           DFEVar out = dp.getOutput();
 

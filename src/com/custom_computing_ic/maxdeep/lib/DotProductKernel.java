@@ -20,41 +20,51 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
  * @author Ruizhe Zhao
  * @since 18/06/2017
  */
-public
-class DotProductKernel extends KernelComponent {
- private
-  final DFEVector<DFEVar> vecA;
- private
-  final DFEVector<DFEVar> vecB;
- private
-  final DFEVar out;
- private
-  final DFEVectorType<DFEVar> vecT;
+public class DotProductKernel extends KernelComponent {
+  private final DFEVector<DFEVar> vecA;
+  private final DFEVector<DFEVar> vecB;
+  private final DFEVar out;
+  private final DFEVectorType<DFEVar> vecAT, vecBT;
 
- public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type) {
-    this(owner, vecSize, type, false);
+  public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type) {
+    this(owner, vecSize, type, type, false);
+  }
+
+  public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type, DFEType type2) {
+    this(owner, vecSize, type, type2, false);
   }
 
   /**
    * Constructor for the DotProductKernelComponent.
    *
-   * @param owner owner design of this component
+   * @param owner   owner design of this component
    * @param vecSize size of the vectors to be computed
-   * @param type data type.s
+   * @param type    data type.s
    */
- public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType type, boolean dbg) {
+  public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType typeA, DFEType typeB, boolean dbg) {
     super(owner);
 
     if (vecSize <= 0)
       throw new IllegalArgumentException("vecSize should be larger than 0");
 
-    vecT = new DFEVectorType<DFEVar>(type, vecSize);
+    vecAT = new DFEVectorType<DFEVar>(typeA, vecSize);
+    vecBT = new DFEVectorType<DFEVar>(typeB, vecSize);
 
-    vecA = vecT.newInstance(owner);
-    vecB = vecT.newInstance(owner);
+    vecA = vecAT.newInstance(owner);
+    vecB = vecBT.newInstance(owner);
+    DFEVector<DFEVar> vecC;
 
     // An array of multipliers will be initialized here.
-    DFEVector<DFEVar> vecC = vecA * vecB;
+    if (typeB.isUInt() && typeB.getTotalBits() == 2) {
+      vecC = vecAT.newInstance(owner);
+      for (int i = 0; i < vecSize; ++i)
+        vecC.get(i).connect(control.mux(vecB.get(i), constant.var(0).cast(typeA), vecA.get(i),
+            constant.var(0).cast(typeA), vecA.get(i).neg()));
+
+    } else {
+      vecC = vecA.mul(vecB);
+    }
+
     if (dbg) {
       debug.simPrintf("[DotProd] vecA = %KObj%\n", vecA);
       debug.simPrintf("[DotProd] vecB = %KObj%\n", vecB);
@@ -65,18 +75,20 @@ class DotProductKernel extends KernelComponent {
     out = AdderTree.reduce(vecC.getElementsAsList());
   }
 
- public
-  void setInputs(DFEVector<DFEVar> vecA, DFEVector<DFEVar> vecB) {
+  public void setInputs(DFEVector<DFEVar> vecA, DFEVector<DFEVar> vecB) {
     this.vecA.connect(vecA);
     this.vecB.connect(vecB);
   }
 
- public
-  DFEVectorType<DFEVar> getInputVecT() { return vecT; }
+  public DFEVectorType<DFEVar> getInputVecT() {
+    return vecAT;
+  }
 
- public
-  DFEVar getOutput() { return out; }
+  public DFEVar getOutput() {
+    return out;
+  }
 
- public
-  DFEType getOutputT() { return out.getType(); }
+  public DFEType getOutputT() {
+    return out.getType();
+  }
 }

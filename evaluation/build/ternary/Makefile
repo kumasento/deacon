@@ -1,3 +1,4 @@
+
 ####################################################
 #       Makefile ------- Thomas Chau 2013          #
 #       Tested for MaxCompiler 2013.2.2            #
@@ -26,33 +27,33 @@ WHEREISROOT=../../..
 SRCROOT=../../src
 
 # Assuming Kernel and Manager class names follow the pattern below:
-PRJ=Bottleneck
+PRJ=Ternary
 MANAGER=$(PRJ)Manager
-APPPKG=bottleneck
+APPPKG=ternary
 DEVICE=Lima
 
 
-BIT_WIDTH?=8
-WBW?=2
-H?=7
-W?=7
-C?=2048
-F?=512
+BIT_WIDTH?=16
+H?=32
+W?=32
+C?=32
+F?=32
 K?=3
-S?=1
+PAD?=0
 P_F?=1
 P_C?=1
 P_K?=1
-SEQ0?=0
-SEQ1?=0
-SEQ2?=0
+SEQ?=0
 FREQ?=200
 USE_DRAM?=true
 USE_DRAM_SUFFIX:=DRAM
 COEFF_ON_CHIP?=true
 COEFF_ON_CHIP_SUFFIX:=_COC
 EXTRA_CFLAGS:=-DUSE_DRAM
-DEBUG:=false
+DEBUG?=false
+DEBUG_SUFFIX:=
+
+EXTRA_CFLAGS+=-DTERNARY
 
 ifeq ($(DEBUG), true)
 EXTRA_CFLAGS+=-DTRACE
@@ -68,13 +69,10 @@ ifeq ($(COEFF_ON_CHIP), false)
 COEFF_ON_CHIP_SUFFIX:=
 endif
 
-EXTRA_CFLAGS+=-DBIT_WIDTH=$(BIT_WIDTH) -DWBW=$(WBW)
+BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) PAD=$(PAD) SEQ=$(SEQ) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) COEFF_ON_CHIP=$(COEFF_ON_CHIP) DEBUG=$(DEBUG)
+BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_PAD$(PAD)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ)_$(USE_DRAM_SUFFIX)$(COEFF_ON_CHIP_SUFFIX)_FREQ_$(FREQ)$(DEBUG_SUFFIX)
 
-BUILD_PARAMS:=bitWidth=$(BIT_WIDTH) WBW=$(WBW) PF=$(P_F) PC=$(P_C) PK=$(P_K) H=$(H) W=$(W) C=$(C) F=$(F) K=$(K) SEQ0=$(SEQ0) SEQ1=$(SEQ1) SEQ2=$(SEQ2) USE_DRAM=$(USE_DRAM) FREQ=$(FREQ) COEFF_ON_CHIP=$(COEFF_ON_CHIP) DEBUG=$(DEBUG)
-BUILD_NAME_OPTION:=_b$(BIT_WIDTH)_$(WBW)_H$(H)_W$(W)_C$(C)_F$(F)_K$(K)_S$(S)_f$(P_F)_c$(P_C)_k$(P_K)_SEQ$(SEQ0)_$(SEQ1)_$(SEQ2)_$(USE_DRAM_SUFFIX)$(COEFF_ON_CHIP_SUFFIX)_FREQ_$(FREQ)$(DEBUG_SUFFIX)
-
-SIMDEVICEID?=a
-CLI_OPTIONS?=-n 2 
+CLI_OPTIONS?=-n 2 -c
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

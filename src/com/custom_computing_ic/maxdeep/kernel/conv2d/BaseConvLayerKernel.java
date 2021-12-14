@@ -16,7 +16,7 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
   protected final ConvLayerParameters cp;
   protected final List<ConvLayerParameters> cps;
-  protected final DFEType T;
+  protected final DFEType T, WT;
   protected DFEVector<DFEVar> ifmap, ofmap;
   protected List<DFEVector<DFEVar>> coeffList;
   protected DFEVectorType<DFEVar> ifmapVecT, ofmapVecT;
@@ -24,12 +24,18 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
   public BaseConvLayerKernel(KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T,
       boolean useIfmapBuffer) {
+    this(owner, cps, T, T, useIfmapBuffer);
+  }
+
+  public BaseConvLayerKernel(KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T, DFEType WT,
+      boolean useIfmapBuffer) {
     super(owner);
 
     this.cps = cps;
     this.cp = cps.get(0); // be compatible with a single layer case
 
     this.T = T;
+    this.WT = WT;
 
     ifmapVecT = new DFEVectorType<DFEVar>(T, getIfmapVecSize());
     ifmap = ifmapVecT.newInstance(getOwner());
@@ -47,21 +53,21 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     }
   }
 
-  public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
-    this(owner, new ArrayList<ConvLayerParameters>(Arrays.asList(cp)), T);
+  public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
+    this(owner, new ArrayList<ConvLayerParameters>(Arrays.asList(cp)), T, WT);
   }
 
-  public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T,
+  public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT,
       boolean useIfmapBuffer) {
-    this(owner, new ArrayList<ConvLayerParameters>(Arrays.asList(cp)), T, useIfmapBuffer);
+    this(owner, new ArrayList<ConvLayerParameters>(Arrays.asList(cp)), T, WT, useIfmapBuffer);
   }
 
-  public BaseConvLayerKernel(KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T) {
-    this(owner, cps, T, true);
+  public BaseConvLayerKernel(KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T, DFEType WT) {
+    this(owner, cps, T, WT, true);
   }
 
-  public BaseConvLayerKernel(KernelBase<?> owner, FusedConvLayerParameters fcp, DFEType T) {
-    this(owner, fcp.cps, T);
+  public BaseConvLayerKernel(KernelBase<?> owner, FusedConvLayerParameters fcp, DFEType T, DFEType WT) {
+    this(owner, fcp.cps, T, WT);
   }
 
   /* ------------------- Coeff on chip ------------------------------- */

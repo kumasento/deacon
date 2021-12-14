@@ -44,13 +44,18 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
   private final DFEVector<DFEVar> coeff;
 
-  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams, DFEType T) {
-    this(owner, convParams, T, convParams.name);
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams, DFEType T, DFEType WT) {
+    this(owner, convParams, T, WT, convParams.name);
   }
 
-  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, String prefix) {
-    super(owner, cp, T);
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters convParams, DFEType T) {
+    this(owner, convParams, T, T, convParams.name);
+  }
 
+  public ConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT, String prefix) {
+    super(owner, cp, T, WT);
+
+    owner.getManager().logMsg("WT = %s", WT.toString());
     owner.getManager().logMsg("coeffOnChip = %b\n", cp.coeffOnChip);
     owner.getManager().logMsg("Input height = %d, output height = %d, pad = %d\n", cp.H, cp.W, cp.PAD);
 
@@ -91,10 +96,10 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
                 coeffList.size()));
       this.coeff = coeffList.get(0);
     } else {
-      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(T);
+      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
 
-      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(T))));
-      this.coeff = readCoeffFMemList(addr, coeffFMemList, T);
+      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
+      this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
     }
 
     // getOwner().optimization.pushRoundingMode(RoundingMode.TRUNCATE);
@@ -127,7 +132,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       conv2d.setInputs(lineBufVec, coeff);
       conv2dOfmap = conv2d.getOfmap();
     } else {
-      Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, T);
+      Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, T, WT);
       conv2d.setInputs(lineBufVec, coeff);
       conv2dOfmap = conv2d.getOfmap();
     }

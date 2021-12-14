@@ -5,6 +5,8 @@ import com.maxeler.maxcompiler.v2.build.EngineParameters;
 public class ConvLayerEngineParameters extends EngineParameters {
   private static final String BIT_WIDTH_NAME = "bitWidth";
   private static final int BIT_WIDTH = 32;
+  private static final String WBW_NAME = "WBW"; // weight bit-width
+  private static final int WBW = 32; // weight bit-width
 
   private static final String PF_NAME = "PF";
   private static final int PF = 1;
@@ -64,6 +66,7 @@ public class ConvLayerEngineParameters extends EngineParameters {
   @Override
   protected void declarations() {
     declareParam(BIT_WIDTH_NAME, DataType.INT, BIT_WIDTH);
+    declareParam(WBW_NAME, DataType.INT, WBW);
     declareParam(DTYPE_NAME, DataType.STRING, DTYPE);
     declareParam(NUM_FRAC_BITS_NAME, DataType.INT, NUM_FRAC_BITS);
 
@@ -94,6 +97,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   public int getBitWidth() {
     return getParam(BIT_WIDTH_NAME);
+  }
+
+  public int getWBW() {
+    return getParam(WBW_NAME);
   }
 
   public int getNumFracBits() {

@@ -105,6 +105,24 @@ std::vector<T> CreateRandomArray(int N, float min_val = 0, float max_val = 1) {
   return arr;
 }
 
+template <typename T, typename S = float>
+std::vector<T> ToTernary(std::vector<S>& data) {
+  std::vector<T> ret(data.size());
+  for (int i = 0; i < data.size(); ++i)
+    ret[i] = data[i] == 0 ? 0 : (data[i] > 0 ? 1 : -1);
+
+  return ret;
+}
+
+template <typename T, typename S = float>
+std::vector<T> ToTernaryUnsigned(std::vector<S>& data) {
+  std::vector<T> ret(data.size());
+  for (int i = 0; i < data.size(); ++i)
+    ret[i] = data[i] == 0 ? 0 : (data[i] > 0 ? 1 : 3);
+
+  return ret;
+}
+
 template <typename T>
 inline T RoundToNearest(float data) {
   return static_cast<T>(std::round(data));
@@ -122,7 +140,7 @@ float FixedToFloat(T data, int num_frac_bits) {
 }
 
 template <typename T>
-std::vector<T> FloatToFixed(std::vector<float>& data, int num_frac_bits) {
+std::vector<T> FloatToFixed(const std::vector<float>& data, int num_frac_bits) {
   std::vector<T> arr(data.size());
 
   for (int i = 0; i < (int)data.size(); i++)

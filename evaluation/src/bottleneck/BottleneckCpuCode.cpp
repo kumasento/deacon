@@ -89,9 +89,18 @@ int main(int argc, char *argv[]) {
 
   // assuming the processing type is fixed point.
   auto input_dfe = FloatToFixed<data_t>(input, cp0.dfe.num_frac_bits);
+#if WBW == 2
+  auto weights_0_dfe =
+      FloatToFixed<data_t>(ToTernary<float>(weights_0), cp0.dfe.num_frac_bits);
+  auto weights_1_dfe =
+      FloatToFixed<data_t>(ToTernary<float>(weights_1), cp1.dfe.num_frac_bits);
+  auto weights_2_dfe =
+      FloatToFixed<data_t>(ToTernary<float>(weights_2), cp2.dfe.num_frac_bits);
+#else
   auto weights_0_dfe = FloatToFixed<data_t>(weights_0, cp0.dfe.num_frac_bits);
   auto weights_1_dfe = FloatToFixed<data_t>(weights_1, cp1.dfe.num_frac_bits);
   auto weights_2_dfe = FloatToFixed<data_t>(weights_2, cp2.dfe.num_frac_bits);
+#endif
   auto output_0_cpu = std::vector<data_t>(cp0.F * cp0.getOutputHeight() *
                                           cp0.getOutputWidth() * batch_size);
   auto output_1_cpu = std::vector<data_t>(cp1.F * cp1.getOutputHeight() *
@@ -130,6 +139,9 @@ int main(int argc, char *argv[]) {
                               cp2.F, cp2.K, cp2.P, cp2.S,
                               /*use_bias=*/false,
                               /*use_fixed_point=*/true, cp2.dfe.num_frac_bits);
+  for (int i = 0; i < output_2_cpu.size(); ++i) {
+    output_2_cpu[i] = FixedPointAdd<data_t>(output_0_cpu[i], output_2_cpu[i]);
+  }
   LOG(INFO) << "Done\n";
 
   // DumpArray<data_t>("input.txt", input_dfe.data(), input_dfe.size());
@@ -148,11 +160,17 @@ int main(int argc, char *argv[]) {
   assert(cp0.dfe.coeff_on_chip && cp1.dfe.coeff_on_chip &&
          cp2.dfe.coeff_on_chip);
   // Split weights into the FMems
-  LOG(INFO) << "BIT_WIDTH = " << BIT_WIDTH << '\n';
-#if BIT_WIDTH == 8
+  LOG(INFO) << "BIT_WIDTH = " << BIT_WIDTH << " WBW = " << WBW << '\n';
+#if WBW <= 8
   LOG(INFO) << "Split into uint64_t ...";
   uint64_t **ptr =
       reinterpret_cast<uint64_t **>(&(actions.param_batch_size) + 1);
+#if WBW == 2
+  weights_0_dfe = ToTernaryUnsigned<data_t, data_t>(weights_0_dfe);
+  weights_1_dfe = ToTernaryUnsigned<data_t, data_t>(weights_1_dfe);
+  weights_2_dfe = ToTernaryUnsigned<data_t, data_t>(weights_2_dfe);
+#endif
+
   ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_0_dfe.data(), cp0);
   LOG(INFO) << "Initialized coefficients from weights_0, ptr = " << ptr << '\n';
   ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_1_dfe.data(), cp1);
@@ -168,6 +186,9 @@ int main(int argc, char *argv[]) {
   ptr = SplitCoeffAndAssign<float>(ptr, weights_2.data(), cp2);
   LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
 #endif
+
+  std::string routing_string = "conv0_fanout -> conv1, conv0_fanout -> conv2";
+  actions.routing_string = routing_string.c_str();
 
   LOG(INFO) << "Initialized actions\n";
 
@@ -235,7 +256,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Result mis-matched at %6ld: cpu %10.6f dfe %10.6f\n",
                 i, output_cpu_float[i], output_dfe_float[i]);
       num_failed++;
-      exit(1);
+      // exit(1);
     }
   }
 

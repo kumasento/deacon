@@ -41,6 +41,7 @@ public class ConvLayerParameters extends LayerParameters {
   public static final int WINOGRAD_TILE_SIZE = 4;
   public int winoH;
   public int winoW;
+  public String residual = "";
 
   public PoolingLayerParameters pool;
 
@@ -67,6 +68,7 @@ public class ConvLayerParameters extends LayerParameters {
   public ConvLayerParameters(Builder builder) {
     // inherited from the parent
     this.BW = builder.BW;
+    this.WBW = builder.WBW;
     this.dtype = builder.dtype;
     this.numFracBits = builder.numFracBits;
 
@@ -96,7 +98,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.winoH = H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.coeffOnChip = builder.coeffOnChip;
-
+    this.residual = builder.residual;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -130,8 +132,12 @@ public class ConvLayerParameters extends LayerParameters {
    * @return Created DFEType instance.
    */
   public DFEType getDFEType() {
+    return getDFEType(this.BW);
+  }
+
+  public DFEType getDFEType(int BW) {
     if (dtype.equals("float")) {
-      if (this.BW != 32)
+      if (BW != 32)
         throw new IllegalArgumentException(
             String.format("If dtype is float, BW should be 32. Got: %d", BW));
 
@@ -329,7 +335,9 @@ public class ConvLayerParameters extends LayerParameters {
     private final int K;
     private final int OH;
     private final int OW;
+    private String residual = "";
     private int BW; /* bit width */
+    private int WBW;
     private int PC;
     private int PF;
     private int PK;
@@ -415,6 +423,19 @@ public class ConvLayerParameters extends LayerParameters {
       if (BW <= 0)
         throw new IllegalArgumentException("BW should be larger than 0");
       this.BW = BW;
+      return this;
+    }
+
+    public Builder WBW(int WBW) {
+      if (WBW <= 0)
+        throw new IllegalArgumentException("WBW should be larger than 0");
+      this.WBW = WBW;
+
+      return this;
+    }
+
+    public Builder residual(String name) {
+      this.residual = name;
       return this;
     }
 
@@ -550,6 +571,9 @@ public class ConvLayerParameters extends LayerParameters {
     }
 
     public ConvLayerParameters build() {
+      if (WBW < 8 && !coeffOnChip)
+        throw new IllegalArgumentException("coeff should be on chip if WBW < 8");
+
       return new ConvLayerParameters(this);
     }
   }

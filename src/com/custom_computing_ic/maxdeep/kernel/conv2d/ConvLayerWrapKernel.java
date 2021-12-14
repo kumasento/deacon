@@ -22,6 +22,7 @@ public class ConvLayerWrapKernel extends Kernel {
   public static final String DEPTHWISE_COEFF_NAME = "depthwise_coeff";
   public static final String POINTWISE_COEFF_NAME = "pointwise_coeff";
   public static final String OFMAP_NAME = "ofmap";
+  public static final String RESIDUAL_NAME = "residual";
 
   private final ConvLayerParameters cp;
   private final DFEType T;
@@ -47,16 +48,25 @@ public class ConvLayerWrapKernel extends Kernel {
      * TODO: what is the proper way to initialise conv and cast the type?
      */
     if (cp.type == Type.STANDARD || cp.type == Type.POINTWISE) {
+      DFEType WT = cp.WBW < 8 ? dfeUInt(cp.WBW) : cp.getDFEType(cp.WBW);
       // debug.pushEnableNumericExceptions(true);
       // optimization.pushRoundingMode(RoundingMode.TRUNCATE);
-      BaseConvLayerKernel conv = ConvLayerKernelFactory.create(getKernel(), cp, T);
+      BaseConvLayerKernel conv = ConvLayerKernelFactory.create(getKernel(), cp, T, WT);
       // optimization.popRoundingMode();
       // debug.popEnableNumericExceptions();
 
       conv.setIfmap(io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn()));
       if (!cp.coeffOnChip)
         conv.setCoeffList(createCoeffListInput(conv, numCoeffFifoSplits));
-      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(conv.getOfmap());
+
+      DFEVector<DFEVar> output = conv.getOfmap();
+      if (!cp.residual.isEmpty()) {
+        getManager().logMsg("Connecting residual: %s\n", cp.residual);
+        DFEVector<DFEVar> residual = io.input(RESIDUAL_NAME, conv.getOfmapVecT(), conv.getOfmapEn());
+        output = output.add(residual);
+      }
+
+      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn()).connect(output);
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
       DepthwiseSeparableConvLayerKernel conv = new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T);

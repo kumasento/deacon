@@ -11,6 +11,8 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
+import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.Fanout;
 // import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemCommandGroup;
@@ -118,6 +120,16 @@ public class ConvLayerManagerUtils {
 
     KernelBlock knl = null;
 
+    // check if we need to do fanout.
+    Map<String, Fanout> fanouts = new HashMap<String, Fanout>();
+    for (int i = 0; i < cps.size(); i++) {
+      ConvLayerParameters cp = cps.get(i);
+      if (!cp.residual.isEmpty()) {
+        mgr.logMsg("Creating fanout with key: %s\n", cp.residual);
+        fanouts.put(cp.residual, mgr.fanout(cp.residual + "_fanout"));
+      }
+    }
+
     // setting up streams
     for (int i = 0; i < cps.size(); i++) {
       ConvLayerParameters cp = cps.get(i);
@@ -136,11 +148,33 @@ public class ConvLayerManagerUtils {
           knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
               .connect(mgr.addStreamFromCPU(IFMAP_NAME));
         }
-
       } else {
-        knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
-            .connect(knls.get(cps.get(i - 1).name)
-                .getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+        DFELink link;
+        String key = cps.get(i - 1).name;
+        if (fanouts.containsKey(key))
+          link = fanouts.get(key).addOutput(cp.name);
+        else
+          link = knls.get(key).getOutput(ConvLayerWrapKernel.OFMAP_NAME);
+
+        knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(link);
+      }
+
+      if (fanouts.containsKey(cp.name)) {
+        fanouts.get(cp.name).getInput().connect(knl.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+      }
+
+      // residual connection.
+      if (!cp.residual.isEmpty()) {
+        DFELink link;
+        String key = cp.residual;
+        if (fanouts.containsKey(key)) {
+          link = fanouts.get(key).addOutput(cp.name);
+          mgr.logMsg("Read from fanout: %s", key + "_fanout");
+        } else
+          link = knls.get(key).getOutput(ConvLayerWrapKernel.OFMAP_NAME);
+
+        mgr.logMsg("Connecting to %s\n", link.getName());
+        knl.getInput(ConvLayerWrapKernel.RESIDUAL_NAME).connect(link);
       }
 
       // connect coeff
