@@ -400,4 +400,23 @@ void DumpArray(const char* file_name, T* data, int num, int num_frac_bits = 0) {
         << std::endl;
 }
 
+std::vector<float> ReadDataFile(const std::string& file_name,
+                                const std::string& key) {
+  std::vector<float> data;
+  std::ifstream file(file_name);
+  if (file.is_open()) {
+    std::string line;
+    while (std::getline(file, line))
+      if (line.find(key) != std::string::npos) break;
+    std::getline(file, line);
+    int N = std::stoi(line);
+    data.resize(N);
+    for (int i = 0; i < N; ++i) {
+      std::getline(file, line);
+      data[i] = std::stod(line);
+    }
+  }
+  return data;
+}
+
 #endif

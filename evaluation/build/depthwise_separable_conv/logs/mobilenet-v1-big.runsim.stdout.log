@@ -1,0 +1,75 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=depthwise_separable_conv MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 DepthwiseSeparableConvLayerManager \
+	DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target='DFE' enableMPCX=false \
+	bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big.txt
+]0; maxJavaRun: DepthwiseSeparableConvLayerManager DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : depthwise_separable_conv
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : depthwise_separable_conv.DepthwiseSeparableConvLayerManager
+Class arguments     : DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Thu 19:35: MaxCompiler version: 2021.1
+Thu 19:35: Build "DepthwiseSeparableConvLayer" start time: Thu Dec 16 19:35:00 GMT 2021
+Thu 19:35: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 19:35: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H14_W14_C512_F512_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1
+Thu 19:35: Detailed build log available in "_build.log"
+Thu 19:35: 
+Thu 19:35: ENGINE BUILD PARAMETERS
+Thu 19:35: 	              Build name: DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H14_W14_C512_F512_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1                
+Thu 19:35: 	             maxFileName: DepthwiseSeparableConvLayer                                                                                    
+Thu 19:35: 	                  target: DFE                                                                                                            
+Thu 19:35: 	                DFEModel: MAIA                                                                                                           
+Thu 19:35: 	              enableMPCX: false                                                                                                          
+Thu 19:35: 	                bitWidth: 16                                                                                                             
+Thu 19:35: 	                     WBW: 16                                                                                                             
+Thu 19:35: 	                   DTYPE: fixed                                                                                                          
+Thu 19:35: 	           NUM_FRAC_BITS: 8                                                                                                              
+Thu 19:35: 	                      PF: 1                                                                                                              
+Thu 19:35: 	                      PC: 1                                                                                                              
+Thu 19:35: 	                      PK: 1                                                                                                              
+Thu 19:35: 	                       H: 14                                                                                                             
+Thu 19:35: 	                       W: 14                                                                                                             
+Thu 19:35: 	                       C: 512                                                                                                            
+Thu 19:35: 	                       F: 512                                                                                                            
+Thu 19:35: 	                       K: 3                                                                                                              
+Thu 19:35: 	                     PAD: 0                                                                                                              
+Thu 19:35: 	                       S: 1                                                                                                              
+Thu 19:35: 	                     SEQ: 0                                                                                                              
+Thu 19:35: 	                    FREQ: 100                                                                                                            
+Thu 19:35: 	                USE_DRAM: true                                                                                                           
+Thu 19:35: 	                 USE_BNN: false                                                                                                          
+Thu 19:35: 	            USE_WINOGRAD: false                                                                                                          
+Thu 19:35: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                          
+Thu 19:35: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                              
+Thu 19:35: 	                   DEBUG: false                                                                                                          
+Thu 19:35: 	           COEFF_ON_CHIP: true                                                                                                           
+Thu 19:35: 	              INIT_COEFF: false                                                                                                          
+Thu 19:35: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big.txt
+Thu 19:35: 	                 VERSION: 1                                                                                                              

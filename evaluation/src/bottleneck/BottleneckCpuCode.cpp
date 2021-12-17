@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
                               /*use_bias=*/false,
                               /*use_fixed_point=*/true, cp2.dfe.num_frac_bits);
   for (int i = 0; i < output_2_cpu.size(); ++i) {
-    output_2_cpu[i] = FixedPointAdd<data_t>(output_0_cpu[i], output_2_cpu[i]);
+    output_2_cpu[i] = FixedPointAdd<data_t>(input_dfe[i], output_2_cpu[i]);
   }
   LOG(INFO) << "Done\n";
 
@@ -162,21 +162,75 @@ int main(int argc, char *argv[]) {
   // Split weights into the FMems
   LOG(INFO) << "BIT_WIDTH = " << BIT_WIDTH << " WBW = " << WBW << '\n';
 #if WBW <= 8
-  LOG(INFO) << "Split into uint64_t ...";
-  uint64_t **ptr =
-      reinterpret_cast<uint64_t **>(&(actions.param_batch_size) + 1);
 #if WBW == 2
   weights_0_dfe = ToTernaryUnsigned<data_t, data_t>(weights_0_dfe);
   weights_1_dfe = ToTernaryUnsigned<data_t, data_t>(weights_1_dfe);
   weights_2_dfe = ToTernaryUnsigned<data_t, data_t>(weights_2_dfe);
 #endif
 
+#if 0
+  LOG(INFO) << "Split into uint64_t ...";
+  uint64_t **ptr =
+      reinterpret_cast<uint64_t **>(&(actions.param_batch_size) + 1);
   ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_0_dfe.data(), cp0);
   LOG(INFO) << "Initialized coefficients from weights_0, ptr = " << ptr << '\n';
   ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_1_dfe.data(), cp1);
   LOG(INFO) << "Initialized coefficients from weights_1, ptr = " << ptr << '\n';
   ptr = SplitCoeffAndAssign<data_t, uint64_t>(ptr, weights_2_dfe.data(), cp2);
   LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
+#endif
+
+  int8_t *test2 = (int8_t *)malloc(
+      std::max(std::max(weights_0.size(), weights_1.size()), weights_2.size()));
+
+  Bottleneck_initCoeff_actions_t init_coeff_actions;
+  init_coeff_actions.ticks_conv0 = (uint64_t)cp0.F * cp0.C * cp0.K * cp0.K;
+  init_coeff_actions.ticks_conv1 = 0;
+  init_coeff_actions.ticks_conv2 = 0;
+  init_coeff_actions.inscalar_conv0_init_coeff = 1;
+  init_coeff_actions.inscalar_conv1_init_coeff = 0;
+  init_coeff_actions.inscalar_conv2_init_coeff = 0;
+  init_coeff_actions.instream_init_coeff = weights_0_dfe.data();
+  init_coeff_actions.outstream_init_coeff_out = test2;
+  init_coeff_actions.param_init_coeff_num_elems = weights_0_dfe.size();
+  init_coeff_actions.routing_string =
+      "init_coeff_demux -> conv0, init_coeff_mux -> conv0";
+
+  Bottleneck_initCoeff_run(engine, &init_coeff_actions);
+  LOG(INFO) << "initCoeff for conv0. size: " << weights_0_dfe.size()
+            << " ticks: " << init_coeff_actions.ticks_conv0 << '\n';
+
+  init_coeff_actions.ticks_conv0 = 0;
+  init_coeff_actions.ticks_conv1 = (uint64_t)cp1.F * cp1.C * cp1.K * cp1.K;
+  init_coeff_actions.ticks_conv2 = 0;
+  init_coeff_actions.inscalar_conv0_init_coeff = 0;
+  init_coeff_actions.inscalar_conv1_init_coeff = 1;
+  init_coeff_actions.inscalar_conv2_init_coeff = 0;
+  init_coeff_actions.instream_init_coeff = weights_1_dfe.data();
+  init_coeff_actions.outstream_init_coeff_out = test2;
+  init_coeff_actions.param_init_coeff_num_elems = weights_1_dfe.size();
+  init_coeff_actions.routing_string =
+      "init_coeff_demux -> conv1, init_coeff_mux -> conv1";
+
+  Bottleneck_initCoeff_run(engine, &init_coeff_actions);
+  LOG(INFO) << "initCoeff for conv1. size: " << weights_1_dfe.size()
+            << " ticks: " << init_coeff_actions.ticks_conv1 << '\n';
+
+  init_coeff_actions.ticks_conv0 = 0;
+  init_coeff_actions.ticks_conv1 = 0;
+  init_coeff_actions.ticks_conv2 = (uint64_t)cp2.F * cp2.C * cp2.K * cp2.K;
+  init_coeff_actions.inscalar_conv0_init_coeff = 0;
+  init_coeff_actions.inscalar_conv1_init_coeff = 0;
+  init_coeff_actions.inscalar_conv2_init_coeff = 1;
+  init_coeff_actions.instream_init_coeff = weights_2_dfe.data();
+  init_coeff_actions.outstream_init_coeff_out = test2;
+  init_coeff_actions.param_init_coeff_num_elems = weights_2_dfe.size();
+  init_coeff_actions.routing_string =
+      "init_coeff_demux -> conv2, init_coeff_mux -> conv2";
+
+  Bottleneck_initCoeff_run(engine, &init_coeff_actions);
+  LOG(INFO) << "initCoeff for conv2. size: " << weights_2_dfe.size()
+            << " ticks: " << init_coeff_actions.ticks_conv2 << '\n';
 #else
   double **ptr = reinterpret_cast<double **>(&(actions.param_batch_size) + 1);
   ptr = SplitCoeffAndAssign<float>(ptr, weights_0.data(), cp0);
@@ -187,7 +241,7 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
 #endif
 
-  std::string routing_string = "conv0_fanout -> conv1, conv0_fanout -> conv2";
+  std::string routing_string = "conv0_fanout -> conv0, conv0_fanout -> conv2";
   actions.routing_string = routing_string.c_str();
 
   LOG(INFO) << "Initialized actions\n";

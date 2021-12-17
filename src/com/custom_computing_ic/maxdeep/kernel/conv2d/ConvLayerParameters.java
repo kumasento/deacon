@@ -10,6 +10,9 @@ import com.custom_computing_ic.maxdeep.lib.LayerParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 /**
  * Design parameters used to build a single convolution layer.
@@ -37,11 +40,13 @@ public class ConvLayerParameters extends LayerParameters {
   public boolean useWinograd;
   public boolean winogradWeightsOffline;
   public final boolean coeffOnChip;
+  public final boolean initCoeff;
 
   public static final int WINOGRAD_TILE_SIZE = 4;
   public int winoH;
   public int winoW;
   public String residual = "";
+  public String coeffFile = "";
 
   public PoolingLayerParameters pool;
 
@@ -51,9 +56,7 @@ public class ConvLayerParameters extends LayerParameters {
    * @author Ruizhe Zhao
    *
    */
-  public enum CompSeq {
-    FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR
-  }
+  public enum CompSeq { FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR }
 
   /**
    * Type of convolution computation
@@ -61,9 +64,7 @@ public class ConvLayerParameters extends LayerParameters {
    * @author Ruizhe Zhao
    *
    */
-  public enum Type {
-    STANDARD, POINTWISE, DEPTHWISE_SEPARABLE, DEPTHWISE_SEPARABLE_V2, BOTTLENECK
-  }
+  public enum Type { STANDARD, POINTWISE, DEPTHWISE_SEPARABLE, DEPTHWISE_SEPARABLE_V2, BOTTLENECK }
 
   public ConvLayerParameters(Builder builder) {
     // inherited from the parent
@@ -99,6 +100,8 @@ public class ConvLayerParameters extends LayerParameters {
     this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.coeffOnChip = builder.coeffOnChip;
     this.residual = builder.residual;
+    this.initCoeff = builder.initCoeff;
+    this.coeffFile = builder.coeffFile;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -107,21 +110,36 @@ public class ConvLayerParameters extends LayerParameters {
      * still need it to specify correct number of line buffers.
      */
     return new ConvLayerParameters.Builder(H, W, C, C, K)
+        .dtype(dtype)
         .BW(BW)
+        .WBW(WBW)
+        .numFracBits(numFracBits)
         .PC(PC)
         .PK(PK)
+        .coeffOnChip(coeffOnChip)
+        .useDRAM(useDRAM)
+        .seq(seq)
         .dbg(dbg)
         .useWinograd(useWinograd)
+        .type(Type.DEPTHWISE_SEPARABLE)
+        .name(name + "_dw")
         .build();
   }
 
   public ConvLayerParameters createPointwiseParameters() {
     return new ConvLayerParameters.Builder(OH, OW, C, F, 1)
+        .dtype(dtype)
         .BW(BW)
+        .WBW(WBW)
+        .numFracBits(numFracBits)
         .PC(PC)
         .PF(PF)
         .PK(PK)
-        .seq(CompSeq.FILTER_MAJOR)
+        .coeffOnChip(coeffOnChip)
+        .useDRAM(useDRAM)
+        .name(name + "_pw")
+        .type(Type.STANDARD)
+        .seq(seq)
         .dbg(dbg)
         .build();
   }
@@ -238,6 +256,16 @@ public class ConvLayerParameters extends LayerParameters {
     return getCoeffVecSize();
   }
 
+  public int getCoeffNumVec() {
+    int total = 0;
+    if (type == Type.DEPTHWISE_SEPARABLE)
+      total = C * K * K;
+    else if (type == Type.STANDARD || type == Type.POINTWISE)
+      total = C * F * K * K;
+
+    return total / getCoeffVecSize();
+  }
+
   public long getDepthwiseCoeffStreamNumElems() {
     return C * K * K;
   }
@@ -301,6 +329,10 @@ public class ConvLayerParameters extends LayerParameters {
     return getCoeffVecSize() / (PC * PF);
   }
 
+  public DFEVectorType<DFEVar> getCoeffVecT(DFEType baseT) {
+    return new DFEVectorType<DFEVar>(baseT, getCoeffVecSize());
+  }
+
   public int getDepthwiseCoeffStreamBitWidth() {
     return getDepthwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
   }
@@ -356,6 +388,8 @@ public class ConvLayerParameters extends LayerParameters {
     private boolean useWinograd;
     private boolean winogradWeightsOffline;
     private boolean coeffOnChip;
+    private boolean initCoeff;
+    private String coeffFile = "";
 
     public Builder(int OH, int OW, int C, int F, int K) {
       if (OH <= 0)
@@ -395,6 +429,16 @@ public class ConvLayerParameters extends LayerParameters {
       this.winogradWeightsOffline = false;
       this.dbg = false;
       this.coeffOnChip = false;
+      this.initCoeff = false;
+    }
+
+    public Builder coeffFile(String coeffFile) {
+      if (!coeffOnChip)
+        throw new IllegalArgumentException(
+            "coeffOnChip should be set to true when coeffFile is provided.");
+
+      this.coeffFile = coeffFile;
+      return this;
     }
 
     private int getInputDim(int outputDim, int kernelDim, int pad, int stride) {
@@ -447,7 +491,7 @@ public class ConvLayerParameters extends LayerParameters {
 
       throw new IllegalArgumentException(
           String.format("dtype cannot be recognised, should be one of float, "
-              + "fixed, int. Got \"%s\"",
+                  + "fixed, int. Got \"%s\"",
               dtype));
     }
 
@@ -455,7 +499,7 @@ public class ConvLayerParameters extends LayerParameters {
       if (numFracBits < 0 || numFracBits > BW)
         throw new IllegalArgumentException(
             "Number of fraction bits should >= 0 and <= bit width. Got " + numFracBits
-                + " while BW is " + BW);
+            + " while BW is " + BW);
 
       this.numFracBits = numFracBits;
       return this;
@@ -567,6 +611,11 @@ public class ConvLayerParameters extends LayerParameters {
 
     public Builder coeffOnChip(boolean coeffOnChip) {
       this.coeffOnChip = coeffOnChip;
+      return this;
+    }
+
+    public Builder initCoeff(boolean initCoeff) {
+      this.initCoeff = initCoeff;
       return this;
     }
 

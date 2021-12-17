@@ -1,0 +1,14 @@
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+WBW = 16
+P_C = 1
+P_F = 1
+P_K = 1
+BIT_WIDTH = 16
+NAME = "conv"
+DTYPE = "fixed"
+TYPE = "DEPTHWISE_SEPARABLE"
+COEFF_ON_CHIP = "true"

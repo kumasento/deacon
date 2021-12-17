@@ -1,15 +1,12 @@
 package bottleneck;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
-import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
-import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
 import com.custom_computing_ic.maxdeep.manager.CustomLMemManager;
+import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
+import com.custom_computing_ic.maxdeep.manager.ManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.Max5LMemManager;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
@@ -19,6 +16,8 @@ import com.maxeler.platform.max5.manager.BuildConfig;
 import com.maxeler.platform.max5.manager.BuildConfig.Effort;
 import com.maxeler.platform.max5.manager.BuildConfig.OptimizationGoal;
 import com.maxeler.platform.max5.manager.ImplementationStrategy;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The manager that builds three consecutive Convolution layers following the
@@ -30,20 +29,20 @@ import com.maxeler.platform.max5.manager.ImplementationStrategy;
  *
  */
 public class BottleneckManager extends Max5LMemManager implements ManagerInterface {
-  public BottleneckManager(BottleneckEngineParameters params,
-      List<ConvLayerParameters> cps) {
+  public BottleneckManager(BottleneckEngineParameters params, List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
     this.setAllowNonMultipleTransitions(true);
     this.setDefaultStreamClockFrequency(params.getFreq());
 
-    ConvLayerManagerUtils.createKernelBlocks(this, cps, /* numCoeffFifoSplits= */1, params.getUseDRAM());
+    ConvLayerManagerUtils.createKernelBlocks(
+        this, cps, /* numCoeffFifoSplits= */ 1, params.getUseDRAM());
     ConvLayerManagerUtils.setupConstants(this, cps, params);
   }
 
-  public EngineInterface interfaceDefault(List<ConvLayerParameters> cps,
-      BottleneckEngineParameters ep) {
+  public EngineInterface interfaceDefault(
+      List<ConvLayerParameters> cps, BottleneckEngineParameters ep) {
     EngineInterface ei = new EngineInterface();
 
     InterfaceParam batchSize = ei.addParam("batch_size", CPUTypes.UINT64);
@@ -73,57 +72,64 @@ public class BottleneckManager extends Max5LMemManager implements ManagerInterfa
     int numFracBits = ep.getBitWidth() - 8;
 
     // Pointwise
-    cps.add(0, new ConvLayerParameters.Builder(H * stride, W * stride, F, C, 1)
-        .name("conv0")
-        .type(Type.POINTWISE)
-        .BW(ep.getBitWidth())
-        .WBW(ep.getWBW())
-        .numFracBits(numFracBits)
-        .PC(ep.getPC())
-        .PF(ep.getPF())
-        .PK(1)
-        .pad(0)
-        .stride(stride)
-        .seq(seq0)
-        .coeffOnChip(ep.getCoeffOnChip())
-        .dbg(ep.getDebug())
-        .build());
+    cps.add(0,
+        new ConvLayerParameters.Builder(H * stride, W * stride, F, C, 1)
+            .name("conv0")
+            .type(Type.POINTWISE)
+            .BW(ep.getBitWidth())
+            .WBW(ep.getWBW())
+            .numFracBits(numFracBits)
+            .PC(ep.getPC())
+            .PF(ep.getPF())
+            .PK(1)
+            .pad(0)
+            .stride(stride)
+            .seq(seq0)
+            .coeffOnChip(ep.getCoeffOnChip())
+            .initCoeff(ep.getInitCoeff())
+            .dbg(ep.getDebug())
+            .build());
     // Standard
-    cps.add(1, new ConvLayerParameters.Builder(H, W, C, C, K)
-        .name("conv1")
-        .BW(ep.getBitWidth())
-        .WBW(ep.getWBW())
-        .numFracBits(numFracBits)
-        .PC(ep.getPF())
-        .PF(ep.getPF())
-        .PK(ep.getPK())
-        .pad(1)
-        .stride(1)
-        .seq(seq1)
-        // .dbg(true)
-        .coeffOnChip(ep.getCoeffOnChip())
-        .build());
+    cps.add(1,
+        new ConvLayerParameters.Builder(H, W, C, C, K)
+            .name("conv1")
+            .BW(ep.getBitWidth())
+            .WBW(ep.getWBW())
+            .numFracBits(numFracBits)
+            .PC(ep.getPF())
+            .PF(ep.getPF())
+            .PK(ep.getPK())
+            .pad(1)
+            .stride(1)
+            .seq(seq1)
+            .dbg(ep.getDebug())
+            .coeffOnChip(ep.getCoeffOnChip())
+            .initCoeff(ep.getInitCoeff())
+            .build());
     // Pointwise
-    cps.add(2, new ConvLayerParameters.Builder(H, W, C, F, 1)
-        .name("conv2")
-        .type(Type.POINTWISE)
-        .BW(ep.getBitWidth())
-        .WBW(ep.getWBW())
-        .numFracBits(numFracBits)
-        .PC(ep.getPC())
-        .PF(ep.getPF())
-        .PK(1)
-        .pad(0)
-        .seq(seq2)
-        // .dbg(true)
-        .stride(1)
-        .coeffOnChip(ep.getCoeffOnChip())
-        .residual("conv0")
-        .build());
+    cps.add(2,
+        new ConvLayerParameters.Builder(H, W, C, F, 1)
+            .name("conv2")
+            .type(Type.POINTWISE)
+            .BW(ep.getBitWidth())
+            .WBW(ep.getWBW())
+            .numFracBits(numFracBits)
+            .PC(ep.getPC())
+            .PF(ep.getPF())
+            .PK(1)
+            .pad(0)
+            .seq(seq2)
+            .dbg(ep.getDebug())
+            .stride(1)
+            .coeffOnChip(ep.getCoeffOnChip())
+            .residual("conv0")
+            .initCoeff(ep.getInitCoeff())
+            .build());
 
     BottleneckManager mgr = new BottleneckManager(ep, cps);
 
     mgr.createSLiCinterface(mgr.interfaceDefault(cps, ep));
+    mgr.createSLiCinterface(ConvLayerManagerUtils.initCoeff(cps, ep));
     mgr.createSLiCinterface(ManagerUtils.dramRead(mgr, mgr.iface));
     mgr.createSLiCinterface(ManagerUtils.dramWrite(mgr, mgr.iface));
 

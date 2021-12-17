@@ -1,0 +1,76 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=depthwise_separable_conv MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 DepthwiseSeparableConvLayerManager \
+	DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target='DFE' enableMPCX=false \
+	bitWidth=8 WBW=8 NUM_LAYER=5 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true S=1 PAD=1 FREQ=200 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big-multi.txt NUM_FRAC_BITS=0
+]0; maxJavaRun: DepthwiseSeparableConvLayerManager DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=8 WBW=8 NUM_LAYER=5 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true S=1 PAD=1 FREQ=200 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big-multi.txt NUM_FRAC_BITS=0 maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : depthwise_separable_conv
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : depthwise_separable_conv.DepthwiseSeparableConvLayerManager
+Class arguments     : DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=8 WBW=8 NUM_LAYER=5 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=14 W=14 C=512 F=512 K=3 SEQ=0 USE_DRAM=true S=1 PAD=1 FREQ=200 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big-multi.txt NUM_FRAC_BITS=0
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Fri 21:31: MaxCompiler version: 2021.1
+Fri 21:31: Build "DepthwiseSeparableConvLayer" start time: Fri Dec 17 21:31:29 GMT 2021
+Fri 21:31: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 21:31: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b8_8_0_N5_H14_W14_C512_F512_K3_S1_f1_c1_k1_SEQ0_DRAM_FREQ_200_V1
+Fri 21:31: Detailed build log available in "_build.log"
+Fri 21:31: 
+Fri 21:31: ENGINE BUILD PARAMETERS
+Fri 21:31: 	              Build name: DepthwiseSeparableConvLayer_MAIA_DFE_b8_8_0_N5_H14_W14_C512_F512_K3_S1_f1_c1_k1_SEQ0_DRAM_FREQ_200_V1                
+Fri 21:31: 	             maxFileName: DepthwiseSeparableConvLayer                                                                                          
+Fri 21:31: 	                  target: DFE                                                                                                                  
+Fri 21:31: 	                DFEModel: MAIA                                                                                                                 
+Fri 21:31: 	              enableMPCX: false                                                                                                                
+Fri 21:31: 	                bitWidth: 8                                                                                                                    
+Fri 21:31: 	                     WBW: 8                                                                                                                    
+Fri 21:31: 	                   DTYPE: fixed                                                                                                                
+Fri 21:31: 	           NUM_FRAC_BITS: 0                                                                                                                    
+Fri 21:31: 	                      PF: 1                                                                                                                    
+Fri 21:31: 	                      PC: 1                                                                                                                    
+Fri 21:31: 	                      PK: 1                                                                                                                    
+Fri 21:31: 	                       H: 14                                                                                                                   
+Fri 21:31: 	                       W: 14                                                                                                                   
+Fri 21:31: 	                       C: 512                                                                                                                  
+Fri 21:31: 	                       F: 512                                                                                                                  
+Fri 21:31: 	                       K: 3                                                                                                                    
+Fri 21:31: 	                     PAD: 1                                                                                                                    
+Fri 21:31: 	                       S: 1                                                                                                                    
+Fri 21:31: 	                     SEQ: 0                                                                                                                    
+Fri 21:31: 	                    FREQ: 200                                                                                                                  
+Fri 21:31: 	                USE_DRAM: true                                                                                                                 
+Fri 21:31: 	                 USE_BNN: false                                                                                                                
+Fri 21:31: 	            USE_WINOGRAD: false                                                                                                                
+Fri 21:31: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                
+Fri 21:31: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                    
+Fri 21:31: 	                   DEBUG: false                                                                                                                
+Fri 21:31: 	           COEFF_ON_CHIP: true                                                                                                                 
+Fri 21:31: 	              INIT_COEFF: false                                                                                                                
+Fri 21:31: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big-multi.txt
+Fri 21:31: 	                 VERSION: 1                                                                                                                    
+Fri 21:31: 	               NUM_LAYER: 5                                                                                                                    

@@ -1,0 +1,21 @@
+I1217 16:27:55.476312 336425 DepthwiseSeparableConvLayerCpuCode.cpp:143] 2 x 4 x 4 -> 2 x 4 x 4
+I1217 16:27:55.480861 336425 utils.h:381] Burst aligning input array of size: 64 to 192
+I1217 16:27:55.480885 336425 DepthwiseSeparableConvLayerCpuCode.cpp:158] Tiled input size (burst aligned): 192
+I1217 16:27:55.480896 336425 utils.h:381] Burst aligning input array of size: 64 to 192
+I1217 16:27:55.480912 336425 DepthwiseSeparableConvLayerCpuCode.cpp:160] Tiled output size (burst aligned): 192
+I1217 16:27:55.480922 336425 layers.h:757] Writing DRAM to 0 with size 0x180
+I1217 16:27:55.737423 336425 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1217 16:27:55.739914 336425 DepthwiseSeparableConvLayerCpuCode.cpp:207] Examine results ...
+I1217 16:27:55.739946 336425 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[0] = -0.0585938
+I1217 16:27:55.739964 336425 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[1] = 0.5
+I1217 16:27:55.739977 336425 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[2] = -0.121094
+I1217 16:27:55.739991 336425 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[3] = 0
+I1217 16:27:55.741607 336425 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[4] = -0.191406
+I1217 16:27:55.741844 336425 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[0] = -0.0585938
+I1217 16:27:55.742084 336425 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[1] = 0.5
+I1217 16:27:55.742309 336425 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[2] = -0.121094
+I1217 16:27:55.742676 336425 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[3] = 0
+I1217 16:27:55.742915 336425 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[4] = -0.191406
+I1217 16:27:55.743153 336425 DepthwiseSeparableConvLayerCpuCode.cpp:224] Evaluating difference ...
+I1217 16:27:55.743377 336425 DepthwiseSeparableConvLayerCpuCode.cpp:225] Mask: 0000x1ff
+I1217 16:27:55.743608 336425 DepthwiseSeparableConvLayerCpuCode.cpp:243] num_failed: 0 total: 64 avg_diff: 0

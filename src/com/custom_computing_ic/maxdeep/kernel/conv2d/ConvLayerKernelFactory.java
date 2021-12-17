@@ -6,22 +6,23 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 
 /**
  * Static factory to build convolutional layer kernel
- * 
+ *
  * @author rz3515
- * 
+ *
  */
 public class ConvLayerKernelFactory {
   public static BaseConvLayerKernel create(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
     return create(owner, cp, T, T);
   }
 
-  public static BaseConvLayerKernel create(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
+  public static BaseConvLayerKernel create(
+      KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
     if (cp.type == Type.STANDARD)
       return new ConvLayerKernel(owner, cp, T, WT);
     if (cp.type == Type.POINTWISE)
       return new PointwiseConvolutionKernel(owner, cp, T, WT);
     if (cp.type == Type.DEPTHWISE_SEPARABLE)
-      return new DepthwiseSeparableConvLayerKernel(owner, cp, T);
+      return new DepthwiseSeparableConvLayerKernel(owner, cp, T, WT);
     if (cp.type == Type.DEPTHWISE_SEPARABLE_V2)
       return new DepthwiseSeparableConvLayerKernelV2(owner, cp, T);
 

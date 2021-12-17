@@ -1,0 +1,210 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=depthwise_separable_conv MAXSOURCEDIRS=../../src:../../../src \
+	maxJavaRun -v -m 8192 DepthwiseSeparableConvLayerManager \
+	DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target='DFE' enableMPCX=false \
+	bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=7 W=7 C=1024 F=1024 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big2.txt
+]0; maxJavaRun: DepthwiseSeparableConvLayerManager DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=7 W=7 C=1024 F=1024 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big2.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:../../../src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : depthwise_separable_conv
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : depthwise_separable_conv.DepthwiseSeparableConvLayerManager
+Class arguments     : DFEModel=MAIA maxFileName=DepthwiseSeparableConvLayer target=DFE enableMPCX=false bitWidth=16 WBW=16 COEFF_ON_CHIP=true PF=1 PK=1 PC=1 H=7 W=7 C=1024 F=1024 K=3 SEQ=0 USE_DRAM=true FREQ=100 VERSION=1 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big2.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      ../../../src:
+                      ../../../test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Thu 21:47: MaxCompiler version: 2021.1
+Thu 21:47: Build "DepthwiseSeparableConvLayer" start time: Thu Dec 16 21:47:24 GMT 2021
+Thu 21:47: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 21:47: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1
+Thu 21:47: Detailed build log available in "_build.log"
+Thu 21:47: 
+Thu 21:47: ENGINE BUILD PARAMETERS
+Thu 21:47: 	              Build name: DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1                 
+Thu 21:47: 	             maxFileName: DepthwiseSeparableConvLayer                                                                                     
+Thu 21:47: 	                  target: DFE                                                                                                             
+Thu 21:47: 	                DFEModel: MAIA                                                                                                            
+Thu 21:47: 	              enableMPCX: false                                                                                                           
+Thu 21:47: 	                bitWidth: 16                                                                                                              
+Thu 21:47: 	                     WBW: 16                                                                                                              
+Thu 21:47: 	                   DTYPE: fixed                                                                                                           
+Thu 21:47: 	           NUM_FRAC_BITS: 8                                                                                                               
+Thu 21:47: 	                      PF: 1                                                                                                               
+Thu 21:47: 	                      PC: 1                                                                                                               
+Thu 21:47: 	                      PK: 1                                                                                                               
+Thu 21:47: 	                       H: 7                                                                                                               
+Thu 21:47: 	                       W: 7                                                                                                               
+Thu 21:47: 	                       C: 1024                                                                                                            
+Thu 21:47: 	                       F: 1024                                                                                                            
+Thu 21:47: 	                       K: 3                                                                                                               
+Thu 21:47: 	                     PAD: 0                                                                                                               
+Thu 21:47: 	                       S: 1                                                                                                               
+Thu 21:47: 	                     SEQ: 0                                                                                                               
+Thu 21:47: 	                    FREQ: 100                                                                                                             
+Thu 21:47: 	                USE_DRAM: true                                                                                                            
+Thu 21:47: 	                 USE_BNN: false                                                                                                           
+Thu 21:47: 	            USE_WINOGRAD: false                                                                                                           
+Thu 21:47: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                           
+Thu 21:47: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                               
+Thu 21:47: 	                   DEBUG: false                                                                                                           
+Thu 21:47: 	           COEFF_ON_CHIP: true                                                                                                            
+Thu 21:47: 	              INIT_COEFF: false                                                                                                           
+Thu 21:47: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv/data/data-mobilenet-v1-big2.txt
+Thu 21:47: 	                 VERSION: 1                                                                                                               
+Thu 21:47: Generating kernel conv ...
+Thu 21:47: Instantiating kernel "conv"
+Thu 21:47: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 21:47: coeffOnChip = true
+Thu 21:47: Input height = 9, output height = 9, pad = 0
+Thu 21:47: Counter H = 9 W = 9
+Thu 21:47: Pointwise coeff type = {DFEVectorType: 1 x dfeFix(8, 8, TWOSCOMPLEMENT)}
+Thu 21:47: Building line buffer for "conv" ...
+Thu 21:47: Line buffer shape 3 x 9, produces 1 number of 3 x 3 tiles per cycle
+Thu 21:47: Line buffer input vector size: 1, output vector size: 9.
+Thu 21:47: Number of separated line buffers: 1
+Thu 21:47: Initialising line buffer kernel with 3 x 9 x 1
+Thu 21:47: Size of line buffer output: 3
+Thu 21:47: Number of line buffer output chunks: 3
+Thu 21:47: Connecting outputs from chunk (#000) ...
+Thu 21:47: Connecting outputs from chunk (#001) ...
+Thu 21:47: Connecting outputs from chunk (#002) ...
+vecLen = 9 rawVec.getSize() = 9 cp.PC = 1
+vecLen = 9 rawVec.getSize() = 9 cp.PC = 1
+Thu 21:47: Building the CORE arithmetic unit for "conv_dw" ...
+Thu 21:47: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 21:47: CORE ifmap vector size: 9
+Thu 21:47: CORE coefficient vector size: 9
+Thu 21:47: CORE ofmap vector size: 1
+Thu 21:47: Ifmap buffer configuration 64 x 1
+Thu 21:47: loop = false
+Thu 21:47: Building the CORE arithmetic unit for "conv_pw" ...
+Thu 21:47: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 21:47: CORE ifmap vector size: 1
+Thu 21:47: CORE coefficient vector size: 1
+Thu 21:47: CORE ofmap vector size: 1
+Thu 21:47: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 21:47: Depthwise coeff ROM depth = 1024
+Thu 21:47: Pointwise coeff ROM depth = 1048576
+Thu 21:48: Compiling kernel "conv"
+Thu 21:48: 
+Thu 21:48: Generating padding kernels for DRAM access
+Thu 21:48: Instantiating kernel "ifmap_unpad"
+Thu 21:48: Compiling kernel "ifmap_unpad"
+Thu 21:48: 
+Thu 21:48: Instantiating kernel "ofmap_pad"
+Thu 21:48: Compiling kernel "ofmap_pad"
+Thu 21:48: 
+Thu 21:48: Setting up stream connections for conv
+Thu 21:48: DRAM will be used to build the design
+Thu 21:48: Setup streams for kernel "conv"
+Thu 21:48: # cycles:       84934656
+Thu 21:48: # ifmap stream: 82944
+Thu 21:48: # coeff stream: 9446400
+Thu 21:48: # ofmap stream: 50176
+Thu 21:48: coeff vec size: 9
+Thu 21:48: coeff stream bit width: 144
+Thu 21:48: coeff stream chunk size: 9
+Thu 21:48: Generating input files (VHDL, netlists, vendor specific IP cores)
+Thu 23:23: Running back-end  build (15 phases)
+Thu 23:23: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 23:23: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Thu 23:23: Executing Synthesis Strategy VIVADO_DEFAULT
+Thu 23:37: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 23:37: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 23:37: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Thu 23:37: 
+Thu 23:37: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Thu 23:37: For this compile, we estimate this process may take longer than 1 hour.
+Thu 23:37: We recommend running in simulation to verify correctness before building hardware.
+Thu 23:37: 
+Thu 23:37: PRELIMINARY RESOURCE USAGE
+Thu 23:37: FPGA: xcVU9P-FLGB2104-2-E
+Thu 23:37: Logic utilization:      213413 / 3546720 (6.02%)
+Thu 23:37:   LUTs:                  83748 / 1182240 (7.08%)
+Thu 23:37:   Primary FFs:          129665 / 2364480 (5.48%)
+Thu 23:37: DSP blocks:                 19 / 6840    (0.28%)
+Thu 23:37: Block memory (BRAM18):    1202 / 4320    (27.82%)
+Thu 23:37: Block memory (URAM):         6 / 960     (0.63%)
+Thu 23:37: 
+Thu 23:37: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Thu 23:37: 
+Thu 23:37: PRELIMINARY POWER REPORT
+Thu 23:37: Total On-Chip Power (W) 9.64 (budget: 91.80) 
+Thu 23:37: Dynamic Power (W)       6.97 
+Thu 23:37: Device Static Power(W)  2.66 
+Thu 23:37: 
+Thu 23:37: (7/15) - Place DFE (VivadoImplementation)
+Thu 23:37: Executing the following 5 Implementation Strategies in 5 threads:
+Thu 23:37:  - VIVADO_DEFAULT
+Thu 23:37:  - MAXELER1
+Thu 23:37:  - MAXELER2
+Thu 23:37:  - MAXELER3
+Thu 23:37:  - MAXELER4
+Fri 00:53: Implementation: Strategy "MAXELER4" met timing with score 0 (best score 0)
+Fri 00:53: Implementation: Strategy "VIVADO_DEFAULT" was cancelled (no timing score)
+Fri 00:53: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Fri 00:53: Implementation: Strategy "MAXELER1" was cancelled (no timing score)
+Fri 00:53: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Fri 00:53: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Fri 00:54: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Fri 00:54: 
+Fri 00:54: FINAL POWER REPORT
+Fri 00:54: Total On-Chip Power (W) 11.07 (budget: 91.80) 
+Fri 00:54: Dynamic Power (W)        8.38 
+Fri 00:54: Device Static Power(W)   2.69 
+Fri 00:54: 
+Fri 00:54: (11/15) - Generate Configuration (VivadoBitgen)
+Fri 01:02: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Fri 01:05: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Fri 01:05: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Fri 01:05: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Fri 01:05: 
+Fri 01:05: FINAL RESOURCE USAGE
+Fri 01:05: FPGA: xcVU9P-FLGB2104-2-E
+Fri 01:05: Logic utilization:      194186 / 3546720 (5.48%)
+Fri 01:05:   LUTs:                  73892 / 1182240 (6.25%)
+Fri 01:05:   Primary FFs:          120294 / 2364480 (5.09%)
+Fri 01:05: DSP blocks:                 19 / 6840    (0.28%)
+Fri 01:05: Block memory (BRAM18):    1202 / 4320    (27.82%)
+Fri 01:05: Block memory (URAM):         6 / 960     (0.63%)
+Fri 01:05: 
+Fri 01:05: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max (MD5Sum: 00f93c3f5609a00622bc0d3edb09329a)
+Fri 01:05: Build completed: Fri Dec 17 01:05:33 GMT 2021 (took 3 hours, 18 mins, 9 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/../scratch/DepthwiseSeparableConvLayer.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/../scratch/DepthwiseSeparableConvLayer.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_4482640130285788786/cobject/max_421985071260551932.c -o /tmp/sliccompile_4482640130285788786/cobject/max_421985071260551932.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results/DepthwiseSeparableConvLayer.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_2330586169614895318.o 
+ld -r /tmp/sliccompile_4482640130285788786/cobject/max_421985071260551932.c.o max_2330586169614895318.o -o DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/depthwise_separable_conv'
+g++ ../../src/depthwise_separable_conv/DepthwiseSeparableConvLayerCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM -DBIT_WIDTH=16 -DWBW=16 -DDEPTHWISE_SEPARABLE_V2  -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1/results -DDESIGN_NAME=DepthwiseSeparableConvLayer -c -o DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM -DBIT_WIDTH=16 -DWBW=16 -DDEPTHWISE_SEPARABLE_V2  -o DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfe DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfe.o DepthwiseSeparableConvLayer_b16_16_H7_W7_C1024_F1024_K3_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

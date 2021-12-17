@@ -1,34 +1,32 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerOfmapBuffer;
 import com.custom_computing_ic.maxdeep.lib.DotProductKernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * We try to evaluate the hardware design of doing point-wise convolution on
  * FPGA.
- * 
+ *
  * @author rz3515
- * 
+ *
  */
 public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
-
   private final DFEVar f, c, h, w;
-  private final DFEVector<DFEVar> coeff;
 
-  public PointwiseConvolutionKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
+  public PointwiseConvolutionKernel(
+      KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
     super(owner, cp, T, WT);
 
     // if (cp.seq != ConvLayerParameters.CompSeq.FILTER_MAJOR)
@@ -78,8 +76,8 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
         break;
 
       default:
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+        throw new IllegalArgumentException(
+            String.format("Computation sequence %s has not been supported yet", cp.seq));
     }
     // f = chain.addCounter(cp.F / cp.PF, 1);
     // c = chain.addCounter(cp.C / cp.PC, 1);
@@ -90,12 +88,16 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     if (!cp.coeffOnChip)
       this.coeff = coeffList.get(0);
     else {
-      List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
+      if (!cp.initCoeff) {
+        List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
 
-      DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
-      if (cp.dbg)
-        debug.simPrintf("coeff FMem addr = %KObj%\n", addr);
-      this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+        DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
+        if (cp.dbg)
+          debug.simPrintf("coeff FMem addr = %KObj%\n", addr);
+        this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+      } else {
+        this.coeff = (new DFEVectorType<DFEVar>(WT, cp.PC * cp.PF)).newInstance(owner);
+      }
     }
 
     if (cp.dbg) {
@@ -112,26 +114,28 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(owner, cp, T);
     DFEVar ibufAddr = getIbufAddr(cp, ibuf.getAddrT(), c, h, w);
     DFEVar ibufWriteEn = getIbufWriteEn(f);
-    DFEVector<DFEVar> ibufOutput = ibuf.port(ifmap, ibufAddr, ibufWriteEn);
+    DFEVector<DFEVar> ibufOutput = ibuf.port(ifmap, ibufAddr, ibufWriteEn.and(initCoeff.complement()));
 
     // output feature map buffer
     ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(owner, cp, T);
     obuf.setReset(getObufReset(c));
 
     // dot-product units
-    DFEVector<DFEVar> procResult = process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, WT, c, cp.dbg);
+    DFEVector<DFEVar> procResult =
+        process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, WT, c, cp.dbg);
 
     if (cp.dbg) {
       debug.simPrintf("dp_out[%3d, %3d, %3d] = %KObj%\n", f, h, w, procResult);
     }
 
     // output feature map buffer
-    ofmap.connect(obuf.port(procResult, getObufAddr(cp, obuf.getAddrT(), h, w, f),
-        getObufWriteEn(cp, h, w)));
+    ofmap.connect(
+        obuf.port(procResult, getObufAddr(cp, obuf.getAddrT(), h, w, f), getObufWriteEn(cp, h, w).and(initCoeff.complement())));
   }
 
   public DFEVar getCoeffFMemAddr(DFEType addrT) {
-    return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT) + c.cast(addrT))
+    return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT)
+        + c.cast(addrT))
         .cast(addrT);
   }
 
@@ -212,13 +216,13 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   }
 
   private DFEVar getIbufAddr(ConvLayerParameters cp, DFEType addrT, DFEVar c, DFEVar h, DFEVar w) {
-
     // if (cp.seq != CompSeq.FILTER_MAJOR)
     // throw new IllegalArgumentException("cp.seq should be FILTER_MAJOR.");
     DFEVar HEIGHT = constant.var(cp.H / cp.PH).cast(addrT);
     DFEVar WIDTH = constant.var(cp.W / cp.PW).cast(addrT);
 
-    DFEVar addr = (cp.seq == CompSeq.FILTER_MAJOR) ? (c.cast(addrT) * HEIGHT * WIDTH) : constant.var(0).cast(addrT);
+    DFEVar addr = (cp.seq == CompSeq.FILTER_MAJOR) ? (c.cast(addrT) * HEIGHT * WIDTH)
+                                                   : constant.var(0).cast(addrT);
     addr += h.cast(addrT) * WIDTH;
     addr += w.cast(addrT);
 
@@ -237,12 +241,16 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     DFEVar HEIGHT = constant.var(cp.H / cp.PH / cp.STRIDE).cast(addrT);
     DFEVar WIDTH = constant.var(cp.W / cp.PW / cp.STRIDE).cast(addrT);
     DFEVar base = (cp.seq == CompSeq.CHANNEL_MAJOR) ? HEIGHT.mul(WIDTH.mul(f.cast(addrT)))
-        : constant.var(0).cast(addrT);
-    DFEVar offset = (h.shiftRight(cp.STRIDE - 1).cast(addrT).mul(WIDTH).add(w.shiftRight(cp.STRIDE - 1).cast(addrT)));
+                                                    : constant.var(0).cast(addrT);
+    DFEVar offset = (h.shiftRight(cp.STRIDE - 1)
+                         .cast(addrT)
+                         .mul(WIDTH)
+                         .add(w.shiftRight(cp.STRIDE - 1).cast(addrT)));
     DFEVar addr = base.add(offset);
 
     if (cp.dbg) {
-      debug.simPrintf("[PointwiseConvolution][ObufAddr] HEIGHT = %KObj% WIDTH = %KObj% / %KObj% + %KObj% = %KObj%\n",
+      debug.simPrintf(
+          "[PointwiseConvolution][ObufAddr] HEIGHT = %KObj% WIDTH = %KObj% / %KObj% + %KObj% = %KObj%\n",
           HEIGHT, WIDTH, base, offset, addr);
     }
 
@@ -253,7 +261,9 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     if (cp.STRIDE == 1)
       return constant.var(1).cast(dfeBool());
 
-    return h.and(constant.var(1).cast(h.getType())).eq(0).and(w.and(constant.var(1).cast(w.getType())).eq(0));
+    return h.and(constant.var(1).cast(h.getType()))
+        .eq(0)
+        .and(w.and(constant.var(1).cast(w.getType())).eq(0));
   }
 
   public static List<DFEVector<DFEVar>> getIfmapPE(KernelBase<?> owner, DFEVector<DFEVar> ifmap,
@@ -276,8 +286,8 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     return splits;
   }
 
-  public static List<DFEVector<DFEVar>> getWeightsPE(KernelBase<?> owner,
-      DFEVector<DFEVar> weights, int parInDepth, int parOutDepth, DFEType T) {
+  public static List<DFEVector<DFEVar>> getWeightsPE(
+      KernelBase<?> owner, DFEVector<DFEVar> weights, int parInDepth, int parOutDepth, DFEType T) {
     List<DFEVector<DFEVar>> splits = new ArrayList<DFEVector<DFEVar>>();
 
     DFEVectorType<DFEVar> sT = new DFEVectorType<DFEVar>(T, parInDepth);
@@ -293,5 +303,4 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
     return splits;
   }
-
 }

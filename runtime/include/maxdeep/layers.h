@@ -149,6 +149,108 @@ void ConvLayerCpu(std::vector<T> &input, std::vector<T> &weights,
 }
 
 template <typename T>
+void DepthwiseSeparableConvLayerCpuBatched(
+    std::vector<T> &input, std::vector<T> &weights_dw,
+    std::vector<T> &weights_pw, std::vector<T> &bias, std::vector<T> &output,
+    int N, int H, int W, int C, int F, int K, int P, int S,
+    bool use_bias = true, bool use_fixed_point = false, int num_frac_bits = 0) {
+  CHECK_GT(N, 0);
+  CHECK_GT(H, 0);
+  CHECK_GT(W, 0);
+  CHECK_GT(C, 0);
+  CHECK_GT(F, 0);
+  CHECK_GT(K, 0);
+  CHECK_GE(P, 0);
+  CHECK_GT(S, 0);
+
+  auto OH = GetConvLayerOutputDim(H, K, P, S);
+  auto OW = GetConvLayerOutputDim(W, K, P, S);
+
+  for (int i = 0; i < N; i++) {
+    uint64_t output_offset = (uint64_t)i * (OH * OW * F);
+    uint64_t input_offset = (uint64_t)i * (H * W * C);
+
+    for (int f = 0; f < F; f++) {
+      for (int oh = 0; oh < OH; oh++) {
+        for (int ow = 0; ow < OW; ow++) {
+          auto oi = output_offset + f * OH * OW + oh * OW + ow;
+
+          output[oi] = (use_bias) ? bias[f] : static_cast<T>(0.0f);
+
+          // Depthwise
+          for (int c = 0; c < C; c++) {
+            T tmp = 0;
+
+            for (int kh = 0; kh < K; kh++) {
+              for (int kw = 0; kw < K; kw++) {
+                auto ih = oh * S + kh - P;
+                auto iw = ow * S + kw - P;
+
+                if (ih < 0 || ih >= H || iw < 0 || iw >= W) continue;
+
+                auto input_val = input[input_offset + c * H * W + ih * W + iw];
+                auto weight_val = weights_dw[c * K * K + kh * K + kw];
+
+#ifdef TRACE
+                printf("f = %d c = %d oh = %d ow = %d kh = %d kw = %d: ", f, c,
+                       oh, ow, kh, kw);
+                printf("input = %10.6f weight = %10.6f\n",
+                       ConvertToFloat<T>(input_val, use_fixed_point,
+                                         num_frac_bits),
+                       ConvertToFloat<T>(weight_val, use_fixed_point,
+                                         num_frac_bits));
+
+#endif
+
+                if (!use_fixed_point) {
+                  tmp += (input_val * weight_val);
+                } else {
+                  auto mul_val =
+                      FixedPointMul<T>(input_val, weight_val, num_frac_bits);
+
+#ifdef TRACE
+                  printf("output[%d] = %10.6f + %10.6f = ", oi,
+                         ConvertToFloat<T>(tmp, use_fixed_point, num_frac_bits),
+                         ConvertToFloat<T>(mul_val, use_fixed_point,
+                                           num_frac_bits));
+#endif
+
+                  tmp = FixedPointAdd<T>(tmp, mul_val);
+#ifdef TRACE
+                  printf("%10.6f\n", ConvertToFloat<T>(tmp, use_fixed_point,
+                                                       num_frac_bits));
+#endif
+                }
+              }
+            }
+
+            auto weight_val = weights_pw[f * C + c];
+            if (!use_fixed_point) {
+              output[oi] += tmp * weight_val;
+            } else {
+              auto mul_val = FixedPointMul<T>(tmp, weight_val, num_frac_bits);
+
+#ifdef TRACE
+              printf(
+                  "output[%d] = %10.6f + %10.6f = ", oi,
+                  ConvertToFloat<T>(output[oi], use_fixed_point, num_frac_bits),
+                  ConvertToFloat<T>(mul_val, use_fixed_point, num_frac_bits));
+#endif
+
+              output[oi] = FixedPointAdd<T>(output[oi], mul_val);
+#ifdef TRACE
+              printf("%10.6f\n", ConvertToFloat<T>(output[oi], use_fixed_point,
+                                                   num_frac_bits));
+#endif
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+template <typename T>
 void ConvLayerCpuBatched(std::vector<T> &input, std::vector<T> &weights,
                          std::vector<T> &bias, std::vector<T> &output, int N,
                          int H, int W, int C, int F, int K, int P, int S,

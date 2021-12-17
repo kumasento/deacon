@@ -1,0 +1,70 @@
+Fri 16:55: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 16:55: WARNING: Unconnected elements in design 'conv'
+Fri 16:55: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_SIM_b8_8_0_N1_H4_W4_C2_F2_K3_S1_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_DBG/scratch/conv_graph_warnings.txt
+In file included from ../../src/depthwise_separable_conv/DepthwiseSeparableConvLayerCpuCode.cpp:14:
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = signed char]’:
+../../src/depthwise_separable_conv/DepthwiseSeparableConvLayerCpuCode.cpp:150:53:   required from here
+../../../runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+../../../runtime/include/maxdeep/layers.h:235:28: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  235 |                   "output[%d] = %10.6f + %10.6f = ", oi,
+      |                           ~^                         ~~
+      |                            |                         |
+      |                            int                       long unsigned int
+      |                           %ld
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/depthwise_separable_conv/DepthwiseSeparableConvLayerCpuCode.cpp:152:53:   required from here
+../../../runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/depthwise_separable_conv/DepthwiseSeparableConvLayerCpuCode.cpp:178:56:   required from here
+../../../runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1217 16:55:57.196728 62538 DepthwiseSeparableConvLayerCpuCode.cpp:81] Num fraction bits: 0
+I1217 16:55:57.197734 62538 DepthwiseSeparableConvLayerCpuCode.cpp:144] 2 x 4 x 4 -> 2 x 4 x 4
+I1217 16:55:57.202064 62538 utils.h:381] Burst aligning input array of size: 64 to 384
+I1217 16:55:57.202090 62538 DepthwiseSeparableConvLayerCpuCode.cpp:159] Tiled input size (burst aligned): 384
+I1217 16:55:57.202101 62538 utils.h:381] Burst aligning input array of size: 64 to 384
+I1217 16:55:57.202112 62538 DepthwiseSeparableConvLayerCpuCode.cpp:161] Tiled output size (burst aligned): 384
+I1217 16:55:57.202121 62538 layers.h:757] Writing DRAM to 0 with size 0x180
+I1217 16:55:57.560039 62538 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1217 16:55:57.562492 62538 DepthwiseSeparableConvLayerCpuCode.cpp:208] Examine results ...
+I1217 16:55:57.562517 62538 DepthwiseSeparableConvLayerCpuCode.cpp:210] output_cpu[0] = 0
+I1217 16:55:57.562530 62538 DepthwiseSeparableConvLayerCpuCode.cpp:210] output_cpu[1] = 1
+I1217 16:55:57.562783 62538 DepthwiseSeparableConvLayerCpuCode.cpp:210] output_cpu[2] = 0
+I1217 16:55:57.563032 62538 DepthwiseSeparableConvLayerCpuCode.cpp:210] output_cpu[3] = 1
+I1217 16:55:57.563293 62538 DepthwiseSeparableConvLayerCpuCode.cpp:210] output_cpu[4] = -2
+I1217 16:55:57.563535 62538 DepthwiseSeparableConvLayerCpuCode.cpp:215] output_dfe[0] = 0
+I1217 16:55:57.563769 62538 DepthwiseSeparableConvLayerCpuCode.cpp:215] output_dfe[1] = 1
+I1217 16:55:57.564025 62538 DepthwiseSeparableConvLayerCpuCode.cpp:215] output_dfe[2] = 0
+I1217 16:55:57.564249 62538 DepthwiseSeparableConvLayerCpuCode.cpp:215] output_dfe[3] = 1
+I1217 16:55:57.564489 62538 DepthwiseSeparableConvLayerCpuCode.cpp:215] output_dfe[4] = -2
+I1217 16:55:57.564724 62538 DepthwiseSeparableConvLayerCpuCode.cpp:225] Evaluating difference ...
+I1217 16:55:57.564972 62538 DepthwiseSeparableConvLayerCpuCode.cpp:226] Mask: 000000x1
+I1217 16:55:57.565209 62538 DepthwiseSeparableConvLayerCpuCode.cpp:244] num_failed: 0 total: 64 avg_diff: 0

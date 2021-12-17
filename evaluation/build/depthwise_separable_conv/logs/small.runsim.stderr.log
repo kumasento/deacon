@@ -1,0 +1,26 @@
+Fri 16:28: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 16:28: WARNING: Unconnected elements in design 'conv'
+Fri 16:28: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/DepthwiseSeparableConvLayer_MAIA_DFE_SIM_b16_16_H4_W4_C2_F2_K3_S1_f1_c1_k1_SEQ0_DRAM_FREQ_100_V1_DBG/scratch/conv_graph_warnings.txt
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1217 16:28:20.440623 340036 DepthwiseSeparableConvLayerCpuCode.cpp:143] 2 x 4 x 4 -> 2 x 4 x 4
+I1217 16:28:20.444985 340036 utils.h:381] Burst aligning input array of size: 64 to 192
+I1217 16:28:20.445008 340036 DepthwiseSeparableConvLayerCpuCode.cpp:158] Tiled input size (burst aligned): 192
+I1217 16:28:20.445019 340036 utils.h:381] Burst aligning input array of size: 64 to 192
+I1217 16:28:20.445039 340036 DepthwiseSeparableConvLayerCpuCode.cpp:160] Tiled output size (burst aligned): 192
+I1217 16:28:20.445055 340036 layers.h:757] Writing DRAM to 0 with size 0x180
+I1217 16:28:20.667011 340036 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1217 16:28:20.668920 340036 DepthwiseSeparableConvLayerCpuCode.cpp:207] Examine results ...
+I1217 16:28:20.668953 340036 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[0] = -0.0585938
+I1217 16:28:20.668968 340036 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[1] = 0.5
+I1217 16:28:20.669217 340036 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[2] = -0.121094
+I1217 16:28:20.669451 340036 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[3] = 0
+I1217 16:28:20.669687 340036 DepthwiseSeparableConvLayerCpuCode.cpp:209] output_cpu[4] = -0.191406
+I1217 16:28:20.669914 340036 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[0] = -0.0585938
+I1217 16:28:20.670228 340036 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[1] = 0.5
+I1217 16:28:20.670472 340036 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[2] = -0.121094
+I1217 16:28:20.670701 340036 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[3] = 0
+I1217 16:28:20.670938 340036 DepthwiseSeparableConvLayerCpuCode.cpp:214] output_dfe[4] = -0.191406
+I1217 16:28:20.671178 340036 DepthwiseSeparableConvLayerCpuCode.cpp:224] Evaluating difference ...
+I1217 16:28:20.671416 340036 DepthwiseSeparableConvLayerCpuCode.cpp:225] Mask: 0000x1ff
+I1217 16:28:20.671648 340036 DepthwiseSeparableConvLayerCpuCode.cpp:243] num_failed: 0 total: 64 avg_diff: 0

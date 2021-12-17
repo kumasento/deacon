@@ -58,6 +58,12 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   private static final String COEFF_ON_CHIP_NAME = "COEFF_ON_CHIP";
   private static final boolean COEFF_ON_CHIP = false;
+  private static final String INIT_COEFF_NAME = "INIT_COEFF";
+  private static final boolean INIT_COEFF = false;
+
+  // File that stores coefficient values.
+  private static final String COEFF_FILE_NAME = "COEFF_FILE";
+  private static final String COEFF_FILE = "";
 
   public ConvLayerEngineParameters(String[] args) {
     super(args);
@@ -93,6 +99,12 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
     declareParam(DEBUG_NAME, DataType.BOOL, DEBUG);
     declareParam(COEFF_ON_CHIP_NAME, DataType.BOOL, COEFF_ON_CHIP);
+    declareParam(INIT_COEFF_NAME, DataType.BOOL, INIT_COEFF);
+    declareParam(COEFF_FILE_NAME, DataType.STRING, COEFF_FILE);
+  }
+
+  public String getCoeffFile() {
+    return getParam(COEFF_FILE_NAME);
   }
 
   public int getBitWidth() {
@@ -187,6 +199,10 @@ public class ConvLayerEngineParameters extends EngineParameters {
     return getParam(COEFF_ON_CHIP_NAME);
   }
 
+  public boolean getInitCoeff() {
+    return getParam(INIT_COEFF_NAME);
+  }
+
   @Override
   protected void validate() {
     if (getBitWidth() <= 0)
@@ -216,8 +232,9 @@ public class ConvLayerEngineParameters extends EngineParameters {
 
   @Override
   public String getBuildName() {
-    return String.format("%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d_%s-COEFF_%s", getMaxFileName(),
-        getDFEModel(), getTarget(), getBitWidth(), getH(), getW(), getC(), getF(), getK(), getPF(),
-        getPC(), getPK(), getSeq(), (getUseDRAM() ? "DRAM" : "PCIe"), (getCoeffOnChip() ? "FMEM" : "LMEM"));
+    return String.format("%s_%s_%s_b%d_H%d_W%d_C%d_F%d_K%d_f%d_c%d_k%d_SEQ%d_%s-COEFF_%s",
+        getMaxFileName(), getDFEModel(), getTarget(), getBitWidth(), getH(), getW(), getC(), getF(),
+        getK(), getPF(), getPC(), getPK(), getSeq(), (getUseDRAM() ? "DRAM" : "PCIe"),
+        (getCoeffOnChip() ? "FMEM" : "LMEM"));
   }
 }

@@ -1,0 +1,20 @@
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+
+P_C = 1
+P_F = 1
+P_K = 1
+P = 1
+NUM_LAYER = 5
+FREQ = 200
+NAME = "conv"
+DTYPE = "fixed"
+TYPE = "DEPTHWISE_SEPARABLE"
+COEFF_ON_CHIP = "true"
