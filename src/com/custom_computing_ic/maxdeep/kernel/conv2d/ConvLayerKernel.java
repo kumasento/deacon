@@ -104,8 +104,14 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       // TODO: improve
       DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
       if (!cp.initCoeff) {
-        List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /*mapToCPU=*/!cp.initCoeff);
-        this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+        this.initCoeff.connect(constant.var(0).cast(dfeBool()));
+        if (cp.coeffFile.isEmpty()) {
+          List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /*mapToCPU=*/!cp.initCoeff);
+          this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+        } else {
+          this.coeff = readCoeffFMemList(
+              addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+        }
       } else {
         this.coeff = getCoeffVecTList().get(0).newInstance(getOwner());
       }

@@ -1,0 +1,44 @@
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv0'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv0_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv1'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv1_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv2'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv2_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv3'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv3_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv4'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv4_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv5'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv5_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv6'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv6_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv7'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv7_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv8'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv8_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv9'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv9_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv10'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv10_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv11'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv11_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv12'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv12_graph_warnings.txt
+Sun 15:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sun 15:34: WARNING: Unconnected elements in design 'conv13'
+Sun 15:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/scratch/conv13_graph_warnings.txt
+Sun 15:35: ERROR: Prematurely halting process: make -f $MAXCOMPILERDIR/lib/simulator/bitstream/Makefile -j4
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_SIM_FREQ_200_DBG/results/MobilenetV1.max] Error 130

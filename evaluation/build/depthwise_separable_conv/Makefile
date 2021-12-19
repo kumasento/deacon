@@ -44,6 +44,7 @@ F?=4
 K?=3
 S?=1
 SEQ?=0
+P?=1
 FREQ?=100
 VERSION?=1
 NUM_ITERS?=1

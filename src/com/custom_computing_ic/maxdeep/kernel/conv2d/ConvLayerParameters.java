@@ -109,18 +109,22 @@ public class ConvLayerParameters extends LayerParameters {
      * TODO: One thing not clear - PC is actually not sensible here However, we
      * still need it to specify correct number of line buffers.
      */
-    return new ConvLayerParameters.Builder(H, W, C, C, K)
+    return new ConvLayerParameters.Builder(OH, OW, C, C, K)
         .dtype(dtype)
         .BW(BW)
         .WBW(WBW)
         .numFracBits(numFracBits)
+        .PF(1)
         .PC(PC)
         .PK(PK)
         .coeffOnChip(coeffOnChip)
         .useDRAM(useDRAM)
+        .pad(PAD)
+        .stride(STRIDE)
         .seq(seq)
         .dbg(dbg)
         .useWinograd(useWinograd)
+        .coeffFile(coeffFile)
         .type(Type.DEPTHWISE_SEPARABLE)
         .name(name + "_dw")
         .build();
@@ -135,10 +139,13 @@ public class ConvLayerParameters extends LayerParameters {
         .PC(PC)
         .PF(PF)
         .PK(PK)
+        .pad(0)
+        .stride(1)
         .coeffOnChip(coeffOnChip)
         .useDRAM(useDRAM)
         .name(name + "_pw")
         .type(Type.STANDARD)
+        .coeffFile(coeffFile)
         .seq(seq)
         .dbg(dbg)
         .build();
@@ -444,6 +451,8 @@ public class ConvLayerParameters extends LayerParameters {
     private int getInputDim(int outputDim, int kernelDim, int pad, int stride) {
       if (type == Type.POINTWISE)
         return outputDim * stride;
+      if (pad == 1 && stride == 2 && kernelDim == 3)
+        return outputDim * 2;
       return (outputDim - 1) * stride + kernelDim - 2 * pad;
     }
 

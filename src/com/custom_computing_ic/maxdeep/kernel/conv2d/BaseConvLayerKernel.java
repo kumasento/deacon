@@ -1,5 +1,6 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.fuse.FusedConvLayerParameters;
 import com.google.protobuf.WireFormat;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
@@ -215,20 +216,42 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return rawData;
   }
 
-  public List<Memory<DFEVar>> getROMList(String key, int depth, DFEVectorType<DFEVar> vt) {
+  public List<Memory<DFEVar>> getROMList(
+      ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt) {
+    getOwner().getManager().logMsg("Read for key = %s\n", key);
     double[] rawData = readROMFile(key, cp.coeffFile);
 
-    int vecSize = vt.getSize();
-
     List<Memory<DFEVar>> romList = new ArrayList<Memory<DFEVar>>();
-    for (int i = 0; i < vecSize; ++i) {
-      Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
+    if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+      for (int pc = 0; pc < cp.PC; ++pc) {
+        for (int k = 0; k < cp.K * cp.K; ++k) {
+          Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
 
-      double[] part = new double[depth];
-      for (int j = 0; j < depth; ++j) part[j] = rawData[j * vecSize + i];
+          double[] part = new double[depth];
+          for (int c = 0; c < cp.C; c += cp.PC)
+            part[c / cp.PC] = rawData[(c + pc) * (cp.K * cp.K) + k];
 
-      rom.setContents(part);
-      romList.add(rom);
+          rom.setContents(part);
+          romList.add(rom);
+        }
+      }
+    } else {
+      for (int pf = 0; pf < cp.PF; ++pf) {
+        for (int pc = 0; pc < cp.PC; ++pc) {
+          for (int k = 0; k < cp.K * cp.K; ++k) {
+            Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
+
+            double[] part = new double[depth];
+            for (int f = 0; f < cp.F; f += cp.PF)
+              for (int c = 0; c < cp.C; c += cp.PC)
+                part[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)] =
+                    rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k];
+
+            rom.setContents(part);
+            romList.add(rom);
+          }
+        }
+      }
     }
 
     return romList;

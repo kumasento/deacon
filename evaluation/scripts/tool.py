@@ -8,7 +8,7 @@ import logging
 import multiprocessing as mp
 import os
 import subprocess
-from typing import Dict
+from typing import Dict, List
 
 import colorlog
 import numpy as np
@@ -69,7 +69,16 @@ def generate_data_array(N: int) -> np.ndarray:
 
 def generate_data_layer(name: str, cfg: Dict, data_file: str):
 
-    if cfg["TYPE"] == "DEPTHWISE_SEPARABLE":
+    if cfg["TYPE"] == "STANDARD":
+        with open(data_file, "a") as f:
+            f.write(f"BEGIN {name}_dw\n")
+            N = cfg["K"] * cfg["K"] * cfg["C"] * cfg["F"]
+            f.write(f"{N}\n")
+            arr = generate_data_array(N)
+            for x in arr:
+                f.write(f"{x}\n")
+
+    elif cfg["TYPE"] == "DEPTHWISE_SEPARABLE":
         # Create data for both depthwise and pointwise:
         with open(data_file, "a") as f:
             # depthwise
@@ -102,7 +111,10 @@ def generate_data(cfg: Dict, root_dir: str, key: str) -> str:
         os.remove(data_file)
 
     logger.info(f"Data generated to file: {data_file}")
-    if "NUM_LAYER" not in cfg:
+    if "layers" in cfg:
+        for key, value in cfg["layers"].items():
+            generate_data_layer(name=key, cfg=value, data_file=data_file)
+    elif "NUM_LAYER" not in cfg:
         generate_data_layer(cfg["NAME"], cfg, data_file)
     else:
         for i in range(cfg["NUM_LAYER"]):
@@ -111,82 +123,267 @@ def generate_data(cfg: Dict, root_dir: str, key: str) -> str:
     return data_file
 
 
-def runsim(args):
+def get_root_dir(cfg_file: str, cfg: Dict):
+    if "global" in cfg:
+        return os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "build",
+            cfg["NAME"],
+        )
+    return os.path.dirname(os.path.dirname(os.path.abspath(cfg_file)))
+
+
+class CommandRunner:
+    def __init__(self, args: argparse.Namespace):
+        self.args = args
+        self.logger = logger
+
+        self.cfg = toml.load(args.cfg)
+        self.logger.info(f"Loaded config: {self.cfg}")
+
+        self.root_dir = get_root_dir(args.cfg, self.cfg)
+        self.log_dir = os.path.join(self.root_dir, "logs")
+        os.makedirs(self.log_dir, exist_ok=True)
+
+        self.extra_flags = {}
+        if hasattr(self.args, "freq") and self.args.freq > 0:
+            self.extra_flags["FREQ"] = self.args.freq
+
+    @property
+    def cmd(self):
+        return ""
+
+    @property
+    def key(self):
+        key = os.path.basename(self.args.cfg).split(".")[0]
+        for k, v in self.extra_flags.items():
+            key += f"_{k}-{v}"
+        return key
+
+    def get_log_file(self, type: str) -> str:
+        return os.path.join(self.log_dir, f"{self.key}.{self.cmd}.{type}.log")
+
+    def get_cfg_for_make(self):
+        # overwrite parameters
+        cfg_ = copy.deepcopy(self.cfg)
+        if "global" in cfg_:
+            cfg_ = cfg_["global"]
+        if hasattr(self.args, "dbg"):
+            cfg_["DEBUG"] = "true"
+        if hasattr(self.args, "freq") and self.args.freq > 0:
+            cfg_["FREQ"] = self.args.freq
+
+        return cfg_
+
+    def get_cmd(self, **kwargs) -> List[str]:
+        # Generate data file.
+        data_file = generate_data(self.cfg, self.root_dir, key=self.key)
+        cli_options = f"-n 2 -f {data_file}"
+
+        cfg_for_make = self.get_cfg_for_make()
+        cmd = ["make", self.cmd]
+        for k, v in cfg_for_make.items():
+            cmd.append(f"{k}={v}")
+        cmd.append(f"COEFF_FILE={data_file}")
+        cmd.append(f"CLI_OPTIONS={cli_options}")
+        for k, v in kwargs.items():
+            cmd.append(f"{k}={v}")
+
+        return cmd
+
+    def run(self):
+        cmd = self.get_cmd()
+        logger.info(f"Command to run: {cmd}")
+        subprocess.run(
+            cmd,
+            cwd=self.root_dir,
+            stdout=open(self.get_log_file("stdout"), "w"),
+            stderr=open(self.get_log_file("stderr"), "w"),
+        )
+
+
+class RunsimCommandRunner(CommandRunner):
+    @property
+    def cmd(self):
+        return "runsim"
+
+    @property
+    def key(self):
+        return os.path.basename(self.args.cfg).split(".")[0]
+
+
+def runsim(args: argparse.Namespace):
     """Run simulation."""
-
-    logger.info(args)
-
-    cfg = toml.load(args.cfg)
-    logger.info(f"Loaded config: {cfg}")
-
-    key = os.path.basename(args.cfg).split(".")[0]
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(args.cfg)))
-    logger.info(f"Root directory: {root_dir}")
-
-    log_dir = os.path.join(root_dir, "logs")
-    os.makedirs(log_dir, exist_ok=True)
-    stdout_log_file = os.path.join(log_dir, f"{key}.runsim.stdout.log")
-    stderr_log_file = os.path.join(log_dir, f"{key}.runsim.stderr.log")
-    logger.info(f"Log file (stdout): {stdout_log_file}")
-    logger.info(f"Log file (stderr): {stderr_log_file}")
-
-    # Generate data file.
-    data_file = generate_data(cfg, root_dir, key=key)
-
-    cli_options = f"-n 2 -f {data_file}"
-
-    cmd = ["make", "runsim"]
-    for key, value in cfg.items():
-        cmd.append(f"{key}={value}")
-    cmd.append(f"COEFF_FILE={data_file}")
-    cmd.append(f"CLI_OPTIONS={cli_options}")
-
-    if args.dbg:
-        cmd.append(f"DEBUG=true")
-
-    logger.info(f"Command to run: {cmd}")
-    subprocess.run(
-        cmd,
-        cwd=root_dir,
-        stdout=open(stdout_log_file, "w"),
-        stderr=open(stderr_log_file, "w"),
-    )
+    RunsimCommandRunner(args).run()
 
 
-def build(args):
-    """Run simulation."""
+class BuildCommandRunner(CommandRunner):
+    @property
+    def cmd(self):
+        return "build"
 
-    logger.info(args)
 
-    cfg = toml.load(args.cfg)
-    logger.info(f"Loaded config: {cfg}")
+def build(args: argparse.Namespace):
+    BuildCommandRunner(args).run()
 
-    key = os.path.basename(args.cfg).split(".")[0]
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(args.cfg)))
-    logger.info(f"Root directory: {root_dir}")
 
-    log_dir = os.path.join(root_dir, "logs")
-    os.makedirs(log_dir, exist_ok=True)
-    stdout_log_file = os.path.join(log_dir, f"{key}.build.stdout.log")
-    stderr_log_file = os.path.join(log_dir, f"{key}.build.stderr.log")
-    logger.info(f"Log file (stdout): {stdout_log_file}")
-    logger.info(f"Log file (stderr): {stderr_log_file}")
+class RunCommandRunner(CommandRunner):
+    @property
+    def cmd(self):
+        return "run"
 
-    # Generate data file.
-    data_file = generate_data(cfg, root_dir, key=key)
+    def get_cmd(self, **kwargs) -> List[str]:
+        cmd = super().get_cmd(**kwargs)
 
-    cmd = ["make", "build"]
-    for key, value in cfg.items():
-        cmd.append(f"{key}={value}")
-    cmd.append(f"COEFF_FILE={data_file}")
+        return cmd
 
-    logger.info(f"Command to run: {cmd}")
-    subprocess.run(
-        cmd,
-        cwd=root_dir,
-        stdout=open(stdout_log_file, "w"),
-        stderr=open(stderr_log_file, "w"),
-    )
+
+def run(args):
+    RunCommandRunner(args).run()
+
+
+# -------------------------------------------------------------------------
+
+
+class AppGenerator:
+    def __init__(self, args):
+        self.args = args
+        self.logger = logger
+
+        self.cfg = toml.load(args.cfg)
+        self.logger.info(self.cfg)
+
+        self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.logger.info(f"Root directory: {self.root_dir}")
+
+        self.name = self.cfg["NAME"]
+        assert self.name
+
+        self.src_dir = os.path.join(self.root_dir, "src", self.name)
+        os.makedirs(self.src_dir, exist_ok=True)
+        self.logger.info(f"Generated src directory: {self.src_dir}")
+
+        self.build_dir = os.path.join(self.root_dir, "build", self.name)
+        os.makedirs(self.build_dir, exist_ok=True)
+        self.logger.info(f"Generated build directory: {self.build_dir}")
+
+    def read_template(self, file_path: str):
+        with open(file_path, "r") as f:
+            lines = f.readlines()
+        return "".join(lines)
+
+    def write_template(self, content: str, file_path: str):
+        with open(file_path, "w") as f:
+            f.write(content)
+
+    @property
+    def PRJ(self):
+        """From snake to camel case"""
+        return "".join(word.title() for word in self.name.split("_"))
+
+    def generate_from_template(self, template_file: str, target_file: str, **kwargs):
+        self.write_template(
+            self.read_template(template_file).format(**kwargs), target_file
+        )
+
+    def generate_makefile(self):
+        """Generate Makefile from template."""
+        target_file = os.path.join(self.build_dir, "Makefile")
+        source_file = os.path.join(self.root_dir, "build", "TEMPLATE", "Makefile")
+        self.generate_from_template(
+            source_file,
+            target_file,
+            PRJ=self.PRJ,
+            APPPKG=self.name,
+            EXTRA_CFLAGS="",
+            DEFS="",
+            BUILD_PARAMS="",
+            BUILD_NAME_OPTION="",
+        )
+
+        self.logger.info(f"Write to makefile: {target_file}")
+
+    def generate_engine_parameters(self):
+        source_file = os.path.join(
+            self.root_dir, "src", "TEMPLATE", "ModelEngineParameters.java.tmpl"
+        )
+        target_file = os.path.join(self.src_dir, f"{self.PRJ}EngineParameters.java")
+        self.generate_from_template(
+            source_file, target_file, APPPKG=self.name, PRJ=self.PRJ
+        )
+
+        self.logger.info(f"Write to engine parameters: {target_file}")
+
+    def generate_manager(self):
+        cps = ""
+        for key, cfg in self.cfg["layers"].items():
+            cps += f"""
+    cps.add(new ConvLayerParameters
+                .Builder({cfg['H']}, {cfg['W']}, {cfg['C']}, {cfg['F']}, {cfg['K']})
+                .BW({self.cfg['global']['BW']})
+                .WBW({self.cfg['global']['WBW']})
+                .numFracBits({self.cfg['global']['NUM_FRAC_BITS']})
+                .type(Type.{cfg['TYPE']})
+                .name("{key}")
+                .pad({cfg['P']})
+                .stride({cfg['S']})
+                .seq(CompSeq.values()[{cfg['SEQ']}])
+                .dbg(params.getDebug())
+                .coeffOnChip({str(self.cfg['global']['COEFF_ON_CHIP']).lower()})
+                .coeffFile(params.getCoeffFile())
+                .PF({cfg['P_F'] if 'P_F' in cfg else 1})
+                .PC({cfg['P_C'] if 'P_C' in cfg else 1})
+                .PK({cfg['P_K'] if 'P_K' in cfg else 1})
+                .build());
+            """
+
+        source_file = os.path.join(
+            self.root_dir, "src", "TEMPLATE", "ModelManager.java.tmpl"
+        )
+        target_file = os.path.join(self.src_dir, f"{self.PRJ}Manager.java")
+        self.generate_from_template(
+            source_file,
+            target_file,
+            APPPKG=self.name,
+            PRJ=self.PRJ,
+            FREQ=self.cfg["global"]["FREQ"],
+            USE_DRAM=str(self.cfg["global"]["USE_DRAM"]).lower(),
+            CPS=cps,
+        )
+
+        self.logger.info(f"Write to manager: {target_file}")
+
+    def generate_cpucode(self):
+        cps_init = ""
+        for k in self.cfg["layers"]:
+            cps_init += f"""\tcps.push_back(ConvLayerParameters(max_file, "{k}"));\n"""
+
+        source_file = os.path.join(
+            self.root_dir, "src", "TEMPLATE", "ModelCpuCode.cpp.tmpl"
+        )
+        target_file = os.path.join(self.src_dir, f"{self.PRJ}CpuCode.cpp")
+        self.generate_from_template(
+            source_file,
+            target_file,
+            PRJ=self.PRJ,
+            CPS_INIT=cps_init,
+            DATA_TYPE="int8_t",
+        )
+
+        self.logger.info(f"Write to CPU code: {target_file}")
+
+    def run(self):
+        self.generate_makefile()
+        if not self.args.cpu_only:
+            self.generate_engine_parameters()
+            self.generate_manager()
+        self.generate_cpucode()
+
+
+def gen(args):
+    """Generate an application."""
+    logger.info(args.cfg)
+    AppGenerator(args).run()
 
 
 # -------------------------------------------------------------------------
@@ -199,7 +396,7 @@ def process(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Deacon tool.")
-    parser.add_argument("--cfg", nargs="+", default=[], help="Configuration files")
+    parser.add_argument("--cfg", type=str, help="Comma-separated configuration files")
     parser.add_argument(
         "-j", "--jobs", type=int, default=1, help="Number of parallelised jobs"
     )
@@ -212,9 +409,27 @@ def main():
     runsim_parser.set_defaults(func=runsim)
 
     build_parser = subparsers.add_parser("build", help="Run build")
+    build_parser.add_argument(
+        "--freq", type=int, default=0, help="Overwrite clock frequency"
+    )
     build_parser.set_defaults(func=build)
 
+    run_parser = subparsers.add_parser("run", help="Run build")
+    run_parser.add_argument(
+        "--freq", type=int, default=0, help="Overwrite clock frequency"
+    )
+    run_parser.set_defaults(func=run)
+
+    gen_parser = subparsers.add_parser(
+        "gen", help="Generate an application from a network config."
+    )
+    gen_parser.add_argument(
+        "--cpu-only", action="store_true", help="Only generate the CPU code."
+    )
+    gen_parser.set_defaults(func=gen)
+
     args = parser.parse_args()
+    args.cfg = args.cfg.split(",")
 
     # Prepare parallel runs
     args_list = [copy.deepcopy(args) for i in range(len(args.cfg))]

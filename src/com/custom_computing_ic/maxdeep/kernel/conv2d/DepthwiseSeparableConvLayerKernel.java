@@ -41,9 +41,9 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
     getOwner().getManager().logMsg("Pointwise coeff ROM depth = %d", pcp.getCoeffNumVec());
 
     this.depthwiseCoeff.connect(readCoeffFMemList(
-        dwAddr, getROMList(dcp.name, dcp.getCoeffNumVec(), dcp.getCoeffVecT(WT)), WT));
+        dwAddr, getROMList(dcp, dcp.name, dcp.getCoeffNumVec(), dcp.getCoeffVecT(WT)), WT));
     this.pointwiseCoeff.connect(readCoeffFMemList(
-        pwAddr, getROMList(pcp.name, pcp.getCoeffNumVec(), pcp.getCoeffVecT(WT)), WT));
+        pwAddr, getROMList(pcp, pcp.name, pcp.getCoeffNumVec(), pcp.getCoeffVecT(WT)), WT));
   }
 
   public void setInputs(
@@ -120,21 +120,23 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
 
   private DFEVector<DFEVar> initDepthwiseConv2D(
       DFEVector<DFEVar> lineBufVec, DFEVector<DFEVar> coeff) {
-    List<DFEVector<DFEVar>> ifmapVecList = createDepthwiseVecList(lineBufVec);
-    List<DFEVector<DFEVar>> coeffVecList = createDepthwiseVecList(depthwiseCoeff);
+    // List<DFEVector<DFEVar>> ifmapVecList = createDepthwiseVecList(lineBufVec);
+    // List<DFEVector<DFEVar>> coeffVecList = createDepthwiseVecList(depthwiseCoeff);
 
-    DFEVector<DFEVar> depthOfmap = getDepthwiseOfmapVecT().newInstance(getOwner());
-    for (int i = 0; i < cp.PC; i++) {
-      Conv2DKernel dwc = new Conv2DKernel(getOwner(), dcp, T, WT);
-      dwc.setInputs(ifmapVecList.get(i), coeffVecList.get(i));
-      DFEVector<DFEVar> dwcOfmap = dwc.getOfmap();
+    // DFEVector<DFEVar> depthOfmap = getDepthwiseOfmapVecT().newInstance(getOwner());
+    Conv2DKernel dwc = new Conv2DKernel(getOwner(), dcp, T, WT);
+    dwc.setInputs(lineBufVec, coeff);
+    // for (int i = 0; i < cp.PC; i++) {
+    //   Conv2DKernel dwc = new Conv2DKernel(getOwner(), dcp, T, WT);
+    //   dwc.setInputs(ifmapVecList.get(i), coeffVecList.get(i));
+    //   DFEVector<DFEVar> dwcOfmap = dwc.getOfmap();
 
-      for (int j = 0; j < cp.PK; j++) {
-        depthOfmap[i * cp.PK + j].connect(dwcOfmap[j]);
-      }
-    }
+    //   for (int j = 0; j < cp.PK; j++) {
+    //     depthOfmap.get(i * cp.PK + j).connect(dwcOfmap.get(j));
+    //   }
+    // }
 
-    return depthOfmap;
+    return dwc.getOfmap();
   }
 
   private int getDepthwiseOfmapVecSize() {
@@ -147,14 +149,14 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
 
   private List<DFEVector<DFEVar>> createDepthwiseVecList(DFEVector<DFEVar> rawVec) {
     int vecLen = rawVec.getSize() / cp.PC;
-    System.out.printf(
+    getOwner().getManager().logMsg(
         "vecLen = %d rawVec.getSize() = %d cp.PC = %d\n", vecLen, rawVec.getSize(), cp.PC);
     List<DFEVector<DFEVar>> vecList = new ArrayList<DFEVector<DFEVar>>();
 
     for (int i = 0; i < cp.PC; i++) {
       DFEVector<DFEVar> vec = (new DFEVectorType<DFEVar>(T, vecLen)).newInstance(getOwner());
 
-      for (int j = 0; j < vecLen; j++) vec[j].connect(rawVec[i * vecLen + j]);
+      for (int j = 0; j < vecLen; j++) vec.get(j).connect(rawVec.get(i * vecLen + j));
 
       vecList.add(vec);
     }
