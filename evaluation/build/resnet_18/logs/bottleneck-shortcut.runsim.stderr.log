@@ -1,0 +1,32 @@
+Mon 14:42: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:42: WARNING: Unconnected elements in design 'conv0'
+Mon 14:42: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv0_graph_warnings.txt
+Mon 14:43: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:43: WARNING: Unconnected elements in design 'conv1'
+Mon 14:43: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv1_graph_warnings.txt
+Mon 14:43: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:43: WARNING: Unconnected elements in design 'shortcut1'
+Mon 14:43: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18_MAIA_DFE_SIM_FREQ_300_DBG/scratch/shortcut1_graph_warnings.txt
+Mon 14:43: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:43: WARNING: Unconnected elements in design 'conv2'
+Mon 14:43: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv2_graph_warnings.txt
+Mon 14:43: ERROR: ----------------------------
+Mon 14:43: ERROR: Exception in thread "main":
+Mon 14:43: ERROR:  
+Mon 14:43: ERROR:   Node 'conv2' output 'ofmap_1' not connected. Node created 
+Mon 14:43: ERROR:   on:com.maxeler.platform.max5.manager.Max5ManagerBase.addKernel(Unknown Source)
+Mon 14:43: ERROR:   com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils.createKernelBlocks(ConvLayerManagerUtils.java:129)
+Mon 14:43: ERROR:   resnet_18.Resnet18Manager.<init>(Resnet18Manager.java:31)
+Mon 14:43: ERROR:   resnet_18.Resnet18Manager.main(Resnet18Manager.java:138)
+Mon 14:43: ERROR: 
+Mon 14:43: ERROR: Exception Stack Trace com.maxeler.maxeleros.MaxelerOSException: 
+Mon 14:43: ERROR:    at com.maxeler.maxeleros.managercompiler.core.WrapperDesignData.checkGraphConnectivity(WrapperDesignData.java:219)
+Mon 14:43: ERROR:    at com.maxeler.maxeleros.managercompiler.core.WrapperCompileManager.buildInternal(WrapperCompileManager.java:383)
+Mon 14:43: ERROR:    at com.maxeler.maxeleros.managercompiler.core.WrapperCompileManager.buildSimInternal(WrapperCompileManager.java:296)
+Mon 14:43: ERROR:    at com.maxeler.maxeleros.managercompiler.core.WrapperCompileManager.buildHostCodeSim(WrapperCompileManager.java:292)
+Mon 14:43: ERROR:    at com.maxeler.managers.ManagerBuildInternalSim.realBuild(ManagerBuildInternalSim.java:37)
+Mon 14:43: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
+Mon 14:43: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
+Mon 14:43: ERROR:    at resnet_18.Resnet18Manager.main(Resnet18Manager.java:151)
+Mon 14:43: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18_MAIA_DFE_SIM_FREQ_300_DBG/results/Resnet18.max] Error 1

@@ -63,9 +63,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -81,9 +85,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -99,9 +107,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -117,9 +129,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -135,9 +151,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -153,9 +173,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -171,9 +195,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -189,9 +217,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -207,9 +239,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -225,9 +261,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -243,9 +283,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -261,9 +305,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -279,9 +327,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -297,9 +349,13 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
+                .input("")
+                .numOutputs(1)
+                .residual("")
                 .PF(4)
                 .PC(1)
                 .PK(1)
+                .namedRegion("")
                 .build());
             
 
@@ -309,7 +365,7 @@ public class MobilenetV1IntrseqManager extends Max5LMemManager implements Manage
     mgr.createSLiCinterface(ManagerUtils.dramWrite(mgr, mgr.iface));
 
     BuildConfig buildConfig = mgr.getBuildConfig();
-    buildConfig.setBuildEffort(Effort.HIGH);
+    buildConfig.setBuildEffort(Effort.VERY_HIGH);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

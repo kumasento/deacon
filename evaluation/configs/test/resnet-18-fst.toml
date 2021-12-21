@@ -1,0 +1,51 @@
+NAME = "resnet_18_fst"
+
+[global]
+BW = 8
+WBW = 2
+NUM_FRAC_BITS = 0
+FREQ = 300
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 56
+W = 56
+C = 3
+F = 64
+K = 3
+P = 1
+S = 2
+NUM_OUTPUTS = 2
+NAMED_REGION = "SLR0"
+TYPE = "STANDARD"
+
+# conv2_x
+
+[layers.conv1]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+P = 1
+S = 1
+SEQ = 1
+INPUT = "conv0"
+NUM_OUTPUTS = 1
+NAMED_REGION = "SLR0"
+TYPE = "STANDARD"
+
+[layers.conv2]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "conv1"
+NUM_OUTPUTS = 1
+RESIDUAL = "conv0_1"
+NAMED_REGION = "SLR0"
+TYPE = "STANDARD"

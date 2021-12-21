@@ -1,0 +1,49 @@
+Mon 14:45: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:45: WARNING: Unconnected elements in design 'conv0'
+Mon 14:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv0_graph_warnings.txt
+Mon 14:45: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:45: WARNING: Unconnected elements in design 'conv1'
+Mon 14:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv1_graph_warnings.txt
+Mon 14:45: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:45: WARNING: Unconnected elements in design 'shortcut1'
+Mon 14:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_SIM_FREQ_300_DBG/scratch/shortcut1_graph_warnings.txt
+Mon 14:45: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:45: WARNING: Unconnected elements in design 'conv2'
+Mon 14:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_SIM_FREQ_300_DBG/scratch/conv2_graph_warnings.txt
+In file included from ../../src/bottleneck_shortcut/BottleneckShortcutCpuCode.cpp:10:
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/bottleneck_shortcut/BottleneckShortcutCpuCode.cpp:80:62:   required from here
+../../../runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/bottleneck_shortcut/BottleneckShortcutCpuCode.cpp:107:64:   required from here
+../../../runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1220 14:45:23.656874 257626 utils.h:381] Burst aligning input array of size: 256 to 384
+I1220 14:45:23.657115 257626 BottleneckShortcutCpuCode.cpp:86] Tiled input size (burst aligned): 384
+I1220 14:45:23.657127 257626 utils.h:381] Burst aligning input array of size: 48 to 384
+I1220 14:45:23.657140 257626 BottleneckShortcutCpuCode.cpp:88] Tiled output size (burst aligned): 384
+I1220 14:45:23.657150 257626 layers.h:757] Writing DRAM to 0 with size 0x180
+I1220 14:45:25.305120 257626 layers.h:774] Reading DRAM from 0x180 with size 0x180

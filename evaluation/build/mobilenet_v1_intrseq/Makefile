@@ -20,7 +20,7 @@
 
 
 # ---- Project settings ----
-WHEREISROOT=../../..
+WHEREISROOT=/mnt/ccnas2/bdp/rz3515/projects/deacon
 SRCROOT=../../src
 
 PRJ=MobilenetV1Intrseq
@@ -47,6 +47,7 @@ FREQ?=200
 BUILD_PARAMS:= FREQ=$(FREQ) DEBUG=$(DEBUG) COEFF_FILE=$(COEFF_FILE) 
 BUILD_NAME_OPTION:=_FREQ_$(FREQ)$(DEBUG_SUFFIX)
 CLI_OPTIONS?=-n 2
+SIMDEVICEID?=a
 
 # Using known hardware settings
 include $(WHEREISROOT)/make/Makefile.$(DEVICE).hardware

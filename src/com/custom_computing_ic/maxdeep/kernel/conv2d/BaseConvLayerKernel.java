@@ -216,6 +216,20 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return rawData;
   }
 
+  public boolean isTernaryType(DFEType T) {
+    return T.getTotalBits() == 2 && T.isUInt();
+  }
+
+  public boolean isTernaryType(DFEVectorType<DFEVar> T) {
+    return isTernaryType((DFEType) T.getContainedType());
+  }
+
+  public double convert(double data, DFEVectorType<DFEVar> T) {
+    if (isTernaryType(T))
+      return data > 0 ? 1 : (data < 0 ? 3 : 0);
+    return data;
+  }
+
   public List<Memory<DFEVar>> getROMList(
       ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt) {
     getOwner().getManager().logMsg("Read for key = %s\n", key);
@@ -228,8 +242,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
           Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
 
           double[] part = new double[depth];
-          for (int c = 0; c < cp.C; c += cp.PC)
-            part[c / cp.PC] = rawData[(c + pc) * (cp.K * cp.K) + k];
+          for (int c = 0; c < cp.C; c += cp.PC) {
+            double data = rawData[(c + pc) * (cp.K * cp.K) + k];
+            part[c / cp.PC] = convert(data, vt);
+          }
 
           rom.setContents(part);
           romList.add(rom);
@@ -244,8 +260,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
             double[] part = new double[depth];
             for (int f = 0; f < cp.F; f += cp.PF)
               for (int c = 0; c < cp.C; c += cp.PC)
-                part[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)] =
-                    rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k];
+                part[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)] = convert(
+                    rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k], vt);
 
             rom.setContents(part);
             romList.add(rom);

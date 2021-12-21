@@ -1,0 +1,42 @@
+NAME = "three_conv_ffc"
+
+[global]
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+FREQ = 200
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv1]
+H = 32
+W = 32
+C = 32
+F = 32
+K = 3
+P = 1
+S = 1
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.conv2]
+H = 32
+W = 32
+C = 32
+F = 32
+K = 3
+P = 1
+S = 1
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.conv3]
+H = 32
+W = 32
+C = 32
+F = 32
+K = 3
+P = 1
+S = 1
+SEQ = 1
+TYPE = "STANDARD"

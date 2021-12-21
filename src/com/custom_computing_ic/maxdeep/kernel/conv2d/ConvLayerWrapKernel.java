@@ -54,7 +54,7 @@ public class ConvLayerWrapKernel extends Kernel {
 
     DFEVar initCoeff = constant.var(0).cast(dfeBool());
     DFEVar initCoeffStrm = constant.var(0).cast(WT);
-    if (cp.initCoeff) {
+    if (cp.initCoeff && cp.type != Type.IDENTITY) {
       getManager().logMsg("Init coeffient signal\n");
       initCoeff = io.scalarInput(INIT_COEFF_NAME, dfeBool());
 
@@ -66,15 +66,25 @@ public class ConvLayerWrapKernel extends Kernel {
     /**
      * TODO: what is the proper way to initialise conv and cast the type?
      */
-    if (cp.type == Type.STANDARD || cp.type == Type.POINTWISE) {
+    if (cp.type == Type.IDENTITY) {
+      DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(T, cp.getIfmapVecSize());
+      DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, vecT);
+
+      for (int i = 0; i < cp.numOutputs; ++i) {
+        getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
+        io.output(getOfmapName(i), vecT).connect(ifmap);
+      }
+    } else if (cp.type == Type.STANDARD || cp.type == Type.POINTWISE) {
       // debug.pushEnableNumericExceptions(true);
       // optimization.pushRoundingMode(RoundingMode.TRUNCATE);
       BaseConvLayerKernel conv = ConvLayerKernelFactory.create(getKernel(), cp, T, WT);
       // optimization.popRoundingMode();
       // debug.popEnableNumericExceptions();
 
-      conv.setIfmap(
-          io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn().and(initCoeff.complement())));
+      DFEVector<DFEVar> ifmap =
+          io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn().and(initCoeff.complement()));
+
+      conv.setIfmap(ifmap);
       if (!cp.coeffOnChip)
         conv.setCoeffList(createCoeffListInput(conv, numCoeffFifoSplits));
       else if (cp.initCoeff)
@@ -88,10 +98,18 @@ public class ConvLayerWrapKernel extends Kernel {
         output = output.add(residual);
       }
 
-      io.output(OFMAP_NAME, conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()))
-          .connect(output);
+      for (int i = 0; i < cp.numOutputs; ++i) {
+        getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
+        io.output(
+              getOfmapName(i), conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()))
+            .connect(output);
+      }
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
+      if (cp.numOutputs > 1)
+        throw new IllegalArgumentException(
+            "numOutputs > 1 is not supported by depthwise separable.");
+
       DepthwiseSeparableConvLayerKernel conv =
           new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T, WT);
 
@@ -112,15 +130,23 @@ public class ConvLayerWrapKernel extends Kernel {
       }
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE_V2) {
-      // create the kernel for depthwise separable convolution V2
-      getManager().logMsg("Initializing kernel for Depthwise Separable Convolution V2");
+      throw new IllegalArgumentException("Depthwise separable v2 is not maintained.");
 
-      DepthwiseSeparableConvLayerKernelV2 conv =
-          new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, T);
-      conv.setIO(getKernel());
+      // create the kernel for depthwise separable convolution V2
+      // getManager().logMsg("Initializing kernel for Depthwise Separable Convolution V2");
+
+      // DepthwiseSeparableConvLayerKernelV2 conv =
+      //     new DepthwiseSeparableConvLayerKernelV2(getKernel(), cp, T);
+      // conv.setIO(getKernel());
     } else {
       throw new IllegalArgumentException("type has no been supported");
     }
+  }
+
+  public static String getOfmapName(int index) {
+    if (index == 0)
+      return OFMAP_NAME;
+    return OFMAP_NAME + "_" + Integer.toString(index);
   }
 
   public List<DFEVector<DFEVar>> createCoeffListInput(

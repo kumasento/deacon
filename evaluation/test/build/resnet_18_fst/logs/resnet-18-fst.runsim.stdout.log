@@ -1,0 +1,252 @@
+BUILD_NAME_OPTION = _FREQ_300
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=resnet_18_fst MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 Resnet18FstManager \
+	DFEModel=MAIA maxFileName=Resnet18Fst target='DFE_SIM' enableMPCX=false \
+	FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt 
+]0; maxJavaRun: Resnet18FstManager DFEModel=MAIA maxFileName=Resnet18Fst target=DFE_SIM enableMPCX=false FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : resnet_18_fst
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : resnet_18_fst.Resnet18FstManager
+Class arguments     : DFEModel=MAIA maxFileName=Resnet18Fst target=DFE_SIM enableMPCX=false FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Tue 12:28: MaxCompiler version: 2021.1
+Tue 12:28: Build "Resnet18Fst" start time: Tue Dec 21 12:28:00 GMT 2021
+Tue 12:28: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Tue 12:28: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300
+Tue 12:28: Detailed build log available in "_build.log"
+Tue 12:28: 
+Tue 12:28: ENGINE BUILD PARAMETERS
+Tue 12:28: 	              Build name: Resnet18Fst_MAIA_DFE_SIM_FREQ_300                                                                     
+Tue 12:28: 	             maxFileName: Resnet18Fst                                                                                           
+Tue 12:28: 	                  target: DFE_SIM                                                                                               
+Tue 12:28: 	                DFEModel: MAIA                                                                                                  
+Tue 12:28: 	              enableMPCX: false                                                                                                 
+Tue 12:28: 	                bitWidth: 32                                                                                                    
+Tue 12:28: 	                     WBW: 32                                                                                                    
+Tue 12:28: 	                   DTYPE: fixed                                                                                                 
+Tue 12:28: 	           NUM_FRAC_BITS: 8                                                                                                     
+Tue 12:28: 	                      PF: 1                                                                                                     
+Tue 12:28: 	                      PC: 1                                                                                                     
+Tue 12:28: 	                      PK: 1                                                                                                     
+Tue 12:28: 	                       H: 1                                                                                                     
+Tue 12:28: 	                       W: 1                                                                                                     
+Tue 12:28: 	                       C: 1                                                                                                     
+Tue 12:28: 	                       F: 1                                                                                                     
+Tue 12:28: 	                       K: 1                                                                                                     
+Tue 12:28: 	                     PAD: 0                                                                                                     
+Tue 12:28: 	                       S: 1                                                                                                     
+Tue 12:28: 	                     SEQ: 0                                                                                                     
+Tue 12:28: 	                    FREQ: 300                                                                                                   
+Tue 12:28: 	                USE_DRAM: false                                                                                                 
+Tue 12:28: 	                 USE_BNN: false                                                                                                 
+Tue 12:28: 	            USE_WINOGRAD: false                                                                                                 
+Tue 12:28: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                 
+Tue 12:28: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                     
+Tue 12:28: 	                   DEBUG: false                                                                                                 
+Tue 12:28: 	           COEFF_ON_CHIP: false                                                                                                 
+Tue 12:28: 	              INIT_COEFF: false                                                                                                 
+Tue 12:28: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt
+Tue 12:28: Generating kernel conv0 ...
+Tue 12:28: Instantiating kernel "conv0"
+Tue 12:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: coeffOnChip = true
+Tue 12:28: Input height = 112, output height = 112, pad = 1
+Tue 12:28: Counter H = 114 W = 114
+Tue 12:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: Read for key = conv0
+Tue 12:28: Ifmap buffer configuration 65536 x 1
+Tue 12:28: loop = false
+Tue 12:28: Building line buffer for "conv0" ...
+Tue 12:28: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Tue 12:28: Line buffer input vector size: 1, output vector size: 9.
+Tue 12:28: Number of separated line buffers: 1
+Tue 12:28: Initialising line buffer kernel with 3 x 114 x 1
+Tue 12:28: Size of line buffer output: 3
+Tue 12:28: Number of line buffer output chunks: 3
+Tue 12:28: Connecting outputs from chunk (#000) ...
+Tue 12:28: Connecting outputs from chunk (#001) ...
+Tue 12:28: Connecting outputs from chunk (#002) ...
+Tue 12:28: Building the CORE arithmetic unit for "conv0" ...
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: CORE ifmap vector size: 9
+Tue 12:28: CORE coefficient vector size: 9
+Tue 12:28: CORE ofmap vector size: 1
+Tue 12:28: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 12:28: Connecting to output: ofmap
+Tue 12:28: Connecting to output: ofmap_1
+Tue 12:28: Compiling kernel "conv0"
+Tue 12:28: 
+Tue 12:28: Generating kernel conv1 ...
+Tue 12:28: Instantiating kernel "conv1"
+Tue 12:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: coeffOnChip = true
+Tue 12:28: Input height = 56, output height = 56, pad = 1
+Tue 12:28: Counter H = 58 W = 58
+Tue 12:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: Read for key = conv1
+Tue 12:28: Ifmap buffer configuration 4096 x 1
+Tue 12:28: loop = false
+Tue 12:28: Building line buffer for "conv1" ...
+Tue 12:28: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 12:28: Line buffer input vector size: 1, output vector size: 9.
+Tue 12:28: Number of separated line buffers: 1
+Tue 12:28: Initialising line buffer kernel with 3 x 58 x 1
+Tue 12:28: Size of line buffer output: 3
+Tue 12:28: Number of line buffer output chunks: 3
+Tue 12:28: Connecting outputs from chunk (#000) ...
+Tue 12:28: Connecting outputs from chunk (#001) ...
+Tue 12:28: Connecting outputs from chunk (#002) ...
+Tue 12:28: Building the CORE arithmetic unit for "conv1" ...
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: CORE ifmap vector size: 9
+Tue 12:28: CORE coefficient vector size: 9
+Tue 12:28: CORE ofmap vector size: 1
+Tue 12:28: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
+Tue 12:28: Connecting to output: ofmap
+Tue 12:28: Compiling kernel "conv1"
+Tue 12:28: 
+Tue 12:28: Generating kernel conv2 ...
+Tue 12:28: Instantiating kernel "conv2"
+Tue 12:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: coeffOnChip = true
+Tue 12:28: Input height = 56, output height = 56, pad = 1
+Tue 12:28: Counter H = 58 W = 58
+Tue 12:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 12:28: Read for key = conv2
+Tue 12:28: Ifmap buffer configuration 262144 x 1
+Tue 12:28: loop = false
+Tue 12:28: Building line buffer for "conv2" ...
+Tue 12:28: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 12:28: Line buffer input vector size: 1, output vector size: 9.
+Tue 12:28: Number of separated line buffers: 1
+Tue 12:28: Initialising line buffer kernel with 3 x 58 x 1
+Tue 12:28: Size of line buffer output: 3
+Tue 12:28: Number of line buffer output chunks: 3
+Tue 12:28: Connecting outputs from chunk (#000) ...
+Tue 12:28: Connecting outputs from chunk (#001) ...
+Tue 12:28: Connecting outputs from chunk (#002) ...
+Tue 12:28: Building the CORE arithmetic unit for "conv2" ...
+Tue 12:28: WT = dfeFix(2, 0, UNSIGNED)
+Tue 12:28: CORE ifmap vector size: 9
+Tue 12:28: CORE coefficient vector size: 9
+Tue 12:28: CORE ofmap vector size: 1
+Tue 12:28: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 12:28: Connecting residual: conv0_1
+Tue 12:28: Connecting to output: ofmap
+Tue 12:28: Compiling kernel "conv2"
+Tue 12:28: 
+Tue 12:28: Generating padding kernels for DRAM access
+Tue 12:28: Instantiating kernel "ifmap_unpad"
+Tue 12:28: Compiling kernel "ifmap_unpad"
+Tue 12:28: 
+Tue 12:28: Instantiating kernel "ofmap_pad"
+Tue 12:28: Compiling kernel "ofmap_pad"
+Tue 12:28: 
+Tue 12:28: Setting up stream connections for conv0
+Tue 12:28: Setting up stream connections for conv1
+Tue 12:28: Setting up stream connections for conv2
+Tue 12:28: FIFO depth: 262144
+Tue 12:28: DRAM will be used to build the design
+Tue 12:28: Setup streams for kernel "conv0"
+Tue 12:28: # cycles:       2495232
+Tue 12:28: # ifmap stream: 37632
+Tue 12:28: # coeff stream: 1728
+Tue 12:28: # ofmap stream: 200704
+Tue 12:28: coeff vec size: 9
+Tue 12:28: coeff stream bit width: 72
+Tue 12:28: coeff stream chunk size: 9
+Tue 12:28: Setup streams for kernel "conv1"
+Tue 12:28: # cycles:       13778944
+Tue 12:28: # ifmap stream: 200704
+Tue 12:28: # coeff stream: 36864
+Tue 12:28: # ofmap stream: 200704
+Tue 12:28: coeff vec size: 9
+Tue 12:28: coeff stream bit width: 72
+Tue 12:28: coeff stream chunk size: 9
+Tue 12:28: Setup streams for kernel "conv2"
+Tue 12:28: # cycles:       13778944
+Tue 12:28: # ifmap stream: 200704
+Tue 12:28: # coeff stream: 36864
+Tue 12:28: # ofmap stream: 200704
+Tue 12:28: coeff vec size: 9
+Tue 12:28: coeff stream bit width: 72
+Tue 12:28: coeff stream chunk size: 9
+Tue 12:28: Running back-end simulation build (3 phases)
+Tue 12:28: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Tue 12:28: (2/3) - Compile Simulation Modules (SimCompilePass)
+Tue 12:28: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Tue 12:28: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Resnet18Fst.max (MD5Sum: 4bac768c37646a52922a54cb4271f348)
+Tue 12:28: Build completed: Tue Dec 21 12:28:16 GMT 2021 (took 16 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Resnet18Fst.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Maxfiles.h
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Resnet18Fst.max Resnet18Fst_FREQ_300_sim.o
+Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Resnet18Fst.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_3733926908141310978/cobject/max_7564604941039684110.c -o /tmp/sliccompile_3733926908141310978/cobject/max_7564604941039684110.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results/Resnet18Fst.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_6502626659992273746.o 
+ld -r /tmp/sliccompile_3733926908141310978/cobject/max_7564604941039684110.c.o max_6502626659992273746.o -o Resnet18Fst_FREQ_300_sim.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst'
+g++ ../../src/resnet_18_fst/Resnet18FstCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/results -D__SIM__ -DDESIGN_NAME=Resnet18Fst -c -o Resnet18Fst_FREQ_300_simc.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -g -o Resnet18Fst_FREQ_300_sim Resnet18Fst_FREQ_300_sim.o Resnet18Fst_FREQ_300_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
+maxcompilersim -n rz3515a -cLIMA -d1 restart
+
+Simulated system 'rz3515a' started:
+    Board:                   MAX5C (default: 48GB RAM)
+    RAM size for simulation: 51539607552 bytes.
+    Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515a-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515a-cccad5_daemon.log
+
+Simulated devices available:
+    rz3515a0:rz3515a
+
+To use simulated devices you need to set the environment variables
+LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
+you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
+tutorial for details).  Also, ensure that you add the correct simulated
+system name (namely "rz3515a") to your SLiC configuration. The following
+examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
+Example for BASH:
+    export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
+    export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515a"
+Example for CSH:
+    setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
+    setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515a"
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515a" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Resnet18Fst_FREQ_300_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt

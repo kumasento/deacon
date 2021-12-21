@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <type_traits>

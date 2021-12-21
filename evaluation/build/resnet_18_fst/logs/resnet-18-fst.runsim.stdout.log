@@ -1,0 +1,191 @@
+BUILD_NAME_OPTION = _FREQ_100
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=resnet_18_fst MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 Resnet18FstManager \
+	DFEModel=MAIA maxFileName=Resnet18Fst target='DFE_SIM' enableMPCX=false \
+	FREQ=100 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/resnet_18_fst/data/data-resnet-18-fst.txt 
+]0; maxJavaRun: Resnet18FstManager DFEModel=MAIA maxFileName=Resnet18Fst target=DFE_SIM enableMPCX=false FREQ=100 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/resnet_18_fst/data/data-resnet-18-fst.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : resnet_18_fst
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : resnet_18_fst.Resnet18FstManager
+Class arguments     : DFEModel=MAIA maxFileName=Resnet18Fst target=DFE_SIM enableMPCX=false FREQ=100 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/resnet_18_fst/data/data-resnet-18-fst.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Tue 11:01: MaxCompiler version: 2021.1
+Tue 11:01: Build "Resnet18Fst" start time: Tue Dec 21 11:01:44 GMT 2021
+Tue 11:01: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Tue 11:01: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100
+Tue 11:01: Detailed build log available in "_build.log"
+Tue 11:01: 
+Tue 11:01: ENGINE BUILD PARAMETERS
+Tue 11:01: 	              Build name: Resnet18Fst_MAIA_DFE_SIM_FREQ_100                                                                
+Tue 11:01: 	             maxFileName: Resnet18Fst                                                                                      
+Tue 11:01: 	                  target: DFE_SIM                                                                                          
+Tue 11:01: 	                DFEModel: MAIA                                                                                             
+Tue 11:01: 	              enableMPCX: false                                                                                            
+Tue 11:01: 	                bitWidth: 32                                                                                               
+Tue 11:01: 	                     WBW: 32                                                                                               
+Tue 11:01: 	                   DTYPE: fixed                                                                                            
+Tue 11:01: 	           NUM_FRAC_BITS: 8                                                                                                
+Tue 11:01: 	                      PF: 1                                                                                                
+Tue 11:01: 	                      PC: 1                                                                                                
+Tue 11:01: 	                      PK: 1                                                                                                
+Tue 11:01: 	                       H: 1                                                                                                
+Tue 11:01: 	                       W: 1                                                                                                
+Tue 11:01: 	                       C: 1                                                                                                
+Tue 11:01: 	                       F: 1                                                                                                
+Tue 11:01: 	                       K: 1                                                                                                
+Tue 11:01: 	                     PAD: 0                                                                                                
+Tue 11:01: 	                       S: 1                                                                                                
+Tue 11:01: 	                     SEQ: 0                                                                                                
+Tue 11:01: 	                    FREQ: 100                                                                                              
+Tue 11:01: 	                USE_DRAM: false                                                                                            
+Tue 11:01: 	                 USE_BNN: false                                                                                            
+Tue 11:01: 	            USE_WINOGRAD: false                                                                                            
+Tue 11:01: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                            
+Tue 11:01: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                
+Tue 11:01: 	                   DEBUG: false                                                                                            
+Tue 11:01: 	           COEFF_ON_CHIP: false                                                                                            
+Tue 11:01: 	              INIT_COEFF: false                                                                                            
+Tue 11:01: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/resnet_18_fst/data/data-resnet-18-fst.txt
+Tue 11:01: Generating kernel conv0 ...
+Tue 11:01: Instantiating kernel "conv0"
+Tue 11:01: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: coeffOnChip = true
+Tue 11:01: Input height = 224, output height = 224, pad = 1
+Tue 11:01: Counter H = 226 W = 226
+Tue 11:01: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: Read for key = conv0
+Tue 11:01: Ifmap buffer configuration 262144 x 1
+Tue 11:01: loop = false
+Tue 11:01: Building line buffer for "conv0" ...
+Tue 11:01: Line buffer shape 3 x 224, produces 1 number of 3 x 3 tiles per cycle
+Tue 11:01: Line buffer input vector size: 1, output vector size: 9.
+Tue 11:01: Number of separated line buffers: 1
+Tue 11:01: Initialising line buffer kernel with 3 x 226 x 1
+Tue 11:01: Size of line buffer output: 3
+Tue 11:01: Number of line buffer output chunks: 3
+Tue 11:01: Connecting outputs from chunk (#000) ...
+Tue 11:01: Connecting outputs from chunk (#001) ...
+Tue 11:01: Connecting outputs from chunk (#002) ...
+Tue 11:01: Building the CORE arithmetic unit for "conv0" ...
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: CORE ifmap vector size: 9
+Tue 11:01: CORE coefficient vector size: 9
+Tue 11:01: CORE ofmap vector size: 1
+Tue 11:01: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Tue 11:01: Connecting to output: ofmap
+Tue 11:01: Connecting to output: ofmap_1
+Tue 11:01: Compiling kernel "conv0"
+Tue 11:01: 
+Tue 11:01: Generating kernel conv1 ...
+Tue 11:01: Instantiating kernel "conv1"
+Tue 11:01: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: coeffOnChip = true
+Tue 11:01: Input height = 112, output height = 112, pad = 1
+Tue 11:01: Counter H = 114 W = 114
+Tue 11:01: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: Read for key = conv1
+Tue 11:01: Ifmap buffer configuration 16384 x 1
+Tue 11:01: loop = false
+Tue 11:01: Building line buffer for "conv1" ...
+Tue 11:01: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Tue 11:01: Line buffer input vector size: 1, output vector size: 9.
+Tue 11:01: Number of separated line buffers: 1
+Tue 11:01: Initialising line buffer kernel with 3 x 114 x 1
+Tue 11:01: Size of line buffer output: 3
+Tue 11:01: Number of line buffer output chunks: 3
+Tue 11:01: Connecting outputs from chunk (#000) ...
+Tue 11:01: Connecting outputs from chunk (#001) ...
+Tue 11:01: Connecting outputs from chunk (#002) ...
+Tue 11:01: Building the CORE arithmetic unit for "conv1" ...
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: CORE ifmap vector size: 9
+Tue 11:01: CORE coefficient vector size: 9
+Tue 11:01: CORE ofmap vector size: 1
+Tue 11:01: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
+Tue 11:01: Connecting to output: ofmap
+Tue 11:01: Compiling kernel "conv1"
+Tue 11:01: 
+Tue 11:01: Generating kernel identity1 ...
+Tue 11:01: Instantiating kernel "identity1"
+Tue 11:01: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: Connecting to output: ofmap
+Tue 11:01: Compiling kernel "identity1"
+Tue 11:01: 
+Tue 11:01: Generating kernel conv2 ...
+Tue 11:01: Instantiating kernel "conv2"
+Tue 11:01: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: coeffOnChip = true
+Tue 11:01: Input height = 56, output height = 56, pad = 1
+Tue 11:01: Counter H = 58 W = 58
+Tue 11:01: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 11:01: Read for key = conv2
+Tue 11:01: Ifmap buffer configuration 262144 x 1
+Tue 11:01: loop = false
+Tue 11:01: Building line buffer for "conv2" ...
+Tue 11:01: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 11:01: Line buffer input vector size: 1, output vector size: 9.
+Tue 11:01: Number of separated line buffers: 1
+Tue 11:01: Initialising line buffer kernel with 3 x 58 x 1
+Tue 11:01: Size of line buffer output: 3
+Tue 11:01: Number of line buffer output chunks: 3
+Tue 11:01: Connecting outputs from chunk (#000) ...
+Tue 11:01: Connecting outputs from chunk (#001) ...
+Tue 11:01: Connecting outputs from chunk (#002) ...
+Tue 11:01: Building the CORE arithmetic unit for "conv2" ...
+Tue 11:01: WT = dfeFix(2, 0, UNSIGNED)
+Tue 11:01: CORE ifmap vector size: 9
+Tue 11:01: CORE coefficient vector size: 9
+Tue 11:01: CORE ofmap vector size: 1
+Tue 11:01: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 11:01: Connecting residual: identity_1
+Tue 11:01: Connecting to output: ofmap
+Tue 11:01: Compiling kernel "conv2"
+Tue 11:01: 
+Tue 11:01: Generating padding kernels for DRAM access
+Tue 11:01: Instantiating kernel "ifmap_unpad"
+Tue 11:01: Compiling kernel "ifmap_unpad"
+Tue 11:01: 
+Tue 11:01: Instantiating kernel "ofmap_pad"
+Tue 11:01: Compiling kernel "ofmap_pad"
+Tue 11:01: 
+Tue 11:01: Setting up stream connections for conv0
+Tue 11:01: Setting up stream connections for conv1
+Tue 11:01: Setting up stream connections for identity1
+Tue 11:01: Setting up stream connections for conv2

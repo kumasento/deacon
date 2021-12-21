@@ -1,0 +1,58 @@
+Mon 17:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 17:34: WARNING: Unconnected elements in design 'conv1'
+Mon 17:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ThreeConvFfc_MAIA_DFE_FREQ_200/scratch/conv1_graph_warnings.txt
+Mon 17:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 17:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 17:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 17:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 17:34: WARNING: to that of a similar bitstream.
+Mon 17:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 17:34: WARNING: Unconnected elements in design 'conv2'
+Mon 17:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ThreeConvFfc_MAIA_DFE_FREQ_200/scratch/conv2_graph_warnings.txt
+Mon 17:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 17:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 17:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 17:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 17:34: WARNING: to that of a similar bitstream.
+Mon 17:34: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 17:34: WARNING: Unconnected elements in design 'conv3'
+Mon 17:34: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/ThreeConvFfc_MAIA_DFE_FREQ_200/scratch/conv3_graph_warnings.txt
+Mon 17:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 17:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 17:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 17:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 17:34: WARNING: to that of a similar bitstream.
+Mon 19:27: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Mon 19:27: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Mon 19:27: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+In file included from ../../src/three_conv_ffc/ThreeConvFfcCpuCode.cpp:10:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/three_conv_ffc/ThreeConvFfcCpuCode.cpp:79:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/three_conv_ffc/ThreeConvFfcCpuCode.cpp:106:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

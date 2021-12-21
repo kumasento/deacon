@@ -15,6 +15,11 @@ static uint64_t GetConstant(max_file_t *max_file, std::string property) {
   return max_get_constant_uint64t(max_file, property.c_str());
 }
 
+static const char *GetStringConstant(max_file_t *max_file,
+                                     std::string property) {
+  return max_get_constant_string(max_file, property.c_str());
+}
+
 struct DfeConvLayerParameters {
   uint64_t PF;
   uint64_t PC;
@@ -28,6 +33,8 @@ struct DfeConvLayerParameters {
   uint64_t K;
   uint64_t PAD;
   uint64_t STRIDE;
+  std::string TYPE;
+  std::string SEQ;
   bool wino_coeff_offline;
   bool coeff_on_chip;
   uint64_t num_frac_bits;
@@ -53,6 +60,8 @@ struct DfeConvLayerParameters {
     dcp.PAD = GetConstant(max_file, name + "_PAD");
     dcp.STRIDE = GetConstant(max_file, name + "_STRIDE");
     dcp.K = GetConstant(max_file, name + "_K");
+    dcp.TYPE = GetStringConstant(max_file, name + "_TYPE");
+    dcp.SEQ = GetStringConstant(max_file, name + "_SEQ");
     dcp.coeff_on_chip = GetConstant(max_file, name + "_COEFF_ON_CHIP") == 1;
     dcp.num_frac_bits = GetConstant(max_file, name + "_num_frac_bits");
 

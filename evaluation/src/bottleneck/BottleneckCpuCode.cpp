@@ -241,8 +241,8 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "Initialized coefficients from weights_2, ptr = " << ptr << '\n';
 #endif
 
-  std::string routing_string = "conv0_fanout -> conv0, conv0_fanout -> conv2";
-  actions.routing_string = routing_string.c_str();
+  // std::string routing_string = "conv0_fanout -> conv0, conv0_fanout ->
+  // conv2"; actions.routing_string = routing_string.c_str();
 
   LOG(INFO) << "Initialized actions\n";
 

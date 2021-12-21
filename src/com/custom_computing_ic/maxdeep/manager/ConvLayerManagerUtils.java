@@ -20,6 +20,9 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceMath;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+import com.maxeler.platform.max5.manager.Max5LimaManager;
+import com.maxeler.platform.max5.manager.Max5LimaManager.NamedRegion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +90,35 @@ public class ConvLayerManagerUtils {
     return false;
   }
 
+  public static String getInputKernelName(String input) {
+    String[] strs = input.split("_");
+    return strs[0];
+  }
+
+  public static int getOutputIndex(String input) {
+    String[] strs = input.split("_");
+    if (strs.length == 1)
+      return 0;
+    return Integer.parseInt(strs[1]);
+  }
+
+  // Make sure that .input is properly assigned.
+  public static void prepareConnections(List<ConvLayerParameters> cps) {
+    for (int i = 1; i < cps.size(); ++i)
+      if (cps.get(i).input.isEmpty())
+        cps.get(i).input = cps.get(i - 1).name;
+  }
+
+  public static NamedRegion getNamedRegion(String namedRegion) {
+    if (namedRegion == "SLR0")
+      return NamedRegion.SLR0;
+    if (namedRegion == "SLR1")
+      return NamedRegion.SLR1;
+    if (namedRegion == "SLR2")
+      return NamedRegion.SLR2;
+    throw new IllegalArgumentException("Named region not recognised.");
+  }
+
   /**
    * Create kernel blocks and connect them to streams
    *
@@ -98,15 +130,22 @@ public class ConvLayerManagerUtils {
    */
   public static Map<String, KernelBlock> createKernelBlocks(ManagerInterface mgr,
       List<ConvLayerParameters> cps, int numCoeffFifoSplits, boolean useDRAM) {
+    prepareConnections(cps);
+
     Map<String, KernelBlock> knls = new HashMap<String, KernelBlock>();
+    Map<String, ConvLayerParameters> cpm = createConvLayerParametersMap(cps);
 
     // create computing blocks
     for (ConvLayerParameters cp : cps) {
       String knlName = getKernelName(cp);
 
       mgr.logMsg("Generating kernel %s ...", knlName);
+      if (!cp.namedRegion.isEmpty())
+        ((Max5LimaManager) mgr).pushNamedRegion(getNamedRegion(cp.namedRegion));
       KernelBlock knl = mgr.addKernel(
           new ConvLayerWrapKernel(mgr.makeKernelParameters(knlName), cp, numCoeffFifoSplits));
+      if (!cp.namedRegion.isEmpty())
+        ((Max5LimaManager) mgr).popRegion();
       knls.put(knlName, knl);
     }
 
@@ -118,16 +157,6 @@ public class ConvLayerManagerUtils {
     }
 
     KernelBlock knl = null;
-
-    // check if we need to do fanout.
-    Map<String, Fanout> fanouts = new HashMap<String, Fanout>();
-    for (int i = 0; i < cps.size(); i++) {
-      ConvLayerParameters cp = cps.get(i);
-      if (!cp.residual.isEmpty()) {
-        mgr.logMsg("Creating fanout with key: %s\n", cp.residual);
-        fanouts.put(cp.residual, mgr.fanout(cp.residual + "_fanout"));
-      }
-    }
 
     boolean initCoeff = false;
     for (int i = 0; i < cps.size(); i++) initCoeff = initCoeff || cps.get(i).initCoeff;
@@ -158,36 +187,16 @@ public class ConvLayerManagerUtils {
       if (i == 0) {
         if (useDRAM) {
           KernelBlock ifmapUnpadKnl = padKnls.get(getIfmapUnpadKernelName());
-
-          // if the current layer has fanout input -
-          if (fanouts.containsKey(cp.name)) {
-            DFELink link = fanouts.get(cp.name).addOutput(cp.name);
-            // connect ifmap to the output of unpad kernel
-            knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(link);
-            fanouts.get(cp.name).getInput().connect(
-                ifmapUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
-          } else {
-            // connect ifmap to the output of unpad kernel
-            knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
-                .connect(ifmapUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
-          }
-
+          // connect ifmap to the output of unpad kernel
+          knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
+              .connect(ifmapUnpadKnl.getOutput(UnpaddingKernel.OUT_NAME));
         } else {
-          if (fanouts.containsKey(cp.name))
-            throw new UnsupportedOperationException("not implemented");
           knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(mgr.addStreamFromCPU(IFMAP_NAME));
         }
       } else {
-        DFELink link;
-        String key = cps.get(i - 1).name;
-        if (fanouts.containsKey(cp.name))
-          throw new UnsupportedOperationException("not implemented");
-        // if (fanouts.containsKey(key))
-        // link = fanouts.get(key).addOutput(cp.name);
-        // else
-        link = knls.get(key).getOutput(ConvLayerWrapKernel.OFMAP_NAME);
-
-        knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(link);
+        knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
+            .connect(knls.get(getInputKernelName(cp.input))
+                         .getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.input))));
       }
 
       // if (fanouts.containsKey(cp.name)) {
@@ -196,15 +205,13 @@ public class ConvLayerManagerUtils {
 
       // residual connection.
       if (!cp.residual.isEmpty()) {
-        DFELink link;
-        String key = cp.residual;
-        if (fanouts.containsKey(key)) {
-          link = fanouts.get(key).addOutput(cp.name);
-          mgr.logMsg("Read from fanout: %s", key + "_fanout");
-        } else
-          link = knls.get(key).getOutput(ConvLayerWrapKernel.OFMAP_NAME);
-
-        mgr.logMsg("Connecting to %s\n", link.getName());
+        KernelBlock src = knls.get(getInputKernelName(cp.residual));
+        ConvLayerParameters srcCp = cpm.get(getInputKernelName(cp.residual));
+        DFELink link = src.getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.residual)));
+        int fifoDepth =
+            Math.max(MathUtils.nextPowerOfTwo((int) srcCp.getOfmapStreamNumElems()), 128);
+        mgr.logMsg("FIFO depth: %d", fifoDepth);
+        link.setFifoDepth(fifoDepth);
         knl.getInput(ConvLayerWrapKernel.RESIDUAL_NAME).connect(link);
       }
 
@@ -426,6 +433,24 @@ public class ConvLayerManagerUtils {
     setupStreams(ei, cps, batchSize, useDRAM, null);
   }
 
+  public static Map<String, ConvLayerParameters> createConvLayerParametersMap(
+      List<ConvLayerParameters> cps) {
+    Map<String, ConvLayerParameters> cpm = new HashMap<String, ConvLayerParameters>();
+    for (ConvLayerParameters cp : cps) cpm.put(cp.name, cp);
+
+    return cpm;
+  }
+
+  public static void checkStreamSize(
+      String input, ConvLayerParameters cp, Map<String, ConvLayerParameters> cpm) {
+    ConvLayerParameters icp = cpm.get(input);
+
+    if (icp.getOfmapStreamNumElems() != cp.getIfmapStreamNumElems())
+      throw new IllegalArgumentException(String.format(
+          "Number of ofmap stream output %d from kernel %s doesn't match the ifmap stream number of elems %d for kernel %s\n",
+          icp.getOfmapStreamNumElems(), icp.name, cp.getIfmapStreamNumElems(), cp.name));
+  }
+
   /**
    * Set stream size in the engine interface
    *
@@ -435,6 +460,8 @@ public class ConvLayerManagerUtils {
    */
   public static void setupStreams(EngineInterface ei, List<ConvLayerParameters> cps,
       InterfaceParam batchSize, boolean useDRAM, ManagerInterface mgr) {
+    Map<String, ConvLayerParameters> cpm = createConvLayerParametersMap(cps);
+
     if (isInitCoeff(cps)) {
       ei.ignoreRoute("init_coeff_demux");
       ei.ignoreRoute("init_coeff_mux");
@@ -457,7 +484,13 @@ public class ConvLayerManagerUtils {
         if (cp.initCoeff)
           ei.setScalar(cp.name, ConvLayerWrapKernel.INIT_COEFF_NAME, 0);
 
-        ei.setTicks(getKernelName(cp), cp.getNumCycles() * batchSize);
+        if (i > 0) {
+          checkStreamSize(getInputKernelName(cp.input), cp, cpm);
+          if (!cp.residual.isEmpty())
+            checkStreamSize(getInputKernelName(cp.residual), cp, cpm);
+        }
+
+        ei.setTicks(getKernelName(cp), batchSize.mul(cp.getNumCycles()));
 
         if (mgr != null) {
           mgr.logMsg("Setup streams for kernel \"%s\"", cp.name);
@@ -668,8 +701,8 @@ public class ConvLayerManagerUtils {
       // ei.setScalar(cp.name, ConvLayerWrapKernel.INIT_COEFF_NAME, idx.eq(i));
       // ei.setTicks(cp.name, idx.eq(i).cast(CPUTypes.INT).mul(cp.F * cp.C * cp.K * cp.K));
 
-      if (!cp.residual.isEmpty())
-        ei.ignoreRoute(cp.residual + "_fanout");
+      // if (!cp.residual.isEmpty())
+      //   ei.ignoreRoute(cp.residual + "_fanout");
     }
 
     return ei;
@@ -707,6 +740,8 @@ public class ConvLayerManagerUtils {
       mgr.addMaxFileConstant(name + "_PC", cp.PC);
       mgr.addMaxFileConstant(name + "_PF", cp.PF);
       mgr.addMaxFileConstant(name + "_PK", cp.PK);
+      mgr.addMaxFileStringConstant(name + "_TYPE", cp.type.toString());
+      mgr.addMaxFileStringConstant(name + "_SEQ", cp.seq.toString());
     }
 
     mgr.addMaxFileConstant("USE_DRAM", ep.getUseDRAM() ? 1 : 0);

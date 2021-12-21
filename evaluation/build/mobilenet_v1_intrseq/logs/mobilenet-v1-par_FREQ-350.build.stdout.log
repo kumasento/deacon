@@ -1,0 +1,74 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=mobilenet_v1_intrseq MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 MobilenetV1IntrseqManager \
+	DFEModel=MAIA maxFileName=MobilenetV1Intrseq target='DFE' enableMPCX=false \
+	FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/mobilenet_v1_intrseq/data/data-mobilenet-v1-par_FREQ-350.txt 
+]0; maxJavaRun: MobilenetV1IntrseqManager DFEModel=MAIA maxFileName=MobilenetV1Intrseq target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/mobilenet_v1_intrseq/data/data-mobilenet-v1-par_FREQ-350.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : mobilenet_v1_intrseq
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : mobilenet_v1_intrseq.MobilenetV1IntrseqManager
+Class arguments     : DFEModel=MAIA maxFileName=MobilenetV1Intrseq target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/mobilenet_v1_intrseq/data/data-mobilenet-v1-par_FREQ-350.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Mon 19:11: MaxCompiler version: 2021.1
+Mon 19:11: Build "MobilenetV1Intrseq" start time: Mon Dec 20 19:11:50 GMT 2021
+Mon 19:11: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Mon 19:11: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1Intrseq_MAIA_DFE_FREQ_350
+Mon 19:11: Detailed build log available in "_build.log"
+Mon 19:11: 
+Mon 19:11: ENGINE BUILD PARAMETERS
+Mon 19:11: 	              Build name: MobilenetV1Intrseq_MAIA_DFE_FREQ_350                                                                                
+Mon 19:11: 	             maxFileName: MobilenetV1Intrseq                                                                                                  
+Mon 19:11: 	                  target: DFE                                                                                                                 
+Mon 19:11: 	                DFEModel: MAIA                                                                                                                
+Mon 19:11: 	              enableMPCX: false                                                                                                               
+Mon 19:11: 	                bitWidth: 32                                                                                                                  
+Mon 19:11: 	                     WBW: 32                                                                                                                  
+Mon 19:11: 	                   DTYPE: fixed                                                                                                               
+Mon 19:11: 	           NUM_FRAC_BITS: 8                                                                                                                   
+Mon 19:11: 	                      PF: 1                                                                                                                   
+Mon 19:11: 	                      PC: 1                                                                                                                   
+Mon 19:11: 	                      PK: 1                                                                                                                   
+Mon 19:11: 	                       H: 1                                                                                                                   
+Mon 19:11: 	                       W: 1                                                                                                                   
+Mon 19:11: 	                       C: 1                                                                                                                   
+Mon 19:11: 	                       F: 1                                                                                                                   
+Mon 19:11: 	                       K: 1                                                                                                                   
+Mon 19:11: 	                     PAD: 0                                                                                                                   
+Mon 19:11: 	                       S: 1                                                                                                                   
+Mon 19:11: 	                     SEQ: 0                                                                                                                   
+Mon 19:11: 	                    FREQ: 350                                                                                                                 
+Mon 19:11: 	                USE_DRAM: false                                                                                                               
+Mon 19:11: 	                 USE_BNN: false                                                                                                               
+Mon 19:11: 	            USE_WINOGRAD: false                                                                                                               
+Mon 19:11: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                               
+Mon 19:11: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                   
+Mon 19:11: 	                   DEBUG: false                                                                                                               
+Mon 19:11: 	           COEFF_ON_CHIP: false                                                                                                               
+Mon 19:11: 	              INIT_COEFF: false                                                                                                               
+Mon 19:11: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/mobilenet_v1_intrseq/data/data-mobilenet-v1-par_FREQ-350.txt

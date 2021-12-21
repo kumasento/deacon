@@ -1,0 +1,59 @@
+NAME = "bottleneck_shortcut"
+
+[global]
+BW = 8
+WBW = 2
+NUM_FRAC_BITS = 0
+FREQ = 300
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 4
+W = 4
+C = 2
+F = 4
+K = 3
+P = 1
+S = 2
+NUM_OUTPUTS = 2
+TYPE = "STANDARD"
+
+# conv2_x
+
+[layers.conv1]
+H = 2
+W = 2
+C = 4
+F = 6
+K = 3
+P = 1
+S = 2
+INPUT = "conv0"
+NUM_OUTPUTS = 1
+TYPE = "STANDARD"
+
+[layers.shortcut1]
+H = 2
+W = 2
+C = 4
+F = 6
+K = 1
+P = 0
+S = 2
+INPUT = "conv0_1"
+NUM_OUTPUTS = 1
+TYPE = "POINTWISE"
+
+[layers.conv2]
+H = 2
+W = 2
+C = 6
+F = 6
+K = 3
+P = 1
+S = 1
+INPUT = "conv1"
+NUM_OUTPUTS = 1
+RESIDUAL = "shortcut1"
+TYPE = "STANDARD"

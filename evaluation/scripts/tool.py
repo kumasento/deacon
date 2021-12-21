@@ -16,6 +16,8 @@ import toml
 
 np.random.seed(42)
 
+TMPL_PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # --------------------------------------------------------------------------
 
 
@@ -78,6 +80,15 @@ def generate_data_layer(name: str, cfg: Dict, data_file: str):
             for x in arr:
                 f.write(f"{x}\n")
 
+    elif cfg["TYPE"] == "POINTWISE":
+        with open(data_file, "a") as f:
+            f.write(f"BEGIN {name}_dw\n")
+            N = cfg["C"] * cfg["F"]
+            f.write(f"{N}\n")
+            arr = generate_data_array(N)
+            for x in arr:
+                f.write(f"{x}\n")
+
     elif cfg["TYPE"] == "DEPTHWISE_SEPARABLE":
         # Create data for both depthwise and pointwise:
         with open(data_file, "a") as f:
@@ -96,6 +107,9 @@ def generate_data_layer(name: str, cfg: Dict, data_file: str):
             arr = generate_data_array(N)
             for x in arr:
                 f.write(f"{x}\n")
+    elif cfg["TYPE"] == "IDENTITY":
+        # No need to generate for identity layer.
+        return
     else:
         raise NotImplementedError(f'Type {cfg["TYPE"]} not recognized.')
 
@@ -123,14 +137,12 @@ def generate_data(cfg: Dict, root_dir: str, key: str) -> str:
     return data_file
 
 
-def get_root_dir(cfg_file: str, cfg: Dict):
+def get_root_dir(cfg_file: str, cfg: Dict, parent_dir: str = ""):
+    if not parent_dir:
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if "global" in cfg:
-        return os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "build",
-            cfg["NAME"],
-        )
-    return os.path.dirname(os.path.dirname(os.path.abspath(cfg_file)))
+        return os.path.join(parent_dir, "build", cfg["NAME"])
+    return parent_dir
 
 
 class CommandRunner:
@@ -141,7 +153,7 @@ class CommandRunner:
         self.cfg = toml.load(args.cfg)
         self.logger.info(f"Loaded config: {self.cfg}")
 
-        self.root_dir = get_root_dir(args.cfg, self.cfg)
+        self.root_dir = get_root_dir(args.cfg, self.cfg, parent_dir=args.root_dir)
         self.log_dir = os.path.join(self.root_dir, "logs")
         os.makedirs(self.log_dir, exist_ok=True)
 
@@ -168,10 +180,12 @@ class CommandRunner:
         cfg_ = copy.deepcopy(self.cfg)
         if "global" in cfg_:
             cfg_ = cfg_["global"]
-        if hasattr(self.args, "dbg"):
+        if hasattr(self.args, "dbg") and self.args.dbg:
             cfg_["DEBUG"] = "true"
         if hasattr(self.args, "freq") and self.args.freq > 0:
             cfg_["FREQ"] = self.args.freq
+        if hasattr(self.args, "sim_device_id"):
+            cfg_["SIMDEVICEID"] = self.args.sim_device_id
 
         return cfg_
 
@@ -194,12 +208,13 @@ class CommandRunner:
     def run(self):
         cmd = self.get_cmd()
         logger.info(f"Command to run: {cmd}")
-        subprocess.run(
+        ret = subprocess.run(
             cmd,
             cwd=self.root_dir,
             stdout=open(self.get_log_file("stdout"), "w"),
             stderr=open(self.get_log_file("stderr"), "w"),
         )
+        logger.info(f"Finished command: {cmd}, return code: {ret.returncode}")
 
 
 class RunsimCommandRunner(CommandRunner):
@@ -253,7 +268,10 @@ class AppGenerator:
         self.cfg = toml.load(args.cfg)
         self.logger.info(self.cfg)
 
-        self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if not args.root_dir:
+            self.root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        else:
+            self.root_dir = args.root_dir
         self.logger.info(f"Root directory: {self.root_dir}")
 
         self.name = self.cfg["NAME"]
@@ -289,13 +307,14 @@ class AppGenerator:
     def generate_makefile(self):
         """Generate Makefile from template."""
         target_file = os.path.join(self.build_dir, "Makefile")
-        source_file = os.path.join(self.root_dir, "build", "TEMPLATE", "Makefile")
+        source_file = os.path.join(TMPL_PARENT_DIR, "build", "TEMPLATE", "Makefile")
         self.generate_from_template(
             source_file,
             target_file,
             PRJ=self.PRJ,
             APPPKG=self.name,
             EXTRA_CFLAGS="",
+            WHEREISROOT=os.path.abspath(os.path.dirname(TMPL_PARENT_DIR)),
             DEFS="",
             BUILD_PARAMS="",
             BUILD_NAME_OPTION="",
@@ -305,7 +324,7 @@ class AppGenerator:
 
     def generate_engine_parameters(self):
         source_file = os.path.join(
-            self.root_dir, "src", "TEMPLATE", "ModelEngineParameters.java.tmpl"
+            TMPL_PARENT_DIR, "src", "TEMPLATE", "ModelEngineParameters.java.tmpl"
         )
         target_file = os.path.join(self.src_dir, f"{self.PRJ}EngineParameters.java")
         self.generate_from_template(
@@ -327,18 +346,22 @@ class AppGenerator:
                 .name("{key}")
                 .pad({cfg['P']})
                 .stride({cfg['S']})
-                .seq(CompSeq.values()[{cfg['SEQ']}])
+                .seq(CompSeq.values()[{cfg['SEQ'] if 'SEQ' in cfg else 0}])
                 .dbg(params.getDebug())
                 .coeffOnChip({str(self.cfg['global']['COEFF_ON_CHIP']).lower()})
                 .coeffFile(params.getCoeffFile())
+                .input("{cfg['INPUT'] if 'INPUT' in cfg else ""}")
+                .numOutputs({cfg['NUM_OUTPUTS'] if 'NUM_OUTPUTS' in cfg else 1})
+                .residual("{cfg['RESIDUAL'] if 'RESIDUAL' in cfg else ""}")
                 .PF({cfg['P_F'] if 'P_F' in cfg else 1})
                 .PC({cfg['P_C'] if 'P_C' in cfg else 1})
                 .PK({cfg['P_K'] if 'P_K' in cfg else 1})
+                .namedRegion("{cfg['NAMED_REGION'] if 'NAMED_REGION' in cfg else ""}")
                 .build());
             """
 
         source_file = os.path.join(
-            self.root_dir, "src", "TEMPLATE", "ModelManager.java.tmpl"
+            TMPL_PARENT_DIR, "src", "TEMPLATE", "ModelManager.java.tmpl"
         )
         target_file = os.path.join(self.src_dir, f"{self.PRJ}Manager.java")
         self.generate_from_template(
@@ -359,7 +382,7 @@ class AppGenerator:
             cps_init += f"""\tcps.push_back(ConvLayerParameters(max_file, "{k}"));\n"""
 
         source_file = os.path.join(
-            self.root_dir, "src", "TEMPLATE", "ModelCpuCode.cpp.tmpl"
+            TMPL_PARENT_DIR, "src", "TEMPLATE", "ModelCpuCode.cpp.tmpl"
         )
         target_file = os.path.join(self.src_dir, f"{self.PRJ}CpuCode.cpp")
         self.generate_from_template(
@@ -401,11 +424,15 @@ def main():
         "-j", "--jobs", type=int, default=1, help="Number of parallelised jobs"
     )
     parser.add_argument("-i", "--index", type=int, default=0, help="Job index")
+    parser.add_argument("-d", "--root-dir", type=str, default="", help="Root directory")
 
     subparsers = parser.add_subparsers()
 
     runsim_parser = subparsers.add_parser("runsim", help="Run simulation")
     runsim_parser.add_argument("--dbg", action="store_true", help="Debug flag")
+    runsim_parser.add_argument(
+        "--sim-device-id", type=str, default="a", help="Simulation device ID"
+    )
     runsim_parser.set_defaults(func=runsim)
 
     build_parser = subparsers.add_parser("build", help="Run build")
@@ -430,11 +457,13 @@ def main():
 
     args = parser.parse_args()
     args.cfg = args.cfg.split(",")
+    args.root_dir = os.path.abspath(args.root_dir)
 
     # Prepare parallel runs
     args_list = [copy.deepcopy(args) for i in range(len(args.cfg))]
     for i, args in enumerate(args_list):
         args.index = i
+        args.sim_device_id = chr(ord("a") + i)
 
     with mp.Pool(args.jobs) as p:
         p.map(process, args_list)

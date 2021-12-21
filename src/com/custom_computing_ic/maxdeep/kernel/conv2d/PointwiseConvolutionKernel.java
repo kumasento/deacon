@@ -89,12 +89,21 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
       this.coeff = coeffList.get(0);
     else {
       if (!cp.initCoeff) {
-        List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
+        this.initCoeff.connect(constant.var(0).cast(dfeBool()));
+        // List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT);
 
         DFEVar addr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(getCoeffFMemSize(WT))));
         if (cp.dbg)
           debug.simPrintf("coeff FMem addr = %KObj%\n", addr);
-        this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+        // this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+
+        if (cp.coeffFile.isEmpty()) {
+          List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /*mapToCPU=*/!cp.initCoeff);
+          this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
+        } else {
+          this.coeff = readCoeffFMemList(
+              addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+        }
       } else {
         this.coeff = (new DFEVectorType<DFEVar>(WT, cp.PC * cp.PF)).newInstance(owner);
       }
@@ -114,7 +123,8 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(owner, cp, T);
     DFEVar ibufAddr = getIbufAddr(cp, ibuf.getAddrT(), c, h, w);
     DFEVar ibufWriteEn = getIbufWriteEn(f);
-    DFEVector<DFEVar> ibufOutput = ibuf.port(ifmap, ibufAddr, ibufWriteEn.and(initCoeff.complement()));
+    DFEVector<DFEVar> ibufOutput =
+        ibuf.port(ifmap, ibufAddr, ibufWriteEn.and(initCoeff.complement()));
 
     // output feature map buffer
     ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(owner, cp, T);
@@ -129,8 +139,8 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
     }
 
     // output feature map buffer
-    ofmap.connect(
-        obuf.port(procResult, getObufAddr(cp, obuf.getAddrT(), h, w, f), getObufWriteEn(cp, h, w).and(initCoeff.complement())));
+    ofmap.connect(obuf.port(procResult, getObufAddr(cp, obuf.getAddrT(), h, w, f),
+        getObufWriteEn(cp, h, w).and(initCoeff.complement())));
   }
 
   public DFEVar getCoeffFMemAddr(DFEType addrT) {

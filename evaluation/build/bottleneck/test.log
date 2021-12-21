@@ -1,4 +1,4 @@
-BUILD_NAME_OPTION = _b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200
+BUILD_NAME_OPTION = _b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG
 Running maxjc ...
 Using maxj batch compiler.
 jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
@@ -6,8 +6,8 @@ MAXAPPJCP=.:../../../src:../../../test:/vol/cc/opt/maxeler/maxcompiler-2021.1/li
 	MAXAPPPKG=bottleneck MAXSOURCEDIRS=../../src:../../../src \
 	maxJavaRun -v -m 8192 BottleneckManager \
 	DFEModel=MAIA maxFileName=Bottleneck target='DFE_SIM' enableMPCX=false \
-	bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=4 W=4 C=8 F=8 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=false INIT_COEFF=true
-]0; maxJavaRun: BottleneckManager DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=4 W=4 C=8 F=8 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=false INIT_COEFF=true maxJavaRun : Execute Java program with Maxeler environment
+	bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=2 W=2 C=2 F=2 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=true INIT_COEFF=true
+]0; maxJavaRun: BottleneckManager DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=2 W=2 C=2 F=2 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=true INIT_COEFF=true maxJavaRun : Execute Java program with Maxeler environment
 
 Input classpath     : 
 MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
@@ -26,7 +26,7 @@ JACOCO_AGENT_OPTIONS:
 
 ----------------------------------------------------------
 Java class to run   : bottleneck.BottleneckManager
-Class arguments     : DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=4 W=4 C=8 F=8 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=false INIT_COEFF=true
+Class arguments     : DFEModel=MAIA maxFileName=Bottleneck target=DFE_SIM enableMPCX=false bitWidth=8 WBW=2 PF=1 PC=1 PK=1 H=2 W=2 C=2 F=2 K=3 SEQ0=0 SEQ1=0 SEQ2=0 USE_DRAM=true FREQ=200 COEFF_ON_CHIP=true DEBUG=true INIT_COEFF=true
 Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
                       .:
                       ../../../src:
@@ -36,137 +36,240 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
 JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Thu 11:12: MaxCompiler version: 2021.1
-Thu 11:12: Build "Bottleneck" start time: Thu Dec 16 11:12:08 GMT 2021
-Thu 11:12: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Thu 11:12: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200
-Thu 11:12: Detailed build log available in "_build.log"
-Thu 11:12: 
-Thu 11:12: ENGINE BUILD PARAMETERS
-Thu 11:12: 	              Build name: Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200
-Thu 11:12: 	             maxFileName: Bottleneck                                                                        
-Thu 11:12: 	                  target: DFE_SIM                                                                           
-Thu 11:12: 	                DFEModel: MAIA                                                                              
-Thu 11:12: 	              enableMPCX: false                                                                             
-Thu 11:12: 	                bitWidth: 8                                                                                 
-Thu 11:12: 	                     WBW: 2                                                                                 
-Thu 11:12: 	                   DTYPE: fixed                                                                             
-Thu 11:12: 	           NUM_FRAC_BITS: 8                                                                                 
-Thu 11:12: 	                      PF: 1                                                                                 
-Thu 11:12: 	                      PC: 1                                                                                 
-Thu 11:12: 	                      PK: 1                                                                                 
-Thu 11:12: 	                       H: 4                                                                                 
-Thu 11:12: 	                       W: 4                                                                                 
-Thu 11:12: 	                       C: 8                                                                                 
-Thu 11:12: 	                       F: 8                                                                                 
-Thu 11:12: 	                       K: 3                                                                                 
-Thu 11:12: 	                     PAD: 0                                                                                 
-Thu 11:12: 	                       S: 1                                                                                 
-Thu 11:12: 	                     SEQ: 0                                                                                 
-Thu 11:12: 	                    FREQ: 200                                                                               
-Thu 11:12: 	                USE_DRAM: true                                                                              
-Thu 11:12: 	                 USE_BNN: false                                                                             
-Thu 11:12: 	            USE_WINOGRAD: false                                                                             
-Thu 11:12: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                             
-Thu 11:12: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                 
-Thu 11:12: 	                   DEBUG: false                                                                             
-Thu 11:12: 	           COEFF_ON_CHIP: true                                                                              
-Thu 11:12: 	              INIT_COEFF: true                                                                              
-Thu 11:12: 	                    SEQ0: 0                                                                                 
-Thu 11:12: 	                    SEQ1: 0                                                                                 
-Thu 11:12: 	                    SEQ2: 0                                                                                 
-Thu 11:12: Generating kernel conv0 ...
-Thu 11:12: Instantiating kernel "conv0"
-Thu 11:12: Init coeffient signal
-Thu 11:12: Building pointwise convolution:
-Thu 11:12: H = 4 W = 4 F = 8 C = 8 PF = 1 PC = 1
-Thu 11:12: Seq = FILTER_MAJOR
-Thu 11:12: Ifmap buffer configuration 128 x 1
-Thu 11:12: loop = false
-Thu 11:12: [ConvLayerOfmapBuffer] depth =    16 addr_bits =     4
-Thu 11:12: Initialized coeff FMem list.
-Thu 11:12: Compiling kernel "conv0"
-Thu 11:12: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Thu 11:12: WARNING: Unconnected elements in design 'conv0'
-Thu 11:12: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/scratch/conv0_graph_warnings.txt
-Thu 11:12: 
-Thu 11:12: Generating kernel conv1 ...
-Thu 11:12: Instantiating kernel "conv1"
-Thu 11:12: Init coeffient signal
-Thu 11:12: WT = dfeFix(2, 0, UNSIGNED)
-Thu 11:12: coeffOnChip = true
-Thu 11:12: Input height = 4, output height = 4, pad = 1
-Thu 11:12: Counter H = 6 W = 6
-Thu 11:12: Ifmap buffer configuration 512 x 1
-Thu 11:12: loop = false
-Thu 11:12: Building line buffer for "conv1" ...
-Thu 11:12: Line buffer shape 3 x 4, produces 1 number of 3 x 3 tiles per cycle
-Thu 11:12: Line buffer input vector size: 1, output vector size: 9.
-Thu 11:12: Number of separated line buffers: 1
-Thu 11:12: Initialising line buffer kernel with 3 x 6 x 1
-Thu 11:12: Size of line buffer output: 3
-Thu 11:12: Number of line buffer output chunks: 3
-Thu 11:12: Connecting outputs from chunk (#000) ...
-Thu 11:12: Connecting outputs from chunk (#001) ...
-Thu 11:12: Connecting outputs from chunk (#002) ...
-Thu 11:12: Building the CORE arithmetic unit for "conv1" ...
-Thu 11:12: WT = dfeFix(2, 0, UNSIGNED)
-Thu 11:12: CORE ifmap vector size: 9
-Thu 11:12: CORE coefficient vector size: 9
-Thu 11:12: CORE ofmap vector size: 1
-Thu 11:12: [ConvLayerOfmapBuffer] depth =    16 addr_bits =     4
-Thu 11:12: Initialized coeff FMem list.
-Thu 11:12: Compiling kernel "conv1"
-Thu 11:12: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Thu 11:12: WARNING: Unconnected elements in design 'conv1'
-Thu 11:12: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/scratch/conv1_graph_warnings.txt
-Thu 11:12: 
-Thu 11:12: Generating kernel conv2 ...
-Thu 11:12: Instantiating kernel "conv2"
-Thu 11:12: Init coeffient signal
-Thu 11:12: Building pointwise convolution:
-Thu 11:12: H = 4 W = 4 F = 8 C = 8 PF = 1 PC = 1
-Thu 11:12: Seq = FILTER_MAJOR
-Thu 11:12: Ifmap buffer configuration 128 x 1
-Thu 11:12: loop = false
-Thu 11:12: [ConvLayerOfmapBuffer] depth =    16 addr_bits =     4
-Thu 11:12: Initialized coeff FMem list.
-Thu 11:12: Connecting residual: conv0
-Thu 11:12: Compiling kernel "conv2"
-Thu 11:12: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Thu 11:12: WARNING: Unconnected elements in design 'conv2'
-Thu 11:12: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/scratch/conv2_graph_warnings.txt
-Thu 11:12: 
-Thu 11:12: Generating padding kernels for DRAM access
-Thu 11:12: Instantiating kernel "ifmap_unpad"
-Thu 11:12: Compiling kernel "ifmap_unpad"
-Thu 11:12: 
-Thu 11:12: Instantiating kernel "ofmap_pad"
-Thu 11:12: Compiling kernel "ofmap_pad"
-Thu 11:12: 
-Thu 11:12: Creating fanout with key: conv0
-Thu 11:12: Setting up stream connections for conv0
-Thu 11:12: Setting up stream connections for conv1
-Thu 11:12: Setting up stream connections for conv2
-Thu 11:12: Read from fanout: conv0_fanout
-Thu 11:12: Connecting to Stream_34
-Thu 11:12: Running back-end simulation build (3 phases)
-Thu 11:12: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Thu 11:12: (2/3) - Compile Simulation Modules (SimCompilePass)
-Thu 11:12: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Thu 11:12: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max (MD5Sum: 30bd23e1109cd7565601f7736d2e3f52)
-Thu 11:12: Build completed: Thu Dec 16 11:12:22 GMT 2021 (took 13 secs)
-cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Bottleneck.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Maxfiles.h
-sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_sim.o
-Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_8855944287149398186/cobject/max_5273475246951770795.c -o /tmp/sliccompile_8855944287149398186/cobject/max_5273475246951770795.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200/results/Bottleneck.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_1626954528283592679.o 
-ld -r /tmp/sliccompile_8855944287149398186/cobject/max_5273475246951770795.c.o max_1626954528283592679.o -o Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_sim.o 
+Mon 14:38: MaxCompiler version: 2021.1
+Mon 14:38: Build "Bottleneck" start time: Mon Dec 20 14:38:43 GMT 2021
+Mon 14:38: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Mon 14:38: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG
+Mon 14:38: Detailed build log available in "_build.log"
+Mon 14:38: 
+Mon 14:38: ENGINE BUILD PARAMETERS
+Mon 14:38: 	              Build name: Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG
+Mon 14:38: 	             maxFileName: Bottleneck                                                                            
+Mon 14:38: 	                  target: DFE_SIM                                                                               
+Mon 14:38: 	                DFEModel: MAIA                                                                                  
+Mon 14:38: 	              enableMPCX: false                                                                                 
+Mon 14:38: 	                bitWidth: 8                                                                                     
+Mon 14:38: 	                     WBW: 2                                                                                     
+Mon 14:38: 	                   DTYPE: fixed                                                                                 
+Mon 14:38: 	           NUM_FRAC_BITS: 8                                                                                     
+Mon 14:38: 	                      PF: 1                                                                                     
+Mon 14:38: 	                      PC: 1                                                                                     
+Mon 14:38: 	                      PK: 1                                                                                     
+Mon 14:38: 	                       H: 2                                                                                     
+Mon 14:38: 	                       W: 2                                                                                     
+Mon 14:38: 	                       C: 2                                                                                     
+Mon 14:38: 	                       F: 2                                                                                     
+Mon 14:38: 	                       K: 3                                                                                     
+Mon 14:38: 	                     PAD: 0                                                                                     
+Mon 14:38: 	                       S: 1                                                                                     
+Mon 14:38: 	                     SEQ: 0                                                                                     
+Mon 14:38: 	                    FREQ: 200                                                                                   
+Mon 14:38: 	                USE_DRAM: true                                                                                  
+Mon 14:38: 	                 USE_BNN: false                                                                                 
+Mon 14:38: 	            USE_WINOGRAD: false                                                                                 
+Mon 14:38: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                 
+Mon 14:38: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                     
+Mon 14:38: 	                   DEBUG: true                                                                                  
+Mon 14:38: 	           COEFF_ON_CHIP: true                                                                                  
+Mon 14:38: 	              INIT_COEFF: true                                                                                  
+Mon 14:38: 	              COEFF_FILE:                                                                                       
+Mon 14:38: 	                    SEQ0: 0                                                                                     
+Mon 14:38: 	                    SEQ1: 0                                                                                     
+Mon 14:38: 	                    SEQ2: 0                                                                                     
+Mon 14:38: Generating kernel identity ...
+Mon 14:38: Instantiating kernel "identity"
+Mon 14:38: T = dfeFix(0, 8, TWOSCOMPLEMENT)
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: Connecting to output: ofmap
+Mon 14:38: Connecting to output: ofmap_1
+Mon 14:38: Compiling kernel "identity"
+Mon 14:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:38: WARNING: Unconnected elements in design 'identity'
+Mon 14:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/scratch/identity_graph_warnings.txt
+Mon 14:38: 
+Mon 14:38: Generating kernel conv0 ...
+Mon 14:38: Instantiating kernel "conv0"
+Mon 14:38: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: Init coeffient signal
+Mon 14:38: Building pointwise convolution:
+Mon 14:38: H = 2 W = 2 F = 2 C = 2 PF = 1 PC = 1
+Mon 14:38: Seq = FILTER_MAJOR
+Mon 14:38: Ifmap buffer configuration 8 x 1
+Mon 14:38: loop = false
+Mon 14:38: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:38: Initialized coeff FMem list.
+Mon 14:38: Connecting to output: ofmap
+Mon 14:38: Compiling kernel "conv0"
+Mon 14:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:38: WARNING: Unconnected elements in design 'conv0'
+Mon 14:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/scratch/conv0_graph_warnings.txt
+Mon 14:38: 
+Mon 14:38: Generating kernel conv1 ...
+Mon 14:38: Instantiating kernel "conv1"
+Mon 14:38: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: Init coeffient signal
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: coeffOnChip = true
+Mon 14:38: Input height = 2, output height = 2, pad = 1
+Mon 14:38: Counter H = 4 W = 4
+Mon 14:38: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:38: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:38: Ifmap buffer configuration 32 x 1
+Mon 14:38: loop = false
+Mon 14:38: Building line buffer for "conv1" ...
+Mon 14:38: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Mon 14:38: Line buffer input vector size: 1, output vector size: 9.
+Mon 14:38: Number of separated line buffers: 1
+Mon 14:38: Initialising line buffer kernel with 3 x 4 x 1
+Mon 14:38: Size of line buffer output: 3
+Mon 14:38: Number of line buffer output chunks: 3
+Mon 14:38: Connecting outputs from chunk (#000) ...
+Mon 14:38: Connecting outputs from chunk (#001) ...
+Mon 14:38: Connecting outputs from chunk (#002) ...
+Mon 14:38: Building the CORE arithmetic unit for "conv1" ...
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: CORE ifmap vector size: 9
+Mon 14:38: CORE coefficient vector size: 9
+Mon 14:38: CORE ofmap vector size: 1
+Mon 14:38: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:38: Initialized coeff FMem list.
+Mon 14:38: Connecting to output: ofmap
+Mon 14:38: Compiling kernel "conv1"
+Mon 14:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:38: WARNING: Unconnected elements in design 'conv1'
+Mon 14:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/scratch/conv1_graph_warnings.txt
+Mon 14:38: 
+Mon 14:38: Generating kernel shortcut ...
+Mon 14:38: Instantiating kernel "shortcut"
+Mon 14:38: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: Init coeffient signal
+Mon 14:38: Building pointwise convolution:
+Mon 14:38: H = 2 W = 2 F = 2 C = 2 PF = 1 PC = 1
+Mon 14:38: Seq = FILTER_MAJOR
+Mon 14:38: Ifmap buffer configuration 8 x 1
+Mon 14:38: loop = false
+Mon 14:38: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:38: Initialized coeff FMem list.
+Mon 14:38: Connecting to output: ofmap
+Mon 14:38: Compiling kernel "shortcut"
+Mon 14:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:38: WARNING: Unconnected elements in design 'shortcut'
+Mon 14:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/scratch/shortcut_graph_warnings.txt
+Mon 14:38: 
+Mon 14:38: Generating kernel conv2 ...
+Mon 14:38: Instantiating kernel "conv2"
+Mon 14:38: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Mon 14:38: WT = dfeFix(2, 0, UNSIGNED)
+Mon 14:38: Init coeffient signal
+Mon 14:38: Building pointwise convolution:
+Mon 14:38: H = 2 W = 2 F = 2 C = 2 PF = 1 PC = 1
+Mon 14:38: Seq = FILTER_MAJOR
+Mon 14:38: Ifmap buffer configuration 8 x 1
+Mon 14:38: loop = false
+Mon 14:38: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:38: Initialized coeff FMem list.
+Mon 14:38: Connecting residual: shortcut
+Mon 14:38: Connecting to output: ofmap
+Mon 14:38: Compiling kernel "conv2"
+Mon 14:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Mon 14:38: WARNING: Unconnected elements in design 'conv2'
+Mon 14:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/scratch/conv2_graph_warnings.txt
+Mon 14:38: 
+Mon 14:38: Generating padding kernels for DRAM access
+Mon 14:38: Instantiating kernel "ifmap_unpad"
+Mon 14:38: Compiling kernel "ifmap_unpad"
+Mon 14:38: 
+Mon 14:38: Instantiating kernel "ofmap_pad"
+Mon 14:38: Compiling kernel "ofmap_pad"
+Mon 14:38: 
+Mon 14:38: Setting up stream connections for identity
+Mon 14:38: Setting up stream connections for conv0
+Mon 14:38: Setting up stream connections for conv1
+Mon 14:38: Setting up stream connections for shortcut
+Mon 14:38: Setting up stream connections for conv2
+Mon 14:38: Running back-end simulation build (3 phases)
+Mon 14:38: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Mon 14:38: (2/3) - Compile Simulation Modules (SimCompilePass)
+Mon 14:39: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Mon 14:39: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Bottleneck.max (MD5Sum: 83be43c13133aef526dfff654d91339d)
+Mon 14:39: Build completed: Mon Dec 20 14:39:03 GMT 2021 (took 19 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Bottleneck.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Maxfiles.h
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Bottleneck.max Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_sim.o
+Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Bottleneck.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_9161797115314607161/cobject/max_4142075265835878061.c -o /tmp/sliccompile_9161797115314607161/cobject/max_4142075265835878061.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results/Bottleneck.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_5615934677441246129.o 
+ld -r /tmp/sliccompile_9161797115314607161/cobject/max_4142075265835878061.c.o max_5615934677441246129.o -o Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'
-g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM -DBIT_WIDTH=8 -DWBW=2  -g -o Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_sim Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_sim.o Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
+g++ ../../src/bottleneck/BottleneckCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM -DTRACE -DBIT_WIDTH=8 -DWBW=2  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Bottleneck_MAIA_DFE_SIM_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG/results -D__SIM__ -DDESIGN_NAME=Bottleneck -c -o Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_simc.o
+../../src/bottleneck/BottleneckCpuCode.cpp: In function ‘int main(int, char**)’:
+../../src/bottleneck/BottleneckCpuCode.cpp:142:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<signed char, std::allocator<signed char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  142 |   for (int i = 0; i < output_2_cpu.size(); ++i) {
+      |                   ~~^~~~~~~~~~~~~~~~~~~~~
+In file included from ../../../runtime/include/maxdeep/types.h:8,
+                 from ../../../runtime/include/maxdeep/layers.h:21,
+                 from ../../src/bottleneck/BottleneckCpuCode.cpp:14:
+../../../runtime/include/maxdeep/utils.h: In instantiation of ‘std::vector<T> ToTernary(std::vector<S>&) [with T = float; S = float]’:
+../../src/bottleneck/BottleneckCpuCode.cpp:94:54:   required from here
+../../../runtime/include/maxdeep/utils.h:111:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<float>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  111 |   for (int i = 0; i < data.size(); ++i)
+      |                   ~~^~~~~~~~~~~~~
+In file included from ../../src/bottleneck/BottleneckCpuCode.cpp:14:
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = signed char]’:
+../../src/bottleneck/BottleneckCpuCode.cpp:125:78:   required from here
+../../../runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/bottleneck/BottleneckCpuCode.cpp:155:54:   required from here
+../../../runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+In file included from ../../../runtime/include/maxdeep/types.h:8,
+                 from ../../../runtime/include/maxdeep/layers.h:21,
+                 from ../../src/bottleneck/BottleneckCpuCode.cpp:14:
+../../../runtime/include/maxdeep/utils.h: In instantiation of ‘std::vector<T> ToTernaryUnsigned(std::vector<S>&) [with T = signed char; S = signed char]’:
+../../src/bottleneck/BottleneckCpuCode.cpp:166:66:   required from here
+../../../runtime/include/maxdeep/utils.h:120:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<signed char, std::allocator<signed char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  120 |   for (int i = 0; i < data.size(); ++i)
+      |                   ~~^~~~~~~~~~~~~
+In file included from ../../src/bottleneck/BottleneckCpuCode.cpp:14:
+../../../runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/bottleneck/BottleneckCpuCode.cpp:280:57:   required from here
+../../../runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+../../../runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I../../../runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I../../../lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_ -DUSE_DRAM -DTRACE -DBIT_WIDTH=8 -DWBW=2  -g -o Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_sim Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_sim.o Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
 maxcompilersim -n rz3515b -cLIMA -d1 restart
+Terminating MaxelerOS daemon (PID 182083)...
+MaxelerOS daemon killed
+Terminating simulated system (PID 182075)...
+Simulated system killed
 
 Simulated system 'rz3515b' started:
     Board:                   MAX5C (default: 48GB RAM)
@@ -193,80 +296,432 @@ Example for CSH:
     setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
     setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515b"
 
-SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515b" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Bottleneck_b8_2_H4_W4_C8_F8_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_sim -n 2 
-I1216 11:12:25.079926 120427 types.h:98] ConvLayerParameters:
- + H = 4
- + W = 4
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515b" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Bottleneck_b8_2_H2_W2_C2_F2_K3_S1_f1_c1_k1_SEQ0_0_0_DRAM_COC_FREQ_200_DBG_sim -n 2 
+I1220 14:39:08.041298 212046 types.h:98] ConvLayerParameters:
+ + H = 2
+ + W = 2
  + K = 1
  + P = 0
  + S = 1
-I1216 11:12:25.080152 120427 types.h:67] 
+I1220 14:39:08.041503 212046 types.h:67] 
  + DFE parameters:
    * PC = 1
    * PF = 1
    * PK = 1
-I1216 11:12:25.080168 120427 types.h:98] ConvLayerParameters:
- + H = 4
- + W = 4
+I1220 14:39:08.041518 212046 types.h:98] ConvLayerParameters:
+ + H = 2
+ + W = 2
  + K = 3
  + P = 1
  + S = 1
-I1216 11:12:25.080178 120427 types.h:67] 
+I1220 14:39:08.041527 212046 types.h:67] 
  + DFE parameters:
    * PC = 1
    * PF = 1
    * PK = 1
-I1216 11:12:25.080188 120427 types.h:98] ConvLayerParameters:
- + H = 4
- + W = 4
+I1220 14:39:08.041534 212046 types.h:98] ConvLayerParameters:
+ + H = 2
+ + W = 2
  + K = 1
  + P = 0
  + S = 1
-I1216 11:12:25.080670 120427 types.h:67] 
+I1220 14:39:08.042045 212046 types.h:67] 
  + DFE parameters:
    * PC = 1
    * PF = 1
    * PK = 1
-I1216 11:12:25.080776 120427 BottleneckCpuCode.cpp:114] Created and converted input and weights
-I1216 11:12:25.080945 120427 BottleneckCpuCode.cpp:117] Run ConvLayerCpu ...
-I1216 11:12:25.080955 120427 BottleneckCpuCode.cpp:118] 8 x 4 x 4 -> 8 x 4 x 4
-I1216 11:12:25.081298 120427 BottleneckCpuCode.cpp:126] 8 x 4 x 4 -> 8 x 4 x 4
-I1216 11:12:25.081646 120427 BottleneckCpuCode.cpp:134] 8 x 4 x 4 -> 8 x 4 x 4
-I1216 11:12:25.081804 120427 BottleneckCpuCode.cpp:145] Done
-I1216 11:12:25.081996 120427 BottleneckCpuCode.cpp:163] BIT_WIDTH = 8 WBW = 2
-I1216 11:12:25.086401 120427 BottleneckCpuCode.cpp:200] initCoeff for conv0. size: 64 ticks: 64
-I1216 11:12:25.107160 120427 BottleneckCpuCode.cpp:216] initCoeff for conv1. size: 576 ticks: 576
-I1216 11:12:25.111285 120427 BottleneckCpuCode.cpp:232] initCoeff for conv2. size: 64 ticks: 64
-I1216 11:12:25.111320 120427 BottleneckCpuCode.cpp:247] Initialized actions
-I1216 11:12:25.111333 120427 utils.h:381] Burst aligning input array of size: 256 to 384
-I1216 11:12:25.111346 120427 BottleneckCpuCode.cpp:259] Tiled input size (burst aligned): 384
-I1216 11:12:25.111356 120427 utils.h:381] Burst aligning input array of size: 256 to 384
-I1216 11:12:25.111367 120427 BottleneckCpuCode.cpp:261] Tiled output size (burst aligned): 384
-I1216 11:12:25.111865 120427 layers.h:655] Writing DRAM to 0 with size 0x180
-I1216 11:12:25.171486 120427 layers.h:672] Reading DRAM from 0x180 with size 0x180
-I1216 11:12:25.174093 120427 BottleneckCpuCode.cpp:281] Examine results ...
-I1216 11:12:25.174125 120427 BottleneckCpuCode.cpp:283] output_2_cpu[0] = 25
-I1216 11:12:25.174144 120427 BottleneckCpuCode.cpp:283] output_2_cpu[1] = -32
-I1216 11:12:25.174156 120427 BottleneckCpuCode.cpp:283] output_2_cpu[2] = -8
-I1216 11:12:25.174167 120427 BottleneckCpuCode.cpp:283] output_2_cpu[3] = -16
-I1216 11:12:25.174615 120427 BottleneckCpuCode.cpp:283] output_2_cpu[4] = -9
-I1216 11:12:25.174904 120427 BottleneckCpuCode.cpp:288] output_dfe[0] = 25
-I1216 11:12:25.175144 120427 BottleneckCpuCode.cpp:288] output_dfe[1] = -32
-I1216 11:12:25.175376 120427 BottleneckCpuCode.cpp:288] output_dfe[2] = -8
-I1216 11:12:25.175607 120427 BottleneckCpuCode.cpp:288] output_dfe[3] = -16
-I1216 11:12:25.175837 120427 BottleneckCpuCode.cpp:288] output_dfe[4] = -9
-I1216 11:12:25.176086 120427 BottleneckCpuCode.cpp:298] Evaluating difference ...
-I1216 11:12:25.176307 120427 BottleneckCpuCode.cpp:299] Mask: 000000x1
-I1216 11:12:25.176542 120427 BottleneckCpuCode.cpp:317] num_failed: 0 total: 256 avg_diff: 0
-Running ...
-Done
-elapsed time: 0.056651s
-GOP/s: 0.000795326
-make stopsim
-make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'
-maxcompilersim -n rz3515b -cLIMA stop
-Terminating MaxelerOS daemon (PID 120423)...
-MaxelerOS daemon killed
-Terminating simulated system (PID 120418)...
-Simulated system killed
-make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/bottleneck'
+I1220 14:39:08.042091 212046 BottleneckCpuCode.cpp:114] Created and converted input and weights
+I1220 14:39:08.042273 212046 BottleneckCpuCode.cpp:117] Run ConvLayerCpu ...
+I1220 14:39:08.042475 212046 BottleneckCpuCode.cpp:118] 2 x 2 x 2 -> 2 x 2 x 2
+I1220 14:39:08.043025 212046 BottleneckCpuCode.cpp:126] 2 x 2 x 2 -> 2 x 2 x 2
+f = 0 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =  -1.000000
+output[0] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[0] =   1.000000 +  -1.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[1] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[1] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[2] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[2] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[3] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =   1.000000
+output[3] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[4] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[4] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[5] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[5] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[6] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[6] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[7] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =   1.000000
+output[7] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[8] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[8] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =  -1.000000
+output[9] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[9] =   1.000000 +  -1.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[10] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[10] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =  -1.000000
+output[11] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =   1.000000
+output[11] =  -1.000000 +   1.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[12] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[12] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[13] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[13] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[14] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   1.000000
+output[14] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =   1.000000
+output[15] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   1.000000 weight =   1.000000
+output[15] =   1.000000 +   1.000000 =   2.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[0] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =   1.000000
+output[0] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 2 kw = 1: input =   0.000000 weight =   1.000000
+output[0] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 2 kw = 2: input =   1.000000 weight =   1.000000
+output[0] =  -1.000000 +   1.000000 =   0.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 1 kw = 1: input =  -2.000000 weight =   1.000000
+output[0] =   0.000000 +  -2.000000 =  -2.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =  -1.000000
+output[0] =  -2.000000 +   1.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 2 kw = 1: input =   0.000000 weight =  -1.000000
+output[0] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 2 kw = 2: input =   1.000000 weight =   1.000000
+output[0] =  -1.000000 +   1.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =   1.000000
+output[1] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[1] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 2 kw = 0: input =   0.000000 weight =   1.000000
+output[1] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 2 kw = 1: input =   1.000000 weight =   1.000000
+output[1] =  -1.000000 +   1.000000 =   0.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 1 kw = 0: input =  -2.000000 weight =   1.000000
+output[1] =   0.000000 +  -2.000000 =  -2.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[1] =  -2.000000 +  -1.000000 =  -3.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 2 kw = 0: input =   0.000000 weight =  -1.000000
+output[1] =  -3.000000 +   0.000000 =  -3.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 2 kw = 1: input =   1.000000 weight =  -1.000000
+output[1] =  -3.000000 +  -1.000000 =  -4.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =  -1.000000
+output[2] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 2: input =  -1.000000 weight =  -1.000000
+output[2] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[2] =   1.000000 +   0.000000 =   1.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 1 kw = 2: input =   1.000000 weight =   1.000000
+output[2] =   1.000000 +   1.000000 =   2.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 1: input =  -2.000000 weight =  -1.000000
+output[2] =   2.000000 +   2.000000 =   4.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 2: input =  -1.000000 weight =   1.000000
+output[2] =   4.000000 +  -1.000000 =   3.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[2] =   3.000000 +   0.000000 =   3.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 1 kw = 2: input =   1.000000 weight =  -1.000000
+output[2] =   3.000000 +  -1.000000 =   2.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[3] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 1: input =  -1.000000 weight =  -1.000000
+output[3] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =   1.000000
+output[3] =   1.000000 +   0.000000 =   1.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 1 kw = 1: input =   1.000000 weight =   1.000000
+output[3] =   1.000000 +   1.000000 =   2.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =  -2.000000 weight =   1.000000
+output[3] =   2.000000 +  -2.000000 =   0.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 1: input =  -1.000000 weight =  -1.000000
+output[3] =   0.000000 +   1.000000 =   1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =   1.000000
+output[3] =   1.000000 +   0.000000 =   1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 1 kw = 1: input =   1.000000 weight =   1.000000
+output[3] =   1.000000 +   1.000000 =   2.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =  -1.000000
+output[4] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =  -1.000000
+output[4] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 2 kw = 1: input =   0.000000 weight =  -1.000000
+output[4] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 2 kw = 2: input =   1.000000 weight =   1.000000
+output[4] =   1.000000 +   1.000000 =   2.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 1 kw = 1: input =  -2.000000 weight =   1.000000
+output[4] =   2.000000 +  -2.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =   1.000000
+output[4] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 2 kw = 1: input =   0.000000 weight =  -1.000000
+output[4] =  -1.000000 +   0.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 2 kw = 2: input =   1.000000 weight =  -1.000000
+output[4] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =  -1.000000
+output[5] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 1 kw = 1: input =  -1.000000 weight =  -1.000000
+output[5] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 2 kw = 0: input =   0.000000 weight =  -1.000000
+output[5] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 2 kw = 1: input =   1.000000 weight =  -1.000000
+output[5] =   1.000000 +  -1.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 1 kw = 0: input =  -2.000000 weight =  -1.000000
+output[5] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[5] =   2.000000 +  -1.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 2 kw = 0: input =   0.000000 weight =   1.000000
+output[5] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 2 kw = 1: input =   1.000000 weight =  -1.000000
+output[5] =   1.000000 +  -1.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =   1.000000
+output[6] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 2: input =  -1.000000 weight =   1.000000
+output[6] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =  -1.000000
+output[6] =  -1.000000 +   0.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 1 kw = 2: input =   1.000000 weight =  -1.000000
+output[6] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 1: input =  -2.000000 weight =   1.000000
+output[6] =  -2.000000 +  -2.000000 =  -4.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 2: input =  -1.000000 weight =   1.000000
+output[6] =  -4.000000 +  -1.000000 =  -5.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[6] =  -5.000000 +   0.000000 =  -5.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 1 kw = 2: input =   1.000000 weight =   1.000000
+output[6] =  -5.000000 +   1.000000 =  -4.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[7] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 1: input =  -1.000000 weight =   1.000000
+output[7] =   0.000000 +  -1.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =  -1.000000
+output[7] =  -1.000000 +   0.000000 =  -1.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 1 kw = 1: input =   1.000000 weight =  -1.000000
+output[7] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =  -2.000000 weight =   1.000000
+output[7] =  -2.000000 +  -2.000000 =  -4.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 1: input =  -1.000000 weight =   1.000000
+output[7] =  -4.000000 +  -1.000000 =  -5.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =  -1.000000
+output[7] =  -5.000000 +   0.000000 =  -5.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 1 kw = 1: input =   1.000000 weight =   1.000000
+output[7] =  -5.000000 +   1.000000 =  -4.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[8] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =   0.000000 weight =   1.000000
+output[8] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 2 kw = 1: input =  -1.000000 weight =   1.000000
+output[8] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 2 kw = 2: input =   0.000000 weight =   1.000000
+output[8] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[8] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 1 kw = 2: input =  -2.000000 weight =  -1.000000
+output[8] =  -1.000000 +   2.000000 =   1.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 2 kw = 1: input =  -1.000000 weight =  -1.000000
+output[8] =   1.000000 +   1.000000 =   2.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 2 kw = 2: input =   2.000000 weight =   1.000000
+output[8] =   2.000000 +   2.000000 =   4.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =   1.000000
+output[9] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[9] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 2 kw = 0: input =  -1.000000 weight =   1.000000
+output[9] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 2 kw = 1: input =   0.000000 weight =   1.000000
+output[9] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =   1.000000
+output[9] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 1 kw = 1: input =  -2.000000 weight =   1.000000
+output[9] =  -1.000000 +  -2.000000 =  -3.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 2 kw = 0: input =  -1.000000 weight =  -1.000000
+output[9] =  -3.000000 +   1.000000 =  -2.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 2 kw = 1: input =   2.000000 weight =  -1.000000
+output[9] =  -2.000000 +  -2.000000 =  -4.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =  -1.000000
+output[10] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 2: input =   0.000000 weight =  -1.000000
+output[10] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[10] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 1 kw = 2: input =   0.000000 weight =   1.000000
+output[10] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =  -1.000000
+output[10] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 2: input =  -2.000000 weight =   1.000000
+output[10] =  -1.000000 +  -2.000000 =  -3.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[10] =  -3.000000 +  -1.000000 =  -4.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 1 kw = 2: input =   2.000000 weight =  -1.000000
+output[10] =  -4.000000 +  -2.000000 =  -6.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[11] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 1: input =   0.000000 weight =  -1.000000
+output[11] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 1 kw = 0: input =  -1.000000 weight =   1.000000
+output[11] =   0.000000 +  -1.000000 =  -1.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[11] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[11] =  -1.000000 +   0.000000 =  -1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 1: input =  -2.000000 weight =  -1.000000
+output[11] =  -1.000000 +   2.000000 =   1.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 1 kw = 0: input =  -1.000000 weight =   1.000000
+output[11] =   1.000000 I1220 14:39:08.043678 212046 BottleneckCpuCode.cpp:134] 2 x 2 x 2 -> 2 x 2 x 2
++  -1.000000 =   0.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 1 kw = 1: input =   2.000000 weight =   1.000000
+output[11] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =  -1.000000
+output[12] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =   0.000000 weight =  -1.000000
+output[12] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 2 kw = 1: input =  -1.000000 weight =  -1.000000
+output[12] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 2 kw = 2: input =   0.000000 weight =   1.000000
+output[12] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 1 kw = 1: input =   0.000000 weight =   1.000000
+output[12] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 1 kw = 2: input =  -2.000000 weight =   1.000000
+output[12] =   1.000000 +  -2.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 2 kw = 1: input =  -1.000000 weight =  -1.000000
+output[12] =  -1.000000 +   1.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 2 kw = 2: input =   2.000000 weight =  -1.000000
+output[12] =   0.000000 +  -2.000000 =  -2.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =  -1.000000
+output[13] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 1 kw = 1: input =   0.000000 weight =  -1.000000
+output[13] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 2 kw = 0: input =  -1.000000 weight =  -1.000000
+output[13] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 2 kw = 1: input =   0.000000 weight =  -1.000000
+output[13] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 1 kw = 0: input =   0.000000 weight =  -1.000000
+output[13] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 1 kw = 1: input =  -2.000000 weight =   1.000000
+output[13] =   1.000000 +  -2.000000 =  -1.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 2 kw = 0: input =  -1.000000 weight =   1.000000
+output[13] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 2 kw = 1: input =   2.000000 weight =  -1.000000
+output[13] =  -2.000000 +  -2.000000 =  -4.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =   1.000000
+output[14] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 2: input =   0.000000 weight =   1.000000
+output[14] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 1 kw = 1: input =  -1.000000 weight =  -1.000000
+output[14] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 1 kw = 2: input =   0.000000 weight =  -1.000000
+output[14] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 1: input =   0.000000 weight =   1.000000
+output[14] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 2: input =  -2.000000 weight =   1.000000
+output[14] =   1.000000 +  -2.000000 =  -1.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 1 kw = 1: input =  -1.000000 weight =   1.000000
+output[14] =  -1.000000 +  -1.000000 =  -2.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 1 kw = 2: input =   2.000000 weight =   1.000000
+output[14] =  -2.000000 +   2.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[15] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 1: input =   0.000000 weight =   1.000000
+output[15] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 1 kw = 0: input =  -1.000000 weight =  -1.000000
+output[15] =   0.000000 +   1.000000 =   1.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 1 kw = 1: input =   0.000000 weight =  -1.000000
+output[15] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[15] =   1.000000 +   0.000000 =   1.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 1: input =  -2.000000 weight =   1.000000
+output[15] =   1.000000 +  -2.000000 =  -1.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 1 kw = 0: input =  -1.000000 weight =  -1.000000
+output[15] =  -1.000000 +   1.000000 =   0.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 1 kw = 1: input =   2.000000 weight =   1.000000
+output[15] =   0.000000 +   2.000000 =   2.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[0] =   0.000000 +   0.000000 =   0.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -2.000000 weight =  -1.000000
+output[0] =   0.000000 +   2.000000 =   2.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[1] =   0.000000 +   4.000000 =   4.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[1] =   4.000000 +   0.000000 =   4.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   2.000000 weight =  -1.000000
+output[2] =   0.000000 +  -2.000000 =  -2.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[2] =  -2.000000 +   4.000000 =   2.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =  -1.000000
+output[3] =   0.000000 +  -2.000000 =  -2.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[3] =  -2.000000 +   4.000000 =   2.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =   1.000000
+output[4] =   0.000000 +   0.000000 =   0.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -2.000000 weight =  -1.000000
+output[4] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =   1.000000
+output[5] =   0.000000 +  -4.000000 =  -4.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[5] =  -4.000000 +   0.000000 =  -4.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =   2.000000 weight =   1.000000
+output[6] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[6] =   2.000000 +   4.000000 =   6.000000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =   1.000000
+output[7] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[7] =   2.000000 +   4.000000 =   6.000000
+f = 0 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   4.000000 weight =  -1.000000
+output[8] =   0.000000 +  -4.000000 =  -4.000000
+f = 0 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -2.000000 weight =  -1.000000
+output[8] =  -4.000000 +   2.000000 =  -2.000000
+f = 0 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[9] =   0.000000 +   4.000000 =   4.000000
+f = 0 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[9] =   4.000000 +   4.000000 =   8.000000
+f = 0 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =  -6.000000 weight =  -1.000000
+output[10] =   0.000000 +   6.000000 =   6.000000
+f = 0 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[10] =   6.000000 +   0.000000 =   6.000000
+f = 0 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =  -1.000000
+output[11] =   0.000000 +  -2.000000 =  -2.000000
+f = 0 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =  -1.000000
+output[11] =  -2.000000 +  -2.000000 =  -4.000000
+f = 1 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =   4.000000 weight =   1.000000
+output[12] =   0.000000 +   4.000000 =   4.000000
+f = 1 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -2.000000 weight =  -1.000000
+output[12] =   4.000000 +   2.000000 =   6.000000
+f = 1 c = 0 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =   1.000000
+output[13] =   0.000000 +  -4.000000 =  -4.000000
+f = 1 c = 1 oh = 0 ow = 1 kh = 0 kw = 0: input =  -4.000000 weight =  -1.000000
+output[13] =  -4.000000 +   4.000000 =   0.000000
+f = 1 c = 0 oh = 1 ow = 0 kh = 0 kw = 0: input =  -6.000000 weight =   1.000000
+output[14] =   0.000000 +  -6.000000 =  -6.000000
+f = 1 c = 1 oh = 1 ow = 0 kh = 0 kw = 0: input =   0.000000 weight =  -1.000000
+output[14] =  -6.000000 +   0.000000 =  -6.000I1220 14:39:08.044088 212046 BottleneckCpuCode.cpp:145] Done
+I1220 14:39:08.044106 212046 BottleneckCpuCode.cpp:163] BIT_WIDTH = 8 WBW = 2
+SLiC Error #280 @ pcie_streams_internal.c:77 - Stream alignment error for stream "init_coeff": the length (4 bytes) of the stream must be a multiple of 16 bytes.
+SLiC Error #518 @ stream.c:17 - Error reported from function "max_queue_input".
+
+000
+f = 1 c = 0 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =   1.000000
+output[15] =   0.000000 +   2.000000 =   2.000000
+f = 1 c = 1 oh = 1 ow = 1 kh = 0 kw = 0: input =   2.000000 weight =  -1.000000
+output[15] =   2.000000 +  -2.000000 =   0.000000
+make: *** [runsim] Aborted

@@ -1,0 +1,25 @@
+Tue 11:01: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Tue 11:01: WARNING: Unconnected elements in design 'conv0'
+Tue 11:01: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100/scratch/conv0_graph_warnings.txt
+Tue 11:01: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Tue 11:01: WARNING: Unconnected elements in design 'conv1'
+Tue 11:01: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100/scratch/conv1_graph_warnings.txt
+Tue 11:01: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Tue 11:01: WARNING: Unconnected elements in design 'identity1'
+Tue 11:01: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100/scratch/identity1_graph_warnings.txt
+Tue 11:01: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Tue 11:01: WARNING: Unconnected elements in design 'conv2'
+Tue 11:01: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100/scratch/conv2_graph_warnings.txt
+
+----------------------------
+Exception in thread "main":
+ 
+  
+
+Exception Stack Trace java.lang.NullPointerException
+   at com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils.createKernelBlocks(ConvLayerManagerUtils.java:208)
+   at resnet_18_fst.Resnet18FstManager.<init>(Resnet18FstManager.java:31)
+   at resnet_18_fst.Resnet18FstManager.main(Resnet18FstManager.java:142)
+ 
+----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_100/results/Resnet18Fst.max] Error 1

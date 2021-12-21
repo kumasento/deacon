@@ -104,27 +104,35 @@ int main(int argc, char *argv[]) {
   actions.param_batch_size = batch_size;
 
 
-  printf("Running ...\n");
+  LOG(INFO) << "Running ...\n";
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
   for (int i = 0; i < (int)num_iters; i++)
     MobilenetV1Intrseq_run(engine, &actions);
   end = std::chrono::system_clock::now();
-  printf("Done\n");
+  LOG(INFO) << "Done\n";
 
   ReadDRAM<data_t, Dfe>(output_dfe, base_addr, engine);
 
   output_dfe = ReorderOutput(output_dfe, cps.back(), batch_size);
 
   std::chrono::duration<double> elapsed_seconds = end - start;
-  std::cout << "elapsed time: " << elapsed_seconds.count() / (num_iters) << "s\n";
+  LOG(INFO) << "elapsed time: " << elapsed_seconds.count() / (num_iters) << "s\n";
 
   uint64_t ops = 0;
   for (auto &cp : cps) {
     // TODO: check the exact convlayer type.
-    ops += cp.H * cp.W * cp.K * cp.K * cp.C * 2 + cp.H * cp.W * cp.C * cp.F * 2;
+    if (cp.dfe.TYPE == "STANDARD")
+      ops += cp.H * cp.W * cp.K * cp.K * cp.C * cp.F * 2;
+    else if (cp.dfe.TYPE == "POINTWISE")
+      ops += cp.H * cp.W * cp.C * cp.F * 2;
+    else if (cp.dfe.TYPE == "DEPTHWISE_SEPARABLE")
+      ops += cp.H * cp.W * cp.K * cp.K * cp.C * 2 + cp.H * cp.W * cp.C * cp.F * 2;
+    else
+      assert(false);
   }
-  std::cout << "GFLOPs: " << (double)ops * batch_size * 1e-9 / (elapsed_seconds.count() / num_iters) << "s\n";
+  LOG(INFO) << "FPS:    " << (double) batch_size / (elapsed_seconds.count() / num_iters) << "\n";
+  LOG(INFO) << "GFLOPs: " << (double)ops * batch_size * 1e-9 / (elapsed_seconds.count() / num_iters) << "\n";
 
   max_unload(engine);
   max_file_free(max_file);

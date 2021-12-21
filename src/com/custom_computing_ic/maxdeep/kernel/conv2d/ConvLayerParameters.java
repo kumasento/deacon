@@ -46,7 +46,11 @@ public class ConvLayerParameters extends LayerParameters {
   public int winoH;
   public int winoW;
   public String residual = "";
+  public String input = "";
+  public int numOutputs = 1;
   public String coeffFile = "";
+
+  public String namedRegion = "";
 
   public PoolingLayerParameters pool;
 
@@ -64,7 +68,14 @@ public class ConvLayerParameters extends LayerParameters {
    * @author Ruizhe Zhao
    *
    */
-  public enum Type { STANDARD, POINTWISE, DEPTHWISE_SEPARABLE, DEPTHWISE_SEPARABLE_V2, BOTTLENECK }
+  public enum Type {
+    STANDARD,
+    POINTWISE,
+    DEPTHWISE_SEPARABLE,
+    DEPTHWISE_SEPARABLE_V2,
+    BOTTLENECK,
+    IDENTITY
+  }
 
   public ConvLayerParameters(Builder builder) {
     // inherited from the parent
@@ -100,8 +111,11 @@ public class ConvLayerParameters extends LayerParameters {
     this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.coeffOnChip = builder.coeffOnChip;
     this.residual = builder.residual;
+    this.input = builder.input;
+    this.numOutputs = builder.numOutputs;
     this.initCoeff = builder.initCoeff;
     this.coeffFile = builder.coeffFile;
+    this.namedRegion = builder.namedRegion;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -196,6 +210,8 @@ public class ConvLayerParameters extends LayerParameters {
     long H = getPaddedHeight();
     long W = getPaddedWidth();
 
+    if (type == Type.IDENTITY)
+      return ((long) H * W * C / (PC * PK));
     if (type == Type.STANDARD)
       return ((long) H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
@@ -244,6 +260,8 @@ public class ConvLayerParameters extends LayerParameters {
     // coefficients.
     if (useWinograd && winogradWeightsOffline)
       return PC * PF * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
+    if (type == Type.IDENTITY)
+      return 0;
     if (type == Type.POINTWISE)
       return PC * PF;
     if (type == Type.DEPTHWISE_SEPARABLE_V2)
@@ -252,7 +270,7 @@ public class ConvLayerParameters extends LayerParameters {
       return (PC * PF * K * K);
 
     throw new IllegalArgumentException(
-        "getNumCycles has not implemented for the current type: " + type.name());
+        "getCoeffVecSize has not implemented for the current type: " + type.name());
   }
 
   public int getCoeffStreamLMemBitWidth() {
@@ -375,6 +393,8 @@ public class ConvLayerParameters extends LayerParameters {
     private final int OH;
     private final int OW;
     private String residual = "";
+    private String input = ""; // string indicates the input port
+    private int numOutputs = 1; // number of output ports
     private int BW; /* bit width */
     private int WBW;
     private int PC;
@@ -397,6 +417,7 @@ public class ConvLayerParameters extends LayerParameters {
     private boolean coeffOnChip;
     private boolean initCoeff;
     private String coeffFile = "";
+    private String namedRegion = "";
 
     public Builder(int OH, int OW, int C, int F, int K) {
       if (OH <= 0)
@@ -437,6 +458,26 @@ public class ConvLayerParameters extends LayerParameters {
       this.dbg = false;
       this.coeffOnChip = false;
       this.initCoeff = false;
+      this.input = "";
+      this.numOutputs = 1;
+      this.namedRegion = "";
+    }
+
+    public Builder namedRegion(String namedRegion) {
+      this.namedRegion = namedRegion;
+      return this;
+    }
+
+    public Builder input(String input) {
+      this.input = input;
+      return this;
+    }
+
+    public Builder numOutputs(int numOutputs) {
+      if (numOutputs <= 0)
+        throw new IllegalArgumentException("Number of inputs should not be smaller than 1.");
+      this.numOutputs = numOutputs;
+      return this;
     }
 
     public Builder coeffFile(String coeffFile) {
