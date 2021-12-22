@@ -107,7 +107,10 @@ def generate_data_layer(name: str, cfg: Dict, data_file: str):
             arr = generate_data_array(N)
             for x in arr:
                 f.write(f"{x}\n")
-    elif cfg["TYPE"] == "IDENTITY":
+
+    elif (
+        cfg["TYPE"] == "IDENTITY" or cfg["TYPE"] == "POOLING" or cfg["TYPE"] == "CONCAT"
+    ):
         # No need to generate for identity layer.
         return
     else:
@@ -336,6 +339,13 @@ class AppGenerator:
     def generate_manager(self):
         cps = ""
         for key, cfg in self.cfg["layers"].items():
+            input_cfg = ""
+            if "INPUT" in cfg:
+                if not isinstance(cfg["INPUT"], list):
+                    cfg["INPUT"] = [cfg["INPUT"]]
+                for input_name in cfg["INPUT"]:
+                    input_cfg += f""".input("{input_name}")"""
+
             cps += f"""
     cps.add(new ConvLayerParameters
                 .Builder({cfg['H']}, {cfg['W']}, {cfg['C']}, {cfg['F']}, {cfg['K']})
@@ -350,13 +360,14 @@ class AppGenerator:
                 .dbg(params.getDebug())
                 .coeffOnChip({str(self.cfg['global']['COEFF_ON_CHIP']).lower()})
                 .coeffFile(params.getCoeffFile())
-                .input("{cfg['INPUT'] if 'INPUT' in cfg else ""}")
+                {input_cfg}
                 .numOutputs({cfg['NUM_OUTPUTS'] if 'NUM_OUTPUTS' in cfg else 1})
                 .residual("{cfg['RESIDUAL'] if 'RESIDUAL' in cfg else ""}")
                 .PF({cfg['P_F'] if 'P_F' in cfg else 1})
                 .PC({cfg['P_C'] if 'P_C' in cfg else 1})
                 .PK({cfg['P_K'] if 'P_K' in cfg else 1})
                 .namedRegion("{cfg['NAMED_REGION'] if 'NAMED_REGION' in cfg else ""}")
+                .pooling(Pooling.{cfg['POOLING'] if 'POOLING' in cfg else 'MAX'})
                 .build());
             """
 
@@ -460,10 +471,11 @@ def main():
     args.root_dir = os.path.abspath(args.root_dir)
 
     # Prepare parallel runs
+    sim_device_id = args.sim_device_id if hasattr(args, "sim_device_id") else "a"
     args_list = [copy.deepcopy(args) for i in range(len(args.cfg))]
     for i, args in enumerate(args_list):
         args.index = i
-        args.sim_device_id = chr(ord("a") + i)
+        args.sim_device_id = chr(ord(sim_device_id) + i)
 
     with mp.Pool(args.jobs) as p:
         p.map(process, args_list)

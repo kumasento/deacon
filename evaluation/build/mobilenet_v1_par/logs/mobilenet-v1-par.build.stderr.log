@@ -110,3 +110,5 @@ Mon 19:16: WARNING: MaxCompiler has detected and optimized one or more multiply 
 Mon 19:16: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
 Mon 19:16: WARNING: precision but may mean that the output of this bitstream is not bit-identical
 Mon 19:16: WARNING: to that of a similar bitstream.
+Wed 09:01: ERROR: Prematurely halting process: ulimit -v 5848268;export XILINX_LOCAL_USER_DATA=no; vivado  -mode batch -source com_maxeler_platform_max5_toolchain_ip_distmem_DistMemIp_vivado2017_4_xcVU9P_FLGB2104_2_E_8x32_SINGLE_PORT_ROM_initff42c6a2e79514be49a5c2d6583d1fff_ooc_gen.tcl -log com_maxeler_platform_max5_toolchain_ip_distmem_DistMemIp_vivado2017_4_xcVU9P_FLGB2104_2_E_8x32_SINGLE_PORT_ROM_initff42c6a2e79514be49a5c2d6583d1fff_ooc_gen.log
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1Par_MAIA_DFE_FREQ_200/results/MobilenetV1Par.max] Error 130

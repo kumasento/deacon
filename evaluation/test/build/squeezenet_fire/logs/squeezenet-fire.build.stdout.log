@@ -1,0 +1,340 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=squeezenet_fire MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 SqueezenetFireManager \
+	DFEModel=MAIA maxFileName=SqueezenetFire target='DFE' enableMPCX=false \
+	FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/squeezenet_fire/data/data-squeezenet-fire.txt 
+]0; maxJavaRun: SqueezenetFireManager DFEModel=MAIA maxFileName=SqueezenetFire target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/squeezenet_fire/data/data-squeezenet-fire.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : squeezenet_fire
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : squeezenet_fire.SqueezenetFireManager
+Class arguments     : DFEModel=MAIA maxFileName=SqueezenetFire target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/squeezenet_fire/data/data-squeezenet-fire.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Tue 21:28: MaxCompiler version: 2021.1
+Tue 21:28: Build "SqueezenetFire" start time: Tue Dec 21 21:28:54 GMT 2021
+Tue 21:28: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Tue 21:28: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350
+Tue 21:28: Detailed build log available in "_build.log"
+Tue 21:28: 
+Tue 21:28: ENGINE BUILD PARAMETERS
+Tue 21:28: 	              Build name: SqueezenetFire_MAIA_DFE_FREQ_350                                                                          
+Tue 21:28: 	             maxFileName: SqueezenetFire                                                                                            
+Tue 21:28: 	                  target: DFE                                                                                                       
+Tue 21:28: 	                DFEModel: MAIA                                                                                                      
+Tue 21:28: 	              enableMPCX: false                                                                                                     
+Tue 21:28: 	                bitWidth: 32                                                                                                        
+Tue 21:28: 	                     WBW: 32                                                                                                        
+Tue 21:28: 	                   DTYPE: fixed                                                                                                     
+Tue 21:28: 	           NUM_FRAC_BITS: 8                                                                                                         
+Tue 21:28: 	                      PF: 1                                                                                                         
+Tue 21:28: 	                      PC: 1                                                                                                         
+Tue 21:28: 	                      PK: 1                                                                                                         
+Tue 21:28: 	                       H: 1                                                                                                         
+Tue 21:28: 	                       W: 1                                                                                                         
+Tue 21:28: 	                       C: 1                                                                                                         
+Tue 21:28: 	                       F: 1                                                                                                         
+Tue 21:28: 	                       K: 1                                                                                                         
+Tue 21:28: 	                     PAD: 0                                                                                                         
+Tue 21:28: 	                       S: 1                                                                                                         
+Tue 21:28: 	                     SEQ: 0                                                                                                         
+Tue 21:28: 	                    FREQ: 350                                                                                                       
+Tue 21:28: 	                USE_DRAM: false                                                                                                     
+Tue 21:28: 	                 USE_BNN: false                                                                                                     
+Tue 21:28: 	            USE_WINOGRAD: false                                                                                                     
+Tue 21:28: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                     
+Tue 21:28: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                         
+Tue 21:28: 	                   DEBUG: false                                                                                                     
+Tue 21:28: 	           COEFF_ON_CHIP: false                                                                                                     
+Tue 21:28: 	              INIT_COEFF: false                                                                                                     
+Tue 21:28: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/squeezenet_fire/data/data-squeezenet-fire.txt
+Tue 21:29: Generating kernel conv0 ...
+Tue 21:29: Instantiating kernel "conv0"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: coeffOnChip = true
+Tue 21:29: Input height = 224, output height = 224, pad = 1
+Tue 21:29: Counter H = 226 W = 226
+Tue 21:29: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: Read for key = conv0
+Tue 21:29: Ifmap buffer configuration 262144 x 1
+Tue 21:29: loop = false
+Tue 21:29: Building line buffer for "conv0" ...
+Tue 21:29: Line buffer shape 3 x 224, produces 1 number of 3 x 3 tiles per cycle
+Tue 21:29: Line buffer input vector size: 1, output vector size: 9.
+Tue 21:29: Number of separated line buffers: 1
+Tue 21:29: Initialising line buffer kernel with 3 x 226 x 1
+Tue 21:29: Size of line buffer output: 3
+Tue 21:29: Number of line buffer output chunks: 3
+Tue 21:29: Connecting outputs from chunk (#000) ...
+Tue 21:29: Connecting outputs from chunk (#001) ...
+Tue 21:29: Connecting outputs from chunk (#002) ...
+Tue 21:29: Building the CORE arithmetic unit for "conv0" ...
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: CORE ifmap vector size: 9
+Tue 21:29: CORE coefficient vector size: 9
+Tue 21:29: CORE ofmap vector size: 1
+Tue 21:29: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Tue 21:29: Connecting to output: ofmap
+Tue 21:29: Compiling kernel "conv0"
+Tue 21:29: 
+Tue 21:29: Generating kernel pool0 ...
+Tue 21:29: Instantiating kernel "pool0"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: coeffOnChip = true
+Tue 21:29: Input height = 112, output height = 112, pad = 1
+Tue 21:29: Counter H = 114 W = 114
+Tue 21:29: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: Building line buffer for "pool0" ...
+Tue 21:29: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Tue 21:29: Line buffer input vector size: 1, output vector size: 9.
+Tue 21:29: Number of separated line buffers: 1
+Tue 21:29: Initialising line buffer kernel with 3 x 114 x 1
+Tue 21:29: Size of line buffer output: 3
+Tue 21:29: Number of line buffer output chunks: 3
+Tue 21:29: Connecting outputs from chunk (#000) ...
+Tue 21:29: Connecting outputs from chunk (#001) ...
+Tue 21:29: Connecting outputs from chunk (#002) ...
+Tue 21:29: Connecting to output: ofmap
+Tue 21:29: Compiling kernel "pool0"
+Tue 21:29: 
+Tue 21:29: Generating kernel fire0s ...
+Tue 21:29: Instantiating kernel "fire0s"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: Building pointwise convolution:
+Tue 21:29: H = 56 W = 56 F = 16 C = 64 PF = 1 PC = 1
+Tue 21:29: Seq = FILTER_MAJOR
+Tue 21:29: Read for key = fire0s
+Tue 21:29: Ifmap buffer configuration 262144 x 1
+Tue 21:29: loop = false
+Tue 21:29: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 21:29: Connecting to output: ofmap
+Tue 21:29: Connecting to output: ofmap_1
+Tue 21:29: Compiling kernel "fire0s"
+Tue 21:29: 
+Tue 21:29: Generating kernel fire0e0 ...
+Tue 21:29: Instantiating kernel "fire0e0"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: Building pointwise convolution:
+Tue 21:29: H = 56 W = 56 F = 64 C = 16 PF = 1 PC = 1
+Tue 21:29: Seq = FILTER_MAJOR
+Tue 21:29: Read for key = fire0e0
+Tue 21:29: Ifmap buffer configuration 65536 x 1
+Tue 21:29: loop = false
+Tue 21:29: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 21:29: Connecting to output: ofmap
+Tue 21:29: Compiling kernel "fire0e0"
+Tue 21:29: 
+Tue 21:29: Generating kernel fire0e1 ...
+Tue 21:29: Instantiating kernel "fire0e1"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: coeffOnChip = true
+Tue 21:29: Input height = 56, output height = 56, pad = 1
+Tue 21:29: Counter H = 58 W = 58
+Tue 21:29: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 21:29: Read for key = fire0e1
+Tue 21:29: Ifmap buffer configuration 65536 x 1
+Tue 21:29: loop = false
+Tue 21:29: Building line buffer for "fire0e1" ...
+Tue 21:29: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 21:29: Line buffer input vector size: 1, output vector size: 9.
+Tue 21:29: Number of separated line buffers: 1
+Tue 21:29: Initialising line buffer kernel with 3 x 58 x 1
+Tue 21:29: Size of line buffer output: 3
+Tue 21:29: Number of line buffer output chunks: 3
+Tue 21:29: Connecting outputs from chunk (#000) ...
+Tue 21:29: Connecting outputs from chunk (#001) ...
+Tue 21:29: Connecting outputs from chunk (#002) ...
+Tue 21:29: Building the CORE arithmetic unit for "fire0e1" ...
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: CORE ifmap vector size: 9
+Tue 21:29: CORE coefficient vector size: 9
+Tue 21:29: CORE ofmap vector size: 1
+Tue 21:29: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 21:29: Connecting to output: ofmap
+Tue 21:29: Compiling kernel "fire0e1"
+Tue 21:29: 
+Tue 21:29: Generating kernel fire0c ...
+Tue 21:29: Instantiating kernel "fire0c"
+Tue 21:29: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 21:29: Compiling kernel "fire0c"
+Tue 21:29: 
+Tue 21:29: Generating padding kernels for DRAM access
+Tue 21:29: Instantiating kernel "ifmap_unpad"
+Tue 21:29: Compiling kernel "ifmap_unpad"
+Tue 21:29: 
+Tue 21:29: Instantiating kernel "ofmap_pad"
+Tue 21:29: Compiling kernel "ofmap_pad"
+Tue 21:29: 
+Tue 21:29: Setting up stream connections for conv0
+Tue 21:29: Setting up stream connections for pool0
+Tue 21:29: Setting up stream connections for fire0s
+Tue 21:29: Setting up stream connections for fire0e0
+Tue 21:29: Setting up stream connections for fire0e1
+Tue 21:29: Setting up stream connections for fire0c
+Tue 21:29: DRAM will be used to build the design
+Tue 21:29: Setup streams for kernel "conv0"
+Tue 21:29: # cycles:       9806592
+Tue 21:29: # ifmap stream: 150528
+Tue 21:29: # coeff stream: 1728
+Tue 21:29: # ofmap stream: 802816
+Tue 21:29: coeff vec size: 9
+Tue 21:29: coeff stream bit width: 72
+Tue 21:29: coeff stream chunk size: 9
+Tue 21:29: Setup streams for kernel "pool0"
+Tue 21:29: # cycles:       831744
+Tue 21:29: # ifmap stream: 802816
+Tue 21:29: # coeff stream: 37440
+Tue 21:29: # ofmap stream: 200704
+Tue 21:29: coeff vec size: 0
+Tue 21:29: coeff stream bit width: 0
+Tue 21:29: coeff stream chunk size: 0
+Tue 21:29: Setup streams for kernel "fire0s"
+Tue 21:29: # cycles:       3211264
+Tue 21:29: # ifmap stream: 200704
+Tue 21:29: # coeff stream: 1024
+Tue 21:29: # ofmap stream: 50176
+Tue 21:29: coeff vec size: 1
+Tue 21:29: coeff stream bit width: 8
+Tue 21:29: coeff stream chunk size: 1
+Tue 21:29: Setup streams for kernel "fire0e0"
+Tue 21:29: # cycles:       3211264
+Tue 21:29: # ifmap stream: 50176
+Tue 21:29: # coeff stream: 1024
+Tue 21:29: # ofmap stream: 200704
+Tue 21:29: coeff vec size: 1
+Tue 21:29: coeff stream bit width: 8
+Tue 21:29: coeff stream chunk size: 1
+Tue 21:29: Setup streams for kernel "fire0e1"
+Tue 21:29: # cycles:       3444736
+Tue 21:29: # ifmap stream: 50176
+Tue 21:29: # coeff stream: 9216
+Tue 21:29: # ofmap stream: 200704
+Tue 21:29: coeff vec size: 9
+Tue 21:29: coeff stream bit width: 72
+Tue 21:29: coeff stream chunk size: 9
+Tue 21:29: Setup streams for kernel "fire0c"
+Tue 21:29: # cycles:       100352
+Tue 21:29: # ifmap stream: 200704
+Tue 21:29: # coeff stream: 4160
+Tue 21:29: # ofmap stream: 200704
+Tue 21:29: coeff vec size: 0
+Tue 21:29: coeff stream bit width: 0
+Tue 21:29: coeff stream chunk size: 0
+Tue 21:29: Generating input files (VHDL, netlists, vendor specific IP cores)
+Tue 23:39: Running back-end  build (15 phases)
+Tue 23:39: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Tue 23:39: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Tue 23:39: Executing Synthesis Strategy VIVADO_DEFAULT
+Tue 23:53: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Tue 23:53: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Tue 23:53: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Tue 23:53: 
+Tue 23:53: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Tue 23:53: For this compile, we estimate this process may take longer than 1 hour.
+Tue 23:53: We recommend running in simulation to verify correctness before building hardware.
+Tue 23:53: 
+Tue 23:53: PRELIMINARY RESOURCE USAGE
+Tue 23:53: FPGA: xcVU9P-FLGB2104-2-E
+Tue 23:53: Logic utilization:      222786 / 3546720 (6.28%)
+Tue 23:53:   LUTs:                  87121 / 1182240 (7.37%)
+Tue 23:53:   Primary FFs:          135665 / 2364480 (5.74%)
+Tue 23:53: DSP blocks:                 29 / 6840    (0.42%)
+Tue 23:53: Block memory (BRAM18):     894 / 4320    (20.69%)
+Tue 23:53: Block memory (URAM):         7 / 960     (0.73%)
+Tue 23:53: 
+Tue 23:53: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Tue 23:53: 
+Tue 23:53: PRELIMINARY POWER REPORT
+Tue 23:53: Total On-Chip Power (W) 9.95 (budget: 91.80) 
+Tue 23:53: Dynamic Power (W)       7.28 
+Tue 23:53: Device Static Power(W)  2.66 
+Tue 23:53: 
+Tue 23:53: (7/15) - Place DFE (VivadoImplementation)
+Tue 23:53: Executing the following 5 Implementation Strategies in 5 threads:
+Tue 23:53:  - VIVADO_DEFAULT
+Tue 23:53:  - MAXELER1
+Tue 23:53:  - MAXELER2
+Tue 23:53:  - MAXELER3
+Tue 23:53:  - MAXELER4
+Wed 01:19: Implementation: Strategy "VIVADO_DEFAULT" failed timing with score 4220 (best score 4220)
+Wed 01:23: Implementation: Strategy "MAXELER4" met timing with score 0 (best score 0)
+Wed 01:23: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Wed 01:23: Implementation: Strategy "MAXELER1" was cancelled (no timing score)
+Wed 01:23: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 01:23: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 01:23: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Wed 01:23: 
+Wed 01:23: FINAL POWER REPORT
+Wed 01:23: Total On-Chip Power (W) 11.45 (budget: 91.80) 
+Wed 01:23: Dynamic Power (W)        8.76 
+Wed 01:23: Device Static Power(W)   2.69 
+Wed 01:23: 
+Wed 01:23: (11/15) - Generate Configuration (VivadoBitgen)
+Wed 01:31: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Wed 01:33: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Wed 01:33: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Wed 01:33: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Wed 01:34: 
+Wed 01:34: FINAL RESOURCE USAGE
+Wed 01:34: FPGA: xcVU9P-FLGB2104-2-E
+Wed 01:34: Logic utilization:      203311 / 3546720 (5.73%)
+Wed 01:34:   LUTs:                  76971 / 1182240 (6.51%)
+Wed 01:34:   Primary FFs:          126340 / 2364480 (5.34%)
+Wed 01:34: DSP blocks:                 29 / 6840    (0.42%)
+Wed 01:34: Block memory (BRAM18):     894 / 4320    (20.69%)
+Wed 01:34: Block memory (URAM):         7 / 960     (0.73%)
+Wed 01:34: 
+Wed 01:34: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max (MD5Sum: 4043e7e53782b5c04524c4be7c921c9c)
+Wed 01:34: Build completed: Wed Dec 22 01:34:01 GMT 2021 (took 4 hours, 5 mins, 6 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/../scratch/SqueezenetFire.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/../scratch/SqueezenetFire.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max SqueezenetFire_FREQ_350_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_3022992424553301080/cobject/max_8419892398178639849.c -o /tmp/sliccompile_3022992424553301080/cobject/max_8419892398178639849.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results/SqueezenetFire.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_7571850672570560256.o 
+ld -r /tmp/sliccompile_3022992424553301080/cobject/max_8419892398178639849.c.o max_7571850672570560256.o -o SqueezenetFire_FREQ_350_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/squeezenet_fire'
+g++ ../../src/squeezenet_fire/SqueezenetFireCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SqueezenetFire_MAIA_DFE_FREQ_350/results -DDESIGN_NAME=SqueezenetFire -c -o SqueezenetFire_FREQ_350_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o SqueezenetFire_FREQ_350_dfe SqueezenetFire_FREQ_350_dfe.o SqueezenetFire_FREQ_350_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

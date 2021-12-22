@@ -1,0 +1,1044 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=squeezenet MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 SqueezenetManager \
+	DFEModel=MAIA maxFileName=Squeezenet target='DFE' enableMPCX=false \
+	FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/squeezenet/data/data-squeezenet.txt 
+]0; maxJavaRun: SqueezenetManager DFEModel=MAIA maxFileName=Squeezenet target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/squeezenet/data/data-squeezenet.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : squeezenet
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : squeezenet.SqueezenetManager
+Class arguments     : DFEModel=MAIA maxFileName=Squeezenet target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/squeezenet/data/data-squeezenet.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Wed 10:12: MaxCompiler version: 2021.1
+Wed 10:12: Build "Squeezenet" start time: Wed Dec 22 10:12:30 GMT 2021
+Wed 10:12: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Wed 10:12: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350
+Wed 10:12: Detailed build log available in "_build.log"
+Wed 10:12: 
+Wed 10:12: ENGINE BUILD PARAMETERS
+Wed 10:12: 	              Build name: Squeezenet_MAIA_DFE_FREQ_350                                                               
+Wed 10:12: 	             maxFileName: Squeezenet                                                                                 
+Wed 10:12: 	                  target: DFE                                                                                        
+Wed 10:12: 	                DFEModel: MAIA                                                                                       
+Wed 10:12: 	              enableMPCX: false                                                                                      
+Wed 10:12: 	                bitWidth: 32                                                                                         
+Wed 10:12: 	                     WBW: 32                                                                                         
+Wed 10:12: 	                   DTYPE: fixed                                                                                      
+Wed 10:12: 	           NUM_FRAC_BITS: 8                                                                                          
+Wed 10:12: 	                      PF: 1                                                                                          
+Wed 10:12: 	                      PC: 1                                                                                          
+Wed 10:12: 	                      PK: 1                                                                                          
+Wed 10:12: 	                       H: 1                                                                                          
+Wed 10:12: 	                       W: 1                                                                                          
+Wed 10:12: 	                       C: 1                                                                                          
+Wed 10:12: 	                       F: 1                                                                                          
+Wed 10:12: 	                       K: 1                                                                                          
+Wed 10:12: 	                     PAD: 0                                                                                          
+Wed 10:12: 	                       S: 1                                                                                          
+Wed 10:12: 	                     SEQ: 0                                                                                          
+Wed 10:12: 	                    FREQ: 350                                                                                        
+Wed 10:12: 	                USE_DRAM: false                                                                                      
+Wed 10:12: 	                 USE_BNN: false                                                                                      
+Wed 10:12: 	            USE_WINOGRAD: false                                                                                      
+Wed 10:12: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                      
+Wed 10:12: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                          
+Wed 10:12: 	                   DEBUG: false                                                                                      
+Wed 10:12: 	           COEFF_ON_CHIP: false                                                                                      
+Wed 10:12: 	              INIT_COEFF: false                                                                                      
+Wed 10:12: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/build/squeezenet/data/data-squeezenet.txt
+Wed 10:13: Generating kernel conv0 ...
+Wed 10:13: Instantiating kernel "conv0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 224, output height = 224, pad = 1
+Wed 10:13: Counter H = 226 W = 226
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = conv0
+Wed 10:13: Ifmap buffer configuration 262144 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "conv0" ...
+Wed 10:13: Line buffer shape 3 x 224, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 226 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "conv0" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "conv0"
+Wed 10:13: 
+Wed 10:13: Generating kernel pool0 ...
+Wed 10:13: Instantiating kernel "pool0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 112, output height = 112, pad = 1
+Wed 10:13: Counter H = 114 W = 114
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building line buffer for "pool0" ...
+Wed 10:13: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 114 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "pool0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire0s ...
+Wed 10:13: Instantiating kernel "fire0s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 56 W = 56 F = 16 C = 64 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire0s
+Wed 10:13: Ifmap buffer configuration 262144 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire0s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire0e0 ...
+Wed 10:13: Instantiating kernel "fire0e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 56 W = 56 F = 64 C = 16 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire0e0
+Wed 10:13: Ifmap buffer configuration 65536 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire0e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire0e1 ...
+Wed 10:13: Instantiating kernel "fire0e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 56, output height = 56, pad = 1
+Wed 10:13: Counter H = 58 W = 58
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire0e1
+Wed 10:13: Ifmap buffer configuration 65536 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire0e1" ...
+Wed 10:13: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 58 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire0e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire0e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire0c ...
+Wed 10:13: Instantiating kernel "fire0c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire0c"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire1s ...
+Wed 10:13: Instantiating kernel "fire1s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 56 W = 56 F = 16 C = 128 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire1s
+Wed 10:13: Ifmap buffer configuration 524288 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire1s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire1e0 ...
+Wed 10:13: Instantiating kernel "fire1e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 56 W = 56 F = 64 C = 16 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire1e0
+Wed 10:13: Ifmap buffer configuration 65536 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire1e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire1e1 ...
+Wed 10:13: Instantiating kernel "fire1e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 56, output height = 56, pad = 1
+Wed 10:13: Counter H = 58 W = 58
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire1e1
+Wed 10:13: Ifmap buffer configuration 65536 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire1e1" ...
+Wed 10:13: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 58 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire1e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire1e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire1c ...
+Wed 10:13: Instantiating kernel "fire1c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire1c"
+Wed 10:13: 
+Wed 10:13: Generating kernel pool1 ...
+Wed 10:13: Instantiating kernel "pool1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 56, output height = 56, pad = 1
+Wed 10:13: Counter H = 58 W = 58
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building line buffer for "pool1" ...
+Wed 10:13: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 58 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "pool1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire2s ...
+Wed 10:13: Instantiating kernel "fire2s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 28 W = 28 F = 32 C = 128 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire2s
+Wed 10:13: Ifmap buffer configuration 131072 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire2s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire2e0 ...
+Wed 10:13: Instantiating kernel "fire2e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 28 W = 28 F = 128 C = 32 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire2e0
+Wed 10:13: Ifmap buffer configuration 32768 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire2e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire2e1 ...
+Wed 10:13: Instantiating kernel "fire2e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 28, output height = 28, pad = 1
+Wed 10:13: Counter H = 30 W = 30
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire2e1
+Wed 10:13: Ifmap buffer configuration 32768 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire2e1" ...
+Wed 10:13: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 30 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire2e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire2e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire2c ...
+Wed 10:13: Instantiating kernel "fire2c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire2c"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire3s ...
+Wed 10:13: Instantiating kernel "fire3s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 28 W = 28 F = 32 C = 256 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire3s
+Wed 10:13: Ifmap buffer configuration 262144 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire3s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire3e0 ...
+Wed 10:13: Instantiating kernel "fire3e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 28 W = 28 F = 128 C = 32 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire3e0
+Wed 10:13: Ifmap buffer configuration 32768 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire3e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire3e1 ...
+Wed 10:13: Instantiating kernel "fire3e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 28, output height = 28, pad = 1
+Wed 10:13: Counter H = 30 W = 30
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire3e1
+Wed 10:13: Ifmap buffer configuration 32768 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire3e1" ...
+Wed 10:13: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 30 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire3e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire3e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire3c ...
+Wed 10:13: Instantiating kernel "fire3c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire3c"
+Wed 10:13: 
+Wed 10:13: Generating kernel pool2 ...
+Wed 10:13: Instantiating kernel "pool2"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 28, output height = 28, pad = 1
+Wed 10:13: Counter H = 30 W = 30
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building line buffer for "pool2" ...
+Wed 10:13: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 30 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "pool2"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire4s ...
+Wed 10:13: Instantiating kernel "fire4s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 48 C = 256 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire4s
+Wed 10:13: Ifmap buffer configuration 65536 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire4s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire4e0 ...
+Wed 10:13: Instantiating kernel "fire4e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 192 C = 48 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire4e0
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire4e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire4e1 ...
+Wed 10:13: Instantiating kernel "fire4e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 14, output height = 14, pad = 1
+Wed 10:13: Counter H = 16 W = 16
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire4e1
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire4e1" ...
+Wed 10:13: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 16 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire4e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire4e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire4c ...
+Wed 10:13: Instantiating kernel "fire4c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire4c"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire5s ...
+Wed 10:13: Instantiating kernel "fire5s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 48 C = 384 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire5s
+Wed 10:13: Ifmap buffer configuration 131072 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire5s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire5e0 ...
+Wed 10:13: Instantiating kernel "fire5e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 192 C = 48 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire5e0
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire5e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire5e1 ...
+Wed 10:13: Instantiating kernel "fire5e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 14, output height = 14, pad = 1
+Wed 10:13: Counter H = 16 W = 16
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire5e1
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire5e1" ...
+Wed 10:13: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 16 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire5e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire5e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire5c ...
+Wed 10:13: Instantiating kernel "fire5c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire5c"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire6s ...
+Wed 10:13: Instantiating kernel "fire6s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 64 C = 384 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire6s
+Wed 10:13: Ifmap buffer configuration 131072 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire6s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire6e0 ...
+Wed 10:13: Instantiating kernel "fire6e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 256 C = 64 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire6e0
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire6e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire6e1 ...
+Wed 10:13: Instantiating kernel "fire6e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 14, output height = 14, pad = 1
+Wed 10:13: Counter H = 16 W = 16
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire6e1
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire6e1" ...
+Wed 10:13: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 16 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire6e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire6e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire6c ...
+Wed 10:13: Instantiating kernel "fire6c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire6c"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire7s ...
+Wed 10:13: Instantiating kernel "fire7s"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 64 C = 512 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire7s
+Wed 10:13: Ifmap buffer configuration 131072 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Connecting to output: ofmap_1
+Wed 10:13: Compiling kernel "fire7s"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire7e0 ...
+Wed 10:13: Instantiating kernel "fire7e0"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Building pointwise convolution:
+Wed 10:13: H = 14 W = 14 F = 256 C = 64 PF = 1 PC = 1
+Wed 10:13: Seq = FILTER_MAJOR
+Wed 10:13: Read for key = fire7e0
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire7e0"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire7e1 ...
+Wed 10:13: Instantiating kernel "fire7e1"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: coeffOnChip = true
+Wed 10:13: Input height = 14, output height = 14, pad = 1
+Wed 10:13: Counter H = 16 W = 16
+Wed 10:13: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 10:13: Read for key = fire7e1
+Wed 10:13: Ifmap buffer configuration 16384 x 1
+Wed 10:13: loop = false
+Wed 10:13: Building line buffer for "fire7e1" ...
+Wed 10:13: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Wed 10:13: Line buffer input vector size: 1, output vector size: 9.
+Wed 10:13: Number of separated line buffers: 1
+Wed 10:13: Initialising line buffer kernel with 3 x 16 x 1
+Wed 10:13: Size of line buffer output: 3
+Wed 10:13: Number of line buffer output chunks: 3
+Wed 10:13: Connecting outputs from chunk (#000) ...
+Wed 10:13: Connecting outputs from chunk (#001) ...
+Wed 10:13: Connecting outputs from chunk (#002) ...
+Wed 10:13: Building the CORE arithmetic unit for "fire7e1" ...
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: CORE ifmap vector size: 9
+Wed 10:13: CORE coefficient vector size: 9
+Wed 10:13: CORE ofmap vector size: 1
+Wed 10:13: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 10:13: Connecting to output: ofmap
+Wed 10:13: Compiling kernel "fire7e1"
+Wed 10:13: 
+Wed 10:13: Generating kernel fire7c ...
+Wed 10:13: Instantiating kernel "fire7c"
+Wed 10:13: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Wed 10:13: Compiling kernel "fire7c"
+Wed 10:13: 
+Wed 10:13: Generating padding kernels for DRAM access
+Wed 10:13: Instantiating kernel "ifmap_unpad"
+Wed 10:13: Compiling kernel "ifmap_unpad"
+Wed 10:13: 
+Wed 10:13: Instantiating kernel "ofmap_pad"
+Wed 10:13: Compiling kernel "ofmap_pad"
+Wed 10:13: 
+Wed 10:13: Setting up stream connections for conv0
+Wed 10:13: Setting up stream connections for pool0
+Wed 10:13: Setting up stream connections for fire0s
+Wed 10:13: Setting up stream connections for fire0e0
+Wed 10:13: Setting up stream connections for fire0e1
+Wed 10:13: Setting up stream connections for fire0c
+Wed 10:13: Setting up stream connections for fire1s
+Wed 10:13: Setting up stream connections for fire1e0
+Wed 10:13: Setting up stream connections for fire1e1
+Wed 10:13: Setting up stream connections for fire1c
+Wed 10:13: Setting up stream connections for pool1
+Wed 10:13: Setting up stream connections for fire2s
+Wed 10:13: Setting up stream connections for fire2e0
+Wed 10:13: Setting up stream connections for fire2e1
+Wed 10:13: Setting up stream connections for fire2c
+Wed 10:13: Setting up stream connections for fire3s
+Wed 10:13: Setting up stream connections for fire3e0
+Wed 10:13: Setting up stream connections for fire3e1
+Wed 10:13: Setting up stream connections for fire3c
+Wed 10:13: Setting up stream connections for pool2
+Wed 10:13: Setting up stream connections for fire4s
+Wed 10:13: Setting up stream connections for fire4e0
+Wed 10:13: Setting up stream connections for fire4e1
+Wed 10:13: Setting up stream connections for fire4c
+Wed 10:13: Setting up stream connections for fire5s
+Wed 10:13: Setting up stream connections for fire5e0
+Wed 10:13: Setting up stream connections for fire5e1
+Wed 10:13: Setting up stream connections for fire5c
+Wed 10:13: Setting up stream connections for fire6s
+Wed 10:13: Setting up stream connections for fire6e0
+Wed 10:13: Setting up stream connections for fire6e1
+Wed 10:13: Setting up stream connections for fire6c
+Wed 10:13: Setting up stream connections for fire7s
+Wed 10:13: Setting up stream connections for fire7e0
+Wed 10:13: Setting up stream connections for fire7e1
+Wed 10:13: Setting up stream connections for fire7c
+Wed 10:13: DRAM will be used to build the design
+Wed 10:13: Setup streams for kernel "conv0"
+Wed 10:13: # cycles:       9806592
+Wed 10:13: # ifmap stream: 150528
+Wed 10:13: # coeff stream: 1728
+Wed 10:13: # ofmap stream: 802816
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "pool0"
+Wed 10:13: # cycles:       831744
+Wed 10:13: # ifmap stream: 802816
+Wed 10:13: # coeff stream: 37440
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire0s"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 200704
+Wed 10:13: # coeff stream: 1024
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire0e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 1024
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire0e1"
+Wed 10:13: # cycles:       3444736
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 9216
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire0c"
+Wed 10:13: # cycles:       100352
+Wed 10:13: # ifmap stream: 200704
+Wed 10:13: # coeff stream: 8256
+Wed 10:13: # ofmap stream: 401408
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire1s"
+Wed 10:13: # cycles:       6422528
+Wed 10:13: # ifmap stream: 401408
+Wed 10:13: # coeff stream: 2048
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire1e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 1024
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire1e1"
+Wed 10:13: # cycles:       3444736
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 9216
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire1c"
+Wed 10:13: # cycles:       100352
+Wed 10:13: # ifmap stream: 200704
+Wed 10:13: # coeff stream: 8256
+Wed 10:13: # ofmap stream: 401408
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "pool1"
+Wed 10:13: # cycles:       430592
+Wed 10:13: # ifmap stream: 401408
+Wed 10:13: # coeff stream: 148608
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire2s"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 100352
+Wed 10:13: # coeff stream: 4096
+Wed 10:13: # ofmap stream: 25088
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire2e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 25088
+Wed 10:13: # coeff stream: 4096
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire2e1"
+Wed 10:13: # cycles:       3686400
+Wed 10:13: # ifmap stream: 25088
+Wed 10:13: # coeff stream: 36864
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire2c"
+Wed 10:13: # cycles:       50176
+Wed 10:13: # ifmap stream: 100352
+Wed 10:13: # coeff stream: 32896
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire3s"
+Wed 10:13: # cycles:       6422528
+Wed 10:13: # ifmap stream: 200704
+Wed 10:13: # coeff stream: 8192
+Wed 10:13: # ofmap stream: 25088
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire3e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 25088
+Wed 10:13: # coeff stream: 4096
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire3e1"
+Wed 10:13: # cycles:       3686400
+Wed 10:13: # ifmap stream: 25088
+Wed 10:13: # coeff stream: 36864
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire3c"
+Wed 10:13: # cycles:       50176
+Wed 10:13: # ifmap stream: 100352
+Wed 10:13: # coeff stream: 32896
+Wed 10:13: # ofmap stream: 200704
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "pool2"
+Wed 10:13: # cycles:       230400
+Wed 10:13: # ifmap stream: 200704
+Wed 10:13: # coeff stream: 592128
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire4s"
+Wed 10:13: # cycles:       2408448
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 12288
+Wed 10:13: # ofmap stream: 9408
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire4e0"
+Wed 10:13: # cycles:       1806336
+Wed 10:13: # ifmap stream: 9408
+Wed 10:13: # coeff stream: 9216
+Wed 10:13: # ofmap stream: 37632
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire4e1"
+Wed 10:13: # cycles:       2359296
+Wed 10:13: # ifmap stream: 9408
+Wed 10:13: # coeff stream: 82944
+Wed 10:13: # ofmap stream: 37632
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire4c"
+Wed 10:13: # cycles:       18816
+Wed 10:13: # ifmap stream: 37632
+Wed 10:13: # coeff stream: 73920
+Wed 10:13: # ofmap stream: 75264
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire5s"
+Wed 10:13: # cycles:       3612672
+Wed 10:13: # ifmap stream: 75264
+Wed 10:13: # coeff stream: 18432
+Wed 10:13: # ofmap stream: 9408
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire5e0"
+Wed 10:13: # cycles:       1806336
+Wed 10:13: # ifmap stream: 9408
+Wed 10:13: # coeff stream: 9216
+Wed 10:13: # ofmap stream: 37632
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire5e1"
+Wed 10:13: # cycles:       2359296
+Wed 10:13: # ifmap stream: 9408
+Wed 10:13: # coeff stream: 82944
+Wed 10:13: # ofmap stream: 37632
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire5c"
+Wed 10:13: # cycles:       18816
+Wed 10:13: # ifmap stream: 37632
+Wed 10:13: # coeff stream: 73920
+Wed 10:13: # ofmap stream: 75264
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire6s"
+Wed 10:13: # cycles:       4816896
+Wed 10:13: # ifmap stream: 75264
+Wed 10:13: # coeff stream: 24576
+Wed 10:13: # ofmap stream: 12544
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire6e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 12544
+Wed 10:13: # coeff stream: 16384
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire6e1"
+Wed 10:13: # cycles:       4194304
+Wed 10:13: # ifmap stream: 12544
+Wed 10:13: # coeff stream: 147456
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire6c"
+Wed 10:13: # cycles:       25088
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 131328
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Setup streams for kernel "fire7s"
+Wed 10:13: # cycles:       6422528
+Wed 10:13: # ifmap stream: 100352
+Wed 10:13: # coeff stream: 32768
+Wed 10:13: # ofmap stream: 12544
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire7e0"
+Wed 10:13: # cycles:       3211264
+Wed 10:13: # ifmap stream: 12544
+Wed 10:13: # coeff stream: 16384
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 1
+Wed 10:13: coeff stream bit width: 8
+Wed 10:13: coeff stream chunk size: 1
+Wed 10:13: Setup streams for kernel "fire7e1"
+Wed 10:13: # cycles:       4194304
+Wed 10:13: # ifmap stream: 12544
+Wed 10:13: # coeff stream: 147456
+Wed 10:13: # ofmap stream: 50176
+Wed 10:13: coeff vec size: 9
+Wed 10:13: coeff stream bit width: 72
+Wed 10:13: coeff stream chunk size: 9
+Wed 10:13: Setup streams for kernel "fire7c"
+Wed 10:13: # cycles:       25088
+Wed 10:13: # ifmap stream: 50176
+Wed 10:13: # coeff stream: 131328
+Wed 10:13: # ofmap stream: 100352
+Wed 10:13: coeff vec size: 0
+Wed 10:13: coeff stream bit width: 0
+Wed 10:13: coeff stream chunk size: 0
+Wed 10:13: Generating input files (VHDL, netlists, vendor specific IP cores)

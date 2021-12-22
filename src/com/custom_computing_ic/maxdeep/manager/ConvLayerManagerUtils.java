@@ -8,6 +8,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.Demux;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.Fanout;
@@ -105,8 +106,8 @@ public class ConvLayerManagerUtils {
   // Make sure that .input is properly assigned.
   public static void prepareConnections(List<ConvLayerParameters> cps) {
     for (int i = 1; i < cps.size(); ++i)
-      if (cps.get(i).input.isEmpty())
-        cps.get(i).input = cps.get(i - 1).name;
+      if (cps.get(i).inputs.isEmpty())
+        cps.get(i).inputs.add(cps.get(i - 1).name);
   }
 
   public static NamedRegion getNamedRegion(String namedRegion) {
@@ -117,6 +118,15 @@ public class ConvLayerManagerUtils {
     if (namedRegion == "SLR2")
       return NamedRegion.SLR2;
     throw new IllegalArgumentException("Named region not recognised.");
+  }
+
+  public static void enlargeFifoCapacity(ManagerInterface mgr, KernelBlock knl, DFELink link,
+      String input, Map<String, ConvLayerParameters> cpm) {
+    ConvLayerParameters srcCp = cpm.get(getInputKernelName(input));
+
+    int fifoDepth = Math.max(MathUtils.nextPowerOfTwo((int) srcCp.getOfmapStreamNumElems()), 128);
+    mgr.logMsg("FIFO depth: %d", fifoDepth);
+    link.setFifoDepth(fifoDepth);
   }
 
   /**
@@ -194,24 +204,37 @@ public class ConvLayerManagerUtils {
           knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(mgr.addStreamFromCPU(IFMAP_NAME));
         }
       } else {
-        knl.getInput(ConvLayerWrapKernel.IFMAP_NAME)
-            .connect(knls.get(getInputKernelName(cp.input))
-                         .getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.input))));
+        if (cp.type == Type.CONCAT) {
+          // Connects the output from port (getOutputIndex) to the input (idx)
+          for (int idx = 0; idx < cp.inputs.size(); ++idx)
+            knl.getInput(ConvLayerWrapKernel.getIfmapName(idx))
+                .connect(knls.get(getInputKernelName(cp.inputs.get(idx)))
+                             .getOutput(ConvLayerWrapKernel.getOfmapName(
+                                 getOutputIndex(cp.inputs.get(idx)))));
+        } else {
+          if (cp.inputs.size() != 1)
+            throw new IllegalArgumentException("Input size is not 1");
+
+          DFELink link =
+              knls.get(getInputKernelName(cp.inputs.get(0)))
+                  .getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.inputs.get(0))));
+
+          if (cp.type == Type.IDENTITY)
+            enlargeFifoCapacity(mgr, knl, link, cp.inputs.get(0), cpm);
+
+          knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(link);
+        }
       }
 
       // if (fanouts.containsKey(cp.name)) {
-      //   fanouts.get(cp.name).getInput().connect(knl.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
+      // fanouts.get(cp.name).getInput().connect(knl.getOutput(ConvLayerWrapKernel.OFMAP_NAME));
       // }
 
       // residual connection.
       if (!cp.residual.isEmpty()) {
         KernelBlock src = knls.get(getInputKernelName(cp.residual));
-        ConvLayerParameters srcCp = cpm.get(getInputKernelName(cp.residual));
         DFELink link = src.getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.residual)));
-        int fifoDepth =
-            Math.max(MathUtils.nextPowerOfTwo((int) srcCp.getOfmapStreamNumElems()), 128);
-        mgr.logMsg("FIFO depth: %d", fifoDepth);
-        link.setFifoDepth(fifoDepth);
+        enlargeFifoCapacity(mgr, knl, link, cp.residual, cpm);
         knl.getInput(ConvLayerWrapKernel.RESIDUAL_NAME).connect(link);
       }
 
@@ -268,7 +291,7 @@ public class ConvLayerManagerUtils {
           knl.getInput(ConvLayerWrapKernel.INIT_COEFF_STREAM_NAME)
               .connect(initCoeffDemux.addOutput(cp.name));
           // knl.getInput(ConvLayerWrapKernel.INIT_COEFF_STREAM_NAME)
-          //     .connect(mgr.addStreamFromCPU(cp.name + "_init_coeff"));
+          // .connect(mgr.addStreamFromCPU(cp.name + "_init_coeff"));
 
           initCoeffMux.addInput(cp.name).connect(
               knl.getOutput(ConvLayerWrapKernel.INIT_COEFF_STREAM_OUT_NAME));
@@ -485,7 +508,7 @@ public class ConvLayerManagerUtils {
           ei.setScalar(cp.name, ConvLayerWrapKernel.INIT_COEFF_NAME, 0);
 
         if (i > 0) {
-          checkStreamSize(getInputKernelName(cp.input), cp, cpm);
+          for (String input : cp.inputs) checkStreamSize(getInputKernelName(input), cp, cpm);
           if (!cp.residual.isEmpty())
             checkStreamSize(getInputKernelName(cp.residual), cp, cpm);
         }
@@ -681,8 +704,10 @@ public class ConvLayerManagerUtils {
         ei.addParam("init_coeff_num_elems", CPUTypes.UINT64, "Number of coefficient elements");
     ei.setStream("init_coeff", CPUTypes.INT8, N.mul(CPUTypes.INT8.sizeInBytes()));
     ei.setStream("init_coeff_out", CPUTypes.INT8, N.mul(CPUTypes.INT8.sizeInBytes()));
-    // ei.setStream("conv0_init_coeff", CPUTypes.INT8, N.mul(CPUTypes.INT8.sizeInBytes()));
-    // ei.setStream("conv0_init_coeff_out", CPUTypes.INT8, N.mul(CPUTypes.INT8.sizeInBytes()));
+    // ei.setStream("conv0_init_coeff", CPUTypes.INT8,
+    // N.mul(CPUTypes.INT8.sizeInBytes()));
+    // ei.setStream("conv0_init_coeff_out", CPUTypes.INT8,
+    // N.mul(CPUTypes.INT8.sizeInBytes()));
     // ei.ignoreStream("init_coeff");
     // ei.ignoreStream("conv1_init_coeff");
     // ei.ignoreStream("conv2_init_coeff");
@@ -699,10 +724,11 @@ public class ConvLayerManagerUtils {
         throw new IllegalArgumentException("C % PC == 0");
 
       // ei.setScalar(cp.name, ConvLayerWrapKernel.INIT_COEFF_NAME, idx.eq(i));
-      // ei.setTicks(cp.name, idx.eq(i).cast(CPUTypes.INT).mul(cp.F * cp.C * cp.K * cp.K));
+      // ei.setTicks(cp.name, idx.eq(i).cast(CPUTypes.INT).mul(cp.F * cp.C * cp.K *
+      // cp.K));
 
       // if (!cp.residual.isEmpty())
-      //   ei.ignoreRoute(cp.residual + "_fanout");
+      // ei.ignoreRoute(cp.residual + "_fanout");
     }
 
     return ei;
@@ -740,6 +766,7 @@ public class ConvLayerManagerUtils {
       mgr.addMaxFileConstant(name + "_PC", cp.PC);
       mgr.addMaxFileConstant(name + "_PF", cp.PF);
       mgr.addMaxFileConstant(name + "_PK", cp.PK);
+      mgr.addMaxFileStringConstant(name + "_POOLING", cp.pooling.toString());
       mgr.addMaxFileStringConstant(name + "_TYPE", cp.type.toString());
       mgr.addMaxFileStringConstant(name + "_SEQ", cp.seq.toString());
     }

@@ -72,10 +72,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
      * this.H indicates the maximum range of the counter on the H axis. Therefore,
      * it should be padded if cp.PAD is larger than 0.
      */
-    this.H =
-        cp.useWinograd ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.H + 2 * cp.PAD);
-    this.W =
-        cp.useWinograd ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.W + 2 * cp.PAD);
+    this.H = cp.useWinograd ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.H + 2 * cp.PAD);
+    this.W = cp.useWinograd ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.W + 2 * cp.PAD);
     this.PH = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : 1;
     this.PW = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : cp.PK;
 
@@ -88,8 +86,15 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
 
     // getOwner().optimization.pushRoundingMode(RoundingMode.TRUNCATE);
-    initConvLayer();
+    // initConvLayer();
     // getOwner().optimization.popRoundingMode();
+
+    // Replace this part for different kernels.
+    kernelBody();
+  }
+
+  public void kernelBody() {
+    initConvLayer();
   }
 
   public void initConvLayer() {
@@ -97,7 +102,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       if (coeffList.size() != 1)
         throw new IllegalArgumentException(
             String.format("There should be only one coefficient vector"
-                    + " of standard convolutional layer kernel, got %d",
+                + " of standard convolutional layer kernel, got %d",
                 coeffList.size()));
       this.coeff = coeffList.get(0);
     } else {
@@ -106,7 +111,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       if (!cp.initCoeff) {
         this.initCoeff.connect(constant.var(0).cast(dfeBool()));
         if (cp.coeffFile.isEmpty()) {
-          List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /*mapToCPU=*/!cp.initCoeff);
+          List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /* mapToCPU= */!cp.initCoeff);
           this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
         } else {
           this.coeff = readCoeffFMemList(
@@ -118,7 +123,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
 
     DFEVector<DFEVar> zeroVec = ifmapVecT.newInstance(getOwner());
-    for (int i = 0; i < ifmapVecT.getSize(); ++i) zeroVec.get(i).connect(constant.var(0).cast(T));
+    for (int i = 0; i < ifmapVecT.getSize(); ++i)
+      zeroVec.get(i).connect(constant.var(0).cast(T));
 
     if (cp.dbg)
       debug.simPrintf("ifmap = %KObj%\n", ifmap);
@@ -126,8 +132,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T);
-    DFEVector<DFEVar> ifmapBufVec =
-        ibuf.port(input, getIfmapBufferAddr(), getIfmapBufferWriteEn().and(initCoeff.complement()));
+    DFEVector<DFEVar> ifmapBufVec = ibuf.port(input, getIfmapBufferAddr(),
+        getIfmapBufferWriteEn().and(initCoeff.complement()));
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
@@ -152,9 +158,9 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     obuf.setReset(getOfmapReset());
 
     if (cp.BW == 1) {
-      DFEVector<DFEVar> rawOfmap =
-          obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
-      for (int i = 0; i < rawOfmap.getSize(); i++) this.ofmap[i].connect((rawOfmap[i] > 1).cast(T));
+      DFEVector<DFEVar> rawOfmap = obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+      for (int i = 0; i < rawOfmap.getSize(); i++)
+        this.ofmap[i].connect((rawOfmap[i] > 1).cast(T));
 
     } else {
       // TODO: change 1 here to be a real threshold value
@@ -164,9 +170,9 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   }
 
   public DFEVar isInPaddedArea(DFEVar h, DFEVar w) {
-    DFEVar pad = constant.var(cp.PAD).cast(dfeInt(32));
-    DFEVar cnt_max_h = constant.var(this.H).cast(dfeInt(32));
-    DFEVar cnt_max_w = constant.var(this.W).cast(dfeInt(32));
+    DFEVar pad = constant.var(cp.PAD).cast(getCountT());
+    DFEVar cnt_max_h = constant.var(this.H).cast(getCountT());
+    DFEVar cnt_max_w = constant.var(this.W).cast(getCountT());
     return h.lt(pad).or(h.gte(cnt_max_h.sub(pad))).or(w.lt(pad)).or(w.gte(cnt_max_w.sub(pad)));
   }
 
@@ -253,7 +259,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     // TODO: support cases that the weights are in channel major.
     return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT)
         + c.cast(addrT))
-        .cast(addrT);
+            .cast(addrT);
   }
 
   @Override
@@ -300,10 +306,12 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     return cp.getOfmapVecSize();
   }
 
-  private void initCounters() {
-    DFEType countT = dfeInt(32);
-    CounterChain chain = getOwner().control.count.makeCounterChain();
+  public DFEType getCountT() {
+    return dfeInt(32);
+  }
 
+  public void initCounterChain(DFEType countT) {
+    CounterChain chain = getOwner().control.count.makeCounterChain();
     switch (cp.seq) {
       case CHANNEL_MAJOR:
         if (cp.C / cp.PC == 1)
@@ -339,6 +347,11 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
         throw new IllegalArgumentException(
             String.format("Computation sequence %s has not been supported yet", cp.seq));
     }
+  }
+
+  public void initCounters() {
+    DFEType countT = getCountT();
+    initCounterChain(countT);
 
     // counters for the output fmap
     int lbufHeight = ConvLayerLineBuffer.getLineBufferHeight(cp);
@@ -349,8 +362,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (cp.useWinograd) {
       ow = (w <= lbufHeight - 1) ? constant.var(0) : w - lbufHeight + 1;
     } else {
-      ow =
-          (w * cp.PK < (cp.K - cp.K / 2)) ? constant.var(0) : (w * cp.PK + cp.K / 2 - cp.K) / cp.PK;
+      ow = (w * cp.PK < (cp.K - cp.K / 2)) ? constant.var(0) : (w * cp.PK + cp.K / 2 - cp.K) / cp.PK;
     }
     ow = ow.cast(countT);
 

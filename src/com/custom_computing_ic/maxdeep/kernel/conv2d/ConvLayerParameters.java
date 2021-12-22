@@ -3,6 +3,9 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
@@ -46,7 +49,7 @@ public class ConvLayerParameters extends LayerParameters {
   public int winoH;
   public int winoW;
   public String residual = "";
-  public String input = "";
+  public List<String> inputs;
   public int numOutputs = 1;
   public String coeffFile = "";
 
@@ -54,13 +57,21 @@ public class ConvLayerParameters extends LayerParameters {
 
   public PoolingLayerParameters pool;
 
+  public enum Pooling {
+    AVG, MAX
+  }
+
+  public Pooling pooling;
+
   /**
    * Computation sequence
    *
    * @author Ruizhe Zhao
    *
    */
-  public enum CompSeq { FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR }
+  public enum CompSeq {
+    FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR
+  }
 
   /**
    * Type of convolution computation
@@ -74,7 +85,9 @@ public class ConvLayerParameters extends LayerParameters {
     DEPTHWISE_SEPARABLE,
     DEPTHWISE_SEPARABLE_V2,
     BOTTLENECK,
-    IDENTITY
+    IDENTITY,
+    POOLING,
+    CONCAT
   }
 
   public ConvLayerParameters(Builder builder) {
@@ -111,11 +124,12 @@ public class ConvLayerParameters extends LayerParameters {
     this.winoW = W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH;
     this.coeffOnChip = builder.coeffOnChip;
     this.residual = builder.residual;
-    this.input = builder.input;
+    this.inputs = builder.inputs;
     this.numOutputs = builder.numOutputs;
     this.initCoeff = builder.initCoeff;
     this.coeffFile = builder.coeffFile;
     this.namedRegion = builder.namedRegion;
+    this.pooling = builder.pooling;
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
@@ -212,6 +226,10 @@ public class ConvLayerParameters extends LayerParameters {
 
     if (type == Type.IDENTITY)
       return ((long) H * W * C / (PC * PK));
+    if (type == Type.CONCAT) // read happens in parallel
+      return ((long) H * W * C / (PC * PK * inputs.size()));
+    if (type == Type.POOLING)
+      return ((long) H * W * C / (PC * PK));
     if (type == Type.STANDARD)
       return ((long) H * W * C * F) / (PC * PF * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
@@ -261,6 +279,10 @@ public class ConvLayerParameters extends LayerParameters {
     if (useWinograd && winogradWeightsOffline)
       return PC * PF * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
     if (type == Type.IDENTITY)
+      return 0;
+    if (type == Type.POOLING)
+      return 0;
+    if (type == Type.CONCAT)
       return 0;
     if (type == Type.POINTWISE)
       return PC * PF;
@@ -393,7 +415,7 @@ public class ConvLayerParameters extends LayerParameters {
     private final int OH;
     private final int OW;
     private String residual = "";
-    private String input = ""; // string indicates the input port
+    private List<String> inputs; // string indicates the input port
     private int numOutputs = 1; // number of output ports
     private int BW; /* bit width */
     private int WBW;
@@ -418,6 +440,7 @@ public class ConvLayerParameters extends LayerParameters {
     private boolean initCoeff;
     private String coeffFile = "";
     private String namedRegion = "";
+    private Pooling pooling;
 
     public Builder(int OH, int OW, int C, int F, int K) {
       if (OH <= 0)
@@ -458,9 +481,15 @@ public class ConvLayerParameters extends LayerParameters {
       this.dbg = false;
       this.coeffOnChip = false;
       this.initCoeff = false;
-      this.input = "";
+      this.inputs = new ArrayList<String>();
       this.numOutputs = 1;
       this.namedRegion = "";
+      this.pooling = Pooling.MAX;
+    }
+
+    public Builder pooling(Pooling pooling) {
+      this.pooling = pooling;
+      return this;
     }
 
     public Builder namedRegion(String namedRegion) {
@@ -469,7 +498,11 @@ public class ConvLayerParameters extends LayerParameters {
     }
 
     public Builder input(String input) {
-      this.input = input;
+      // Don't add this input if it is empty.
+      if (input.isEmpty())
+        return this;
+
+      this.inputs.add(input);
       return this;
     }
 
@@ -541,7 +574,7 @@ public class ConvLayerParameters extends LayerParameters {
 
       throw new IllegalArgumentException(
           String.format("dtype cannot be recognised, should be one of float, "
-                  + "fixed, int. Got \"%s\"",
+              + "fixed, int. Got \"%s\"",
               dtype));
     }
 
@@ -549,7 +582,7 @@ public class ConvLayerParameters extends LayerParameters {
       if (numFracBits < 0 || numFracBits > BW)
         throw new IllegalArgumentException(
             "Number of fraction bits should >= 0 and <= bit width. Got " + numFracBits
-            + " while BW is " + BW);
+                + " while BW is " + BW);
 
       this.numFracBits = numFracBits;
       return this;

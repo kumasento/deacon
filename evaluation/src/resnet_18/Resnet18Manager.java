@@ -3,6 +3,7 @@ package resnet_18;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
@@ -63,13 +64,37 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("")
+                
+                .numOutputs(1)
+                .residual("")
+                .PF(1)
+                .PC(1)
+                .PK(1)
+                .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
+                .build());
+            
+    cps.add(new ConvLayerParameters
+                .Builder(56, 56, 64, 64, 3)
+                .BW(8)
+                .WBW(2)
+                .numFracBits(0)
+                .type(Type.POOLING)
+                .name("pool0")
+                .pad(1)
+                .stride(2)
+                .seq(CompSeq.values()[0])
+                .dbg(params.getDebug())
+                .coeffOnChip(true)
+                .coeffFile(params.getCoeffFile())
+                .input("conv0")
                 .numOutputs(2)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -80,18 +105,19 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .type(Type.STANDARD)
                 .name("conv1")
                 .pad(1)
-                .stride(2)
-                .seq(CompSeq.values()[1])
+                .stride(1)
+                .seq(CompSeq.values()[0])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("conv0")
+                .input("pool0")
                 .numOutputs(1)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -109,11 +135,12 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffFile(params.getCoeffFile())
                 .input("conv1")
                 .numOutputs(2)
-                .residual("conv0_1")
+                .residual("pool0_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -136,6 +163,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -158,6 +186,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -180,6 +209,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR0")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -202,6 +232,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -224,6 +255,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -246,6 +278,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -268,6 +301,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -290,6 +324,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -312,6 +347,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -334,6 +370,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -356,6 +393,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -378,6 +416,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR1")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -400,6 +439,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR2")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -422,6 +462,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(1)
                 .PK(1)
                 .namedRegion("SLR2")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -444,6 +485,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(4)
                 .PK(1)
                 .namedRegion("SLR2")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -466,6 +508,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(4)
                 .PK(1)
                 .namedRegion("SLR2")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -488,6 +531,7 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .PC(4)
                 .PK(1)
                 .namedRegion("SLR2")
+                .pooling(Pooling.MAX)
                 .build());
             
 
@@ -502,7 +546,12 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER4);
-    buildConfig.setParallelism(5);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EARLY_BLOCK_PLACEMENT);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXPLORE);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXTRA_TIMING_OPT);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_NET_DELAY_HIGH);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_REFINE_PLACEMENT);
+    buildConfig.setParallelism(10);
 
     mgr.build();
   }

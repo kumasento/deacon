@@ -1,0 +1,11 @@
+I1222 08:38:59.853276 314272 utils.h:382] Burst aligning input array of size: 75264 to 75264
+I1222 08:38:59.853423 314272 Resnet18FstIdCpuCode.cpp:87] Tiled input size (burst aligned): 75264
+I1222 08:38:59.853430 314272 utils.h:382] Burst aligning input array of size: 401408 to 401664
+I1222 08:38:59.853662 314272 Resnet18FstIdCpuCode.cpp:89] Tiled output size (burst aligned): 401664
+I1222 08:38:59.853997 314272 layers.h:757] Writing DRAM to 0 with size 0x12600
+I1222 08:38:59.912498 314272 Resnet18FstIdCpuCode.cpp:98] Running ...
+I1222 08:43:35.325187 314272 Resnet18FstIdCpuCode.cpp:104] Done
+I1222 08:43:35.325245 314272 layers.h:774] Reading DRAM from 0x12600 with size 0x62100
+I1222 08:43:35.555768 314272 Resnet18FstIdCpuCode.cpp:111] elapsed time: 275.413s
+I1222 08:43:35.555860 314272 Resnet18FstIdCpuCode.cpp:123] FPS:    0.00726183
+I1222 08:43:35.555866 314272 Resnet18FstIdCpuCode.cpp:124] GFLOPs: 0.00367285

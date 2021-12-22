@@ -1,0 +1,153 @@
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'conv0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/conv0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'pool0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/pool0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire0s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire0s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire0e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire0e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire0e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire0e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire0c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire0c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire1s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire1s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire1e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire1e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire1e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire1e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire1c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire1c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'pool1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/pool1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire2s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire2s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire2e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire2e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire2e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire2e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire2c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire2c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire3s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire3s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire3e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire3e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire3e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire3e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire3c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire3c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'pool2'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/pool2_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire4s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire4s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire4e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire4e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire4e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire4e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire4c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire4c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire5s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire5s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire5e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire5e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire5e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire5e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire5c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire5c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire6s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire6s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire6e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire6e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire6e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire6e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire6c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire6c_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire7s'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire7s_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire7e0'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire7e0_graph_warnings.txt
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire7e1'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire7e1_graph_warnings.txt
+Wed 10:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Wed 10:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Wed 10:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Wed 10:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Wed 10:13: WARNING: to that of a similar bitstream.
+Wed 10:13: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 10:13: WARNING: Unconnected elements in design 'fire7c'
+Wed 10:13: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet_MAIA_DFE_FREQ_350/scratch/fire7c_graph_warnings.txt

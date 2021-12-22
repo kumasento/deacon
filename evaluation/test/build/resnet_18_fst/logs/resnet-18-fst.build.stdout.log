@@ -35,210 +35,241 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
 JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Tue 12:32: MaxCompiler version: 2021.1
-Tue 12:32: Build "Resnet18Fst" start time: Tue Dec 21 12:32:25 GMT 2021
-Tue 12:32: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Tue 12:32: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300
-Tue 12:32: Detailed build log available in "_build.log"
-Tue 12:32: 
-Tue 12:32: ENGINE BUILD PARAMETERS
-Tue 12:32: 	              Build name: Resnet18Fst_MAIA_DFE_FREQ_300                                                                         
-Tue 12:32: 	             maxFileName: Resnet18Fst                                                                                           
-Tue 12:32: 	                  target: DFE                                                                                                   
-Tue 12:32: 	                DFEModel: MAIA                                                                                                  
-Tue 12:32: 	              enableMPCX: false                                                                                                 
-Tue 12:32: 	                bitWidth: 32                                                                                                    
-Tue 12:32: 	                     WBW: 32                                                                                                    
-Tue 12:32: 	                   DTYPE: fixed                                                                                                 
-Tue 12:32: 	           NUM_FRAC_BITS: 8                                                                                                     
-Tue 12:32: 	                      PF: 1                                                                                                     
-Tue 12:32: 	                      PC: 1                                                                                                     
-Tue 12:32: 	                      PK: 1                                                                                                     
-Tue 12:32: 	                       H: 1                                                                                                     
-Tue 12:32: 	                       W: 1                                                                                                     
-Tue 12:32: 	                       C: 1                                                                                                     
-Tue 12:32: 	                       F: 1                                                                                                     
-Tue 12:32: 	                       K: 1                                                                                                     
-Tue 12:32: 	                     PAD: 0                                                                                                     
-Tue 12:32: 	                       S: 1                                                                                                     
-Tue 12:32: 	                     SEQ: 0                                                                                                     
-Tue 12:32: 	                    FREQ: 300                                                                                                   
-Tue 12:32: 	                USE_DRAM: false                                                                                                 
-Tue 12:32: 	                 USE_BNN: false                                                                                                 
-Tue 12:32: 	            USE_WINOGRAD: false                                                                                                 
-Tue 12:32: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                 
-Tue 12:32: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                     
-Tue 12:32: 	                   DEBUG: false                                                                                                 
-Tue 12:32: 	           COEFF_ON_CHIP: false                                                                                                 
-Tue 12:32: 	              INIT_COEFF: false                                                                                                 
-Tue 12:32: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt
-Tue 12:34: Generating kernel conv0 ...
-Tue 12:34: Instantiating kernel "conv0"
-Tue 12:34: T = dfeFix(8, 0, TWOSCOMPLEMENT)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: coeffOnChip = true
-Tue 12:34: Input height = 112, output height = 112, pad = 1
-Tue 12:34: Counter H = 114 W = 114
-Tue 12:34: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: Read for key = conv0
-Tue 12:34: Ifmap buffer configuration 65536 x 1
-Tue 12:34: loop = false
-Tue 12:34: Building line buffer for "conv0" ...
-Tue 12:34: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
-Tue 12:34: Line buffer input vector size: 1, output vector size: 9.
-Tue 12:34: Number of separated line buffers: 1
-Tue 12:34: Initialising line buffer kernel with 3 x 114 x 1
-Tue 12:34: Size of line buffer output: 3
-Tue 12:34: Number of line buffer output chunks: 3
-Tue 12:34: Connecting outputs from chunk (#000) ...
-Tue 12:34: Connecting outputs from chunk (#001) ...
-Tue 12:34: Connecting outputs from chunk (#002) ...
-Tue 12:34: Building the CORE arithmetic unit for "conv0" ...
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: CORE ifmap vector size: 9
-Tue 12:34: CORE coefficient vector size: 9
-Tue 12:34: CORE ofmap vector size: 1
-Tue 12:34: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
-Tue 12:34: Connecting to output: ofmap
-Tue 12:34: Connecting to output: ofmap_1
-Tue 12:34: Compiling kernel "conv0"
-Tue 12:34: 
-Tue 12:34: Generating kernel conv1 ...
-Tue 12:34: Instantiating kernel "conv1"
-Tue 12:34: T = dfeFix(8, 0, TWOSCOMPLEMENT)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: coeffOnChip = true
-Tue 12:34: Input height = 56, output height = 56, pad = 1
-Tue 12:34: Counter H = 58 W = 58
-Tue 12:34: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: Read for key = conv1
-Tue 12:34: Ifmap buffer configuration 4096 x 1
-Tue 12:34: loop = false
-Tue 12:34: Building line buffer for "conv1" ...
-Tue 12:34: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
-Tue 12:34: Line buffer input vector size: 1, output vector size: 9.
-Tue 12:34: Number of separated line buffers: 1
-Tue 12:34: Initialising line buffer kernel with 3 x 58 x 1
-Tue 12:34: Size of line buffer output: 3
-Tue 12:34: Number of line buffer output chunks: 3
-Tue 12:34: Connecting outputs from chunk (#000) ...
-Tue 12:34: Connecting outputs from chunk (#001) ...
-Tue 12:34: Connecting outputs from chunk (#002) ...
-Tue 12:34: Building the CORE arithmetic unit for "conv1" ...
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: CORE ifmap vector size: 9
-Tue 12:34: CORE coefficient vector size: 9
-Tue 12:34: CORE ofmap vector size: 1
-Tue 12:34: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
-Tue 12:34: Connecting to output: ofmap
-Tue 12:34: Compiling kernel "conv1"
-Tue 12:34: 
-Tue 12:34: Generating kernel conv2 ...
-Tue 12:34: Instantiating kernel "conv2"
-Tue 12:34: T = dfeFix(8, 0, TWOSCOMPLEMENT)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: coeffOnChip = true
-Tue 12:34: Input height = 56, output height = 56, pad = 1
-Tue 12:34: Counter H = 58 W = 58
-Tue 12:34: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Tue 12:34: Read for key = conv2
-Tue 12:34: Ifmap buffer configuration 262144 x 1
-Tue 12:34: loop = false
-Tue 12:34: Building line buffer for "conv2" ...
-Tue 12:34: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
-Tue 12:34: Line buffer input vector size: 1, output vector size: 9.
-Tue 12:34: Number of separated line buffers: 1
-Tue 12:34: Initialising line buffer kernel with 3 x 58 x 1
-Tue 12:34: Size of line buffer output: 3
-Tue 12:34: Number of line buffer output chunks: 3
-Tue 12:34: Connecting outputs from chunk (#000) ...
-Tue 12:34: Connecting outputs from chunk (#001) ...
-Tue 12:34: Connecting outputs from chunk (#002) ...
-Tue 12:34: Building the CORE arithmetic unit for "conv2" ...
-Tue 12:34: WT = dfeFix(2, 0, UNSIGNED)
-Tue 12:34: CORE ifmap vector size: 9
-Tue 12:34: CORE coefficient vector size: 9
-Tue 12:34: CORE ofmap vector size: 1
-Tue 12:34: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
-Tue 12:34: Connecting residual: conv0_1
-Tue 12:34: Connecting to output: ofmap
-Tue 12:34: Compiling kernel "conv2"
-Tue 12:34: 
-Tue 12:34: Generating padding kernels for DRAM access
-Tue 12:34: Instantiating kernel "ifmap_unpad"
-Tue 12:34: Compiling kernel "ifmap_unpad"
-Tue 12:34: 
-Tue 12:34: Instantiating kernel "ofmap_pad"
-Tue 12:34: Compiling kernel "ofmap_pad"
-Tue 12:34: 
-Tue 12:34: Setting up stream connections for conv0
-Tue 12:34: Setting up stream connections for conv1
-Tue 12:34: Setting up stream connections for conv2
-Tue 12:34: FIFO depth: 262144
-Tue 12:34: DRAM will be used to build the design
-Tue 12:34: Setup streams for kernel "conv0"
-Tue 12:34: # cycles:       2495232
-Tue 12:34: # ifmap stream: 37632
-Tue 12:34: # coeff stream: 1728
-Tue 12:34: # ofmap stream: 200704
-Tue 12:34: coeff vec size: 9
-Tue 12:34: coeff stream bit width: 72
-Tue 12:34: coeff stream chunk size: 9
-Tue 12:34: Setup streams for kernel "conv1"
-Tue 12:34: # cycles:       13778944
-Tue 12:34: # ifmap stream: 200704
-Tue 12:34: # coeff stream: 36864
-Tue 12:34: # ofmap stream: 200704
-Tue 12:34: coeff vec size: 9
-Tue 12:34: coeff stream bit width: 72
-Tue 12:34: coeff stream chunk size: 9
-Tue 12:34: Setup streams for kernel "conv2"
-Tue 12:34: # cycles:       13778944
-Tue 12:34: # ifmap stream: 200704
-Tue 12:34: # coeff stream: 36864
-Tue 12:34: # ofmap stream: 200704
-Tue 12:34: coeff vec size: 9
-Tue 12:34: coeff stream bit width: 72
-Tue 12:34: coeff stream chunk size: 9
-Tue 12:34: Generating input files (VHDL, netlists, vendor specific IP cores)
-Tue 14:48: Running back-end  build (15 phases)
-Tue 14:48: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Tue 14:48: (2/15) - Synthesize DFE Modules (VivadoSynth)
-Tue 14:48: Executing Synthesis Strategy VIVADO_DEFAULT
-Tue 15:04: (3/15) - Generate Resource Report (VivadoResourceUsage)
-Tue 15:04: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
-Tue 15:05: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
-Tue 15:05: 
-Tue 15:05: About to start chip vendor Map/Place/Route toolflow. This will take some time.
-Tue 15:05: For this compile, we estimate this process may take longer than 1 hour.
-Tue 15:05: We recommend running in simulation to verify correctness before building hardware.
-Tue 15:05: 
-Tue 15:05: PRELIMINARY RESOURCE USAGE
-Tue 15:05: FPGA: xcVU9P-FLGB2104-2-E
-Tue 15:05: Logic utilization:      221663 / 3546720 (6.25%)
-Tue 15:05:   LUTs:                  87691 / 1182240 (7.42%)
-Tue 15:05:   Primary FFs:          133972 / 2364480 (5.67%)
-Tue 15:05: DSP blocks:                  9 / 6840    (0.13%)
-Tue 15:05: Block memory (BRAM18):     745 / 4320    (17.25%)
-Tue 15:05: Block memory (URAM):        74 / 960     (7.71%)
-Tue 15:05: 
-Tue 15:05: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
-Tue 15:05: 
-Tue 15:05: PRELIMINARY POWER REPORT
-Tue 15:05: Total On-Chip Power (W) 9.97 (budget: 91.80) 
-Tue 15:05: Dynamic Power (W)       7.30 
-Tue 15:05: Device Static Power(W)  2.67 
-Tue 15:05: 
-Tue 15:05: (7/15) - Place DFE (VivadoImplementation)
-Tue 15:05: Executing the following 5 Implementation Strategies in 5 threads:
-Tue 15:05:  - VIVADO_DEFAULT
-Tue 15:05:  - MAXELER1
-Tue 15:05:  - MAXELER2
-Tue 15:05:  - MAXELER3
-Tue 15:05:  - MAXELER4
+Tue 19:56: MaxCompiler version: 2021.1
+Tue 19:56: Build "Resnet18Fst" start time: Tue Dec 21 19:56:57 GMT 2021
+Tue 19:56: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Tue 19:56: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300
+Tue 19:56: Detailed build log available in "_build.log"
+Tue 19:56: 
+Tue 19:56: ENGINE BUILD PARAMETERS
+Tue 19:56: 	              Build name: Resnet18Fst_MAIA_DFE_FREQ_300                                                                         
+Tue 19:56: 	             maxFileName: Resnet18Fst                                                                                           
+Tue 19:56: 	                  target: DFE                                                                                                   
+Tue 19:56: 	                DFEModel: MAIA                                                                                                  
+Tue 19:56: 	              enableMPCX: false                                                                                                 
+Tue 19:56: 	                bitWidth: 32                                                                                                    
+Tue 19:56: 	                     WBW: 32                                                                                                    
+Tue 19:56: 	                   DTYPE: fixed                                                                                                 
+Tue 19:56: 	           NUM_FRAC_BITS: 8                                                                                                     
+Tue 19:56: 	                      PF: 1                                                                                                     
+Tue 19:56: 	                      PC: 1                                                                                                     
+Tue 19:56: 	                      PK: 1                                                                                                     
+Tue 19:56: 	                       H: 1                                                                                                     
+Tue 19:56: 	                       W: 1                                                                                                     
+Tue 19:56: 	                       C: 1                                                                                                     
+Tue 19:56: 	                       F: 1                                                                                                     
+Tue 19:56: 	                       K: 1                                                                                                     
+Tue 19:56: 	                     PAD: 0                                                                                                     
+Tue 19:56: 	                       S: 1                                                                                                     
+Tue 19:56: 	                     SEQ: 0                                                                                                     
+Tue 19:56: 	                    FREQ: 300                                                                                                   
+Tue 19:56: 	                USE_DRAM: false                                                                                                 
+Tue 19:56: 	                 USE_BNN: false                                                                                                 
+Tue 19:56: 	            USE_WINOGRAD: false                                                                                                 
+Tue 19:56: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                 
+Tue 19:56: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                     
+Tue 19:56: 	                   DEBUG: false                                                                                                 
+Tue 19:56: 	           COEFF_ON_CHIP: false                                                                                                 
+Tue 19:56: 	              INIT_COEFF: false                                                                                                 
+Tue 19:56: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_18_fst/data/data-resnet-18-fst.txt
+Tue 19:58: Generating kernel conv0 ...
+Tue 19:58: Instantiating kernel "conv0"
+Tue 19:58: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: coeffOnChip = true
+Tue 19:58: Input height = 112, output height = 112, pad = 1
+Tue 19:58: Counter H = 114 W = 114
+Tue 19:58: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: Read for key = conv0
+Tue 19:58: Ifmap buffer configuration 65536 x 1
+Tue 19:58: loop = false
+Tue 19:58: Building line buffer for "conv0" ...
+Tue 19:58: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Tue 19:58: Line buffer input vector size: 1, output vector size: 9.
+Tue 19:58: Number of separated line buffers: 1
+Tue 19:58: Initialising line buffer kernel with 3 x 114 x 1
+Tue 19:58: Size of line buffer output: 3
+Tue 19:58: Number of line buffer output chunks: 3
+Tue 19:58: Connecting outputs from chunk (#000) ...
+Tue 19:58: Connecting outputs from chunk (#001) ...
+Tue 19:58: Connecting outputs from chunk (#002) ...
+Tue 19:58: Building the CORE arithmetic unit for "conv0" ...
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: CORE ifmap vector size: 9
+Tue 19:58: CORE coefficient vector size: 9
+Tue 19:58: CORE ofmap vector size: 1
+Tue 19:58: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 19:58: Connecting to output: ofmap
+Tue 19:58: Connecting to output: ofmap_1
+Tue 19:58: Compiling kernel "conv0"
+Tue 19:58: 
+Tue 19:58: Generating kernel conv1 ...
+Tue 19:58: Instantiating kernel "conv1"
+Tue 19:58: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: coeffOnChip = true
+Tue 19:58: Input height = 56, output height = 56, pad = 1
+Tue 19:58: Counter H = 58 W = 58
+Tue 19:58: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: Read for key = conv1
+Tue 19:58: Ifmap buffer configuration 4096 x 1
+Tue 19:58: loop = false
+Tue 19:58: Building line buffer for "conv1" ...
+Tue 19:58: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 19:58: Line buffer input vector size: 1, output vector size: 9.
+Tue 19:58: Number of separated line buffers: 1
+Tue 19:58: Initialising line buffer kernel with 3 x 58 x 1
+Tue 19:58: Size of line buffer output: 3
+Tue 19:58: Number of line buffer output chunks: 3
+Tue 19:58: Connecting outputs from chunk (#000) ...
+Tue 19:58: Connecting outputs from chunk (#001) ...
+Tue 19:58: Connecting outputs from chunk (#002) ...
+Tue 19:58: Building the CORE arithmetic unit for "conv1" ...
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: CORE ifmap vector size: 9
+Tue 19:58: CORE coefficient vector size: 9
+Tue 19:58: CORE ofmap vector size: 1
+Tue 19:58: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
+Tue 19:58: Connecting to output: ofmap
+Tue 19:58: Compiling kernel "conv1"
+Tue 19:58: 
+Tue 19:58: Generating kernel conv2 ...
+Tue 19:58: Instantiating kernel "conv2"
+Tue 19:58: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: coeffOnChip = true
+Tue 19:58: Input height = 56, output height = 56, pad = 1
+Tue 19:58: Counter H = 58 W = 58
+Tue 19:58: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Tue 19:58: Read for key = conv2
+Tue 19:58: Ifmap buffer configuration 262144 x 1
+Tue 19:58: loop = false
+Tue 19:58: Building line buffer for "conv2" ...
+Tue 19:58: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Tue 19:58: Line buffer input vector size: 1, output vector size: 9.
+Tue 19:58: Number of separated line buffers: 1
+Tue 19:58: Initialising line buffer kernel with 3 x 58 x 1
+Tue 19:58: Size of line buffer output: 3
+Tue 19:58: Number of line buffer output chunks: 3
+Tue 19:58: Connecting outputs from chunk (#000) ...
+Tue 19:58: Connecting outputs from chunk (#001) ...
+Tue 19:58: Connecting outputs from chunk (#002) ...
+Tue 19:58: Building the CORE arithmetic unit for "conv2" ...
+Tue 19:58: WT = dfeFix(2, 0, UNSIGNED)
+Tue 19:58: CORE ifmap vector size: 9
+Tue 19:58: CORE coefficient vector size: 9
+Tue 19:58: CORE ofmap vector size: 1
+Tue 19:58: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Tue 19:58: Connecting residual: conv0_1
+Tue 19:58: Connecting to output: ofmap
+Tue 19:58: Compiling kernel "conv2"
+Tue 19:58: 
+Tue 19:58: Generating padding kernels for DRAM access
+Tue 19:58: Instantiating kernel "ifmap_unpad"
+Tue 19:58: Compiling kernel "ifmap_unpad"
+Tue 19:58: 
+Tue 19:58: Instantiating kernel "ofmap_pad"
+Tue 19:58: Compiling kernel "ofmap_pad"
+Tue 19:58: 
+Tue 19:58: Setting up stream connections for conv0
+Tue 19:58: Setting up stream connections for conv1
+Tue 19:58: Setting up stream connections for conv2
+Tue 19:58: FIFO depth: 262144
+Tue 19:58: DRAM will be used to build the design
+Tue 19:58: Setup streams for kernel "conv0"
+Tue 19:58: # cycles:       2495232
+Tue 19:58: # ifmap stream: 37632
+Tue 19:58: # coeff stream: 1728
+Tue 19:58: # ofmap stream: 200704
+Tue 19:58: coeff vec size: 9
+Tue 19:58: coeff stream bit width: 72
+Tue 19:58: coeff stream chunk size: 9
+Tue 19:58: Setup streams for kernel "conv1"
+Tue 19:58: # cycles:       13778944
+Tue 19:58: # ifmap stream: 200704
+Tue 19:58: # coeff stream: 36864
+Tue 19:58: # ofmap stream: 200704
+Tue 19:58: coeff vec size: 9
+Tue 19:58: coeff stream bit width: 72
+Tue 19:58: coeff stream chunk size: 9
+Tue 19:58: Setup streams for kernel "conv2"
+Tue 19:58: # cycles:       13778944
+Tue 19:58: # ifmap stream: 200704
+Tue 19:58: # coeff stream: 36864
+Tue 19:58: # ofmap stream: 200704
+Tue 19:58: coeff vec size: 9
+Tue 19:58: coeff stream bit width: 72
+Tue 19:58: coeff stream chunk size: 9
+Tue 19:58: Generating input files (VHDL, netlists, vendor specific IP cores)
+Tue 19:58: Running back-end  build (15 phases)
+Tue 19:58: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Tue 19:58: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Tue 19:58: Executing Synthesis Strategy VIVADO_DEFAULT
+Tue 20:15: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Tue 20:15: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Tue 20:16: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Tue 20:16: 
+Tue 20:16: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Tue 20:16: For this compile, we estimate this process may take longer than 1 hour.
+Tue 20:16: We recommend running in simulation to verify correctness before building hardware.
+Tue 20:16: 
+Tue 20:16: PRELIMINARY RESOURCE USAGE
+Tue 20:16: FPGA: xcVU9P-FLGB2104-2-E
+Tue 20:16: Logic utilization:      221676 / 3546720 (6.25%)
+Tue 20:16:   LUTs:                  87693 / 1182240 (7.42%)
+Tue 20:16:   Primary FFs:          133983 / 2364480 (5.67%)
+Tue 20:16: DSP blocks:                  9 / 6840    (0.13%)
+Tue 20:16: Block memory (BRAM18):     745 / 4320    (17.25%)
+Tue 20:16: Block memory (URAM):        74 / 960     (7.71%)
+Tue 20:16: 
+Tue 20:16: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Tue 20:16: 
+Tue 20:16: PRELIMINARY POWER REPORT
+Tue 20:16: Total On-Chip Power (W) 9.97 (budget: 91.80) 
+Tue 20:16: Dynamic Power (W)       7.30 
+Tue 20:16: Device Static Power(W)  2.67 
+Tue 20:16: 
+Tue 20:16: (7/15) - Place DFE (VivadoImplementation)
+Tue 20:16: Executing the following 5 Implementation Strategies in 5 threads:
+Tue 20:16:  - VIVADO_DEFAULT
+Tue 20:16:  - MAXELER1
+Tue 20:16:  - MAXELER2
+Tue 20:16:  - MAXELER3
+Tue 20:16:  - MAXELER4
+Tue 21:40: Implementation: Strategy "VIVADO_DEFAULT" failed timing with score 12372 (best score 12372)
+Tue 21:50: Implementation: Strategy "MAXELER1" failed timing with score 7203 (best score 7203)
+Tue 21:52: Implementation: Strategy "MAXELER2" failed timing with score 7815 (best score 7203)
+Tue 21:55: Implementation: Strategy "MAXELER3" failed timing with score 5911 (best score 5911)
+Tue 21:55: Implementation: Strategy "MAXELER4" failed timing with score 5820 (best score 5820)
+Tue 21:55: Implementation: Failed to meet timing! Best score: 5820
+Tue 21:55: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Tue 21:55: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Tue 21:55: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Tue 21:55: 
+Tue 21:55: FINAL POWER REPORT
+Tue 21:55: Total On-Chip Power (W) 11.35 (budget: 91.80) 
+Tue 21:55: Dynamic Power (W)        8.65 
+Tue 21:55: Device Static Power(W)   2.69 
+Tue 21:55: 
+Tue 21:55: (11/15) - Generate Configuration (VivadoBitgen)
+Tue 22:05: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Tue 22:07: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Tue 22:07: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Tue 22:07: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Tue 22:07: 
+Tue 22:07: FINAL RESOURCE USAGE
+Tue 22:07: FPGA: xcVU9P-FLGB2104-2-E
+Tue 22:07: Logic utilization:      203685 / 3546720 (5.74%)
+Tue 22:07:   LUTs:                  78485 / 1182240 (6.64%)
+Tue 22:07:   Primary FFs:          125200 / 2364480 (5.30%)
+Tue 22:07: DSP blocks:                  9 / 6840    (0.13%)
+Tue 22:07: Block memory (BRAM18):     745 / 4320    (17.25%)
+Tue 22:07: Block memory (URAM):        74 / 960     (7.71%)
+Tue 22:07: 
+Tue 22:07: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/results/Resnet18Fst.max (MD5Sum: ad7c2ded38a253921f4c46276e244bb3)

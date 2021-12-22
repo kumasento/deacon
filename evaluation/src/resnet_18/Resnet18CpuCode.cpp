@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 
   std::vector<ConvLayerParameters> cps;
 	cps.push_back(ConvLayerParameters(max_file, "conv0"));
+	cps.push_back(ConvLayerParameters(max_file, "pool0"));
 	cps.push_back(ConvLayerParameters(max_file, "conv1"));
 	cps.push_back(ConvLayerParameters(max_file, "conv2"));
 	cps.push_back(ConvLayerParameters(max_file, "conv3"));
@@ -134,8 +135,6 @@ int main(int argc, char *argv[]) {
       ops += cp.H * cp.W * cp.C * cp.F * 2;
     else if (cp.dfe.TYPE == "DEPTHWISE_SEPARABLE")
       ops += cp.H * cp.W * cp.K * cp.K * cp.C * 2 + cp.H * cp.W * cp.C * cp.F * 2;
-    else
-      assert(false);
   }
   LOG(INFO) << "FPS:    " << (double) batch_size / (elapsed_seconds.count() / num_iters) << "\n";
   LOG(INFO) << "GFLOPs: " << (double)ops * batch_size * 1e-9 / (elapsed_seconds.count() / num_iters) << "\n";

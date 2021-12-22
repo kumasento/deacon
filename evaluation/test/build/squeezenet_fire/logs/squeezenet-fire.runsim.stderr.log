@@ -1,0 +1,7 @@
+I1221 22:58:22.715900 458118 utils.h:382] Burst aligning input array of size: 301056 to 301056
+I1221 22:58:22.716125 458118 SqueezenetFireCpuCode.cpp:88] Tiled input size (burst aligned): 301056
+I1221 22:58:22.716133 458118 utils.h:382] Burst aligning input array of size: 401408 to 401664
+I1221 22:58:22.716497 458118 SqueezenetFireCpuCode.cpp:90] Tiled output size (burst aligned): 401664
+I1221 22:58:22.716732 458118 layers.h:757] Writing DRAM to 0 with size 0x49800
+I1221 22:58:22.900939 458118 SqueezenetFireCpuCode.cpp:99] Running ...
+make: *** [runsim] Interrupt

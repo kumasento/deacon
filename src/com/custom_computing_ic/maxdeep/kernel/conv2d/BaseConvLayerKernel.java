@@ -61,7 +61,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     coeffVecTList = new ArrayList<DFEVectorType<DFEVar>>();
     coeffList = new ArrayList<DFEVector<DFEVar>>();
     for (int i = 0; i < coeffVecSizeList.size(); i++) {
-      coeffVecTList.add(new DFEVectorType<DFEVar>(WT, coeffVecSizeList.get(i)));
+      int size = coeffVecSizeList.get(i);
+      if (size == 0)
+        continue;
+      coeffVecTList.add(new DFEVectorType<DFEVar>(WT, size));
       coeffList.add(coeffVecTList.get(i).newInstance(owner));
     }
   }
@@ -206,12 +209,14 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
     // Find the correct line.
     String line = in.nextLine();
-    while (!(line.startsWith("BEGIN") && line.contains(key))) line = in.nextLine();
+    while (!(line.startsWith("BEGIN") && line.contains(key)))
+      line = in.nextLine();
 
     int numElems = in.nextInt();
 
     double[] rawData = new double[numElems];
-    for (int i = 0; i < numElems; ++i) rawData[i] = in.nextDouble();
+    for (int i = 0; i < numElems; ++i)
+      rawData[i] = in.nextDouble();
 
     return rawData;
   }
@@ -319,7 +324,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
           String.format("Coefficient lists are not matching in size: %d (kernel) != %d (parameter)",
               this.coeffList.size(), coeffList.size()));
 
-    for (int i = 0; i < coeffList.size(); i++) this.coeffList.get(i).connect(coeffList.get(i));
+    for (int i = 0; i < coeffList.size(); i++)
+      this.coeffList.get(i).connect(coeffList.get(i));
   }
 
   public void setInputs(DFEVector<DFEVar> ifmap, List<DFEVector<DFEVar>> coeffList) {

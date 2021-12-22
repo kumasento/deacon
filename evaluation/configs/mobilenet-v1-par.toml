@@ -4,7 +4,7 @@ NAME = "mobilenet_v1_par"
 BW = 8
 WBW = 8
 NUM_FRAC_BITS = 0
-FREQ = 200
+FREQ = 300
 USE_DRAM = true
 COEFF_ON_CHIP = true
 

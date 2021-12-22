@@ -3,6 +3,7 @@ package resnet_18_fst;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
@@ -69,7 +70,8 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -91,7 +93,8 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
+                .pooling(Pooling.MAX)
                 .build());
             
     cps.add(new ConvLayerParameters
@@ -113,7 +116,8 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
+                .pooling(Pooling.MAX)
                 .build());
             
 
