@@ -1,0 +1,1579 @@
+BUILD_NAME_OPTION = _FREQ_300
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=resnet_18_wb8 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 Resnet18Wb8Manager \
+	DFEModel=MAIA maxFileName=Resnet18Wb8 target='DFE_SIM' enableMPCX=false \
+	FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8/data/data-resnet-18-wb8.txt 
+]0; maxJavaRun: Resnet18Wb8Manager DFEModel=MAIA maxFileName=Resnet18Wb8 target=DFE_SIM enableMPCX=false FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8/data/data-resnet-18-wb8.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : resnet_18_wb8
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : resnet_18_wb8.Resnet18Wb8Manager
+Class arguments     : DFEModel=MAIA maxFileName=Resnet18Wb8 target=DFE_SIM enableMPCX=false FREQ=300 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8/data/data-resnet-18-wb8.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Thu 18:27: MaxCompiler version: 2021.1
+Thu 18:27: Build "Resnet18Wb8" start time: Thu Dec 23 18:27:49 GMT 2021
+Thu 18:27: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 18:27: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300
+Thu 18:27: Detailed build log available in "_build.log"
+Thu 18:27: 
+Thu 18:27: ENGINE BUILD PARAMETERS
+Thu 18:27: 	              Build name: Resnet18Wb8_MAIA_DFE_SIM_FREQ_300                                                                        
+Thu 18:27: 	             maxFileName: Resnet18Wb8                                                                                              
+Thu 18:27: 	                  target: DFE_SIM                                                                                                  
+Thu 18:27: 	                DFEModel: MAIA                                                                                                     
+Thu 18:27: 	              enableMPCX: false                                                                                                    
+Thu 18:27: 	                bitWidth: 32                                                                                                       
+Thu 18:27: 	                     WBW: 32                                                                                                       
+Thu 18:27: 	                   DTYPE: fixed                                                                                                    
+Thu 18:27: 	           NUM_FRAC_BITS: 8                                                                                                        
+Thu 18:27: 	                      PF: 1                                                                                                        
+Thu 18:27: 	                      PC: 1                                                                                                        
+Thu 18:27: 	                      PK: 1                                                                                                        
+Thu 18:27: 	                       H: 1                                                                                                        
+Thu 18:27: 	                       W: 1                                                                                                        
+Thu 18:27: 	                       C: 1                                                                                                        
+Thu 18:27: 	                       F: 1                                                                                                        
+Thu 18:27: 	                       K: 1                                                                                                        
+Thu 18:27: 	                     PAD: 0                                                                                                        
+Thu 18:27: 	                       S: 1                                                                                                        
+Thu 18:27: 	                     SEQ: 0                                                                                                        
+Thu 18:27: 	                    FREQ: 300                                                                                                      
+Thu 18:27: 	                USE_DRAM: false                                                                                                    
+Thu 18:27: 	                 USE_BNN: false                                                                                                    
+Thu 18:27: 	            USE_WINOGRAD: false                                                                                                    
+Thu 18:27: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                    
+Thu 18:27: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                        
+Thu 18:27: 	                   DEBUG: false                                                                                                    
+Thu 18:27: 	           COEFF_ON_CHIP: false                                                                                                    
+Thu 18:27: 	              INIT_COEFF: false                                                                                                    
+Thu 18:27: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8/data/data-resnet-18-wb8.txt
+Thu 18:27: Generating kernel conv0 ...
+Thu 18:27: Instantiating kernel "conv0"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 224, output height = 224, pad = 1
+Thu 18:27: Counter H = 226 W = 226
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv0
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@233795b6
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6f03482
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@9d5509a
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@179ece50
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b0090a4
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3cd3e762
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1fa121e2
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7eac9008
+Thu 18:27: ROM created for conv0 of depth 192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4116aac9
+Thu 18:27: Ifmap buffer configuration 262144 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv0" ...
+Thu 18:27: Line buffer shape 3 x 224, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 226 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv0" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "conv0"
+Thu 18:27: 
+Thu 18:27: Generating kernel pool0 ...
+Thu 18:27: Instantiating kernel "pool0"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 112, output height = 112, pad = 1
+Thu 18:27: Counter H = 114 W = 114
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Building line buffer for "pool0" ...
+Thu 18:27: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "pool0"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv1 ...
+Thu 18:27: Instantiating kernel "conv1"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 56, output height = 56, pad = 1
+Thu 18:27: Counter H = 58 W = 58
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv1
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@cb191ca
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@42f48531
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a776e
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@792bbc74
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@79145d5a
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1f2f9244
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c4d27c8
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6821ea29
+Thu 18:27: ROM created for conv1 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@338494fa
+Thu 18:27: Ifmap buffer configuration 262144 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv1" ...
+Thu 18:27: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv1" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Connecting to output: ofmap_1
+Thu 18:27: Compiling kernel "conv1"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv2 ...
+Thu 18:27: Instantiating kernel "conv2"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 56, output height = 56, pad = 1
+Thu 18:27: Counter H = 58 W = 58
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv2
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4e7095ac
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@251ebf23
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29b732a2
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1b70203f
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@51671b08
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@15051a0
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1162410a
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@b09fac1
+Thu 18:27: ROM created for conv2 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@62df0ff3
+Thu 18:27: Ifmap buffer configuration 4096 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv2" ...
+Thu 18:27: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv2" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "conv2"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv3 ...
+Thu 18:27: Instantiating kernel "conv3"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 56, output height = 56, pad = 1
+Thu 18:27: Counter H = 58 W = 58
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv3
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3daa82be
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ec1b2e4
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29a69a35
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67e28be3
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@e344ad3
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@de18f63
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@108bdbd8
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6345e7b9
+Thu 18:27: ROM created for conv3 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4f8b4bd0
+Thu 18:27: Ifmap buffer configuration 262144 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv3" ...
+Thu 18:27: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv3" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Connecting to output: ofmap_1
+Thu 18:27: Compiling kernel "conv3"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv4 ...
+Thu 18:27: Instantiating kernel "conv4"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 56, output height = 56, pad = 1
+Thu 18:27: Counter H = 58 W = 58
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv4
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3f702946
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@42b6d0cc
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1000d54d
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3f4f5330
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@14b7786
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@750ff7d3
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@63b3ee82
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2620e717
+Thu 18:27: ROM created for conv4 of depth 4096 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7c8d5312
+Thu 18:27: Ifmap buffer configuration 4096 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv4" ...
+Thu 18:27: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv4" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth = 262144 addr_bits =    18
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Connecting to output: ofmap_1
+Thu 18:27: Compiling kernel "conv4"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv5 ...
+Thu 18:27: Instantiating kernel "conv5"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 56, output height = 56, pad = 1
+Thu 18:27: Counter H = 58 W = 58
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv5
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4d1ff6b1
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@45f756e6
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@329548d0
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3003827c
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29b40b3
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d247660
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@656f62dc
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49d30c6f
+Thu 18:27: ROM created for conv5 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1115433e
+Thu 18:27: Ifmap buffer configuration 262144 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv5" ...
+Thu 18:27: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv5" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "conv5"
+Thu 18:27: 
+Thu 18:27: Generating kernel shortcut2 ...
+Thu 18:27: Instantiating kernel "shortcut2"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: Building pointwise convolution:
+Thu 18:27: H = 56 W = 56 F = 128 C = 64 PF = 1 PC = 1
+Thu 18:27: Seq = FILTER_MAJOR
+Thu 18:27: Read for key = shortcut2
+Thu 18:27: ROM created for shortcut2 of depth 8192 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c82b5df
+Thu 18:27: Ifmap buffer configuration 262144 x 1
+Thu 18:27: loop = false
+Thu 18:27: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "shortcut2"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv6 ...
+Thu 18:27: Instantiating kernel "conv6"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 28, output height = 28, pad = 1
+Thu 18:27: Counter H = 30 W = 30
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv6
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6909f6be
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b5ab2f2
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@315c081
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b2dd3df
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4db77402
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@73c48264
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5ef85555
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5bcec67e
+Thu 18:27: ROM created for conv6 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2dafae61
+Thu 18:27: Ifmap buffer configuration 1024 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv6" ...
+Thu 18:27: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv6" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth = 131072 addr_bits =    17
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "conv6"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv7 ...
+Thu 18:27: Instantiating kernel "conv7"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 28, output height = 28, pad = 1
+Thu 18:27: Counter H = 30 W = 30
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv7
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@19662208
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@216c22ce
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@62f9c790
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@21e5f0b6
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@93bf0e0
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4981d95b
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@656842bc
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b867ee7
+Thu 18:27: ROM created for conv7 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3dec3f87
+Thu 18:27: Ifmap buffer configuration 131072 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv7" ...
+Thu 18:27: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv7" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Connecting to output: ofmap_1
+Thu 18:27: Compiling kernel "conv7"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv8 ...
+Thu 18:27: Instantiating kernel "conv8"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 28, output height = 28, pad = 1
+Thu 18:27: Counter H = 30 W = 30
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv8
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@117b2cc6
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6def0632
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49038f97
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36211bbc
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7ef41ca2
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b3f4bd8
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e151e1f
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@d70e9a
+Thu 18:27: ROM created for conv8 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5e98032e
+Thu 18:27: Ifmap buffer configuration 1024 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv8" ...
+Thu 18:27: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv8" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth = 131072 addr_bits =    17
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Connecting to output: ofmap_1
+Thu 18:27: Compiling kernel "conv8"
+Thu 18:27: 
+Thu 18:27: Generating kernel conv9 ...
+Thu 18:27: Instantiating kernel "conv9"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: coeffOnChip = true
+Thu 18:27: Input height = 28, output height = 28, pad = 1
+Thu 18:27: Counter H = 30 W = 30
+Thu 18:27: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:27: Read for key = conv9
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7417ef4f
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c0e2ec
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4fa8bebb
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d3c22a5
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@369ad7da
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@344f9467
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e98b933
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@222d9d4f
+Thu 18:27: ROM created for conv9 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4269aad7
+Thu 18:27: Ifmap buffer configuration 131072 x 1
+Thu 18:27: loop = false
+Thu 18:27: Building line buffer for "conv9" ...
+Thu 18:27: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:27: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:27: Number of separated line buffers: 1
+Thu 18:27: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:27: Size of line buffer output: 3
+Thu 18:27: Number of line buffer output chunks: 3
+Thu 18:27: Connecting outputs from chunk (#000) ...
+Thu 18:27: Connecting outputs from chunk (#001) ...
+Thu 18:27: Connecting outputs from chunk (#002) ...
+Thu 18:27: Building the CORE arithmetic unit for "conv9" ...
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: CORE ifmap vector size: 9
+Thu 18:27: CORE coefficient vector size: 9
+Thu 18:27: CORE ofmap vector size: 1
+Thu 18:27: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:27: Connecting to output: ofmap
+Thu 18:27: Compiling kernel "conv9"
+Thu 18:27: 
+Thu 18:27: Generating kernel shortcut3 ...
+Thu 18:27: Instantiating kernel "shortcut3"
+Thu 18:27: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:27: Building pointwise convolution:
+Thu 18:27: H = 28 W = 28 F = 256 C = 128 PF = 1 PC = 1
+Thu 18:27: Seq = FILTER_MAJOR
+Thu 18:27: Read for key = shortcut3
+Thu 18:28: ROM created for shortcut3 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1ff542a3
+Thu 18:28: Ifmap buffer configuration 131072 x 1
+Thu 18:28: loop = false
+Thu 18:28: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Compiling kernel "shortcut3"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv10 ...
+Thu 18:28: Instantiating kernel "conv10"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 14, output height = 14, pad = 1
+Thu 18:28: Counter H = 16 W = 16
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv10
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ace2408
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3573e19d
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c1dd18
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2a6dbb7c
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5178345d
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7b2d58e6
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@708f7386
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@377e90b0
+Thu 18:28: ROM created for conv10 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@27b490de
+Thu 18:28: Ifmap buffer configuration 256 x 1
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv10" ...
+Thu 18:28: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:28: Number of separated line buffers: 1
+Thu 18:28: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv10" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 9
+Thu 18:28: CORE coefficient vector size: 9
+Thu 18:28: CORE ofmap vector size: 1
+Thu 18:28: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Compiling kernel "conv10"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv11 ...
+Thu 18:28: Instantiating kernel "conv11"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 14, output height = 14, pad = 1
+Thu 18:28: Counter H = 16 W = 16
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv11
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36f05595
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e12c5de
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e55d844
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1f521c69
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b3abeeb
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3aeb267
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@13a9cdae
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c972ae6
+Thu 18:28: ROM created for conv11 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@62a41279
+Thu 18:28: Ifmap buffer configuration 65536 x 1
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv11" ...
+Thu 18:28: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:28: Number of separated line buffers: 1
+Thu 18:28: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv11" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 9
+Thu 18:28: CORE coefficient vector size: 9
+Thu 18:28: CORE ofmap vector size: 1
+Thu 18:28: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Connecting to output: ofmap_1
+Thu 18:28: Compiling kernel "conv11"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv12 ...
+Thu 18:28: Instantiating kernel "conv12"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 14, output height = 14, pad = 1
+Thu 18:28: Counter H = 16 W = 16
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv12
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@624494d4
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@654c2f81
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@38af386e
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@33827b88
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7526bb18
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7112b21a
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@30bf881e
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1041ebba
+Thu 18:28: ROM created for conv12 of depth 65536 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@507f7cd1
+Thu 18:28: Ifmap buffer configuration 256 x 1
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv12" ...
+Thu 18:28: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:28: Number of separated line buffers: 1
+Thu 18:28: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv12" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 9
+Thu 18:28: CORE coefficient vector size: 9
+Thu 18:28: CORE ofmap vector size: 1
+Thu 18:28: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Connecting to output: ofmap_1
+Thu 18:28: Compiling kernel "conv12"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv13 ...
+Thu 18:28: Instantiating kernel "conv13"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 14, output height = 14, pad = 1
+Thu 18:28: Counter H = 16 W = 16
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv13
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@79c2bc34
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@77925f76
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@15a8bbe5
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3369e2ce
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5f26cb8b
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3a2a56f6
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6a8da5c5
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@160e45c8
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7f9dbe11
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@17e8caf2
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@104cf647
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7488c183
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66779435
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@37196d53
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@40105b39
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@72a61e61
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@282aea3c
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@54a5799f
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@162e29a1
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@54b96813
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b3d03b2
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@542beecb
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@332fa6ce
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2cc9a948
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6f2a1ff0
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@647ce968
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2a2b3aff
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4bc9451b
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@74a3160d
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@77978658
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@498b697
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5f8da82
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6987b74e
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@22e95960
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@63846fa4
+Thu 18:28: ROM created for conv13 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@206b959c
+Thu 18:28: Ifmap buffer configuration 65536 x 1
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv13" ...
+Thu 18:28: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:28: Number of separated line buffers: 1
+Thu 18:28: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv13" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 9
+Thu 18:28: CORE coefficient vector size: 36
+Thu 18:28: CORE ofmap vector size: 4
+Thu 18:28: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Compiling kernel "conv13"
+Thu 18:28: 
+Thu 18:28: Generating kernel shortcut4 ...
+Thu 18:28: Instantiating kernel "shortcut4"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: Building pointwise convolution:
+Thu 18:28: H = 14 W = 14 F = 512 C = 256 PF = 4 PC = 1
+Thu 18:28: Seq = FILTER_MAJOR
+Thu 18:28: Read for key = shortcut4
+Thu 18:28: ROM created for shortcut4 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@13552290
+Thu 18:28: ROM created for shortcut4 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@188ab96
+Thu 18:28: ROM created for shortcut4 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6705fb02
+Thu 18:28: ROM created for shortcut4 of depth 32768 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@e2696e8
+Thu 18:28: Ifmap buffer configuration 65536 x 1
+Thu 18:28: loop = false
+Thu 18:28: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Compiling kernel "shortcut4"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv14 ...
+Thu 18:28: Instantiating kernel "conv14"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 7, output height = 7, pad = 1
+Thu 18:28: Counter H = 9 W = 9
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv14
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@209d0037
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@22f0e329
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b39bee2
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20ddc780
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6889e714
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4dc5b887
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b7dd173
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7552f05b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@524418a2
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@322593ed
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67062a93
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5b4ce00
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7747571c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@69e308e2
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3f67f5ff
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c80f8dd
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@51b2b3e6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20e7152a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@202fd4c4
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b72860c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7f1b2f07
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@674d2b8b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@399a5a52
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1677f98b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@30b29f55
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3eadfbbb
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@550e7ef6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7c9c7e7d
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@58701e8c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@951461a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2f0e7008
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@307e9c02
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@682270ff
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6bc08a77
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@37922937
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@73483d4b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@8961e55
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67eabe02
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4197e859
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@73072745
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4bdbfbc6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@79735611
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@758ac46
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4d2f8ee7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@593e594f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3a1e5fa7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7866fe3e
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@498f1f63
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6250d33c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2a7b4bb6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@65a3d7c9
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5466a819
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@30cb489a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@401d83ce
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b7b099b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5abc488d
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@30d944d8
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c76b2fe
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7fa2473a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@47629063
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3d67e3d3
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@14af57c3
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@795949fb
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2aeb3f3b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@281028ce
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@46ef7340
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75caecf7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@62b0792
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2fd409c1
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@121c1a08
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3013e1e8
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6e5a77ef
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@61cff1e4
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@13f17b8f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3cc2c4b8
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@11a29c0
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1fc4b8d6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@77185a2
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2dbc66f0
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d381eae
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@47800bd7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c57ca10
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@212be8c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3fe21d0e
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@787b7796
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a0e35c3
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1d7f0cd0
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@325a781c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@113e6e06
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6ae5e1cf
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@f9979cf
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6e627ab8
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@cce672c
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@496004e3
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@df34b01
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@703947bd
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@f31b991
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@46bff388
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5183131d
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b3da23f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@69c263f8
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5058fefb
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@198a0416
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1f207142
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@65871cfd
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@723f8990
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3bdc8975
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@27ea552d
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7a57c5d9
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@742aa00a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2be208db
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5ed463b7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1ae90cb9
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b62c51e
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7db679
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7dc9b41a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2f97e3de
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2f09907
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6f53295e
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5f8a29ca
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4f93a8f6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@492d38a2
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3fc2e100
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@31885b4b
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@638e8194
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@43c64d6f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b247ef6
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@188532da
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@f10927f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7e4c0bc7
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36570936
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@775fec4
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@c7d173f
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@12f12744
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c618295
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@344acc03
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@50eae15a
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4bba2704
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5b5f61cc
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@39179470
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3ef04239
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2468c0e4
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49994a4
+Thu 18:28: ROM created for conv14 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1a82453
+Thu 18:28: Ifmap buffer configuration 128 x 4
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv14" ...
+Thu 18:28: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:28: Number of separated line buffers: 4
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv14" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 36
+Thu 18:28: CORE coefficient vector size: 144
+Thu 18:28: CORE ofmap vector size: 4
+Thu 18:28: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Compiling kernel "conv14"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv15 ...
+Thu 18:28: Instantiating kernel "conv15"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 7, output height = 7, pad = 1
+Thu 18:28: Counter H = 9 W = 9
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv15
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3ea4dcc5
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@73611fbb
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3d0f2154
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@8374911
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@106dee26
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b0aa757
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2f4b2ee3
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1d0695da
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@62e55482
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5ceb6796
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2aa176de
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3208e15
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4ba99bb7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4cf99283
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6d4f1a44
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6a9861de
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6deb2b19
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6d86d1ad
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@780e6b63
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@51b1732d
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@65b639e1
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e668743
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@35b8b69f
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6fca831e
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b67c637
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@31b11287
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@414d5660
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7aa4ef24
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7f77d839
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@46ebd87a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6dbe6891
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@30be77cd
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@71c9c7f3
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6979e9b8
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@771deee6
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@345effd7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@b9750f0
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2d854c13
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3577fd9b
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@76140ca5
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@47b5c247
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4057eb76
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4ac64dc2
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c61011b
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75af5f2a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@adc06b2
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@728cf276
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66f15ce5
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@69a8191e
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3ab7b0f
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1621264e
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7a5b561b
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5392c0a7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@bb9bad9
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1435feb6
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@34fe89a5
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@71acf065
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3705e3fb
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@cfe7be3
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c0d7878
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5a349644
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@42b6acc2
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3de8e614
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1a819769
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6479b4cb
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@135ec43a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@69fc5803
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7f50b08a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56a69c47
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@333cedbd
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@388b9799
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4225b4e2
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20834c45
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@74061ced
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@10d56aab
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7fb84ef7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4563d421
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1465914
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3a7deba5
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@78fc5eb
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c96cbe7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6f2bb798
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3a5e591b
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@43076326
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29244152
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1b81a499
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@53dfb073
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b39e77d
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@201c1d99
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36afd06f
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@18dda2e1
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7c3bac88
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3c0b9643
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@746f1505
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1507bc3
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@202ed88d
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@40f7fb45
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c3c1963
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4eb0ed44
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@188caeaf
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67de5328
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4b05a9b1
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@296b758
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7f129873
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6ac0c3aa
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ceeb762
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b75fdd0
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@504f2bcd
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3c7e7ffd
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@45d28ab7
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@51dd74a0
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@78652c15
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@372b2573
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66fd9613
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c3f9618
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@deb0c0e
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6385b07d
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6942ff10
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49ed3b76
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1c33d539
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@527b989a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2c3f47ba
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ca9ffc0
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@e316971
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@808f65
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56540a58
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@15c0a8ad
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@10bf2185
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@14c06f50
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6230a15a
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7225f871
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1bff4cb9
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@c521a79
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b0f50d8
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36b4cbb8
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@57cfd353
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4bd29a01
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5a4a8a33
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4a3363c9
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@63cf6497
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3c12f87d
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3207e6de
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@637bf67c
+Thu 18:28: ROM created for conv15 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7b88dd58
+Thu 18:28: Ifmap buffer configuration 16384 x 4
+Thu 18:28: loop = false
+Thu 18:28: Building line buffer for "conv15" ...
+Thu 18:28: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:28: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:28: Number of separated line buffers: 4
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:28: Size of line buffer output: 3
+Thu 18:28: Number of line buffer output chunks: 3
+Thu 18:28: Connecting outputs from chunk (#000) ...
+Thu 18:28: Connecting outputs from chunk (#001) ...
+Thu 18:28: Connecting outputs from chunk (#002) ...
+Thu 18:28: Building the CORE arithmetic unit for "conv15" ...
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: CORE ifmap vector size: 36
+Thu 18:28: CORE coefficient vector size: 144
+Thu 18:28: CORE ofmap vector size: 4
+Thu 18:28: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:28: Connecting to output: ofmap
+Thu 18:28: Connecting to output: ofmap_1
+Thu 18:28: Compiling kernel "conv15"
+Thu 18:28: 
+Thu 18:28: Generating kernel conv16 ...
+Thu 18:28: Instantiating kernel "conv16"
+Thu 18:28: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:28: coeffOnChip = true
+Thu 18:28: Input height = 7, output height = 7, pad = 1
+Thu 18:28: Counter H = 9 W = 9
+Thu 18:28: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:28: Read for key = conv16
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@10658b31
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@72ce2982
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4d5399f4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1490b1a4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@28908c04
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b9132ad
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7adc8212
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6b50017c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@470c40be
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@652a16a8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7b78c40d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@104861ff
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3564caf8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ce15aa
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3dabf112
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6e3f38c1
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d9f0cf4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@d0c35a8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6fcd767a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@78a3a272
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d5ef93e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@11932248
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1569f8a6
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@70bc684b
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7aa1e86b
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@72a80415
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@28de7e2e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b33b54e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4ea4e0f3
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7c9ecd9e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@276af32d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@155ab4b
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@689f60ea
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6267b25a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@12e4c6a0
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3ec72844
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2d4c9746
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@726615d7
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@46030cfd
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@41019971
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@83ec0b0
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4ab4b4cd
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@140e2d82
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5989f463
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@27cc84a2
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@48b14e4a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2db618e3
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b8adbda
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7820a19d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3a2173cd
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@27cd156a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4af44e42
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@37a522c8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6ab80ea
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4982b310
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@21ec723c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3f41a7ab
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6537dc79
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@39f1e9fc
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7bce016c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49808d41
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@120f441c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2407f1a8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2fc94125
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@626e3b18
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a29aced
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@113886b1
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@741d2dda
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67387eba
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20b1f874
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7569efdd
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@68076f57
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c6e0143
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@633332e2
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@591e3e5e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a308ffd
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@36e8e3e1
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4c3663fc
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@64f248ea
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6ab36cee
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1b357db2
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@64e3d4ab
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@12a065c5
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6385af63
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@53ed864c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29514616
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@38ce90b4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@76fece79
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@491ef90c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6a5c67cf
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@26db1100
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@26d68ea4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@18bec5eb
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1155ab2c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6f78eb17
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7d49ebf2
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@13b6f82d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2f062dbc
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@78e5b18
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@352a2660
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1179c778
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@f0c6326
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7aafaf44
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1ed28f57
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@414fd9f2
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2d3697ae
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2a64c8c3
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20c642ef
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1f799f4c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66be0ea
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@ac51234
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1886e8b9
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4b56971a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1263422a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3095a6e0
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1f79536b
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6068e9d9
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@681285ec
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75ad8ca8
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@201a6b7d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@71b6886
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7bdab06c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@620bab73
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@11b975cc
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4d3a7025
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@634de03e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5ca29f17
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66f965a
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@18ca65ea
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@140a2add
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c18556c
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@263fc5f3
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6d1101eb
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@28089256
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3625110e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6e6d4a64
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@b96101b
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6760a91d
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7953699e
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7de922ba
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4644f3d4
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@240e8240
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@467310c6
+Thu 18:29: ROM created for conv16 of depth 16384 and type dfeFix(8, 0, TWOSCOMPLEMENT): com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@72bb0640
+Thu 18:29: Ifmap buffer configuration 128 x 4
+Thu 18:29: loop = false
+Thu 18:29: Building line buffer for "conv16" ...
+Thu 18:29: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:29: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:29: Number of separated line buffers: 4
+Thu 18:29: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:29: Size of line buffer output: 3
+Thu 18:29: Number of line buffer output chunks: 3
+Thu 18:29: Connecting outputs from chunk (#000) ...
+Thu 18:29: Connecting outputs from chunk (#001) ...
+Thu 18:29: Connecting outputs from chunk (#002) ...
+Thu 18:29: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:29: Size of line buffer output: 3
+Thu 18:29: Number of line buffer output chunks: 3
+Thu 18:29: Connecting outputs from chunk (#000) ...
+Thu 18:29: Connecting outputs from chunk (#001) ...
+Thu 18:29: Connecting outputs from chunk (#002) ...
+Thu 18:29: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:29: Size of line buffer output: 3
+Thu 18:29: Number of line buffer output chunks: 3
+Thu 18:29: Connecting outputs from chunk (#000) ...
+Thu 18:29: Connecting outputs from chunk (#001) ...
+Thu 18:29: Connecting outputs from chunk (#002) ...
+Thu 18:29: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:29: Size of line buffer output: 3
+Thu 18:29: Number of line buffer output chunks: 3
+Thu 18:29: Connecting outputs from chunk (#000) ...
+Thu 18:29: Connecting outputs from chunk (#001) ...
+Thu 18:29: Connecting outputs from chunk (#002) ...
+Thu 18:29: Building the CORE arithmetic unit for "conv16" ...
+Thu 18:29: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 18:29: CORE ifmap vector size: 36
+Thu 18:29: CORE coefficient vector size: 144
+Thu 18:29: CORE ofmap vector size: 4
+Thu 18:29: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:29: Connecting to output: ofmap
+Thu 18:29: Compiling kernel "conv16"
+Thu 18:29: 
+Thu 18:29: Generating padding kernels for DRAM access
+Thu 18:29: Instantiating kernel "ifmap_unpad"
+Thu 18:29: Compiling kernel "ifmap_unpad"
+Thu 18:29: 
+Thu 18:29: Instantiating kernel "ofmap_pad"
+Thu 18:29: Compiling kernel "ofmap_pad"
+Thu 18:29: 
+Thu 18:29: Setting up stream connections for conv0
+Thu 18:29: Setting up stream connections for pool0
+Thu 18:29: Setting up stream connections for conv1
+Thu 18:29: Setting up stream connections for conv2
+Thu 18:29: Setting up stream connections for conv3
+Thu 18:29: Setting up stream connections for conv4
+Thu 18:29: Setting up stream connections for conv5
+Thu 18:29: Setting up stream connections for shortcut2
+Thu 18:29: Setting up stream connections for conv6
+Thu 18:29: Setting up stream connections for conv7
+Thu 18:29: Setting up stream connections for conv8
+Thu 18:29: Setting up stream connections for conv9
+Thu 18:29: Setting up stream connections for shortcut3
+Thu 18:29: Setting up stream connections for conv10
+Thu 18:29: Setting up stream connections for conv11
+Thu 18:29: Setting up stream connections for conv12
+Thu 18:29: Setting up stream connections for conv13
+Thu 18:29: Setting up stream connections for shortcut4
+Thu 18:29: Setting up stream connections for conv14
+Thu 18:29: Setting up stream connections for conv15
+Thu 18:29: Setting up stream connections for conv16
+Thu 18:29: DRAM will be used to build the design
+Thu 18:29: Setup streams for kernel "conv0"
+Thu 18:29: # cycles:       9806592
+Thu 18:29: # ifmap stream: 150528
+Thu 18:29: # coeff stream: 1728
+Thu 18:29: # ofmap stream: 802816
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "pool0"
+Thu 18:29: # cycles:       831744
+Thu 18:29: # ifmap stream: 802816
+Thu 18:29: # coeff stream: 37440
+Thu 18:29: # ofmap stream: 200704
+Thu 18:29: coeff vec size: 0
+Thu 18:29: coeff stream bit width: 0
+Thu 18:29: coeff stream chunk size: 0
+Thu 18:29: Setup streams for kernel "conv1"
+Thu 18:29: # cycles:       13778944
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 36864
+Thu 18:29: # ofmap stream: 200704
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv2"
+Thu 18:29: # cycles:       13778944
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 36864
+Thu 18:29: # ofmap stream: 200704
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv3"
+Thu 18:29: # cycles:       13778944
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 36864
+Thu 18:29: # ofmap stream: 200704
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv4"
+Thu 18:29: # cycles:       13778944
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 36864
+Thu 18:29: # ofmap stream: 200704
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv5"
+Thu 18:29: # cycles:       27557888
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 73728
+Thu 18:29: # ofmap stream: 100352
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "shortcut2"
+Thu 18:29: # cycles:       25690112
+Thu 18:29: # ifmap stream: 200704
+Thu 18:29: # coeff stream: 8192
+Thu 18:29: # ofmap stream: 100352
+Thu 18:29: coeff vec size: 1
+Thu 18:29: coeff stream bit width: 8
+Thu 18:29: coeff stream chunk size: 1
+Thu 18:29: Setup streams for kernel "conv6"
+Thu 18:29: # cycles:       14745600
+Thu 18:29: # ifmap stream: 100352
+Thu 18:29: # coeff stream: 147456
+Thu 18:29: # ofmap stream: 100352
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv7"
+Thu 18:29: # cycles:       14745600
+Thu 18:29: # ifmap stream: 100352
+Thu 18:29: # coeff stream: 147456
+Thu 18:29: # ofmap stream: 100352
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv8"
+Thu 18:29: # cycles:       14745600
+Thu 18:29: # ifmap stream: 100352
+Thu 18:29: # coeff stream: 147456
+Thu 18:29: # ofmap stream: 100352
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv9"
+Thu 18:29: # cycles:       29491200
+Thu 18:29: # ifmap stream: 100352
+Thu 18:29: # coeff stream: 294912
+Thu 18:29: # ofmap stream: 50176
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "shortcut3"
+Thu 18:29: # cycles:       25690112
+Thu 18:29: # ifmap stream: 100352
+Thu 18:29: # coeff stream: 32768
+Thu 18:29: # ofmap stream: 50176
+Thu 18:29: coeff vec size: 1
+Thu 18:29: coeff stream bit width: 8
+Thu 18:29: coeff stream chunk size: 1
+Thu 18:29: Setup streams for kernel "conv10"
+Thu 18:29: # cycles:       16777216
+Thu 18:29: # ifmap stream: 50176
+Thu 18:29: # coeff stream: 589824
+Thu 18:29: # ofmap stream: 50176
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv11"
+Thu 18:29: # cycles:       16777216
+Thu 18:29: # ifmap stream: 50176
+Thu 18:29: # coeff stream: 589824
+Thu 18:29: # ofmap stream: 50176
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv12"
+Thu 18:29: # cycles:       16777216
+Thu 18:29: # ifmap stream: 50176
+Thu 18:29: # coeff stream: 589824
+Thu 18:29: # ofmap stream: 50176
+Thu 18:29: coeff vec size: 9
+Thu 18:29: coeff stream bit width: 72
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv13"
+Thu 18:29: # cycles:       8388608
+Thu 18:29: # ifmap stream: 50176
+Thu 18:29: # coeff stream: 1179648
+Thu 18:29: # ofmap stream: 25088
+Thu 18:29: coeff vec size: 36
+Thu 18:29: coeff stream bit width: 288
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "shortcut4"
+Thu 18:29: # cycles:       6422528
+Thu 18:29: # ifmap stream: 50176
+Thu 18:29: # coeff stream: 131072
+Thu 18:29: # ofmap stream: 25088
+Thu 18:29: coeff vec size: 4
+Thu 18:29: coeff stream bit width: 32
+Thu 18:29: coeff stream chunk size: 1
+Thu 18:29: Setup streams for kernel "conv14"
+Thu 18:29: # cycles:       1327104
+Thu 18:29: # ifmap stream: 25088
+Thu 18:29: # coeff stream: 2359296
+Thu 18:29: # ofmap stream: 25088
+Thu 18:29: coeff vec size: 144
+Thu 18:29: coeff stream bit width: 1152
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv15"
+Thu 18:29: # cycles:       1327104
+Thu 18:29: # ifmap stream: 25088
+Thu 18:29: # coeff stream: 2359296
+Thu 18:29: # ofmap stream: 25088
+Thu 18:29: coeff vec size: 144
+Thu 18:29: coeff stream bit width: 1152
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Setup streams for kernel "conv16"
+Thu 18:29: # cycles:       1327104
+Thu 18:29: # ifmap stream: 25088
+Thu 18:29: # coeff stream: 2359296
+Thu 18:29: # ofmap stream: 25088
+Thu 18:29: coeff vec size: 144
+Thu 18:29: coeff stream bit width: 1152
+Thu 18:29: coeff stream chunk size: 9
+Thu 18:29: Running back-end simulation build (3 phases)
+Thu 18:29: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 18:29: (2/3) - Compile Simulation Modules (SimCompilePass)
+Thu 18:30: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Thu 18:30: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Resnet18Wb8.max (MD5Sum: d2ecf42bc9dfddfbdaf5d214f90f08c2)
+Thu 18:30: Build completed: Thu Dec 23 18:30:40 GMT 2021 (took 2 mins, 51 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Resnet18Wb8.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Maxfiles.h
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Resnet18Wb8.max Resnet18Wb8_FREQ_300_sim.o
+Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Resnet18Wb8.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_1852101421389034468/cobject/max_58870112775795983.c -o /tmp/sliccompile_1852101421389034468/cobject/max_58870112775795983.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Wb8_MAIA_DFE_SIM_FREQ_300/results/Resnet18Wb8.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_8735127829999220133.o 
+ld -r /tmp/sliccompile_1852101421389034468/cobject/max_58870112775795983.c.o max_8735127829999220133.o -o Resnet18Wb8_FREQ_300_sim.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8'
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -g -o Resnet18Wb8_FREQ_300_sim Resnet18Wb8_FREQ_300_sim.o Resnet18Wb8_FREQ_300_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
+maxcompilersim -n rz3515a -cLIMA -d1 restart
+Terminating MaxelerOS daemon (PID 351239)...
+MaxelerOS daemon killed
+[2021-31-12/23/21GMT18:31:01.269451676][ERROR] No process running with PID 351234!
+
+Simulated system 'rz3515a' started:
+    Board:                   MAX5C (default: 48GB RAM)
+    RAM size for simulation: 51539607552 bytes.
+    Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515a-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515a-cccad5_daemon.log
+
+Simulated devices available:
+    rz3515a0:rz3515a
+
+To use simulated devices you need to set the environment variables
+LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
+you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
+tutorial for details).  Also, ensure that you add the correct simulated
+system name (namely "rz3515a") to your SLiC configuration. The following
+examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
+Example for BASH:
+    export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
+    export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515a"
+Example for CSH:
+    setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
+    setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515a"
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515a" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Resnet18Wb8_FREQ_300_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_wb8/data/data-resnet-18-wb8.txt

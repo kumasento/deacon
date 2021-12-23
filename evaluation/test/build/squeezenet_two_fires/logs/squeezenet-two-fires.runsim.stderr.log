@@ -1,0 +1,44 @@
+In file included from ../../src/squeezenet_two_fires/SqueezenetTwoFiresCpuCode.cpp:10:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/squeezenet_two_fires/SqueezenetTwoFiresCpuCode.cpp:87:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/squeezenet_two_fires/SqueezenetTwoFiresCpuCode.cpp:114:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1222 11:27:56.880405 170934 utils.h:43] 56
+I1222 11:27:56.880621 170934 utils.h:43] 56
+I1222 11:27:56.881095 170934 utils.h:383] Burst aligning input array of size: 301056 to 301056
+I1222 11:27:56.881112 170934 SqueezenetTwoFiresCpuCode.cpp:93] Tiled input size (burst aligned): 301056
+I1222 11:27:56.881413 170934 utils.h:383] Burst aligning input array of size: 200704 to 200832
+I1222 11:27:56.881574 170934 SqueezenetTwoFiresCpuCode.cpp:95] Tiled output size (burst aligned): 200832
+I1222 11:27:56.881685 170934 layers.h:757] Writing DRAM to 0 with size 0x49800
+I1222 11:27:57.069402 170934 SqueezenetTwoFiresCpuCode.cpp:104] Running ...
+Maxeler Error #-1 - session_item_timer(): Timeout on session 2
+SLiC Error #523 @ engine_standard_internal.c:118 - Execution failed
+SLiC Error #518 @ execute.c:19 - Error reported from function "max_wait".
+
+make: *** [runsim] Aborted

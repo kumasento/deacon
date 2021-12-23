@@ -1,0 +1,130 @@
+NAME = "squeezenet_two_fires"
+
+[global]
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+FREQ = 350
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 112
+W = 112
+C = 3
+F = 64
+K = 3
+P = 1
+S = 2
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.pool0]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+P = 1
+S = 2
+TYPE = "POOLING"
+
+[layers.fire0s]
+H = 56
+W = 56
+C = 64
+F = 16
+K = 1
+P = 0
+S = 1
+NUM_OUTPUTS = 2
+TYPE = "POINTWISE"
+
+[layers.fire0e0]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 1
+P = 0
+S = 1
+INPUT = "fire0s"
+TYPE = "POINTWISE"
+
+[layers.fire0e1]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "fire0s_1"
+TYPE = "STANDARD"
+
+[layers.fire0c]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = ["fire0e0", "fire0e1"]
+TYPE = "CONCAT"
+
+[layers.fire1s]
+H = 56
+W = 56
+C = 128
+F = 16
+K = 1
+P = 0
+S = 1
+NUM_OUTPUTS = 2
+INPUT = "fire0c"
+TYPE = "POINTWISE"
+
+[layers.fire1e0]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 1
+P = 0
+S = 1
+INPUT = "fire1s"
+TYPE = "POINTWISE"
+
+[layers.fire1e1]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "fire1s_1"
+TYPE = "STANDARD"
+
+[layers.fire1c]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = ["fire1e0", "fire1e1"]
+TYPE = "CONCAT"
+
+
+[layers.pool1]
+H = 28
+W = 28
+C = 128
+F = 128
+K = 3
+P = 1
+S = 2
+TYPE = "POOLING"

@@ -1,0 +1,191 @@
+NAME = "mobilenet_v1_par_s32"
+
+[global]
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+FREQ = 300
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 112
+W = 112
+C = 3
+F = 32
+K = 3
+P = 1
+S = 2
+P_F = 16 
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.conv1]
+H = 112
+W = 112
+C = 32
+F = 64
+K = 3
+P = 1
+S = 1
+P_C = 16
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv2]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 3
+P = 1
+S = 2
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv3]
+H = 56
+W = 56
+C = 128
+F = 128
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv4]
+H = 28
+W = 28
+C = 128
+F = 256
+K = 3
+P = 1
+S = 2
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+
+[layers.conv5]
+H = 28
+W = 28
+C = 256
+F = 256
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv6]
+H = 14
+W = 14
+C = 256
+F = 512
+K = 3
+P = 1
+S = 2
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv7]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv8]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv9]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv10]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv11]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv12]
+H = 7
+W = 7
+C = 512
+F = 1024
+K = 3
+P = 1
+S = 2
+P_C = 32
+P_F = 32
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+
+[layers.conv13]
+H = 7
+W = 7
+C = 1024
+F = 1024
+K = 3
+P = 1
+S = 1
+P_C = 32
+P_F = 32
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"

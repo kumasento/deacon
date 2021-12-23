@@ -1,0 +1,42 @@
+NAME = "concat"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 8
+FREQ = 350
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 3
+W = 3
+C = 2
+F = 2
+K = 3
+P = 1
+S = 1
+OUTPUT = ["OFMAP", "OFMAP"]
+TYPE = "STANDARD"
+
+[layers.concat0]
+H = 3
+W = 3
+C = 2
+F = 4
+K = 1
+P = 0
+S = 1
+INPUT = ["conv0", "conv0_1"]
+TYPE = "CONCAT"
+
+[layers.conv1]
+H = 3
+W = 3
+C = 4
+F = 2
+K = 3
+P = 1
+S = 1
+P_C = 2
+TYPE = "STANDARD"

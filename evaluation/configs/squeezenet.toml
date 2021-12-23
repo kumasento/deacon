@@ -37,7 +37,7 @@ F = 16
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 TYPE = "POINTWISE"
 
 [layers.fire0e0]
@@ -81,7 +81,7 @@ F = 16
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 INPUT = "fire0c"
 TYPE = "POINTWISE"
 
@@ -139,7 +139,7 @@ F = 32
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 TYPE = "POINTWISE"
 
 [layers.fire2e0]
@@ -183,7 +183,7 @@ F = 32
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 INPUT = "fire2c"
 TYPE = "POINTWISE"
 
@@ -241,7 +241,7 @@ F = 48
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 TYPE = "POINTWISE"
 
 [layers.fire4e0]
@@ -285,7 +285,7 @@ F = 48
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 INPUT = "fire4c"
 TYPE = "POINTWISE"
 
@@ -330,7 +330,7 @@ F = 64
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 TYPE = "POINTWISE"
 
 [layers.fire6e0]
@@ -374,7 +374,7 @@ F = 64
 K = 1
 P = 0
 S = 1
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
 INPUT = "fire6c"
 TYPE = "POINTWISE"
 

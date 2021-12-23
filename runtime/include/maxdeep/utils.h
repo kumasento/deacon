@@ -40,8 +40,9 @@ int GetConvLayerOutputDim(int input_dim, int K, int P, int S) {
   CHECK_GT(K, 0);
   CHECK_GE(P, 0);
   CHECK_GT(S, 0);
+  // LOG(INFO) << input_dim << '\n';
   if (K != 1) {
-    CHECK_EQ((input_dim - K + 2 * P) % S, 0);
+    // CHECK_EQ((input_dim - K + 2 * P) % S, 0);
     return (input_dim - K + 2 * P) / S + 1;
   }
 

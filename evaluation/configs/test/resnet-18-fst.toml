@@ -16,7 +16,7 @@ F = 64
 K = 3
 P = 1
 S = 2
-NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP"]
 TYPE = "STANDARD"
 
 # conv2_x
@@ -29,9 +29,9 @@ F = 64
 K = 3
 P = 1
 S = 1
-SEQ = 1
+SEQ = 0
 INPUT = "conv0"
-NUM_OUTPUTS = 1
+OUTPUT = ["OFMAP", "IFMAP"]
 TYPE = "STANDARD"
 
 [layers.conv2]
@@ -42,7 +42,7 @@ F = 64
 K = 3
 P = 1
 S = 1
+SEQ = 1
 INPUT = "conv1"
-NUM_OUTPUTS = 1
-RESIDUAL = "conv0_1"
+RESIDUAL = "conv1_1"
 TYPE = "STANDARD"

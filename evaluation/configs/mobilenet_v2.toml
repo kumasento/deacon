@@ -1,0 +1,469 @@
+NAME = "mobilenetv2-7"
+
+[layers.conv0]
+H = 112
+W = 112
+F = 32
+C = 3
+K = 3
+P = 1
+S = 2
+
+[layers.conv2]
+H = 112
+W = 112
+F = 32
+C = 32
+K = 3
+P = 1
+S = 1
+
+[layers.conv4]
+H = 112
+W = 112
+F = 16
+C = 32
+K = 1
+P = 0
+S = 1
+
+[layers.conv5]
+H = 112
+W = 112
+F = 96
+C = 16
+K = 1
+P = 0
+S = 1
+
+[layers.conv7]
+H = 56
+W = 56
+F = 96
+C = 96
+K = 3
+P = 1
+S = 2
+
+[layers.conv9]
+H = 56
+W = 56
+F = 24
+C = 96
+K = 1
+P = 0
+S = 1
+
+[layers.conv10]
+H = 56
+W = 56
+F = 144
+C = 24
+K = 1
+P = 0
+S = 1
+
+[layers.conv12]
+H = 56
+W = 56
+F = 144
+C = 144
+K = 3
+P = 1
+S = 1
+
+[layers.conv14]
+H = 56
+W = 56
+F = 24
+C = 144
+K = 1
+P = 0
+S = 1
+
+[layers.conv16]
+H = 56
+W = 56
+F = 144
+C = 24
+K = 1
+P = 0
+S = 1
+
+[layers.conv18]
+H = 28
+W = 28
+F = 144
+C = 144
+K = 3
+P = 1
+S = 2
+
+[layers.conv20]
+H = 28
+W = 28
+F = 32
+C = 144
+K = 1
+P = 0
+S = 1
+
+[layers.conv21]
+H = 28
+W = 28
+F = 192
+C = 32
+K = 1
+P = 0
+S = 1
+
+[layers.conv23]
+H = 28
+W = 28
+F = 192
+C = 192
+K = 3
+P = 1
+S = 1
+
+[layers.conv25]
+H = 28
+W = 28
+F = 32
+C = 192
+K = 1
+P = 0
+S = 1
+
+[layers.conv27]
+H = 28
+W = 28
+F = 192
+C = 32
+K = 1
+P = 0
+S = 1
+
+[layers.conv29]
+H = 28
+W = 28
+F = 192
+C = 192
+K = 3
+P = 1
+S = 1
+
+[layers.conv31]
+H = 28
+W = 28
+F = 32
+C = 192
+K = 1
+P = 0
+S = 1
+
+[layers.conv33]
+H = 28
+W = 28
+F = 192
+C = 32
+K = 1
+P = 0
+S = 1
+
+[layers.conv35]
+H = 14
+W = 14
+F = 192
+C = 192
+K = 3
+P = 1
+S = 2
+
+[layers.conv37]
+H = 14
+W = 14
+F = 64
+C = 192
+K = 1
+P = 0
+S = 1
+
+[layers.conv38]
+H = 14
+W = 14
+F = 384
+C = 64
+K = 1
+P = 0
+S = 1
+
+[layers.conv40]
+H = 14
+W = 14
+F = 384
+C = 384
+K = 3
+P = 1
+S = 1
+
+[layers.conv42]
+H = 14
+W = 14
+F = 64
+C = 384
+K = 1
+P = 0
+S = 1
+
+[layers.conv44]
+H = 14
+W = 14
+F = 384
+C = 64
+K = 1
+P = 0
+S = 1
+
+[layers.conv46]
+H = 14
+W = 14
+F = 384
+C = 384
+K = 3
+P = 1
+S = 1
+
+[layers.conv48]
+H = 14
+W = 14
+F = 64
+C = 384
+K = 1
+P = 0
+S = 1
+
+[layers.conv50]
+H = 14
+W = 14
+F = 384
+C = 64
+K = 1
+P = 0
+S = 1
+
+[layers.conv52]
+H = 14
+W = 14
+F = 384
+C = 384
+K = 3
+P = 1
+S = 1
+
+[layers.conv54]
+H = 14
+W = 14
+F = 64
+C = 384
+K = 1
+P = 0
+S = 1
+
+[layers.conv56]
+H = 14
+W = 14
+F = 384
+C = 64
+K = 1
+P = 0
+S = 1
+
+[layers.conv58]
+H = 14
+W = 14
+F = 384
+C = 384
+K = 3
+P = 1
+S = 1
+
+[layers.conv60]
+H = 14
+W = 14
+F = 96
+C = 384
+K = 1
+P = 0
+S = 1
+
+[layers.conv61]
+H = 14
+W = 14
+F = 576
+C = 96
+K = 1
+P = 0
+S = 1
+
+[layers.conv63]
+H = 14
+W = 14
+F = 576
+C = 576
+K = 3
+P = 1
+S = 1
+
+[layers.conv65]
+H = 14
+W = 14
+F = 96
+C = 576
+K = 1
+P = 0
+S = 1
+
+[layers.conv67]
+H = 14
+W = 14
+F = 576
+C = 96
+K = 1
+P = 0
+S = 1
+
+[layers.conv69]
+H = 14
+W = 14
+F = 576
+C = 576
+K = 3
+P = 1
+S = 1
+
+[layers.conv71]
+H = 14
+W = 14
+F = 96
+C = 576
+K = 1
+P = 0
+S = 1
+
+[layers.conv73]
+H = 14
+W = 14
+F = 576
+C = 96
+K = 1
+P = 0
+S = 1
+
+[layers.conv75]
+H = 7
+W = 7
+F = 576
+C = 576
+K = 3
+P = 1
+S = 2
+
+[layers.conv77]
+H = 7
+W = 7
+F = 160
+C = 576
+K = 1
+P = 0
+S = 1
+
+[layers.conv78]
+H = 7
+W = 7
+F = 960
+C = 160
+K = 1
+P = 0
+S = 1
+
+[layers.conv80]
+H = 7
+W = 7
+F = 960
+C = 960
+K = 3
+P = 1
+S = 1
+
+[layers.conv82]
+H = 7
+W = 7
+F = 160
+C = 960
+K = 1
+P = 0
+S = 1
+
+[layers.conv84]
+H = 7
+W = 7
+F = 960
+C = 160
+K = 1
+P = 0
+S = 1
+
+[layers.conv86]
+H = 7
+W = 7
+F = 960
+C = 960
+K = 3
+P = 1
+S = 1
+
+[layers.conv88]
+H = 7
+W = 7
+F = 160
+C = 960
+K = 1
+P = 0
+S = 1
+
+[layers.conv90]
+H = 7
+W = 7
+F = 960
+C = 160
+K = 1
+P = 0
+S = 1
+
+[layers.conv92]
+H = 7
+W = 7
+F = 960
+C = 960
+K = 3
+P = 1
+S = 1
+
+[layers.conv94]
+H = 7
+W = 7
+F = 320
+C = 960
+K = 1
+P = 0
+S = 1
+
+[layers.conv95]
+H = 7
+W = 7
+F = 1280
+C = 320
+K = 1
+P = 0
+S = 1

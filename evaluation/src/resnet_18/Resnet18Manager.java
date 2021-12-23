@@ -2,8 +2,9 @@ package resnet_18;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
@@ -21,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Resnet18Manager extends Max5LMemManager implements ManagerInterface {
-  public Resnet18Manager(
-      ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
+  public Resnet18Manager(ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -50,9 +50,8 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
     Resnet18EngineParameters params = new Resnet18EngineParameters(args);
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
-    
-    cps.add(new ConvLayerParameters
-                .Builder(112, 112, 3, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(112, 112, 3, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -64,18 +63,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(1)
+                .input("")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -88,17 +86,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv0")
-                .numOutputs(2)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -111,17 +108,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("pool0")
-                .numOutputs(1)
+                .output(OutputType.OFMAP)
+                .output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -129,22 +126,21 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv2")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv1")
-                .numOutputs(2)
-                .residual("pool0_1")
+
+                .residual("conv1_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -157,17 +153,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv2")
-                .numOutputs(1)
+                .output(OutputType.OFMAP)
+                .output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -175,22 +171,22 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv4")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv3")
-                .numOutputs(2)
-                .residual("conv2_1")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
+                .residual("conv3_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 64, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 64, 128, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -203,17 +199,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv4")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR0")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 64, 128, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 64, 128, 1)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -226,17 +221,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv4_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 128, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -244,22 +238,21 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv6")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv5")
-                .numOutputs(2)
+
                 .residual("shortcut2")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 128, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -272,17 +265,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv6")
-                .numOutputs(1)
+                .output(OutputType.OFMAP)
+                .output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 128, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -290,22 +283,22 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv8")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv7")
-                .numOutputs(2)
-                .residual("conv6_1")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
+                .residual("conv7_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 128, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 128, 256, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -318,17 +311,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv8")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 128, 256, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 128, 256, 1)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -341,17 +333,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv8_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 256, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -359,22 +350,21 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv10")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv9")
-                .numOutputs(2)
+
                 .residual("shortcut3")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 256, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -387,17 +377,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv10")
-                .numOutputs(1)
+                .output(OutputType.OFMAP)
+                .output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 256, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -405,22 +395,22 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv12")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv11")
-                .numOutputs(2)
-                .residual("conv10_1")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
+                .residual("conv11_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR1")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(7, 7, 256, 512, 3)
+
+    cps.add(new ConvLayerParameters.Builder(7, 7, 256, 512, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -433,17 +423,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv12")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(4)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR2")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(7, 7, 256, 512, 1)
+
+    cps.add(new ConvLayerParameters.Builder(7, 7, 256, 512, 1)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -456,17 +445,16 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv12_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(4)
                 .PC(1)
                 .PK(1)
-                .namedRegion("SLR2")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(7, 7, 512, 512, 3)
+
+    cps.add(new ConvLayerParameters.Builder(7, 7, 512, 512, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -474,22 +462,21 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv14")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv13")
-                .numOutputs(2)
+
                 .residual("shortcut4")
                 .PF(4)
                 .PC(4)
                 .PK(1)
-                .namedRegion("SLR2")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(7, 7, 512, 512, 3)
+
+    cps.add(new ConvLayerParameters.Builder(7, 7, 512, 512, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -502,17 +489,17 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv14")
-                .numOutputs(1)
+                .output(OutputType.OFMAP)
+                .output(OutputType.IFMAP)
                 .residual("")
                 .PF(4)
                 .PC(4)
                 .PK(1)
-                .namedRegion("SLR2")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(7, 7, 512, 512, 3)
+
+    cps.add(new ConvLayerParameters.Builder(7, 7, 512, 512, 3)
                 .BW(8)
                 .WBW(2)
                 .numFracBits(0)
@@ -520,20 +507,19 @@ public class Resnet18Manager extends Max5LMemManager implements ManagerInterface
                 .name("conv16")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv15")
-                .numOutputs(1)
-                .residual("conv14_1")
+
+                .residual("conv15_1")
                 .PF(4)
                 .PC(4)
                 .PK(1)
-                .namedRegion("SLR2")
+                .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
 
     Resnet18Manager mgr = new Resnet18Manager(params, cps);
     mgr.createSLiCinterface(mgr.interfaceDefault(cps, params));

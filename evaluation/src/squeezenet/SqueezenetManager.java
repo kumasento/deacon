@@ -2,8 +2,9 @@ package squeezenet;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
@@ -21,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqueezenetManager extends Max5LMemManager implements ManagerInterface {
-  public SqueezenetManager(
-      ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
+  public SqueezenetManager(ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -50,9 +50,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
     SqueezenetEngineParameters params = new SqueezenetEngineParameters(args);
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
-    
-    cps.add(new ConvLayerParameters
-                .Builder(112, 112, 3, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(112, 112, 3, 64, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -64,8 +63,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(1)
+                .input("")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -73,9 +72,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 64, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -87,8 +85,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(1)
+                .input("")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -96,9 +94,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 16, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 16, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -110,8 +107,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(2)
+                .input("")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -119,9 +117,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 16, 64, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 16, 64, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -134,7 +131,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire0s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -142,9 +139,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 16, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 16, 64, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -157,7 +153,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire0s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -165,9 +161,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 128, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 128, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -179,8 +174,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire0e0").input("fire0e1")
-                .numOutputs(1)
+                .input("fire0e0")
+                .input("fire0e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -188,9 +184,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 128, 16, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 128, 16, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -203,7 +198,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire0c")
-                .numOutputs(2)
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -211,9 +207,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 16, 64, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 16, 64, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -226,7 +221,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire1s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -234,9 +229,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 16, 64, 3)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 16, 64, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -249,7 +243,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire1s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -257,9 +251,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(56, 56, 64, 128, 1)
+
+    cps.add(new ConvLayerParameters.Builder(56, 56, 64, 128, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -271,8 +264,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire1e0").input("fire1e1")
-                .numOutputs(1)
+                .input("fire1e0")
+                .input("fire1e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -280,9 +274,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 128, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -294,8 +287,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(1)
+                .input("")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -303,9 +296,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 32, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 32, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -317,8 +309,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(2)
+                .input("")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -326,9 +319,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 32, 128, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 32, 128, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -341,7 +333,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire2s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -349,9 +341,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 32, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 32, 128, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -364,7 +355,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire2s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -372,9 +363,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 256, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 256, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -386,8 +376,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire2e0").input("fire2e1")
-                .numOutputs(1)
+                .input("fire2e0")
+                .input("fire2e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -395,9 +386,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 256, 32, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 256, 32, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -410,7 +400,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire2c")
-                .numOutputs(2)
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -418,9 +409,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 32, 128, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 32, 128, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -433,7 +423,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire3s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -441,9 +431,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 32, 128, 3)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 32, 128, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -456,7 +445,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire3s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -464,9 +453,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(28, 28, 128, 256, 1)
+
+    cps.add(new ConvLayerParameters.Builder(28, 28, 128, 256, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -478,8 +466,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire3e0").input("fire3e1")
-                .numOutputs(1)
+                .input("fire3e0")
+                .input("fire3e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -487,9 +476,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 256, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -501,8 +489,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(1)
+                .input("")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -510,9 +498,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 48, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 48, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -524,8 +511,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(2)
+                .input("")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -533,9 +521,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 48, 192, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 48, 192, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -548,7 +535,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire4s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -556,9 +543,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 48, 192, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 48, 192, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -571,7 +557,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire4s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -579,9 +565,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 192, 384, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 192, 384, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -593,8 +578,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire4e0").input("fire4e1")
-                .numOutputs(1)
+                .input("fire4e0")
+                .input("fire4e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -602,9 +588,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 384, 48, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 384, 48, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -617,7 +602,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire4c")
-                .numOutputs(2)
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -625,9 +611,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 48, 192, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 48, 192, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -640,7 +625,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire5s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -648,9 +633,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 48, 192, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 48, 192, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -663,7 +647,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire5s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -671,9 +655,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 192, 384, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 192, 384, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -685,8 +668,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire5e0").input("fire5e1")
-                .numOutputs(1)
+                .input("fire5e0")
+                .input("fire5e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -694,9 +678,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 384, 64, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 384, 64, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -708,8 +691,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .numOutputs(2)
+                .input("")
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -717,9 +701,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 64, 256, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 64, 256, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -732,7 +715,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire6s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -740,9 +723,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 64, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 64, 256, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -755,7 +737,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire6s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -763,9 +745,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 512, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 512, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -777,8 +758,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire6e0").input("fire6e1")
-                .numOutputs(1)
+                .input("fire6e0")
+                .input("fire6e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -786,9 +768,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 512, 64, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 512, 64, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -801,7 +782,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire6c")
-                .numOutputs(2)
+                .output(OutputType.OFMAP)
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -809,9 +791,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 64, 256, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 64, 256, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -824,7 +805,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire7s")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -832,9 +813,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 64, 256, 3)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 64, 256, 3)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -847,7 +827,7 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("fire7s_1")
-                .numOutputs(1)
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -855,9 +835,8 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(14, 14, 256, 512, 1)
+
+    cps.add(new ConvLayerParameters.Builder(14, 14, 256, 512, 1)
                 .BW(8)
                 .WBW(8)
                 .numFracBits(0)
@@ -869,8 +848,9 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("fire7e0").input("fire7e1")
-                .numOutputs(1)
+                .input("fire7e0")
+                .input("fire7e1")
+
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -878,7 +858,6 @@ public class SqueezenetManager extends Max5LMemManager implements ManagerInterfa
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
 
     SqueezenetManager mgr = new SqueezenetManager(params, cps);
     mgr.createSLiCinterface(mgr.interfaceDefault(cps, params));

@@ -35,6 +35,7 @@ struct DfeConvLayerParameters {
   uint64_t STRIDE;
   std::string TYPE;
   std::string SEQ;
+  std::string name;
   bool wino_coeff_offline;
   bool coeff_on_chip;
   uint64_t num_frac_bits;
@@ -48,6 +49,7 @@ struct DfeConvLayerParameters {
   static DfeConvLayerParameters get(max_file_t *max_file, std::string name) {
     DfeConvLayerParameters dcp;
 
+    dcp.name = name;
     dcp.TH = GetConstant(max_file, name + "_H");
     dcp.TW = GetConstant(max_file, name + "_W");
     dcp.TOH = GetConstant(max_file, name + "_OH");

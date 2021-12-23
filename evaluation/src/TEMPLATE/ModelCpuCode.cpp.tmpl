@@ -39,13 +39,17 @@ int main(int argc, char *argv[]) {{
   uint64_t batch_size = 1;
   uint64_t num_iters = 1;
   std::string data_file;
-  while ((c = getopt(argc, argv, "i:n:f:")) != -1) {{
+  bool run_golden = false;
+  while ((c = getopt(argc, argv, "i:n:gf:")) != -1) {{
     switch (c) {{
       case 'i':
         num_iters = atoi(optarg);
         break;
       case 'n':
         batch_size = atoi(optarg);
+        break;
+      case 'g':
+        run_golden = true;
         break;
       case 'f':
         data_file = std::string(optarg);
@@ -66,7 +70,59 @@ int main(int argc, char *argv[]) {{
   auto input =
       CreateRandomArray<float>(cps.front().dfe.TC * cps.front().dfe.TH * cps.front().dfe.TW * batch_size,
                                input_scale * min_val, input_scale * max_val);
+                        LOG(INFO) << "num frac bits: " << cps.front().dfe.num_frac_bits << '\n';
   auto input_dfe = FloatToFixed<data_t>(input, cps.front().dfe.num_frac_bits);
+
+  for (int i = 0; i < 3; ++ i)
+    LOG(INFO) << "input[" << i << "] = " << input[i] << "  dfe = " <<  FixedToFloat<data_t>(input_dfe[i], cps.front().dfe.num_frac_bits) << '\n';
+
+
+  /** Run golden test. */
+  std::vector<std::vector<data_t>> output_cpu_list;
+  if (run_golden) {{
+    LOG(INFO) << "Running golden function ...\n";
+
+    auto dummy_bias = std::vector<data_t>();
+    output_cpu_list.push_back(input_dfe);
+
+    for (int i = 0; i < cps.size(); ++i) {{
+      ConvLayerParameters cp = cps[i];
+      LOG(INFO) << std::setw(15) << std::setfill(' ') << cp.dfe.TYPE << " " << cp.C << " x " << cp.H << " x " << cp.W << " -> " << cp.F
+                << " x " << cp.getOutputHeight() << " x " << cp.getOutputWidth()
+                << '\n';
+
+      auto output_cpu = std::vector<data_t>(cp.F * cp.getOutputHeight() *
+                                            cp.getOutputWidth() * batch_size);
+      if (cp.dfe.TYPE == "STANDARD") {{
+        std::vector<float> weights = ReadDataFile(data_file, cp.dfe.name);
+        std::vector<data_t> weights_dfe = FloatToFixed<data_t>(weights, cp.dfe.num_frac_bits);
+
+        ConvLayerCpuBatched<data_t>(output_cpu_list.back(), weights_dfe, dummy_bias,
+                                    output_cpu, batch_size, cp.H, cp.W, cp.C,
+                                    cp.F, cp.K, cp.P, cp.S,
+                                    /*use_bias=*/false,
+                                    /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
+      }} else if (cp.dfe.TYPE == "DEPTHWISE_SEPARABLE") {{
+        std::vector<float> weights_dw, weights_pw;
+        weights_dw = ReadDataFile(data_file, cp.dfe.name + "_dw");
+        weights_pw = ReadDataFile(data_file, cp.dfe.name + "_pw");
+
+        std::vector<data_t> weights_dw_dfe, weights_pw_dfe;
+        weights_dw_dfe = FloatToFixed<data_t>(weights_dw, cp.dfe.num_frac_bits);
+        weights_pw_dfe = FloatToFixed<data_t>(weights_pw, cp.dfe.num_frac_bits);
+
+        DepthwiseSeparableConvLayerCpuBatched<data_t>(
+            output_cpu_list.back(), weights_dw_dfe, weights_pw_dfe,
+            dummy_bias, output_cpu, batch_size, cp.H, cp.W, cp.C, cp.F, cp.K, cp.P,
+            cp.S,
+            /*use_bias=*/false,
+            /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
+      }} else {{
+        LOG(ERROR) << "Doesn't recognize type: " << cp.dfe.TYPE << '\n';
+      }}
+      output_cpu_list.push_back(output_cpu);
+    }}
+  }}
 
   auto output_dfe =
       std::vector<data_t>(cps.back().F * cps.back().getOutputHeight() *
@@ -102,21 +158,71 @@ int main(int argc, char *argv[]) {{
 
   output_dfe = ReorderOutput(output_dfe, cps.back(), batch_size);
 
+  for (int i = 0; i < std::min((int)output_dfe.size(), 10); ++ i) 
+    LOG(INFO) << "output_dfe[" << i << "] = " << FixedToFloat<data_t>(output_dfe[i], cps.back().dfe.num_frac_bits) << '\n';
+  
+
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() / (num_iters) << "s\n";
 
   uint64_t ops = 0;
   for (auto &cp : cps) {{
     // TODO: check the exact convlayer type.
+    uint64_t cur = 0;
     if (cp.dfe.TYPE == "STANDARD")
-      ops += cp.H * cp.W * cp.K * cp.K * cp.C * cp.F * 2;
+      cur = (uint64_t) cp.dfe.TOH * cp.dfe.TOW * cp.K * cp.K * cp.C * cp.F * 2;
     else if (cp.dfe.TYPE == "POINTWISE")
-      ops += cp.H * cp.W * cp.C * cp.F * 2;
+      cur = (uint64_t) cp.dfe.TOH * cp.dfe.TOW * cp.C * cp.F * 2;
     else if (cp.dfe.TYPE == "DEPTHWISE_SEPARABLE")
-      ops += cp.H * cp.W * cp.K * cp.K * cp.C * 2 + cp.H * cp.W * cp.C * cp.F * 2;
+      cur = (uint64_t) cp.dfe.TOH * cp.dfe.TOW * cp.K * cp.K * cp.C * 2 + (uint64_t) cp.dfe.TOH * cp.dfe.TOW * cp.C * cp.F * 2;
+    LOG(INFO) << "[Ops] layer " << std::setfill(' ') << std::setw(30) << cp.dfe.name << " = " << cur * 1e-6 << " M\n";
+    ops += cur;
   }}
+  LOG(INFO) << "OPS:    " << (double)ops * batch_size * 1e-9 << " G\n"; 
   LOG(INFO) << "FPS:    " << (double) batch_size / (elapsed_seconds.count() / num_iters) << "\n";
   LOG(INFO) << "GFLOPs: " << (double)ops * batch_size * 1e-9 / (elapsed_seconds.count() / num_iters) << "\n";
+
+
+
+  auto &output_cpu = output_cpu_list.back();
+  LOG(INFO) << "Examine results ...\n";
+  for (int i = 0; i < 5; ++i)
+    LOG(INFO) << "output_cpu[" << i << "] = "
+              << FixedToFloat<data_t>(output_cpu[i], cps.back().dfe.num_frac_bits)
+              << '\n';
+
+  for (int i = 0; i < 5; ++i)
+    LOG(INFO) << "output_dfe[" << i << "] = "
+              << FixedToFloat<data_t>(output_dfe[i], cps.back().dfe.num_frac_bits)
+              << '\n';
+
+  auto output_cpu_float =
+      FixedToFloat<data_t>(output_cpu, cps.back().dfe.num_frac_bits);
+  auto output_dfe_float =
+      FixedToFloat<data_t>(output_dfe, cps.back().dfe.num_frac_bits);
+
+  const int16_t mask = (1 << (cps.back().dfe.num_frac_bits + 1)) - 1;
+  LOG(INFO) << "Evaluating difference ...";
+  LOG(INFO) << "Mask: " << std::setw(8) << std::showbase << std::setfill('0')
+            << std::hex << mask;
+
+  uint64_t num_failed = 0;
+  double total_diff = 0.0f;
+  for (uint64_t i = 0; i < output_cpu.size(); i++) {{
+    auto diff = std::abs(output_cpu[i] - output_dfe[i]);
+    auto float_diff = std::abs(output_cpu_float[i] - output_dfe_float[i]);
+    total_diff += float_diff;
+    if ((static_cast<int16_t>(diff) | mask) != mask) {{
+      if (num_failed < 10)
+        fprintf(stderr, "Result mis-matched at %6ld: cpu %10.6f dfe %10.6f\n",
+                i, output_cpu_float[i], output_dfe_float[i]);
+      num_failed++;
+      // exit(1);
+    }}
+  }}
+
+  LOG(INFO) << "num_failed: " << num_failed << " total: " << output_cpu.size()
+            << " avg_diff: " << (total_diff / output_cpu.size()) << '\n';
 
   max_unload(engine);
   max_file_free(max_file);

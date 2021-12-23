@@ -3,9 +3,6 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
@@ -16,6 +13,8 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Design parameters used to build a single convolution layer.
@@ -50,6 +49,7 @@ public class ConvLayerParameters extends LayerParameters {
   public int winoW;
   public String residual = "";
   public List<String> inputs;
+  public List<OutputType> outputs;
   public int numOutputs = 1;
   public String coeffFile = "";
 
@@ -57,9 +57,7 @@ public class ConvLayerParameters extends LayerParameters {
 
   public PoolingLayerParameters pool;
 
-  public enum Pooling {
-    AVG, MAX
-  }
+  public enum Pooling { AVG, MAX }
 
   public Pooling pooling;
 
@@ -69,9 +67,7 @@ public class ConvLayerParameters extends LayerParameters {
    * @author Ruizhe Zhao
    *
    */
-  public enum CompSeq {
-    FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR
-  }
+  public enum CompSeq { FILTER_MAJOR, CHANNEL_MAJOR, PIXEL_MAJOR }
 
   /**
    * Type of convolution computation
@@ -88,6 +84,11 @@ public class ConvLayerParameters extends LayerParameters {
     IDENTITY,
     POOLING,
     CONCAT
+  }
+
+  public enum OutputType {
+    IFMAP, // duplicate the input stream
+    OFMAP // duplicate the output stream
   }
 
   public ConvLayerParameters(Builder builder) {
@@ -125,6 +126,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.coeffOnChip = builder.coeffOnChip;
     this.residual = builder.residual;
     this.inputs = builder.inputs;
+    this.outputs = builder.outputs;
     this.numOutputs = builder.numOutputs;
     this.initCoeff = builder.initCoeff;
     this.coeffFile = builder.coeffFile;
@@ -227,7 +229,7 @@ public class ConvLayerParameters extends LayerParameters {
     if (type == Type.IDENTITY)
       return ((long) H * W * C / (PC * PK));
     if (type == Type.CONCAT) // read happens in parallel
-      return ((long) H * W * C / (PC * PK * inputs.size()));
+      return ((long) H * W * C / (PC * PK));
     if (type == Type.POOLING)
       return ((long) H * W * C / (PC * PK));
     if (type == Type.STANDARD)
@@ -416,6 +418,7 @@ public class ConvLayerParameters extends LayerParameters {
     private final int OW;
     private String residual = "";
     private List<String> inputs; // string indicates the input port
+    private List<OutputType> outputs; // enums indicate what the output stream should output.
     private int numOutputs = 1; // number of output ports
     private int BW; /* bit width */
     private int WBW;
@@ -482,6 +485,7 @@ public class ConvLayerParameters extends LayerParameters {
       this.coeffOnChip = false;
       this.initCoeff = false;
       this.inputs = new ArrayList<String>();
+      this.outputs = new ArrayList<OutputType>();
       this.numOutputs = 1;
       this.namedRegion = "";
       this.pooling = Pooling.MAX;
@@ -494,6 +498,11 @@ public class ConvLayerParameters extends LayerParameters {
 
     public Builder namedRegion(String namedRegion) {
       this.namedRegion = namedRegion;
+      return this;
+    }
+
+    public Builder output(OutputType output) {
+      this.outputs.add(output);
       return this;
     }
 
@@ -574,7 +583,7 @@ public class ConvLayerParameters extends LayerParameters {
 
       throw new IllegalArgumentException(
           String.format("dtype cannot be recognised, should be one of float, "
-              + "fixed, int. Got \"%s\"",
+                  + "fixed, int. Got \"%s\"",
               dtype));
     }
 
@@ -582,7 +591,7 @@ public class ConvLayerParameters extends LayerParameters {
       if (numFracBits < 0 || numFracBits > BW)
         throw new IllegalArgumentException(
             "Number of fraction bits should >= 0 and <= bit width. Got " + numFracBits
-                + " while BW is " + BW);
+            + " while BW is " + BW);
 
       this.numFracBits = numFracBits;
       return this;

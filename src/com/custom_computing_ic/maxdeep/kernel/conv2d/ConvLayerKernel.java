@@ -3,6 +3,7 @@
  */
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.Conv2DKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerIfmapBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
@@ -11,6 +12,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.RoundingMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
@@ -60,10 +62,13 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     owner.getManager().logMsg(
         "Input height = %d, output height = %d, pad = %d\n", cp.H, cp.W, cp.PAD);
 
+    /** Sanity check */
     if (cp.useWinograd && cp.PAD > 0)
       throw new IllegalArgumentException("Padding should be 0 when using winograd.");
     if (cp.STRIDE != 1 && cp.STRIDE != 2)
       throw new IllegalArgumentException("Stride should be 1 or 2.");
+    if (!cp.residual.isEmpty() && cp.seq == CompSeq.FILTER_MAJOR)
+      throw new IllegalArgumentException("Cannot use filter major for residual layer");
 
     this.prefix = prefix;
 
@@ -72,8 +77,10 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
      * this.H indicates the maximum range of the counter on the H axis. Therefore,
      * it should be padded if cp.PAD is larger than 0.
      */
-    this.H = cp.useWinograd ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.H + 2 * cp.PAD);
-    this.W = cp.useWinograd ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.W + 2 * cp.PAD);
+    this.H =
+        cp.useWinograd ? (cp.H + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.H + 2 * cp.PAD);
+    this.W =
+        cp.useWinograd ? (cp.W + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) : (cp.W + 2 * cp.PAD);
     this.PH = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : 1;
     this.PW = cp.useWinograd ? ConvLayerLineBuffer.WINO_LBUF_TILE_SIZE : cp.PK;
 
@@ -97,12 +104,24 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     initConvLayer();
   }
 
+  public DFEVector<DFEVar> getIfmapByOfmapAddr() {
+    if (cp.seq == CompSeq.CHANNEL_MAJOR)
+      throw new IllegalArgumentException("Only allowed for filter major.");
+
+    DFEVar addr = f.mul(H * W)
+                      .add((oh.add(cp.PAD)).mul(W))
+                      .add(ow.add(cp.PAD))
+                      .cast(dfeUInt(MathUtils.bitsToAddress(ibuf.getDepth())));
+
+    return ibuf.getMem().read(addr);
+  }
+
   public void initConvLayer() {
     if (!cp.coeffOnChip) {
       if (coeffList.size() != 1)
         throw new IllegalArgumentException(
             String.format("There should be only one coefficient vector"
-                + " of standard convolutional layer kernel, got %d",
+                    + " of standard convolutional layer kernel, got %d",
                 coeffList.size()));
       this.coeff = coeffList.get(0);
     } else {
@@ -111,11 +130,13 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
       if (!cp.initCoeff) {
         this.initCoeff.connect(constant.var(0).cast(dfeBool()));
         if (cp.coeffFile.isEmpty()) {
-          List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /* mapToCPU= */!cp.initCoeff);
+          List<Memory<DFEVar>> coeffFMemList =
+              buildCoeffFMemList(WT, /* mapToCPU= */ !cp.initCoeff);
           this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
         } else {
-          this.coeff = readCoeffFMemList(
-              addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+          // this.coeff = readCoeffFMemList(
+          //     addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+          this.coeff = getROM(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)).read(addr);
         }
       } else {
         this.coeff = getCoeffVecTList().get(0).newInstance(getOwner());
@@ -123,8 +144,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
 
     DFEVector<DFEVar> zeroVec = ifmapVecT.newInstance(getOwner());
-    for (int i = 0; i < ifmapVecT.getSize(); ++i)
-      zeroVec.get(i).connect(constant.var(0).cast(T));
+    for (int i = 0; i < ifmapVecT.getSize(); ++i) zeroVec.get(i).connect(constant.var(0).cast(T));
 
     if (cp.dbg)
       debug.simPrintf("ifmap = %KObj%\n", ifmap);
@@ -132,8 +152,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
     /* ifmap buffer */
     ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T);
-    DFEVector<DFEVar> ifmapBufVec = ibuf.port(input, getIfmapBufferAddr(),
-        getIfmapBufferWriteEn().and(initCoeff.complement()));
+    DFEVector<DFEVar> ifmapBufVec =
+        ibuf.port(input, getIfmapBufferAddr(), getIfmapBufferWriteEn().and(initCoeff.complement()));
 
     /* line buffer */
     lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
@@ -154,13 +174,50 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
     /* output buffer */
     obuf = new ConvLayerOfmapBuffer(
-        getOwner(), cp, conv2dOfmap.getElementsAsList()[0].getType(), prefix);
+        getOwner(), cp, conv2dOfmap.getElementsAsList().get(0).getType(), prefix);
     obuf.setReset(getOfmapReset());
 
+    /** handle residual connection */
+    if (residual != null) {
+      int depth = MathUtils.nextPowerOfTwo(cp.OH * cp.OW);
+      Memory<DFEVector<DFEVar>> rbuf = mem.alloc(getOfmapVecT(), depth);
+      if (cp.STRIDE != 1)
+        throw new IllegalArgumentException("Stride should be 1");
+      if (cp.PK != 1)
+        throw new IllegalArgumentException("PK should be 1");
+
+      // Write based on the ifmap indices.
+      DFEVar writeAddr = (h.sub(cp.PAD))
+                             .mul(cp.W / cp.PK)
+                             .add(w.sub(cp.PAD))
+                             .cast(dfeUInt(MathUtils.bitsToAddress(depth)));
+      DFEVar writeEn = getIfmapBufferWriteEn().and(isInPaddedArea(h, w).complement());
+
+      // Read based on the ofmap indices
+      DFEVar readAddr = oh.mul(cp.OW).add(ow).cast(dfeUInt(MathUtils.bitsToAddress(depth)));
+
+      rbuf.write(writeAddr, residual, writeEn);
+      DFEVector<DFEVar> rbufPort = rbuf.read(readAddr);
+      if (cp.seq != CompSeq.CHANNEL_MAJOR)
+        throw new IllegalArgumentException("Should be filter major.");
+
+      DFEVector<DFEVar> residualAdd =
+          control.mux(c.eq(0), constant.vect(conv2dOfmap.getSize(), T, 0), rbufPort);
+      if (cp.dbg) {
+        debug.simPrintf("[Residual] write addr    = %KObj%\n", writeAddr);
+        debug.simPrintf("[Residual] read addr     = %KObj%\n", readAddr);
+        debug.simPrintf("[Residual] data          = %KObj%\n", residual);
+        debug.simPrintf("[Residual] writeEn       = %KObj%\n", writeEn);
+        debug.simPrintf("[Residual] to add        = %KObj%\n", residualAdd);
+      }
+      conv2dOfmap = conv2dOfmap.add(residualAdd);
+    }
+
     if (cp.BW == 1) {
-      DFEVector<DFEVar> rawOfmap = obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
+      DFEVector<DFEVar> rawOfmap =
+          obuf.port(conv2dOfmap, getOfmapBufferAddr(), getOfmapBufferWriteEn());
       for (int i = 0; i < rawOfmap.getSize(); i++)
-        this.ofmap[i].connect((rawOfmap[i] > 1).cast(T));
+        this.ofmap.get(i).connect((rawOfmap.get(i).gt(1)).cast(T));
 
     } else {
       // TODO: change 1 here to be a real threshold value
@@ -259,7 +316,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     // TODO: support cases that the weights are in channel major.
     return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT)
         + c.cast(addrT))
-            .cast(addrT);
+        .cast(addrT);
   }
 
   @Override
@@ -362,7 +419,8 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (cp.useWinograd) {
       ow = (w <= lbufHeight - 1) ? constant.var(0) : w - lbufHeight + 1;
     } else {
-      ow = (w * cp.PK < (cp.K - cp.K / 2)) ? constant.var(0) : (w * cp.PK + cp.K / 2 - cp.K) / cp.PK;
+      ow =
+          (w * cp.PK < (cp.K - cp.K / 2)) ? constant.var(0) : (w * cp.PK + cp.K / 2 - cp.K) / cp.PK;
     }
     ow = ow.cast(countT);
 
@@ -379,7 +437,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     }
   }
 
-  protected DFEVar getIfmapBufferAddr() {
+  protected DFEVar getIfmapBufferAddr(DFEVar c) {
     DFEVar addr;
     switch (cp.seq) {
       case CHANNEL_MAJOR:
@@ -398,6 +456,10 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
         throw new IllegalArgumentException(
             String.format("Computation sequence %s has not been supported yet", cp.seq));
     }
+  }
+
+  protected DFEVar getIfmapBufferAddr() {
+    return getIfmapBufferAddr(c);
   }
 
   protected DFEVar getIfmapBufferWriteEn() {

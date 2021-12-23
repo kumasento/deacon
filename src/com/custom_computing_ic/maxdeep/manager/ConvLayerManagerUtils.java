@@ -4,6 +4,7 @@ import com.custom_computing_ic.dfe_snippets.kernels.PaddingKernel;
 import com.custom_computing_ic.dfe_snippets.kernels.UnpaddingKernel;
 import com.custom_computing_ic.dfe_snippets.manager.ManagerUtils;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
@@ -108,6 +109,9 @@ public class ConvLayerManagerUtils {
     for (int i = 1; i < cps.size(); ++i)
       if (cps.get(i).inputs.isEmpty())
         cps.get(i).inputs.add(cps.get(i - 1).name);
+    for (int i = 0; i < cps.size(); ++i)
+      if (cps.get(i).outputs.isEmpty())
+        cps.get(i).outputs.add(OutputType.OFMAP);
   }
 
   public static NamedRegion getNamedRegion(String namedRegion) {
@@ -206,11 +210,15 @@ public class ConvLayerManagerUtils {
       } else {
         if (cp.type == Type.CONCAT) {
           // Connects the output from port (getOutputIndex) to the input (idx)
-          for (int idx = 0; idx < cp.inputs.size(); ++idx)
-            knl.getInput(ConvLayerWrapKernel.getIfmapName(idx))
-                .connect(knls.get(getInputKernelName(cp.inputs.get(idx)))
-                             .getOutput(ConvLayerWrapKernel.getOfmapName(
-                                 getOutputIndex(cp.inputs.get(idx)))));
+          for (int idx = 0; idx < cp.inputs.size(); ++idx) {
+            String ifmapName = ConvLayerWrapKernel.getIfmapName(idx);
+            String inputKernelName = getInputKernelName(cp.inputs.get(idx));
+            String ofmapName = ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.inputs.get(idx)));
+
+            mgr.logMsg("Connecting %s <== %s: %s\n", ifmapName, inputKernelName, ofmapName);
+
+            knl.getInput(ifmapName).connect(knls.get(inputKernelName).getOutput(ofmapName));
+          }
         } else {
           if (cp.inputs.size() != 1)
             throw new IllegalArgumentException("Input size is not 1");
@@ -219,8 +227,8 @@ public class ConvLayerManagerUtils {
               knls.get(getInputKernelName(cp.inputs.get(0)))
                   .getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.inputs.get(0))));
 
-          if (cp.type == Type.IDENTITY)
-            enlargeFifoCapacity(mgr, knl, link, cp.inputs.get(0), cpm);
+          // if (cp.type == Type.IDENTITY)
+          //   enlargeFifoCapacity(mgr, knl, link, cp.inputs.get(0), cpm);
 
           knl.getInput(ConvLayerWrapKernel.IFMAP_NAME).connect(link);
         }
@@ -234,7 +242,7 @@ public class ConvLayerManagerUtils {
       if (!cp.residual.isEmpty()) {
         KernelBlock src = knls.get(getInputKernelName(cp.residual));
         DFELink link = src.getOutput(ConvLayerWrapKernel.getOfmapName(getOutputIndex(cp.residual)));
-        enlargeFifoCapacity(mgr, knl, link, cp.residual, cpm);
+        // enlargeFifoCapacity(mgr, knl, link, cp.residual, cpm);
         knl.getInput(ConvLayerWrapKernel.RESIDUAL_NAME).connect(link);
       }
 

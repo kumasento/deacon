@@ -125,6 +125,7 @@ def generate_data(cfg: Dict, root_dir: str, key: str) -> str:
 
     data_file = os.path.join(data_dir, f"data-{key}.txt")
     if os.path.isfile(data_file):
+        # return data_file
         os.remove(data_file)
 
     logger.info(f"Data generated to file: {data_file}")
@@ -192,10 +193,10 @@ class CommandRunner:
 
         return cfg_
 
-    def get_cmd(self, **kwargs) -> List[str]:
+    def get_cmd(self, run_golden: bool = False, **kwargs) -> List[str]:
         # Generate data file.
         data_file = generate_data(self.cfg, self.root_dir, key=self.key)
-        cli_options = f"-n 2 -f {data_file}"
+        cli_options = f"-n 2 -f {data_file} {'-g' if run_golden else ''}"
 
         cfg_for_make = self.get_cfg_for_make()
         cmd = ["make", self.cmd]
@@ -229,6 +230,10 @@ class RunsimCommandRunner(CommandRunner):
     def key(self):
         return os.path.basename(self.args.cfg).split(".")[0]
 
+    def get_cmd(self, **kwargs) -> List[str]:
+        cmd = super().get_cmd(run_golden=True, **kwargs)
+        return cmd
+
 
 def runsim(args: argparse.Namespace):
     """Run simulation."""
@@ -252,7 +257,6 @@ class RunCommandRunner(CommandRunner):
 
     def get_cmd(self, **kwargs) -> List[str]:
         cmd = super().get_cmd(**kwargs)
-
         return cmd
 
 
@@ -345,6 +349,15 @@ class AppGenerator:
                     cfg["INPUT"] = [cfg["INPUT"]]
                 for input_name in cfg["INPUT"]:
                     input_cfg += f""".input("{input_name}")"""
+            if not input_cfg:
+                input_cfg += """.input("")"""
+
+            output_cfg = ""
+            if "OUTPUT" in cfg:
+                if not isinstance(cfg["OUTPUT"], list):
+                    cfg["OUTPUT"] = [cfg["OUTPUT"]]
+                for output_type in cfg["OUTPUT"]:
+                    output_cfg += f""".output(OutputType.{output_type})"""
 
             cps += f"""
     cps.add(new ConvLayerParameters
@@ -361,7 +374,7 @@ class AppGenerator:
                 .coeffOnChip({str(self.cfg['global']['COEFF_ON_CHIP']).lower()})
                 .coeffFile(params.getCoeffFile())
                 {input_cfg}
-                .numOutputs({cfg['NUM_OUTPUTS'] if 'NUM_OUTPUTS' in cfg else 1})
+                {output_cfg}
                 .residual("{cfg['RESIDUAL'] if 'RESIDUAL' in cfg else ""}")
                 .PF({cfg['P_F'] if 'P_F' in cfg else 1})
                 .PC({cfg['P_C'] if 'P_C' in cfg else 1})
@@ -384,6 +397,7 @@ class AppGenerator:
             USE_DRAM=str(self.cfg["global"]["USE_DRAM"]).lower(),
             CPS=cps,
         )
+        os.system(f"clang-format -i {target_file}")
 
         self.logger.info(f"Write to manager: {target_file}")
 
@@ -401,9 +415,10 @@ class AppGenerator:
             target_file,
             PRJ=self.PRJ,
             CPS_INIT=cps_init,
-            DATA_TYPE="int8_t",
+            DATA_TYPE=f"int{self.cfg['global']['BW']}_t",
         )
 
+        os.system(f"clang-format -i {target_file}")
         self.logger.info(f"Write to CPU code: {target_file}")
 
     def run(self):

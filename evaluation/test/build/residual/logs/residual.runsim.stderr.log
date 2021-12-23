@@ -1,0 +1,56 @@
+In file included from ../../src/residual/ResidualCpuCode.cpp:10:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
+../../src/residual/ResidualCpuCode.cpp:82:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
+../../src/residual/ResidualCpuCode.cpp:109:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1222 16:48:00.615279 171349 ResidualCpuCode.cpp:71] num frac bits: 8
+I1222 16:48:00.615545 171349 ResidualCpuCode.cpp:75] input[0] = -1.02637  dfe = -1.02734
+I1222 16:48:00.615952 171349 ResidualCpuCode.cpp:75] input[1] = -0.374079  dfe = -0.375
+I1222 16:48:00.616221 171349 ResidualCpuCode.cpp:75] input[2] = 0.419399  dfe = 0.417969
+I1222 16:48:00.616472 171349 utils.h:383] Burst aligning input array of size: 128 to 192
+I1222 16:48:00.616695 171349 ResidualCpuCode.cpp:88] Tiled input size (burst aligned): 192
+I1222 16:48:00.616982 171349 utils.h:383] Burst aligning input array of size: 128 to 192
+I1222 16:48:00.617216 171349 ResidualCpuCode.cpp:90] Tiled output size (burst aligned): 192
+I1222 16:48:00.617595 171349 layers.h:757] Writing DRAM to 0 with size 0x180
+I1222 16:48:00.622532 171349 ResidualCpuCode.cpp:99] Running ...
+I1222 16:48:01.421175 171349 ResidualCpuCode.cpp:105] Done
+I1222 16:48:01.421226 171349 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1222 16:48:01.424021 171349 ResidualCpuCode.cpp:112] output_dfe[0] = 18.7969
+I1222 16:48:01.424088 171349 ResidualCpuCode.cpp:112] output_dfe[1] = 15.8711
+I1222 16:48:01.424105 171349 ResidualCpuCode.cpp:112] output_dfe[2] = -2.36719
+I1222 16:48:01.424335 171349 ResidualCpuCode.cpp:112] output_dfe[3] = -3.93359
+I1222 16:48:01.424571 171349 ResidualCpuCode.cpp:112] output_dfe[4] = 32.75
+I1222 16:48:01.424787 171349 ResidualCpuCode.cpp:112] output_dfe[5] = -10.3438
+I1222 16:48:01.425007 171349 ResidualCpuCode.cpp:112] output_dfe[6] = -11.0352
+I1222 16:48:01.425231 171349 ResidualCpuCode.cpp:112] output_dfe[7] = 8.24219
+I1222 16:48:01.425457 171349 ResidualCpuCode.cpp:112] output_dfe[8] = -1.03516
+I1222 16:48:01.425669 171349 ResidualCpuCode.cpp:112] output_dfe[9] = 11.3008
+I1222 16:48:01.425904 171349 ResidualCpuCode.cpp:116] elapsed time: 0.798581s
+I1222 16:48:01.426136 171349 ResidualCpuCode.cpp:128] FPS:    2.50444
+I1222 16:48:01.426367 171349 ResidualCpuCode.cpp:129] GFLOPs: 2.30809e-05

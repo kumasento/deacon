@@ -54,8 +54,7 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     int width = getWidth();
     int depth = MathUtils.nextPowerOfTwo(getDepth());
 
-    owner.getManager().logMsg(
-        String.format("Ifmap buffer configuration %d x %d", depth, width));
+    owner.getManager().logMsg(String.format("Ifmap buffer configuration %d x %d", depth, width));
     // System.out.printf("[ConvLayerIfmapBuffer] width = %d depth = %d\n",
     // width, depth);
 
@@ -70,13 +69,14 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
 
     owner.getManager().logMsg(String.format("loop = %s", loop));
-    if (!loop)
-      this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
-    else {
+    if (!loop) {
+      // this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
+      this.port = control.mux(writeEn, mem.read(addr), data);
+      mem.write(addr, data, writeEn);
+    } else {
       this.port = mem.read(addr);
 
-      mem.write(stream.offset(addr, -writeLatency),
-          stream.offset(data, -writeLatency),
+      mem.write(stream.offset(addr, -writeLatency), stream.offset(data, -writeLatency),
           stream.offset(writeEn, -writeLatency));
     }
 
@@ -85,8 +85,8 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
       debug.simPrintf("[ConvLayerIfmapBuffer] output = %KObj%\n", port);
       debug.simPrintf("[ConvLayerIfmapBuffer] addr = %KObj% %KObj%\n", addr,
           stream.offset(addr, -writeLatency));
-      debug.simPrintf("[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n",
-          writeEn, stream.offset(writeEn, -writeLatency));
+      debug.simPrintf("[ConvLayerIfmapBuffer] writeEn = %KObj% %KObj%\n", writeEn,
+          stream.offset(writeEn, -writeLatency));
     }
   }
 
@@ -109,8 +109,7 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     if (cp.type == Type.POINTWISE)
       return cp.PH * cp.PW * cp.PC;
 
-    return cp.useWinograd ? cp.PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES
-        : cp.PC * cp.PK;
+    return cp.useWinograd ? cp.PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES : cp.PC * cp.PK;
   }
 
   public int getDepth() {
@@ -121,22 +120,24 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
       int width = cp.W + 2 * cp.PAD;
 
       if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-        return cp.useWinograd
-            ? ((height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
-                (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
-                ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
-            : height * (width / cp.PK);
+        return cp.useWinograd ? ((height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                   * (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                   / ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
+                              : height * (width / cp.PK);
       } else if (cp.seq == CompSeq.FILTER_MAJOR) {
         return cp.useWinograd
-            ? ((cp.C / cp.PC) *
-                (height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) *
-                (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH) /
-                ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
+            ? ((cp.C / cp.PC) * (height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                * (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
+                / ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
             : (cp.C / cp.PC) * height * (width / cp.PK);
       } else {
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+        throw new IllegalArgumentException(
+            String.format("Computation sequence %s has not been supported yet", cp.seq));
       }
     }
+  }
+
+  public Memory<DFEVector<DFEVar>> getMem() {
+    return mem;
   }
 }

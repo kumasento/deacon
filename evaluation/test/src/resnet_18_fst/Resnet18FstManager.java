@@ -3,6 +3,7 @@ package resnet_18_fst;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
@@ -64,8 +65,8 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("")
-                .numOutputs(2)
+                
+                .output(OutputType.OFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -83,12 +84,12 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .name("conv1")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[1])
+                .seq(CompSeq.values()[0])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv0")
-                .numOutputs(1)
+                .output(OutputType.OFMAP).output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -106,13 +107,13 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
                 .name("conv2")
                 .pad(1)
                 .stride(1)
-                .seq(CompSeq.values()[0])
+                .seq(CompSeq.values()[1])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .input("conv1")
-                .numOutputs(1)
-                .residual("conv0_1")
+                
+                .residual("conv1_1")
                 .PF(1)
                 .PC(1)
                 .PK(1)
@@ -132,7 +133,12 @@ public class Resnet18FstManager extends Max5LMemManager implements ManagerInterf
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER4);
-    buildConfig.setParallelism(5);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EARLY_BLOCK_PLACEMENT);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXPLORE);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXTRA_TIMING_OPT);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_NET_DELAY_HIGH);
+    buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_REFINE_PLACEMENT);
+    buildConfig.setParallelism(10);
 
     mgr.build();
   }

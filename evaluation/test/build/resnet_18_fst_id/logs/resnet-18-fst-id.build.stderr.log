@@ -13,3 +13,27 @@ Wed 08:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resne
 Wed 08:45: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
 Wed 08:45: WARNING: Unconnected elements in design 'conv2'
 Wed 08:45: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18FstId_MAIA_DFE_FREQ_300/scratch/conv2_graph_warnings.txt
+Wed 11:07: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Wed 11:07: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Wed 11:07: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+Wed 13:04: ERROR: Failed to clean build directory. Cause: null
+Wed 13:04: ERROR: Build pass 'Clean Build Directory' failed.
+Wed 13:04: ERROR: FAILED TO MEET TIMING! Best timing score: 11121. We strongly recommend you do not use this .max file.
+Wed 13:04: ERROR: Please see the timing report for more information and consult the MaxCompiler optimization cheat sheet for ideas on how to improve your design.
+Wed 13:04: ERROR: Timing report: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18FstId_MAIA_DFE_FREQ_300/timingreport/index.html
+Wed 13:04: ERROR: MaxCompiler documentation: /vol/cc/opt/maxeler/maxcompiler-2021.1/docs/maxcompiler-optimization-cheat-sheet.pdf
+Wed 13:04: ERROR: Terminating build as some build passes did not run successfully.
+Wed 13:04: ERROR: ----------------------------
+Wed 13:04: ERROR: Exception in thread "main":
+Wed 13:04: ERROR:  
+Wed 13:04: ERROR:   1 build passes failed.
+Wed 13:04: ERROR: 
+Wed 13:04: ERROR: Exception Stack Trace com.maxeler.maxdc.MaxDCException: 
+Wed 13:04: ERROR:    at com.maxeler.maxdc.BuildManager.finalizeBuild(BuildManager.java:1896)
+Wed 13:04: ERROR:    at com.maxeler.maxdc.BuildManager.build(BuildManager.java:1754)
+Wed 13:04: ERROR:    at com.maxeler.platform.max5.libs.manager.Max5ManagerBuildInternal.realBuild(Unknown Source)
+Wed 13:04: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
+Wed 13:04: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
+Wed 13:04: ERROR:    at resnet_18_fst_id.Resnet18FstIdManager.main(Resnet18FstIdManager.java:188)
+Wed 13:04: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18FstId_MAIA_DFE_FREQ_300/results/Resnet18FstId.max] Error 1

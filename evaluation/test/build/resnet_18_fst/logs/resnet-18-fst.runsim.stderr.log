@@ -1,47 +1,36 @@
-Tue 12:28: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 12:28: WARNING: Unconnected elements in design 'conv0'
-Tue 12:28: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv0_graph_warnings.txt
-Tue 12:28: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 12:28: WARNING: Unconnected elements in design 'conv1'
-Tue 12:28: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv1_graph_warnings.txt
-Tue 12:28: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 12:28: WARNING: Unconnected elements in design 'conv2'
-Tue 12:28: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv2_graph_warnings.txt
-In file included from ../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:10:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
-../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:79:62:   required from here
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
-      |                     ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
-      |                       ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
-      |                         ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
-      |                           ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
-../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:106:64:   required from here
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
-      |                     ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
-      |                       ~~^~~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
-      |                         ~~^~~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
-      |                           ~~^~~~~~~~~~~
+Wed 17:24: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:24: WARNING: Unconnected elements in design 'conv0'
+Wed 17:24: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv0_graph_warnings.txt
+Wed 17:24: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:24: WARNING: Unconnected elements in design 'conv1'
+Wed 17:24: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv1_graph_warnings.txt
+Wed 17:24: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:24: WARNING: Unconnected elements in design 'conv2'
+Wed 17:24: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_SIM_FREQ_300/scratch/conv2_graph_warnings.txt
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1221 12:28:20.220283 54248 utils.h:382] Burst aligning input array of size: 75264 to 75264
-I1221 12:28:20.220511 54248 Resnet18FstCpuCode.cpp:85] Tiled input size (burst aligned): 75264
-I1221 12:28:20.220525 54248 utils.h:382] Burst aligning input array of size: 401408 to 401664
-I1221 12:28:20.221010 54248 Resnet18FstCpuCode.cpp:87] Tiled output size (burst aligned): 401664
-I1221 12:28:20.221024 54248 layers.h:757] Writing DRAM to 0 with size 0x12600
-I1221 12:28:20.278591 54248 Resnet18FstCpuCode.cpp:96] Running ...
-make: *** [runsim] Interrupt
+I1222 17:25:10.027082 410576 Resnet18FstCpuCode.cpp:72] num frac bits: 0
+I1222 17:25:10.028681 410576 Resnet18FstCpuCode.cpp:76] input[0] = -1.02637  dfe = -1
+I1222 17:25:10.028789 410576 Resnet18FstCpuCode.cpp:76] input[1] = -0.374079  dfe = 0
+I1222 17:25:10.028805 410576 Resnet18FstCpuCode.cpp:76] input[2] = 0.419399  dfe = 0
+I1222 17:25:10.029433 410576 utils.h:383] Burst aligning input array of size: 75264 to 75264
+I1222 17:25:10.029464 410576 Resnet18FstCpuCode.cpp:89] Tiled input size (burst aligned): 75264
+I1222 17:25:10.029490 410576 utils.h:383] Burst aligning input array of size: 401408 to 401664
+I1222 17:25:10.030319 410576 Resnet18FstCpuCode.cpp:91] Tiled output size (burst aligned): 401664
+I1222 17:25:10.030344 410576 layers.h:757] Writing DRAM to 0 with size 0x12600
+I1222 17:25:10.086380 410576 Resnet18FstCpuCode.cpp:100] Running ...
+I1222 17:28:56.707289 410576 Resnet18FstCpuCode.cpp:106] Done
+I1222 17:28:56.707345 410576 layers.h:774] Reading DRAM from 0x12600 with size 0x62100
+I1222 17:28:56.934265 410576 Resnet18FstCpuCode.cpp:113] output_dfe[0] = -106
+I1222 17:28:56.934329 410576 Resnet18FstCpuCode.cpp:113] output_dfe[1] = 125
+I1222 17:28:56.934343 410576 Resnet18FstCpuCode.cpp:113] output_dfe[2] = -107
+I1222 17:28:56.934355 410576 Resnet18FstCpuCode.cpp:113] output_dfe[3] = -59
+I1222 17:28:56.934384 410576 Resnet18FstCpuCode.cpp:113] output_dfe[4] = -105
+I1222 17:28:56.934404 410576 Resnet18FstCpuCode.cpp:113] output_dfe[5] = -29
+I1222 17:28:56.934417 410576 Resnet18FstCpuCode.cpp:113] output_dfe[6] = 23
+I1222 17:28:56.934862 410576 Resnet18FstCpuCode.cpp:113] output_dfe[7] = 86
+I1222 17:28:56.935222 410576 Resnet18FstCpuCode.cpp:113] output_dfe[8] = 36
+I1222 17:28:56.935472 410576 Resnet18FstCpuCode.cpp:113] output_dfe[9] = 30
+I1222 17:28:56.935730 410576 Resnet18FstCpuCode.cpp:117] elapsed time: 226.621s
+I1222 17:28:56.935994 410576 Resnet18FstCpuCode.cpp:129] FPS:    0.00882531
+I1222 17:28:56.936262 410576 Resnet18FstCpuCode.cpp:130] GFLOPs: 0.00446361

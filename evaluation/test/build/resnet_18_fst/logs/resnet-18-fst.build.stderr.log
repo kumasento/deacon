@@ -1,27 +1,43 @@
-Tue 19:58: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 19:58: WARNING: Unconnected elements in design 'conv0'
-Tue 19:58: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv0_graph_warnings.txt
-Tue 19:58: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 19:58: WARNING: Unconnected elements in design 'conv1'
-Tue 19:58: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv1_graph_warnings.txt
-Tue 19:58: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Tue 19:58: WARNING: Unconnected elements in design 'conv2'
-Tue 19:58: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv2_graph_warnings.txt
-Tue 22:07: ERROR: FAILED TO MEET TIMING! Best timing score: 5820. We strongly recommend you do not use this .max file.
-Tue 22:07: ERROR: Please see the timing report for more information and consult the MaxCompiler optimization cheat sheet for ideas on how to improve your design.
-Tue 22:07: ERROR: Timing report: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/timingreport/index.html
-Tue 22:07: ERROR: MaxCompiler documentation: /vol/cc/opt/maxeler/maxcompiler-2021.1/docs/maxcompiler-optimization-cheat-sheet.pdf
-Tue 22:07: ERROR: ----------------------------
-Tue 22:07: ERROR: Exception in thread "main":
-Tue 22:07: ERROR:  
-Tue 22:07: ERROR:   Build failed to meet timing (best timing score 5820)
-Tue 22:07: ERROR: 
-Tue 22:07: ERROR: Exception Stack Trace com.maxeler.maxdc.BuildFailedTimingException: 
-Tue 22:07: ERROR:    at com.maxeler.maxdc.BuildManager.finalizeBuild(BuildManager.java:1907)
-Tue 22:07: ERROR:    at com.maxeler.maxdc.BuildManager.build(BuildManager.java:1754)
-Tue 22:07: ERROR:    at com.maxeler.platform.max5.libs.manager.Max5ManagerBuildInternal.realBuild(Unknown Source)
-Tue 22:07: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
-Tue 22:07: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
-Tue 22:07: ERROR:    at resnet_18_fst.Resnet18FstManager.main(Resnet18FstManager.java:137)
-Tue 22:07: ERROR: ----------------------------
-make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/results/Resnet18Fst.max] Error 1
+Wed 17:30: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:30: WARNING: Unconnected elements in design 'conv0'
+Wed 17:30: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv0_graph_warnings.txt
+Wed 17:30: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:30: WARNING: Unconnected elements in design 'conv1'
+Wed 17:30: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv1_graph_warnings.txt
+Wed 17:30: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 17:30: WARNING: Unconnected elements in design 'conv2'
+Wed 17:30: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18Fst_MAIA_DFE_FREQ_300/scratch/conv2_graph_warnings.txt
+Wed 19:35: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Wed 19:35: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Wed 19:35: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+In file included from ../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:10:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:83:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/resnet_18_fst/Resnet18FstCpuCode.cpp:110:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

@@ -2,13 +2,11 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.kernel.fuse.FusedConvLayerParameters;
-import com.google.protobuf.WireFormat;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.VectorMemory;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -33,6 +31,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   protected List<Memory<DFEVar>> coeffFMemList;
   protected DFEVector<DFEVar> coeff;
   protected DFEVar initCoeff;
+
+  protected DFEVector<DFEVar> residual;
 
   public BaseConvLayerKernel(
       KernelBase<?> owner, List<ConvLayerParameters> cps, DFEType T, boolean useIfmapBuffer) {
@@ -67,6 +67,12 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
       coeffVecTList.add(new DFEVectorType<DFEVar>(WT, size));
       coeffList.add(coeffVecTList.get(i).newInstance(owner));
     }
+
+    /** Initialise residual port. */
+    if (cp.residual.isEmpty())
+      this.residual = null;
+    else
+      this.residual = ofmapVecT.newInstance(owner);
   }
 
   public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
@@ -86,6 +92,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   public BaseConvLayerKernel(
       KernelBase<?> owner, FusedConvLayerParameters fcp, DFEType T, DFEType WT) {
     this(owner, fcp.cps, T, WT);
+  }
+
+  public void setResidual(DFEVector<DFEVar> residual) {
+    this.residual.connect(residual);
   }
 
   /* ------------------- Coeff on chip ------------------------------- */
@@ -209,14 +219,21 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
     // Find the correct line.
     String line = in.nextLine();
-    while (!(line.startsWith("BEGIN") && line.contains(key)))
+    while (!(line.startsWith("BEGIN") && line.contains(key))) {
+      if (!in.hasNext())
+        break;
+
       line = in.nextLine();
+    }
+
+    if (!in.hasNext())
+      throw new IllegalArgumentException(
+          String.format("Cannot find key: %s from file: %s", key, fileName));
 
     int numElems = in.nextInt();
 
     double[] rawData = new double[numElems];
-    for (int i = 0; i < numElems; ++i)
-      rawData[i] = in.nextDouble();
+    for (int i = 0; i < numElems; ++i) rawData[i] = in.nextDouble();
 
     return rawData;
   }
@@ -235,47 +252,43 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return data;
   }
 
-  public List<Memory<DFEVar>> getROMList(
+  public Memory<DFEVector<DFEVar>> getROM(
       ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt) {
-    getOwner().getManager().logMsg("Read for key = %s\n", key);
+    getOwner().getManager().logMsg("Read for key = %s depth = %d\n", key, depth);
     double[] rawData = readROMFile(key, cp.coeffFile);
 
-    List<Memory<DFEVar>> romList = new ArrayList<Memory<DFEVar>>();
+    if (rawData.length % depth != 0)
+      throw new IllegalArgumentException("number of data should be divisible by memory depth.");
+
+    double[][] parts = new double[depth][rawData.length / depth];
+
     if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-      for (int pc = 0; pc < cp.PC; ++pc) {
-        for (int k = 0; k < cp.K * cp.K; ++k) {
-          Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
-
-          double[] part = new double[depth];
-          for (int c = 0; c < cp.C; c += cp.PC) {
-            double data = rawData[(c + pc) * (cp.K * cp.K) + k];
-            part[c / cp.PC] = convert(data, vt);
-          }
-
-          rom.setContents(part);
-          romList.add(rom);
-        }
-      }
+      for (int pc = 0; pc < cp.PC; ++pc)
+        for (int k = 0; k < cp.K * cp.K; ++k)
+          for (int c = 0; c < cp.C; c += cp.PC)
+            parts[c / cp.PC][pc * cp.K * cp.K + k] =
+                convert(rawData[(c + pc) * (cp.K * cp.K) + k], vt);
     } else {
-      for (int pf = 0; pf < cp.PF; ++pf) {
-        for (int pc = 0; pc < cp.PC; ++pc) {
-          for (int k = 0; k < cp.K * cp.K; ++k) {
-            Memory<DFEVar> rom = mem.alloc(vt.getContainedType(), depth);
-
-            double[] part = new double[depth];
+      for (int pf = 0; pf < cp.PF; ++pf)
+        for (int pc = 0; pc < cp.PC; ++pc)
+          for (int k = 0; k < cp.K * cp.K; ++k)
             for (int f = 0; f < cp.F; f += cp.PF)
               for (int c = 0; c < cp.C; c += cp.PC)
-                part[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)] = convert(
-                    rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k], vt);
-
-            rom.setContents(part);
-            romList.add(rom);
-          }
-        }
-      }
+                parts[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)][pf * cp.PC * cp.K * cp.K
+                    + pc * cp.K * cp.K + k] =
+                    convert(rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k],
+                        vt);
     }
 
-    return romList;
+    Bits[] memData = new Bits[depth];
+    for (int i = 0; i < depth; ++i) memData[i] = vt.encodeConstant(parts[i]);
+
+    Memory<DFEVector<DFEVar>> ROM = mem.alloc(vt, depth);
+    ROM.setContents(memData);
+    getOwner().getManager().logMsg(
+        "ROM created for %s of depth %d and type %s: %s\n", key, depth, vt, ROM);
+
+    return ROM;
   }
 
   public DFEVector<DFEVar> getIfmap() {
@@ -324,8 +337,7 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
           String.format("Coefficient lists are not matching in size: %d (kernel) != %d (parameter)",
               this.coeffList.size(), coeffList.size()));
 
-    for (int i = 0; i < coeffList.size(); i++)
-      this.coeffList.get(i).connect(coeffList.get(i));
+    for (int i = 0; i < coeffList.size(); i++) this.coeffList.get(i).connect(coeffList.get(i));
   }
 
   public void setInputs(DFEVector<DFEVar> ifmap, List<DFEVector<DFEVar>> coeffList) {

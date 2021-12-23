@@ -241,3 +241,79 @@ Wed 08:45: coeff vec size: 9
 Wed 08:45: coeff stream bit width: 72
 Wed 08:45: coeff stream chunk size: 9
 Wed 08:45: Generating input files (VHDL, netlists, vendor specific IP cores)
+Wed 10:53: Running back-end  build (15 phases)
+Wed 10:53: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Wed 10:53: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Wed 10:53: Executing Synthesis Strategy VIVADO_DEFAULT
+Wed 11:07: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 11:07: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 11:07: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Wed 11:07: 
+Wed 11:07: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Wed 11:07: For this compile, we estimate this process may take longer than 1 hour.
+Wed 11:07: We recommend running in simulation to verify correctness before building hardware.
+Wed 11:07: 
+Wed 11:07: PRELIMINARY RESOURCE USAGE
+Wed 11:07: FPGA: xcVU9P-FLGB2104-2-E
+Wed 11:07: Logic utilization:      222163 / 3546720 (6.26%)
+Wed 11:07:   LUTs:                  86861 / 1182240 (7.35%)
+Wed 11:07:   Primary FFs:          135302 / 2364480 (5.72%)
+Wed 11:07: DSP blocks:                  9 / 6840    (0.13%)
+Wed 11:07: Block memory (BRAM18):     869 / 4320    (20.12%)
+Wed 11:07: Block memory (URAM):       138 / 960     (14.38%)
+Wed 11:07: 
+Wed 11:07: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Wed 11:07: 
+Wed 11:07: PRELIMINARY POWER REPORT
+Wed 11:07: Total On-Chip Power (W) 10.17 (budget: 91.80) 
+Wed 11:07: Dynamic Power (W)        7.49 
+Wed 11:07: Device Static Power(W)   2.68 
+Wed 11:07: 
+Wed 11:07: (7/15) - Place DFE (VivadoImplementation)
+Wed 11:07: Executing the following 10 Implementation Strategies in 10 threads:
+Wed 11:07:  - VIVADO_DEFAULT
+Wed 11:07:  - MAXELER1
+Wed 11:07:  - MAXELER2
+Wed 11:07:  - MAXELER3
+Wed 11:07:  - MAXELER4
+Wed 11:07:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Wed 11:07:  - PERFORMANCE_EXPLORE
+Wed 11:07:  - PERFORMANCE_EXTRA_TIMING_OPT
+Wed 11:07:  - PERFORMANCE_NET_DELAY_HIGH
+Wed 11:07:  - PERFORMANCE_REFINE_PLACEMENT
+Wed 12:37: Implementation: Strategy "VIVADO_DEFAULT" failed timing with score 26278 (best score 26278)
+Wed 12:42: Implementation: Strategy "PERFORMANCE_EXPLORE" failed timing with score 23228 (best score 23228)
+Wed 12:46: Implementation: Strategy "PERFORMANCE_EXTRA_TIMING_OPT" failed timing with score 24912 (best score 23228)
+Wed 12:48: Implementation: Strategy "MAXELER2" failed timing with score 24610 (best score 23228)
+Wed 12:48: Implementation: Strategy "PERFORMANCE_REFINE_PLACEMENT" failed timing with score 20210 (best score 20210)
+Wed 12:50: Implementation: Strategy "MAXELER4" failed timing with score 24000 (best score 20210)
+Wed 12:50: Implementation: Strategy "PERFORMANCE_NET_DELAY_HIGH" failed timing with score 15981 (best score 15981)
+Wed 12:51: Implementation: Strategy "MAXELER1" failed timing with score 12068 (best score 12068)
+Wed 12:53: Implementation: Strategy "PERFORMANCE_EARLY_BLOCK_PLACEMENT" failed timing with score 61599 (best score 12068)
+Wed 12:53: Implementation: Strategy "MAXELER3" failed timing with score 11121 (best score 11121)
+Wed 12:53: Implementation: Failed to meet timing! Best score: 11121
+Wed 12:53: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 12:53: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 12:54: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Wed 12:54: 
+Wed 12:54: FINAL POWER REPORT
+Wed 12:54: Total On-Chip Power (W) 11.65 (budget: 91.80) 
+Wed 12:54: Dynamic Power (W)        8.94 
+Wed 12:54: Device Static Power(W)   2.71 
+Wed 12:54: 
+Wed 12:54: (11/15) - Generate Configuration (VivadoBitgen)
+Wed 13:01: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Wed 13:03: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Wed 13:04: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Wed 13:04: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Wed 13:04: 
+Wed 13:04: FINAL RESOURCE USAGE
+Wed 13:04: FPGA: xcVU9P-FLGB2104-2-E
+Wed 13:04: Logic utilization:      202724 / 3546720 (5.72%)
+Wed 13:04:   LUTs:                  76455 / 1182240 (6.47%)
+Wed 13:04:   Primary FFs:          126269 / 2364480 (5.34%)
+Wed 13:04: DSP blocks:                  9 / 6840    (0.13%)
+Wed 13:04: Block memory (BRAM18):     869 / 4320    (20.12%)
+Wed 13:04: Block memory (URAM):       138 / 960     (14.38%)
+Wed 13:04: 
+Wed 13:04: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18FstId_MAIA_DFE_FREQ_300/results/Resnet18FstId.max (MD5Sum: d15abb7be49dd4632f8ce366c29e43aa)

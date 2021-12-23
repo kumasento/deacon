@@ -1,0 +1,36 @@
+Wed 20:42: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 20:42: WARNING: Unconnected elements in design 'conv0'
+Wed 20:42: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Concat_MAIA_DFE_SIM_FREQ_350_DBG/scratch/conv0_graph_warnings.txt
+Wed 20:42: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 20:42: WARNING: Unconnected elements in design 'concat0'
+Wed 20:42: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Concat_MAIA_DFE_SIM_FREQ_350_DBG/scratch/concat0_graph_warnings.txt
+Wed 20:42: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Wed 20:42: WARNING: Unconnected elements in design 'conv1'
+Wed 20:42: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Concat_MAIA_DFE_SIM_FREQ_350_DBG/scratch/conv1_graph_warnings.txt
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1222 20:42:41.625607 110904 ConcatCpuCode.cpp:72] num frac bits: 8
+I1222 20:42:41.625888 110904 ConcatCpuCode.cpp:76] input[0] = -1.02637  dfe = -1.02734
+I1222 20:42:41.626422 110904 ConcatCpuCode.cpp:76] input[1] = -0.374079  dfe = -0.375
+I1222 20:42:41.626760 110904 ConcatCpuCode.cpp:76] input[2] = 0.419399  dfe = 0.417969
+I1222 20:42:41.627015 110904 utils.h:383] Burst aligning input array of size: 36 to 192
+I1222 20:42:41.627241 110904 ConcatCpuCode.cpp:89] Tiled input size (burst aligned): 192
+I1222 20:42:41.627454 110904 utils.h:383] Burst aligning input array of size: 36 to 192
+I1222 20:42:41.627669 110904 ConcatCpuCode.cpp:91] Tiled output size (burst aligned): 192
+I1222 20:42:41.627885 110904 layers.h:757] Writing DRAM to 0 with size 0x180
+I1222 20:42:41.632655 110904 ConcatCpuCode.cpp:100] Running ...
+I1222 20:42:41.905743 110904 ConcatCpuCode.cpp:106] Done
+I1222 20:42:41.905797 110904 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1222 20:42:41.908965 110904 ConcatCpuCode.cpp:113] output_dfe[0] = 3.98438
+I1222 20:42:41.909029 110904 ConcatCpuCode.cpp:113] output_dfe[1] = 34.1953
+I1222 20:42:41.909278 110904 ConcatCpuCode.cpp:113] output_dfe[2] = 9.52734
+I1222 20:42:41.909510 110904 ConcatCpuCode.cpp:113] output_dfe[3] = -22.8984
+I1222 20:42:41.909754 110904 ConcatCpuCode.cpp:113] output_dfe[4] = -15.1211
+I1222 20:42:41.909970 110904 ConcatCpuCode.cpp:113] output_dfe[5] = -8.90234
+I1222 20:42:41.910192 110904 ConcatCpuCode.cpp:113] output_dfe[6] = -4.82812
+I1222 20:42:41.910430 110904 ConcatCpuCode.cpp:113] output_dfe[7] = -10.4727
+I1222 20:42:41.910650 110904 ConcatCpuCode.cpp:113] output_dfe[8] = -3.58203
+I1222 20:42:41.910867 110904 ConcatCpuCode.cpp:113] output_dfe[9] = 1.58203
+I1222 20:42:41.911101 110904 ConcatCpuCode.cpp:117] elapsed time: 0.273033s
+I1222 20:42:41.911339 110904 ConcatCpuCode.cpp:129] FPS:    7.32512
+I1222 20:42:41.911548 110904 ConcatCpuCode.cpp:130] GFLOPs: 1.424e-05

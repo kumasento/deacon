@@ -40,10 +40,15 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
     DFEVar pwAddr = f.mul(cp.C / cp.PC).add(c).cast(pwAddrT);
     getOwner().getManager().logMsg("Pointwise coeff ROM depth = %d", pcp.getCoeffNumVec());
 
-    this.depthwiseCoeff.connect(readCoeffFMemList(
-        dwAddr, getROMList(dcp, dcp.name, dcp.getCoeffNumVec(), dcp.getCoeffVecT(WT)), WT));
-    this.pointwiseCoeff.connect(readCoeffFMemList(
-        pwAddr, getROMList(pcp, pcp.name, pcp.getCoeffNumVec(), pcp.getCoeffVecT(WT)), WT));
+    // this.depthwiseCoeff.connect(readCoeffFMemList(
+    //     dwAddr, getROMList(dcp, dcp.name, dcp.getCoeffNumVec(), dcp.getCoeffVecT(WT)), WT));
+    // this.pointwiseCoeff.connect(readCoeffFMemList(
+    //     pwAddr, getROMList(pcp, pcp.name, pcp.getCoeffNumVec(), pcp.getCoeffVecT(WT)), WT));
+
+    this.depthwiseCoeff.connect(
+        getROM(dcp, dcp.name, dcp.getCoeffNumVec(), dcp.getCoeffVecT(WT)).read(dwAddr));
+    this.pointwiseCoeff.connect(
+        getROM(pcp, pcp.name, pcp.getCoeffNumVec(), pcp.getCoeffVecT(WT)).read(pwAddr));
   }
 
   public void setInputs(

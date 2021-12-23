@@ -1,0 +1,8 @@
+Thu 19:31: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 19:31: WARNING: Unconnected elements in design 'conv0'
+Thu 19:31: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/conv0_graph_warnings.txt
+Thu 19:31: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 19:31: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 19:31: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 19:31: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 19:31: WARNING: to that of a similar bitstream.

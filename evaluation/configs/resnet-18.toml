@@ -17,7 +17,7 @@ K = 3
 P = 1
 S = 2
 # NUM_OUTPUTS = 1
-NAMED_REGION = "SLR0"
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 [layers.pool0]
@@ -29,8 +29,8 @@ K = 3
 P = 1
 S = 2
 INPUT = "conv0"
-NUM_OUTPUTS = 2
-NAMED_REGION = "SLR0"
+# NUM_OUTPUTS = 2
+# NAMED_REGION = "SLR0"
 TYPE = "POOLING"
 
 # conv2_x
@@ -44,8 +44,10 @@ K = 3
 P = 1
 S = 1
 INPUT = "pool0"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR0"
+OUTPUT = ["OFMAP", "IFMAP"]
+SEQ = 0
+# NUM_OUTPUTS = 1
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 [layers.conv2]
@@ -57,9 +59,10 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv1"
-NUM_OUTPUTS = 2
-RESIDUAL = "pool0_1"
-NAMED_REGION = "SLR0"
+RESIDUAL = "conv1_1"
+SEQ = 1
+# NUM_OUTPUTS = 2
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 [layers.conv3]
@@ -71,8 +74,10 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv2"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR0"
+# NUM_OUTPUTS = 1
+SEQ = 0
+OUTPUT = ["OFMAP", "IFMAP"]
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 [layers.conv4]
@@ -84,9 +89,11 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv3"
-NUM_OUTPUTS = 2
-RESIDUAL = "conv2_1"
-NAMED_REGION = "SLR0"
+RESIDUAL = "conv3_1"
+SEQ = 1
+OUTPUT = ["OFMAP", "OFMAP"]
+# NUM_OUTPUTS = 2
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 # conv3_x
@@ -101,7 +108,8 @@ P = 1
 S = 2
 INPUT = "conv4"
 NUM_OUTPUTS = 1
-NAMED_REGION = "SLR0"
+SEQ = 0
+# NAMED_REGION = "SLR0"
 TYPE = "STANDARD"
 
 [layers.shortcut2]
@@ -113,8 +121,9 @@ K = 1
 P = 0
 S = 2
 INPUT = "conv4_1"
+SEQ = 0
 NUM_OUTPUTS = 1
-NAMED_REGION = "SLR1"
+# NAMED_REGION = "SLR1"
 TYPE = "POINTWISE"
 
 [layers.conv6]
@@ -126,9 +135,11 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv5"
-NUM_OUTPUTS = 2
+# NUM_OUTPUTS = 2
+# OUTPUT = ["OFMAP", "OFMAP"]
 RESIDUAL = "shortcut2"
-NAMED_REGION = "SLR1"
+SEQ = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 [layers.conv7]
@@ -140,8 +151,10 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv6"
+SEQ = 0
+OUTPUT = ["OFMAP", "IFMAP"]
 NUM_OUTPUTS = 1
-NAMED_REGION = "SLR1"
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 [layers.conv8]
@@ -153,9 +166,11 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv7"
-NUM_OUTPUTS = 2
-RESIDUAL = "conv6_1"
-NAMED_REGION = "SLR1"
+# NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+RESIDUAL = "conv7_1"
+SEQ = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 # conv4_x
@@ -169,8 +184,9 @@ K = 3
 P = 1
 S = 2
 INPUT = "conv8"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR1"
+SEQ = 0
+# NUM_OUTPUTS = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 [layers.shortcut3]
@@ -182,8 +198,9 @@ K = 1
 P = 0
 S = 2
 INPUT = "conv8_1"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR1"
+# NUM_OUTPUTS = 1
+SEQ = 0
+# NAMED_REGION = "SLR1"
 TYPE = "POINTWISE"
 
 [layers.conv10]
@@ -195,9 +212,11 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv9"
-NUM_OUTPUTS = 2
+# NUM_OUTPUTS = 2
+# OUTPUT = ["OFMAP", "OFMAP"]
 RESIDUAL = "shortcut3"
-NAMED_REGION = "SLR1"
+SEQ = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 [layers.conv11]
@@ -209,8 +228,10 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv10"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR1"
+OUTPUT = ["OFMAP", "IFMAP"]
+SEQ = 0
+# NUM_OUTPUTS = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 [layers.conv12]
@@ -222,9 +243,12 @@ K = 3
 P = 1
 S = 1
 INPUT = "conv11"
-NUM_OUTPUTS = 2
-RESIDUAL = "conv10_1"
-NAMED_REGION = "SLR1"
+# NUM_OUTPUTS = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+RESIDUAL = "conv11_1"
+# OUTPUT = ["OFMAP", "OFMAP"]
+SEQ = 1
+# NAMED_REGION = "SLR1"
 TYPE = "STANDARD"
 
 # conv5_x
@@ -239,8 +263,8 @@ P = 1
 S = 2
 P_F = 4
 INPUT = "conv12"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR2"
+SEQ = 0
+# NAMED_REGION = "SLR2"
 TYPE = "STANDARD"
 
 [layers.shortcut4]
@@ -253,8 +277,8 @@ P = 0
 S = 2
 P_F = 4
 INPUT = "conv12_1"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR2"
+SEQ = 0
+# NAMED_REGION = "SLR2"
 TYPE = "POINTWISE"
 
 [layers.conv14]
@@ -268,9 +292,10 @@ S = 1
 P_C = 4
 P_F = 4
 INPUT = "conv13"
-NUM_OUTPUTS = 2
+# NUM_OUTPUTS = 2
+SEQ = 1
 RESIDUAL = "shortcut4"
-NAMED_REGION = "SLR2"
+# NAMED_REGION = "SLR2"
 TYPE = "STANDARD"
 
 [layers.conv15]
@@ -284,8 +309,10 @@ S = 1
 P_C = 4
 P_F = 4
 INPUT = "conv14"
-NUM_OUTPUTS = 1
-NAMED_REGION = "SLR2"
+OUTPUT = ["OFMAP", "IFMAP"]
+SEQ = 0
+# NUM_OUTPUTS = 1
+# NAMED_REGION = "SLR2"
 TYPE = "STANDARD"
 
 [layers.conv16]
@@ -300,6 +327,7 @@ P_C = 4
 P_F = 4
 INPUT = "conv15"
 NUM_OUTPUTS = 1
-RESIDUAL = "conv14_1"
-NAMED_REGION = "SLR2"
+SEQ = 1
+RESIDUAL = "conv15_1"
+# NAMED_REGION = "SLR2"
 TYPE = "STANDARD"

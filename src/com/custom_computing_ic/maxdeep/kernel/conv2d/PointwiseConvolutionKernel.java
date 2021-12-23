@@ -101,8 +101,9 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
           List<Memory<DFEVar>> coeffFMemList = buildCoeffFMemList(WT, /*mapToCPU=*/!cp.initCoeff);
           this.coeff = readCoeffFMemList(addr, coeffFMemList, WT);
         } else {
-          this.coeff = readCoeffFMemList(
-              addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+          // this.coeff = readCoeffFMemList(
+          //     addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
+          this.coeff = getROM(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)).read(addr);
         }
       } else {
         this.coeff = (new DFEVectorType<DFEVar>(WT, cp.PC * cp.PF)).newInstance(owner);

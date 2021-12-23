@@ -1,8 +1,11 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.google.protobuf.ByteString.Output;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.Counter;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -75,7 +78,6 @@ public class ConvLayerWrapKernel extends Kernel {
         io.output(getOfmapName(i), vecT).connect(ifmap);
       }
     } else if (cp.type == Type.CONCAT) {
-
       // Just implement the concat logic here.
 
       if (cp.PF != 1)
@@ -83,17 +85,25 @@ public class ConvLayerWrapKernel extends Kernel {
 
       List<DFEVector<DFEVar>> ifmapList = new ArrayList<DFEVector<DFEVar>>();
       for (int i = 0; i < cp.inputs.size(); ++i)
-        ifmapList.add(io.input(getIfmapName(i), new DFEVectorType<DFEVar>(T, cp.getIfmapVecSize())));
+        ifmapList.add(
+            io.input(getIfmapName(i), new DFEVectorType<DFEVar>(T, cp.getIfmapVecSize())));
 
-      DFEVectorType<DFEVar> outT = new DFEVectorType<DFEVar>(T, cp.getIfmapVecSize() * cp.inputs.size());
+      DFEVectorType<DFEVar> outT =
+          new DFEVectorType<DFEVar>(T, cp.getIfmapVecSize() * cp.inputs.size());
       DFEVector<DFEVar> outVec = outT.newInstance(this);
 
       for (int i = 0; i < cp.inputs.size(); ++i)
-        for (int j = 0; j < cp.PC; ++j)
-          outVec.get(i * cp.PC + j).connect(ifmapList.get(i).get(j));
+        for (int j = 0; j < cp.PC; ++j) outVec.get(i * cp.PC + j).connect(ifmapList.get(i).get(j));
 
-      for (int i = 0; i < cp.numOutputs; ++i)
-        io.output(getOfmapName(i), outT).connect(outVec);
+      if (cp.dbg) {
+        DFEVar cnt = control.count.simpleCounter(1000);
+        debug.simPrintf("[Concat] counter: %d\n", cnt);
+        for (int i = 0; i < cp.inputs.size(); ++i)
+          debug.simPrintf("[Concat] At %d = %KObj%\n", i, ifmapList.get(i));
+        debug.simPrintf("[Concat] Out vec = %KObj%\n", outVec);
+      }
+
+      for (int i = 0; i < cp.numOutputs; ++i) io.output(getOfmapName(i), outT).connect(outVec);
 
     } else if (cp.type == Type.POOLING) {
       PoolingLayerKernel pool = new PoolingLayerKernel(getKernel(), cp, T, WT);
@@ -102,9 +112,7 @@ public class ConvLayerWrapKernel extends Kernel {
 
       for (int i = 0; i < cp.numOutputs; ++i) {
         getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
-        io.output(
-            getOfmapName(i), pool.getOfmapVecT(), pool.getOfmapEn())
-            .connect(pool.getOfmap());
+        io.output(getOfmapName(i), pool.getOfmapVecT(), pool.getOfmapEn()).connect(pool.getOfmap());
       }
 
     } else if (cp.type == Type.STANDARD || cp.type == Type.POINTWISE) {
@@ -114,8 +122,18 @@ public class ConvLayerWrapKernel extends Kernel {
       // optimization.popRoundingMode();
       // debug.popEnableNumericExceptions();
 
-      DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(),
-          conv.getIfmapEn().and(initCoeff.complement()));
+      DFEVector<DFEVar> ifmap =
+          io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn().and(initCoeff.complement()));
+
+      if (!cp.residual.isEmpty()) {
+        if (!conv.getIfmapVecT().equals(conv.getOfmapVecT()))
+          throw new IllegalArgumentException(
+              String.format("The ifmap vec and ofmap vec don't match: %s vs %s",
+                  conv.getIfmapVecT(), conv.getOfmapVecT()));
+        DFEVector<DFEVar> residual = io.input(
+            RESIDUAL_NAME, conv.getOfmapVecT(), conv.getIfmapEn().and(initCoeff.complement()));
+        conv.setResidual(residual);
+      }
 
       conv.setIfmap(ifmap);
       if (!cp.coeffOnChip)
@@ -124,27 +142,44 @@ public class ConvLayerWrapKernel extends Kernel {
         conv.initCoeff(initCoeff, initCoeffStrm, WT);
 
       DFEVector<DFEVar> output = conv.getOfmap();
-      if (!cp.residual.isEmpty()) {
-        getManager().logMsg("Connecting residual: %s\n", cp.residual);
-        DFEVector<DFEVar> residual = io.input(
-            RESIDUAL_NAME, conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()));
 
-        output = output.add(optimization.pipeline(residual));
-      }
-
-      for (int i = 0; i < cp.numOutputs; ++i) {
+      for (int i = 0; i < cp.outputs.size(); ++i) {
+        OutputType outputType = cp.outputs.get(i);
         getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
-        io.output(
-            getOfmapName(i), conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()))
-            .connect(output);
+
+        if (outputType == OutputType.OFMAP)
+          io.output(
+                getOfmapName(i), conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()))
+              .connect(output);
+        else if (outputType == OutputType.IFMAP)
+          io.output(
+                getOfmapName(i), conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()))
+              .connect(((ConvLayerKernel) conv).getIfmapByOfmapAddr());
       }
+
+      // if (!cp.residual.isEmpty()) {
+      //   getManager().logMsg("Connecting residual: %s\n", cp.residual);
+      //   DFEVector<DFEVar> residual = io.input(
+      //       RESIDUAL_NAME, conv.getOfmapVecT(), conv.getOfmapEn().and(initCoeff.complement()));
+
+      //   output = output.add(optimization.pipeline(residual));
+      // }
+
+      // for (int i = 0; i < cp.numOutputs; ++i) {
+      //   getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
+      //   io.output(
+      //         getOfmapName(i), conv.getOfmapVecT(),
+      //         conv.getOfmapEn().and(initCoeff.complement()))
+      //       .connect(output);
+      // }
 
     } else if (cp.type == Type.DEPTHWISE_SEPARABLE) {
       if (cp.numOutputs > 1)
         throw new IllegalArgumentException(
             "numOutputs > 1 is not supported by depthwise separable.");
 
-      DepthwiseSeparableConvLayerKernel conv = new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T, WT);
+      DepthwiseSeparableConvLayerKernel conv =
+          new DepthwiseSeparableConvLayerKernel(getKernel(), cp, T, WT);
 
       DFEVector<DFEVar> ifmap = io.input(IFMAP_NAME, conv.getIfmapVecT(), conv.getIfmapEn());
       if (!cp.coeffOnChip) {
@@ -212,7 +247,7 @@ public class ConvLayerWrapKernel extends Kernel {
 
         int splitVecSize = coeffVecSize / numCoeffFifoSplits;
         getManager().logMsg(String.format("Split coefficient stream: vec size %d "
-            + "FIFO splits %d split vec size %d.",
+                + "FIFO splits %d split vec size %d.",
             coeffVecSize, numCoeffFifoSplits, splitVecSize));
 
         DFEVectorType<DFEVar> CT = new DFEVectorType<DFEVar>(T, splitVecSize);

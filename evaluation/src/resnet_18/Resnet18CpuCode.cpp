@@ -87,7 +87,11 @@ int main(int argc, char *argv[]) {
   auto input =
       CreateRandomArray<float>(cps.front().dfe.TC * cps.front().dfe.TH * cps.front().dfe.TW * batch_size,
                                input_scale * min_val, input_scale * max_val);
+                        LOG(INFO) << "num frac bits: " << cps.front().dfe.num_frac_bits << '\n';
   auto input_dfe = FloatToFixed<data_t>(input, cps.front().dfe.num_frac_bits);
+
+  for (int i = 0; i < 3; ++ i)
+    LOG(INFO) << "input[" << i << "] = " << input[i] << "  dfe = " <<  FixedToFloat<data_t>(input_dfe[i], cps.front().dfe.num_frac_bits) << '\n';
 
   auto output_dfe =
       std::vector<data_t>(cps.back().F * cps.back().getOutputHeight() *
@@ -122,6 +126,10 @@ int main(int argc, char *argv[]) {
   ReadDRAM<data_t, Dfe>(output_dfe, base_addr, engine);
 
   output_dfe = ReorderOutput(output_dfe, cps.back(), batch_size);
+
+  for (int i = 0; i < std::min((int)output_dfe.size(), 10); ++ i) 
+    LOG(INFO) << "output_dfe[" << i << "] = " << FixedToFloat<data_t>(output_dfe[i], cps.back().dfe.num_frac_bits) << '\n';
+  
 
   std::chrono::duration<double> elapsed_seconds = end - start;
   LOG(INFO) << "elapsed time: " << elapsed_seconds.count() / (num_iters) << "s\n";
