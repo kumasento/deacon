@@ -14,18 +14,6 @@ public class PoolingLayerKernel extends ConvLayerKernel {
 
   public PoolingLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
     super(owner, cp, T, WT);
-
-    if (cp.inputs.size() > 1 || cp.outputs.size() > 1)
-      throw new IllegalArgumentException("Cannot have more than 1 input or output.");
-    this.ifmap = ifmapList.get(0);
-    this.ofmap = ofmapList.get(0);
-
-    if (cp.PC.get(0) != cp.PF.get(0))
-      throw new IllegalArgumentException("PC should equal to PF.");
-    if (cp.C != cp.F)
-      throw new IllegalArgumentException("C should equal to F.");
-    if (cp.pooling == Pooling.AVG)
-      throw new IllegalArgumentException("Average pooling is not supported.");
   }
 
   @Override
@@ -46,6 +34,17 @@ public class PoolingLayerKernel extends ConvLayerKernel {
    */
   @Override
   public void kernelBody() {
+    if (cp.PC.get(0) != cp.PF.get(0))
+      throw new IllegalArgumentException("PC should equal to PF.");
+    if (cp.C != cp.F)
+      throw new IllegalArgumentException("C should equal to F.");
+    if (cp.pooling == Pooling.AVG)
+      throw new IllegalArgumentException("Average pooling is not supported.");
+    if (cp.inputs.size() > 1 || cp.outputs.size() > 1)
+      throw new IllegalArgumentException("Cannot have more than 1 input or output.");
+    this.ifmap = ifmapList.get(0);
+    this.ofmap = ofmapList.get(0);
+
     /* padded input */
     if (cp.dbg)
       debug.simPrintf("ifmap = %KObj%\n", ifmap);

@@ -91,7 +91,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (!cp.residual.isEmpty() && (cp.H != cp.OH || cp.W != cp.OW))
       throw new IllegalArgumentException(
           "The spatial dimensionality shouldn't change for residual connection.");
-    if (!cp.residual.isEmpty() && cp.C < cp.F && !shortcut())
+    if (!cp.residual.isEmpty() && cp.C < cp.F / cp.PF.get(0) && !shortcut())
       throw new IllegalArgumentException(
           "There will be insufficient input of residuals given cp.C < cp.F.");
     // check data type
@@ -331,8 +331,14 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     // Read based on the ofmap indices
     DFEVar readAddr = oh.mul(cp.OW).add(ow).cast(dfeUInt(MathUtils.bitsToAddress(depth)));
 
-    rbuf.write(writeAddr, residual, writeEn);
-    DFEVector<DFEVar> rbufPort = rbuf.read(readAddr);
+    DFEVector<DFEVar> rbufPort;
+    if (cp.K == 1) {
+      // In this case read and write addr are the same
+      rbufPort = rbuf.port(readAddr, residual, writeEn, RamWriteMode.WRITE_FIRST);
+    } else {
+      rbuf.write(writeAddr, residual, writeEn);
+      rbufPort = rbuf.read(readAddr);
+    }
     if (cp.seq != CompSeq.CHANNEL_MAJOR)
       throw new IllegalArgumentException("Should be filter major.");
 

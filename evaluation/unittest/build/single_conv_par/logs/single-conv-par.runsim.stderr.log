@@ -25,49 +25,49 @@ In file included from ../../src/single_conv_par/SingleConvParCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1226 10:52:08.203599 24221 SingleConvParCpuCode.cpp:70] num frac bits: 0
-I1226 10:52:08.203924 24221 SingleConvParCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
-I1226 10:52:08.204015 24221 SingleConvParCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
-I1226 10:52:08.204048 24221 SingleConvParCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
-I1226 10:52:08.204084 24221 layers.h:975] Running golden function ...
-I1226 10:52:08.204111 24221 layers.h:984]        STANDARD 4 x 2 x 2 -> 4 x 2 x 2
-I1226 10:52:08.207486 24221 layers.h:340] Reordering input for PC = 2
-I1226 10:52:08.207521 24221 utils.h:383] Burst aligning input array of size: 32 to 384
-I1226 10:52:08.207535 24221 SingleConvParCpuCode.cpp:95] Tiled input size (burst aligned): 384
-I1226 10:52:08.207546 24221 utils.h:383] Burst aligning input array of size: 32 to 384
-I1226 10:52:08.207557 24221 SingleConvParCpuCode.cpp:98] Tiled output size (burst aligned): 384
-I1226 10:52:08.207573 24221 layers.h:758] Writing DRAM to 0 with size 0x300
-I1226 10:52:08.213261 24221 SingleConvParCpuCode.cpp:106] Running ...
-I1226 10:52:08.313601 24221 SingleConvParCpuCode.cpp:111] Done
-I1226 10:52:08.313637 24221 layers.h:775] Reading DRAM from 0x300 with size 0x300
-I1226 10:52:08.316262 24221 layers.h:365] Reordering output for PF = 2 TOH = 2 TOW = 2
-I1226 10:52:08.316293 24221 layers.h:382] Done
-I1226 10:52:08.316303 24221 SingleConvParCpuCode.cpp:118] output_dfe[0] = 9
-I1226 10:52:08.316321 24221 SingleConvParCpuCode.cpp:118] output_dfe[1] = 1
-I1226 10:52:08.316332 24221 SingleConvParCpuCode.cpp:118] output_dfe[2] = -4
-I1226 10:52:08.316344 24221 SingleConvParCpuCode.cpp:118] output_dfe[3] = 2
-I1226 10:52:08.316354 24221 SingleConvParCpuCode.cpp:118] output_dfe[4] = 17
-I1226 10:52:08.316365 24221 SingleConvParCpuCode.cpp:118] output_dfe[5] = 7
-I1226 10:52:08.316376 24221 SingleConvParCpuCode.cpp:118] output_dfe[6] = 5
-I1226 10:52:08.316386 24221 SingleConvParCpuCode.cpp:118] output_dfe[7] = 5
-I1226 10:52:08.316397 24221 SingleConvParCpuCode.cpp:118] output_dfe[8] = -6
-I1226 10:52:08.316407 24221 SingleConvParCpuCode.cpp:118] output_dfe[9] = 4
-I1226 10:52:08.316424 24221 SingleConvParCpuCode.cpp:124] elapsed time: 0.100266s
-I1226 10:52:08.316440 24221 SingleConvParCpuCode.cpp:138] [Ops] layer                          conv0 = 0.001152 M
-I1226 10:52:08.316452 24221 SingleConvParCpuCode.cpp:142] OPS:    2.304e-06 G
-I1226 10:52:08.316463 24221 SingleConvParCpuCode.cpp:143] FPS:    19.947
-I1226 10:52:08.316474 24221 SingleConvParCpuCode.cpp:146] GFLOPs: 2.2979e-05
-I1226 10:52:08.316485 24221 SingleConvParCpuCode.cpp:153] Examine results ...
-I1226 10:52:08.316494 24221 SingleConvParCpuCode.cpp:155] output_cpu[0] = 9
-I1226 10:52:08.316505 24221 SingleConvParCpuCode.cpp:155] output_cpu[1] = 1
-I1226 10:52:08.316515 24221 SingleConvParCpuCode.cpp:155] output_cpu[2] = -4
-I1226 10:52:08.316525 24221 SingleConvParCpuCode.cpp:155] output_cpu[3] = 2
-I1226 10:52:08.316535 24221 SingleConvParCpuCode.cpp:155] output_cpu[4] = 17
-I1226 10:52:08.316545 24221 SingleConvParCpuCode.cpp:161] output_dfe[0] = 9
-I1226 10:52:08.316555 24221 SingleConvParCpuCode.cpp:161] output_dfe[1] = 1
-I1226 10:52:08.316565 24221 SingleConvParCpuCode.cpp:161] output_dfe[2] = -4
-I1226 10:52:08.316576 24221 SingleConvParCpuCode.cpp:161] output_dfe[3] = 2
-I1226 10:52:08.316586 24221 SingleConvParCpuCode.cpp:161] output_dfe[4] = 17
-I1226 10:52:08.316596 24221 SingleConvParCpuCode.cpp:172] Evaluating difference ...
-I1226 10:52:08.316606 24221 SingleConvParCpuCode.cpp:173] Mask: 00000000
-I1226 10:52:08.316630 24221 SingleConvParCpuCode.cpp:201] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0
+I1226 11:50:28.289656 122095 SingleConvParCpuCode.cpp:70] num frac bits: 0
+I1226 11:50:28.289827 122095 SingleConvParCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
+I1226 11:50:28.289872 122095 SingleConvParCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
+I1226 11:50:28.289880 122095 SingleConvParCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
+I1226 11:50:28.289888 122095 layers.h:975] Running golden function ...
+I1226 11:50:28.289901 122095 layers.h:984]        STANDARD 4 x 2 x 2 -> 4 x 2 x 2
+I1226 11:50:28.292038 122095 layers.h:340] Reordering input for PC = 2
+I1226 11:50:28.292065 122095 utils.h:383] Burst aligning input array of size: 32 to 384
+I1226 11:50:28.292075 122095 SingleConvParCpuCode.cpp:95] Tiled input size (burst aligned): 384
+I1226 11:50:28.292083 122095 utils.h:383] Burst aligning input array of size: 32 to 384
+I1226 11:50:28.292089 122095 SingleConvParCpuCode.cpp:98] Tiled output size (burst aligned): 384
+I1226 11:50:28.292099 122095 layers.h:758] Writing DRAM to 0 with size 0x300
+I1226 11:50:28.297153 122095 SingleConvParCpuCode.cpp:106] Running ...
+I1226 11:50:28.429136 122095 SingleConvParCpuCode.cpp:111] Done
+I1226 11:50:28.429180 122095 layers.h:775] Reading DRAM from 0x300 with size 0x300
+I1226 11:50:28.432745 122095 layers.h:365] Reordering output for PF = 2 TOH = 2 TOW = 2
+I1226 11:50:28.432790 122095 layers.h:382] Done
+I1226 11:50:28.432803 122095 SingleConvParCpuCode.cpp:118] output_dfe[0] = 9
+I1226 11:50:28.432826 122095 SingleConvParCpuCode.cpp:118] output_dfe[1] = 1
+I1226 11:50:28.432839 122095 SingleConvParCpuCode.cpp:118] output_dfe[2] = -4
+I1226 11:50:28.432852 122095 SingleConvParCpuCode.cpp:118] output_dfe[3] = 2
+I1226 11:50:28.432863 122095 SingleConvParCpuCode.cpp:118] output_dfe[4] = 17
+I1226 11:50:28.432876 122095 SingleConvParCpuCode.cpp:118] output_dfe[5] = 7
+I1226 11:50:28.432888 122095 SingleConvParCpuCode.cpp:118] output_dfe[6] = 5
+I1226 11:50:28.432900 122095 SingleConvParCpuCode.cpp:118] output_dfe[7] = 5
+I1226 11:50:28.432911 122095 SingleConvParCpuCode.cpp:118] output_dfe[8] = -6
+I1226 11:50:28.432924 122095 SingleConvParCpuCode.cpp:118] output_dfe[9] = 4
+I1226 11:50:28.432943 122095 SingleConvParCpuCode.cpp:124] elapsed time: 0.131932s
+I1226 11:50:28.432961 122095 SingleConvParCpuCode.cpp:138] [Ops] layer                          conv0 = 0.001152 M
+I1226 11:50:28.432976 122095 SingleConvParCpuCode.cpp:142] OPS:    2.304e-06 G
+I1226 11:50:28.432987 122095 SingleConvParCpuCode.cpp:143] FPS:    15.1594
+I1226 11:50:28.433001 122095 SingleConvParCpuCode.cpp:146] GFLOPs: 1.74636e-05
+I1226 11:50:28.433013 122095 SingleConvParCpuCode.cpp:153] Examine results ...
+I1226 11:50:28.433023 122095 SingleConvParCpuCode.cpp:155] output_cpu[0] = 9
+I1226 11:50:28.433035 122095 SingleConvParCpuCode.cpp:155] output_cpu[1] = 1
+I1226 11:50:28.433046 122095 SingleConvParCpuCode.cpp:155] output_cpu[2] = -4
+I1226 11:50:28.433076 122095 SingleConvParCpuCode.cpp:155] output_cpu[3] = 2
+I1226 11:50:28.433087 122095 SingleConvParCpuCode.cpp:155] output_cpu[4] = 17
+I1226 11:50:28.433099 122095 SingleConvParCpuCode.cpp:161] output_dfe[0] = 9
+I1226 11:50:28.433111 122095 SingleConvParCpuCode.cpp:161] output_dfe[1] = 1
+I1226 11:50:28.433123 122095 SingleConvParCpuCode.cpp:161] output_dfe[2] = -4
+I1226 11:50:28.433135 122095 SingleConvParCpuCode.cpp:161] output_dfe[3] = 2
+I1226 11:50:28.433145 122095 SingleConvParCpuCode.cpp:161] output_dfe[4] = 17
+I1226 11:50:28.433158 122095 SingleConvParCpuCode.cpp:172] Evaluating difference ...
+I1226 11:50:28.433169 122095 SingleConvParCpuCode.cpp:173] Mask: 00000000
+I1226 11:50:28.433212 122095 SingleConvParCpuCode.cpp:201] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0

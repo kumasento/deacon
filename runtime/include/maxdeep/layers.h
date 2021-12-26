@@ -1048,7 +1048,8 @@ void process(std::vector<data_t> &input_dfe, std::string data_file,
           output_cpu[i] = FixedPointAdd<data_t>(output_cpu[i], shortcut[i]);
 
       } else {
-        auto &residual = buffers[name_to_output[cp.dfe.RESIDUAL]];
+        // HACK: assumes that when cp.K == 1 we're taking a bottleneck
+        auto &residual = buffers[name_to_output[cp.dfe.RESIDUAL] - (cp.K == 1)];
         for (size_t i = 0; i < output_cpu.size(); ++i)
           output_cpu[i] = FixedPointAdd<data_t>(output_cpu[i], residual[i]);
       }

@@ -1,4 +1,4 @@
-package single_conv_k7;
+package bottleneck_no_shortcut;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
@@ -22,8 +22,9 @@ import com.maxeler.platform.max5.manager.ImplementationStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleConvK7Manager extends Max5LMemManager implements ManagerInterface {
-  public SingleConvK7Manager(ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
+public class BottleneckNoShortcutManager extends Max5LMemManager implements ManagerInterface {
+  public BottleneckNoShortcutManager(
+      ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -48,32 +49,82 @@ public class SingleConvK7Manager extends Max5LMemManager implements ManagerInter
 
   @SuppressWarnings("deprecation")
   public static void main(String[] args) {
-    SingleConvK7EngineParameters params = new SingleConvK7EngineParameters(args);
+    BottleneckNoShortcutEngineParameters params = new BottleneckNoShortcutEngineParameters(args);
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
 
-    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 7)
-                .input("")
+    cps.add(new ConvLayerParameters.Builder(2, 2, 4, 2, 1)
+                .input("ifmap")
+                .output(new Output(OutputType.OFMAP, 0))
+                .output(new Output(OutputType.IFMAP, 0))
                 .BW(16)
                 .WBW(16)
                 .numFracBits(0)
                 .type(Type.STANDARD)
                 .name("conv0")
-                .pad(3)
-                .stride(2)
+                .pad(0)
+                .stride(1)
                 .seq(CompSeq.values()[0])
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .residual("")
                 .PF(1)
+                .PF(2)
+                .PC(2)
+                .PK(1)
+                .namedRegion("")
+                .pooling(Pooling.MAX)
+                .build());
+
+    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 3)
+                .input("conv0")
+                .input("conv0_1")
+                .output(new Output(OutputType.OFMAP, 0))
+                .output(new Output(OutputType.IFMAP, 1))
+                .BW(16)
+                .WBW(16)
+                .numFracBits(0)
+                .type(Type.STANDARD)
+                .name("conv1")
+                .pad(1)
+                .stride(1)
+                .seq(CompSeq.values()[0])
+                .dbg(params.getDebug())
+                .coeffOnChip(true)
+                .coeffFile(params.getCoeffFile())
+                .residual("")
+                .PF(1)
+                .PF(2)
+                .PC(1)
+                .PC(2)
+                .PK(1)
+                .namedRegion("")
+                .pooling(Pooling.MAX)
+                .build());
+
+    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 4, 1)
+                .input("conv1")
+                .BW(16)
+                .WBW(16)
+                .numFracBits(0)
+                .type(Type.STANDARD)
+                .name("conv2")
+                .pad(0)
+                .stride(1)
+                .seq(CompSeq.values()[1])
+                .dbg(params.getDebug())
+                .coeffOnChip(true)
+                .coeffFile(params.getCoeffFile())
+                .residual("conv1_1")
+                .PF(2)
                 .PC(1)
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
 
-    SingleConvK7Manager mgr = new SingleConvK7Manager(params, cps);
+    BottleneckNoShortcutManager mgr = new BottleneckNoShortcutManager(params, cps);
     mgr.createSLiCinterface(mgr.interfaceDefault(cps, params));
     mgr.createSLiCinterface(ManagerUtils.dramRead(mgr, mgr.iface));
     mgr.createSLiCinterface(ManagerUtils.dramWrite(mgr, mgr.iface));

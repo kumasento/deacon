@@ -25,54 +25,54 @@ In file included from ../../src/bottleneck_shortcut_imbalanced_par/BottleneckSho
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1226 10:52:11.444630 25484 BottleneckShortcutImbalancedParCpuCode.cpp:74] num frac bits: 0
-I1226 10:52:11.444923 25484 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[0] = -1.95943  dfe = -2
-I1226 10:52:11.445020 25484 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[1] = -0.71415  dfe = -1
-I1226 10:52:11.445349 25484 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[2] = 0.80067  dfe = 1
-I1226 10:52:11.445614 25484 layers.h:975] Running golden function ...
-I1226 10:52:11.445888 25484 layers.h:984]        STANDARD 4 x 4 x 4 -> 2 x 2 x 2
-I1226 10:52:11.446796 25484 layers.h:984]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
-I1226 10:52:11.447700 25484 layers.h:984]        STANDARD 2 x 2 x 2 -> 8 x 2 x 2
-I1226 10:52:11.448575 25484 layers.h:1032] Shortcut is enabled for layer conv2
-I1226 10:52:11.450747 25484 layers.h:340] Reordering input for PC = 2
-I1226 10:52:11.450767 25484 utils.h:383] Burst aligning input array of size: 128 to 384
-I1226 10:52:11.450781 25484 BottleneckShortcutImbalancedParCpuCode.cpp:99] Tiled input size (burst aligned): 384
-I1226 10:52:11.450793 25484 utils.h:383] Burst aligning input array of size: 64 to 384
-I1226 10:52:11.450804 25484 BottleneckShortcutImbalancedParCpuCode.cpp:102] Tiled output size (burst aligned): 384
-I1226 10:52:11.450816 25484 layers.h:758] Writing DRAM to 0 with size 0x300
-I1226 10:52:11.455543 25484 BottleneckShortcutImbalancedParCpuCode.cpp:110] Running ...
-I1226 10:52:11.646606 25484 BottleneckShortcutImbalancedParCpuCode.cpp:116] Done
-I1226 10:52:11.646658 25484 layers.h:775] Reading DRAM from 0x300 with size 0x300
-I1226 10:52:11.648777 25484 layers.h:365] Reordering output for PF = 2 TOH = 2 TOW = 2
-I1226 10:52:11.648813 25484 layers.h:382] Done
-I1226 10:52:11.648825 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[0] = 20
-I1226 10:52:11.649099 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[1] = -6
-I1226 10:52:11.649339 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[2] = 2
-I1226 10:52:11.649576 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[3] = -20
-I1226 10:52:11.649801 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[4] = -68
-I1226 10:52:11.650100 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[5] = 19
-I1226 10:52:11.650352 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[6] = 22
-I1226 10:52:11.650638 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[7] = 22
-I1226 10:52:11.650882 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[8] = -32
-I1226 10:52:11.651142 25484 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[9] = 11
-I1226 10:52:11.651384 25484 BottleneckShortcutImbalancedParCpuCode.cpp:129] elapsed time: 0.191003s
-I1226 10:52:11.651628 25484 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv0 = 6.4e-05 M
-I1226 10:52:11.651872 25484 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv1 = 0.000288 M
-I1226 10:52:11.652127 25484 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv2 = 0.000128 M
-I1226 10:52:11.652365 25484 BottleneckShortcutImbalancedParCpuCode.cpp:147] OPS:    9.6e-07 G
-I1226 10:52:11.652602 25484 BottleneckShortcutImbalancedParCpuCode.cpp:148] FPS:    10.471
-I1226 10:52:11.652837 25484 BottleneckShortcutImbalancedParCpuCode.cpp:151] GFLOPs: 5.02609e-06
-I1226 10:52:11.653153 25484 BottleneckShortcutImbalancedParCpuCode.cpp:158] Examine results ...
-I1226 10:52:11.653421 25484 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[0] = 20
-I1226 10:52:11.653666 25484 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[1] = -6
-I1226 10:52:11.653923 25484 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[2] = 2
-I1226 10:52:11.654229 25484 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[3] = -20
-I1226 10:52:11.654482 25484 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[4] = -68
-I1226 10:52:11.654500 25484 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[0] = 20
-I1226 10:52:11.654748 25484 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[1] = -6
-I1226 10:52:11.654973 25484 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[2] = 2
-I1226 10:52:11.655206 25484 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[3] = -20
-I1226 10:52:11.655429 25484 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[4] = -68
-I1226 10:52:11.655664 25484 BottleneckShortcutImbalancedParCpuCode.cpp:177] Evaluating difference ...
-I1226 10:52:11.655930 25484 BottleneckShortcutImbalancedParCpuCode.cpp:178] Mask: 00000000
-I1226 10:52:11.656188 25484 BottleneckShortcutImbalancedParCpuCode.cpp:206] num_failed: 0 total: 64 avg_diff: 0 min_diff: 0 max_diff: 0
+I1226 11:50:30.721407 123154 BottleneckShortcutImbalancedParCpuCode.cpp:74] num frac bits: 0
+I1226 11:50:30.721776 123154 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[0] = -1.95943  dfe = -2
+I1226 11:50:30.721884 123154 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[1] = -0.71415  dfe = -1
+I1226 11:50:30.721907 123154 BottleneckShortcutImbalancedParCpuCode.cpp:78] input[2] = 0.80067  dfe = 1
+I1226 11:50:30.721932 123154 layers.h:975] Running golden function ...
+I1226 11:50:30.721958 123154 layers.h:984]        STANDARD 4 x 4 x 4 -> 2 x 2 x 2
+I1226 11:50:30.723132 123154 layers.h:984]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
+I1226 11:50:30.724171 123154 layers.h:984]        STANDARD 2 x 2 x 2 -> 8 x 2 x 2
+I1226 11:50:30.725482 123154 layers.h:1032] Shortcut is enabled for layer conv2
+I1226 11:50:30.727586 123154 layers.h:340] Reordering input for PC = 2
+I1226 11:50:30.727608 123154 utils.h:383] Burst aligning input array of size: 128 to 384
+I1226 11:50:30.727622 123154 BottleneckShortcutImbalancedParCpuCode.cpp:99] Tiled input size (burst aligned): 384
+I1226 11:50:30.727635 123154 utils.h:383] Burst aligning input array of size: 64 to 384
+I1226 11:50:30.727648 123154 BottleneckShortcutImbalancedParCpuCode.cpp:102] Tiled output size (burst aligned): 384
+I1226 11:50:30.727658 123154 layers.h:758] Writing DRAM to 0 with size 0x300
+I1226 11:50:30.733479 123154 BottleneckShortcutImbalancedParCpuCode.cpp:110] Running ...
+I1226 11:50:30.935758 123154 BottleneckShortcutImbalancedParCpuCode.cpp:116] Done
+I1226 11:50:30.935806 123154 layers.h:775] Reading DRAM from 0x300 with size 0x300
+I1226 11:50:30.939213 123154 layers.h:365] Reordering output for PF = 2 TOH = 2 TOW = 2
+I1226 11:50:30.939260 123154 layers.h:382] Done
+I1226 11:50:30.939275 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[0] = 20
+I1226 11:50:30.939527 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[1] = -6
+I1226 11:50:30.939739 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[2] = 2
+I1226 11:50:30.939940 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[3] = -20
+I1226 11:50:30.940166 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[4] = -68
+I1226 11:50:30.940405 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[5] = 19
+I1226 11:50:30.940671 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[6] = 22
+I1226 11:50:30.940887 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[7] = 22
+I1226 11:50:30.941133 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[8] = -32
+I1226 11:50:30.941381 123154 BottleneckShortcutImbalancedParCpuCode.cpp:123] output_dfe[9] = 11
+I1226 11:50:30.941599 123154 BottleneckShortcutImbalancedParCpuCode.cpp:129] elapsed time: 0.202217s
+I1226 11:50:30.941825 123154 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv0 = 6.4e-05 M
+I1226 11:50:30.942109 123154 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv1 = 0.000288 M
+I1226 11:50:30.942350 123154 BottleneckShortcutImbalancedParCpuCode.cpp:143] [Ops] layer                          conv2 = 0.000128 M
+I1226 11:50:30.942688 123154 BottleneckShortcutImbalancedParCpuCode.cpp:147] OPS:    9.6e-07 G
+I1226 11:50:30.942925 123154 BottleneckShortcutImbalancedParCpuCode.cpp:148] FPS:    9.89035
+I1226 11:50:30.943164 123154 BottleneckShortcutImbalancedParCpuCode.cpp:151] GFLOPs: 4.74737e-06
+I1226 11:50:30.943392 123154 BottleneckShortcutImbalancedParCpuCode.cpp:158] Examine results ...
+I1226 11:50:30.943608 123154 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[0] = 20
+I1226 11:50:30.943830 123154 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[1] = -6
+I1226 11:50:30.944069 123154 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[2] = 2
+I1226 11:50:30.944301 123154 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[3] = -20
+I1226 11:50:30.944522 123154 BottleneckShortcutImbalancedParCpuCode.cpp:160] output_cpu[4] = -68
+I1226 11:50:30.944739 123154 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[0] = 20
+I1226 11:50:30.944963 123154 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[1] = -6
+I1226 11:50:30.945322 123154 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[2] = 2
+I1226 11:50:30.945549 123154 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[3] = -20
+I1226 11:50:30.945762 123154 BottleneckShortcutImbalancedParCpuCode.cpp:166] output_dfe[4] = -68
+I1226 11:50:30.945989 123154 BottleneckShortcutImbalancedParCpuCode.cpp:177] Evaluating difference ...
+I1226 11:50:30.946213 123154 BottleneckShortcutImbalancedParCpuCode.cpp:178] Mask: 00000000
+I1226 11:50:30.946460 123154 BottleneckShortcutImbalancedParCpuCode.cpp:206] num_failed: 0 total: 64 avg_diff: 0 min_diff: 0 max_diff: 0
