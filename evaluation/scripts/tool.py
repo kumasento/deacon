@@ -65,6 +65,14 @@ logger = get_logger("deacon")
 # -------------------------------------------------------------------------
 
 
+def get_num_inputs(cfg: Dict) -> List[str]:
+    if "INPUT" not in cfg:
+        return 1
+    if not isinstance(cfg["INPUT"], list):
+        return 1
+    return len(cfg["INPUT"])
+
+
 def generate_data_array(N: int) -> np.ndarray:
     return np.random.uniform(low=-2.1, high=2.1, size=N)
 
@@ -72,17 +80,22 @@ def generate_data_array(N: int) -> np.ndarray:
 def generate_data_layer(name: str, cfg: Dict, data_file: str):
 
     if cfg["TYPE"] == "STANDARD":
-        with open(data_file, "a") as f:
-            f.write(f"BEGIN {name}_dw\n")
-            N = cfg["K"] * cfg["K"] * cfg["C"] * cfg["F"]
-            f.write(f"{N}\n")
-            arr = generate_data_array(N)
-            for x in arr:
-                f.write(f"{x}\n")
+        for i in range(get_num_inputs(cfg)):
+            with open(data_file, "a") as f:
+                f.write(f"BEGIN {name}_{i}\n")
+                # HACK:
+                C = cfg["C"]
+                if i > 0 and "SHORTCUT_C" in cfg:
+                    C = cfg["SHORTCUT_C"]
+                N = cfg["K"] * cfg["K"] * C * cfg["F"]
+                f.write(f"{N}\n")
+                arr = generate_data_array(N)
+                for x in arr:
+                    f.write(f"{x}\n")
 
     elif cfg["TYPE"] == "POINTWISE":
         with open(data_file, "a") as f:
-            f.write(f"BEGIN {name}_dw\n")
+            f.write(f"BEGIN {name}\n")
             N = cfg["C"] * cfg["F"]
             f.write(f"{N}\n")
             arr = generate_data_array(N)
@@ -218,7 +231,10 @@ class CommandRunner:
             stdout=open(self.get_log_file("stdout"), "w"),
             stderr=open(self.get_log_file("stderr"), "w"),
         )
-        logger.info(f"Finished command: {cmd}, return code: {ret.returncode}")
+        if ret.returncode != 0:
+            logger.error(f"Failed command: {cmd}, return code: {ret.returncode}")
+        else:
+            logger.info(f"Succeeded command: {cmd}, return code: {ret.returncode}")
 
 
 class RunsimCommandRunner(CommandRunner):
@@ -341,6 +357,18 @@ class AppGenerator:
         self.logger.info(f"Write to engine parameters: {target_file}")
 
     def generate_manager(self):
+        def get_parallel_cfg(key: str, cfg: Dict) -> str:
+            ret = ""
+            # port_key = "INPUT" if key == "P_C" else "OUTPUT"
+            if key not in cfg:
+                cfg[key] = [1]
+            if not isinstance(cfg[key], list):
+                cfg[key] = [cfg[key]]
+            name = "".join(key.split("_"))
+            for pf in cfg[key]:
+                ret += f".{name}({pf})"
+            return ret
+
         cps = ""
         for key, cfg in self.cfg["layers"].items():
             input_cfg = ""
@@ -356,12 +384,13 @@ class AppGenerator:
             if "OUTPUT" in cfg:
                 if not isinstance(cfg["OUTPUT"], list):
                     cfg["OUTPUT"] = [cfg["OUTPUT"]]
-                for output_type in cfg["OUTPUT"]:
-                    output_cfg += f""".output(OutputType.{output_type})"""
-
+                for output in cfg["OUTPUT"]:
+                    output_type = output.split("_")[0].upper()
+                    output_index = int(output.split("_")[1]) if "_" in output else 0
+                    output_cfg += f""".output(new Output(OutputType.{output_type}, {output_index}))"""
             cps += f"""
     cps.add(new ConvLayerParameters
-                .Builder({cfg['H']}, {cfg['W']}, {cfg['C']}, {cfg['F']}, {cfg['K']})
+                .Builder({cfg['H']}, {cfg['W']}, {cfg['C']}, {cfg['F']}, {cfg['K']}){input_cfg}{output_cfg}
                 .BW({self.cfg['global']['BW']})
                 .WBW({self.cfg['global']['WBW']})
                 .numFracBits({self.cfg['global']['NUM_FRAC_BITS']})
@@ -373,11 +402,7 @@ class AppGenerator:
                 .dbg(params.getDebug())
                 .coeffOnChip({str(self.cfg['global']['COEFF_ON_CHIP']).lower()})
                 .coeffFile(params.getCoeffFile())
-                {input_cfg}
-                {output_cfg}
-                .residual("{cfg['RESIDUAL'] if 'RESIDUAL' in cfg else ""}")
-                .PF({cfg['P_F'] if 'P_F' in cfg else 1})
-                .PC({cfg['P_C'] if 'P_C' in cfg else 1})
+                .residual("{cfg['RESIDUAL'] if 'RESIDUAL' in cfg else ""}"){get_parallel_cfg("P_F", cfg)}{get_parallel_cfg("P_C", cfg)}
                 .PK({cfg['P_K'] if 'P_K' in cfg else 1})
                 .namedRegion("{cfg['NAMED_REGION'] if 'NAMED_REGION' in cfg else ""}")
                 .pooling(Pooling.{cfg['POOLING'] if 'POOLING' in cfg else 'MAX'})
@@ -482,6 +507,10 @@ def main():
     gen_parser.set_defaults(func=gen)
 
     args = parser.parse_args()
+
+    if os.path.isdir(args.cfg):
+        args.cfg = ",".join([os.path.join(args.cfg, f) for f in os.listdir(args.cfg)])
+
     args.cfg = args.cfg.split(",")
     args.root_dir = os.path.abspath(args.root_dir)
 

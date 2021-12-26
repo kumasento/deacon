@@ -1,0 +1,124 @@
+Thu 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 21:49: WARNING: Unconnected elements in design 'conv0'
+Thu 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200/scratch/conv0_graph_warnings.txt
+Thu 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 21:49: WARNING: to that of a similar bitstream.
+Thu 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 21:49: WARNING: Unconnected elements in design 'conv1'
+Thu 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200/scratch/conv1_graph_warnings.txt
+Thu 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 21:49: WARNING: to that of a similar bitstream.
+In file included from /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:21,
+                 from ../../src/two_conv/TwoConvCpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h: In static member function ‘static DfeConvLayerParameters DfeConvLayerParameters::get(max_file_t*, std::string)’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h:76:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   76 |     for (int i = 0; i < dcp.NUM_INPUTS; ++i)
+      |                     ~~^~~~~~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h:79:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   79 |     for (int i = 0; i < dcp.NUM_OUTPUTS; ++i)
+      |                     ~~^~~~~~~~~~~~~~~~~
+../../src/two_conv/TwoConvCpuCode.cpp: In function ‘int main(int, char**)’:
+../../src/two_conv/TwoConvCpuCode.cpp:90:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<ConvLayerParameters>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   90 |     for (int i = 0; i < cps.size(); ++i) {
+      |                     ~~^~~~~~~~~~~~
+../../src/two_conv/TwoConvCpuCode.cpp:127:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  127 |       for (int j = 0; j < cp.dfe.NUM_OUTPUTS; ++j) {
+      |                       ~~^~~~~~~~~~~~~~~~~~~~
+../../src/two_conv/TwoConvCpuCode.cpp:141:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<short int, std::allocator<short int> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  141 |         for (int i = 0; i < output_cpu.size(); ++i)
+      |                         ~~^~~~~~~~~~~~~~~~~~~
+../../src/two_conv/TwoConvCpuCode.cpp:260:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<double>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  260 |   for (int i = 0; i < diffs.size(); ++i) {
+      |                   ~~^~~~~~~~~~~~~~
+In file included from ../../src/two_conv/TwoConvCpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
+../../src/two_conv/TwoConvCpuCode.cpp:154:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
+../../src/two_conv/TwoConvCpuCode.cpp:181:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1223 21:49:41.322618 49759 TwoConvCpuCode.cpp:71] num frac bits: 8
+I1223 21:49:41.322860 49759 TwoConvCpuCode.cpp:75] input[0] = -1.02637  dfe = -1.02734
+I1223 21:49:41.323318 49759 TwoConvCpuCode.cpp:75] input[1] = -0.374079  dfe = -0.375
+I1223 21:49:41.323578 49759 TwoConvCpuCode.cpp:75] input[2] = 0.419399  dfe = 0.417969
+I1223 21:49:41.323590 49759 TwoConvCpuCode.cpp:83] Running golden function ...
+I1223 21:49:41.324848 49759 TwoConvCpuCode.cpp:92]        STANDARD 4 x 32 x 32 -> 8 x 32 x 32
+I1223 21:49:41.328613 49759 TwoConvCpuCode.cpp:92]        STANDARD 8 x 32 x 32 -> 4 x 32 x 32
+I1223 21:49:41.331755 49759 utils.h:383] Burst aligning input array of size: 8192 to 8256
+I1223 21:49:41.331790 49759 TwoConvCpuCode.cpp:161] Tiled input size (burst aligned): 8256
+I1223 21:49:41.332096 49759 utils.h:383] Burst aligning input array of size: 8192 to 8256
+I1223 21:49:41.332114 49759 TwoConvCpuCode.cpp:164] Tiled output size (burst aligned): 8256
+I1223 21:49:41.332386 49759 layers.h:757] Writing DRAM to 0 with size 0x4080
+I1223 21:49:41.342034 49759 TwoConvCpuCode.cpp:172] Running ...
+I1223 21:49:42.274483 49759 TwoConvCpuCode.cpp:177] Done
+I1223 21:49:42.274523 49759 layers.h:774] Reading DRAM from 0x4080 with size 0x4080
+I1223 21:49:42.283242 49759 TwoConvCpuCode.cpp:184] output_dfe[0] = 57.7617
+I1223 21:49:42.283293 49759 TwoConvCpuCode.cpp:184] output_dfe[1] = 67.8359
+I1223 21:49:42.283299 49759 TwoConvCpuCode.cpp:184] output_dfe[2] = -60.7617
+I1223 21:49:42.283305 49759 TwoConvCpuCode.cpp:184] output_dfe[3] = -31.9258
+I1223 21:49:42.283311 49759 TwoConvCpuCode.cpp:184] output_dfe[4] = 24.8711
+I1223 21:49:42.283318 49759 TwoConvCpuCode.cpp:184] output_dfe[5] = 17.8594
+I1223 21:49:42.283322 49759 TwoConvCpuCode.cpp:184] output_dfe[6] = 27.125
+I1223 21:49:42.283329 49759 TwoConvCpuCode.cpp:184] output_dfe[7] = 9.98047
+I1223 21:49:42.283334 49759 TwoConvCpuCode.cpp:184] output_dfe[8] = 54.582
+I1223 21:49:42.283778 49759 TwoConvCpuCode.cpp:184] output_dfe[9] = 21.1758
+I1223 21:49:42.284008 49759 TwoConvCpuCode.cpp:190] elapsed time: 0.932374s
+I1223 21:49:42.284309 49759 TwoConvCpuCode.cpp:204] [Ops] layer                          conv0 = 0.589824 M
+I1223 21:49:42.284543 49759 TwoConvCpuCode.cpp:204] [Ops] layer                          conv1 = 0.589824 M
+I1223 21:49:42.284729 49759 TwoConvCpuCode.cpp:208] OPS:    0.0023593 G
+I1223 21:49:42.284941 49759 TwoConvCpuCode.cpp:209] FPS:    2.14506
+I1223 21:49:42.285145 49759 TwoConvCpuCode.cpp:212] GFLOPs: 0.00253042
+I1223 21:49:42.285363 49759 TwoConvCpuCode.cpp:218] Examine results ...
+I1223 21:49:42.285583 49759 TwoConvCpuCode.cpp:220] output_cpu[0] = 57.7344
+I1223 21:49:42.285787 49759 TwoConvCpuCode.cpp:220] output_cpu[1] = 67.9336
+I1223 21:49:42.286000 49759 TwoConvCpuCode.cpp:220] output_cpu[2] = -60.6914
+I1223 21:49:42.286006 49759 TwoConvCpuCode.cpp:220] output_cpu[3] = -31.8438
+I1223 21:49:42.286231 49759 TwoConvCpuCode.cpp:220] output_cpu[4] = 24.8516
+I1223 21:49:42.286446 49759 TwoConvCpuCode.cpp:226] output_dfe[0] = 57.7617
+I1223 21:49:42.286806 49759 TwoConvCpuCode.cpp:226] output_dfe[1] = 67.8359
+I1223 21:49:42.287037 49759 TwoConvCpuCode.cpp:226] output_dfe[2] = -60.7617
+I1223 21:49:42.287261 49759 TwoConvCpuCode.cpp:226] output_dfe[3] = -31.9258
+I1223 21:49:42.287475 49759 TwoConvCpuCode.cpp:226] output_dfe[4] = 24.8711
+I1223 21:49:42.287744 49759 TwoConvCpuCode.cpp:237] Evaluating difference ...
+I1223 21:49:42.287920 49759 TwoConvCpuCode.cpp:238] Mask: 00000xff
+Result mis-matched at     84: cpu 121.488281 dfe 127.078125
+Result mis-matched at    112: cpu 125.960938 dfe -93.460938
+Result mis-matched at    236: cpu -124.617188 dfe -125.894531
+Result mis-matched at    268: cpu 125.410156 dfe -126.707031
+Result mis-matched at    382: cpu -128.000000 dfe 124.011719
+Result mis-matched at    430: cpu 126.414062 dfe -112.554688
+Result mis-matched at    571: cpu -128.000000 dfe 127.699219
+Result mis-matched at    631: cpu 127.996094 dfe -120.164062
+Result mis-matched at    761: cpu -93.765625 dfe -100.648438
+Result mis-matched at    829: cpu 126.628906 dfe -126.324219
+I1223 21:49:42.290408 49759 TwoConvCpuCode.cpp:266] num_failed: 104 total: 8192 avg_diff: 1.78929 min_diff: 0 max_diff: 255.699

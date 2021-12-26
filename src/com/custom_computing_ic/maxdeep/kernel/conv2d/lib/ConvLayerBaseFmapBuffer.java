@@ -8,7 +8,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 public abstract class ConvLayerBaseFmapBuffer extends KernelComponent {
-
   protected ConvLayerBaseFmapBuffer(KernelBase<?> owner) {
     super(owner);
   }
@@ -19,7 +18,7 @@ public abstract class ConvLayerBaseFmapBuffer extends KernelComponent {
 
   public abstract DFEVectorType<DFEVar> getPortVecT();
 
-  public abstract int getWidth();
+  public abstract int getWidth(int index);
 
   public abstract int getDepth();
 }

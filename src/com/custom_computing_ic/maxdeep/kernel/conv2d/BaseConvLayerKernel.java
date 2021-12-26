@@ -6,7 +6,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.CounterChain;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -24,9 +23,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   protected final ConvLayerParameters cp;
   protected final List<ConvLayerParameters> cps;
   protected final DFEType T, WT;
-  protected DFEVector<DFEVar> ifmap, ofmap;
+  protected List<DFEVector<DFEVar>> ifmapList;
   protected List<DFEVector<DFEVar>> coeffList;
-  protected DFEVectorType<DFEVar> ifmapVecT, ofmapVecT;
+  protected List<DFEVector<DFEVar>> ofmapList;
+  // protected DFEVectorType<DFEVar> ifmapVecT, ofmapVecT;
   protected List<DFEVectorType<DFEVar>> coeffVecTList;
   protected List<Memory<DFEVar>> coeffFMemList;
   protected DFEVector<DFEVar> coeff;
@@ -49,12 +49,18 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
 
     this.T = T;
     this.WT = WT;
+    this.ifmapList = new ArrayList<DFEVector<DFEVar>>();
+    this.ofmapList = new ArrayList<DFEVector<DFEVar>>();
 
-    ifmapVecT = new DFEVectorType<DFEVar>(T, getIfmapVecSize());
-    ifmap = ifmapVecT.newInstance(getOwner());
+    for (int i = 0; i < cp.inputs.size(); ++i) {
+      DFEVectorType<DFEVar> ifmapVecT = new DFEVectorType<DFEVar>(T, getIfmapVecSize(i));
+      ifmapList.add(ifmapVecT.newInstance(getOwner()));
+    }
 
-    ofmapVecT = new DFEVectorType<DFEVar>(T, getOfmapVecSize());
-    ofmap = ofmapVecT.newInstance(getOwner());
+    for (int i = 0; i < cp.outputs.size(); ++i) {
+      DFEVectorType<DFEVar> ofmapVecT = new DFEVectorType<DFEVar>(T, getOfmapVecSize(i));
+      ofmapList.add(ofmapVecT.newInstance(getOwner()));
+    }
 
     // create coefficents
     List<Integer> coeffVecSizeList = getCoeffVecSizeList();
@@ -71,8 +77,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     /** Initialise residual port. */
     if (cp.residual.isEmpty())
       this.residual = null;
-    else
-      this.residual = ofmapVecT.newInstance(owner);
+    else // Residual is added up with the first output, hence use its type.
+      this.residual = ofmapList.get(0).getType().newInstance(owner);
   }
 
   public BaseConvLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
@@ -101,7 +107,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   /* ------------------- Coeff on chip ------------------------------- */
 
   public int getCoeffFMemSize(DFEType T) {
-    return ((int) Math.ceil((double) cp.C / cp.PC)) * ((int) Math.ceil((double) cp.F / cp.PF));
+    if (cp.PC.size() > 1 || cp.PF.size() > 1)
+      throw new IllegalArgumentException("PC and PF should not be larger than 1");
+    return ((int) Math.ceil((double) cp.C / cp.PC.get(0)))
+        * ((int) Math.ceil((double) cp.F / cp.PF.get(0)));
   }
 
   public abstract DFEVar getCoeffFMemAddr(DFEType addrT);
@@ -113,8 +122,10 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   public List<Memory<DFEVar>> buildCoeffFMemList(DFEType T, boolean mapToCPU) {
     List<Memory<DFEVar>> coeffFMemList = new ArrayList<Memory<DFEVar>>();
 
-    for (int pf = 0; pf < cp.PF; ++pf)
-      for (int pc = 0; pc < cp.PC; ++pc)
+    if (cp.PC.size() > 1 || cp.PF.size() > 1)
+      throw new IllegalArgumentException("PC and PF should not be larger than 1");
+    for (int pf = 0; pf < cp.PF.get(0); ++pf)
+      for (int pc = 0; pc < cp.PC.get(0); ++pc)
         for (int k = 0; k < cp.K * cp.K; ++k) {
           Memory<DFEVar> memory = mem.alloc(T, getCoeffFMemSize(T));
           if (mapToCPU) {
@@ -253,31 +264,41 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   }
 
   public Memory<DFEVector<DFEVar>> getROM(
-      ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt) {
-    getOwner().getManager().logMsg("Read for key = %s depth = %d\n", key, depth);
+      ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt, int index) {
+    return getROM(cp, key, depth, vt, index, 0);
+  }
+
+  public Memory<DFEVector<DFEVar>> getROM(ConvLayerParameters cp, String key, int depth,
+      DFEVectorType<DFEVar> vt, int index, int index2) {
     double[] rawData = readROMFile(key, cp.coeffFile);
 
+    getOwner().getManager().logMsg(
+        "Read for key = %s depth = %d raw data = %d\n", key, depth, rawData.length);
     if (rawData.length % depth != 0)
       throw new IllegalArgumentException("number of data should be divisible by memory depth.");
 
     double[][] parts = new double[depth][rawData.length / depth];
 
+    // The total number of channels should be scaled.
+    int C = cp.C * cp.PC.get(index) / cp.PC.get(0);
+    int PC = cp.PC.get(index);
+    int PF = cp.PF.get(index2);
+
     if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-      for (int pc = 0; pc < cp.PC; ++pc)
+      for (int pc = 0; pc < PC; ++pc)
         for (int k = 0; k < cp.K * cp.K; ++k)
-          for (int c = 0; c < cp.C; c += cp.PC)
-            parts[c / cp.PC][pc * cp.K * cp.K + k] =
+          for (int c = 0; c < C; c += PC)
+            parts[c / PC][pc * cp.K * cp.K + k] =
                 convert(rawData[(c + pc) * (cp.K * cp.K) + k], vt);
     } else {
-      for (int pf = 0; pf < cp.PF; ++pf)
-        for (int pc = 0; pc < cp.PC; ++pc)
+      for (int pf = 0; pf < PF; ++pf)
+        for (int pc = 0; pc < PC; ++pc)
           for (int k = 0; k < cp.K * cp.K; ++k)
-            for (int f = 0; f < cp.F; f += cp.PF)
-              for (int c = 0; c < cp.C; c += cp.PC)
-                parts[(f / cp.PF) * (cp.C / cp.PC) + (c / cp.PC)][pf * cp.PC * cp.K * cp.K
-                    + pc * cp.K * cp.K + k] =
-                    convert(rawData[(f + pf) * (cp.C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k],
-                        vt);
+            for (int f = 0; f < cp.F; f += PF)
+              for (int c = 0; c < C; c += PC)
+                parts[(f / PF) * (C / PC) + (c / PC)]
+                     [pf * PC * cp.K * cp.K + pc * cp.K * cp.K + k] = convert(
+                         rawData[(f + pf) * (C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k], vt);
     }
 
     Bits[] memData = new Bits[depth];
@@ -291,17 +312,13 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return ROM;
   }
 
-  public DFEVector<DFEVar> getIfmap() {
-    return ifmap;
-  }
-
-  public DFEVectorType<DFEVar> getIfmapVecT() {
-    return ifmapVecT;
+  public DFEVector<DFEVar> getIfmap(int i) {
+    return ifmapList.get(i);
   }
 
   public abstract DFEVar getIfmapEn();
 
-  public abstract int getIfmapVecSize();
+  public abstract int getIfmapVecSize(int i);
 
   public List<DFEVector<DFEVar>> getCoeffList() {
     return coeffList;
@@ -311,24 +328,36 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return coeffVecTList;
   }
 
+  public DFEVectorType<DFEVar> getIfmapVecT(int index) {
+    return ifmapList.get(index).getType();
+  }
+
+  public DFEVectorType<DFEVar> getOfmapVecT(int index) {
+    return ofmapList.get(index).getType();
+  }
+
   public abstract List<DFEVar> getCoeffEnList();
 
   public abstract List<Integer> getCoeffVecSizeList();
 
-  public DFEVectorType<DFEVar> getOfmapVecT() {
-    return ofmapVecT;
-  }
-
   public abstract DFEVar getOfmapEn();
 
-  public abstract int getOfmapVecSize();
+  public abstract int getOfmapVecSize(int i);
 
   public DFEVector<DFEVar> getOfmap() {
-    return ofmap;
+    return getOfmap(0);
   }
 
-  public void setIfmap(DFEVector<DFEVar> ifmap) {
-    this.ifmap.connect(ifmap);
+  public DFEVector<DFEVar> getOfmap(int i) {
+    return ofmapList.get(i);
+  }
+
+  public void setIfmap(List<DFEVector<DFEVar>> ifmapList) {
+    for (int i = 0; i < ifmapList.size(); ++i) setIfmap(ifmapList.get(i), i);
+  }
+
+  public void setIfmap(DFEVector<DFEVar> ifmap, int i) {
+    this.ifmapList.get(i).connect(ifmap);
   }
 
   public void setCoeffList(List<DFEVector<DFEVar>> coeffList) {
@@ -340,8 +369,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     for (int i = 0; i < coeffList.size(); i++) this.coeffList.get(i).connect(coeffList.get(i));
   }
 
-  public void setInputs(DFEVector<DFEVar> ifmap, List<DFEVector<DFEVar>> coeffList) {
-    this.setIfmap(ifmap);
+  public void setInputs(List<DFEVector<DFEVar>> ifmapList, List<DFEVector<DFEVar>> coeffList) {
+    this.setIfmap(ifmapList);
     this.setCoeffList(coeffList);
   }
 }

@@ -10,10 +10,17 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 
 public class PoolingLayerKernel extends ConvLayerKernel {
+  private DFEVector<DFEVar> ifmap, ofmap;
+
   public PoolingLayerKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
     super(owner, cp, T, WT);
 
-    if (cp.PC != cp.PF)
+    if (cp.inputs.size() > 1 || cp.outputs.size() > 1)
+      throw new IllegalArgumentException("Cannot have more than 1 input or output.");
+    this.ifmap = ifmapList.get(0);
+    this.ofmap = ofmapList.get(0);
+
+    if (cp.PC.get(0) != cp.PF.get(0))
       throw new IllegalArgumentException("PC should equal to PF.");
     if (cp.C != cp.F)
       throw new IllegalArgumentException("C should equal to F.");
@@ -24,10 +31,10 @@ public class PoolingLayerKernel extends ConvLayerKernel {
   @Override
   public void initCounterChain(DFEType countT) {
     CounterChain chain = getOwner().control.count.makeCounterChain();
-    if (cp.C / cp.PC == 1)
+    if (cp.C / cp.PC.get(0) == 1)
       c = constant.var(0).cast(countT);
     else
-      c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+      c = chain.addCounter(cp.C / cp.PC.get(0), 1).cast(countT);
 
     h = chain.addCounter(H / PH, 1).cast(countT);
     w = chain.addCounter(W / PW, 1).cast(countT);
@@ -42,15 +49,16 @@ public class PoolingLayerKernel extends ConvLayerKernel {
     /* padded input */
     if (cp.dbg)
       debug.simPrintf("ifmap = %KObj%\n", ifmap);
-    DFEVector<DFEVar> input = control.mux(isInPaddedArea(h, w), ifmap, constant.vect(ifmapVecT.getSize(), T, 0));
+    DFEVector<DFEVar> input =
+        control.mux(isInPaddedArea(h, w), ifmap, constant.vect(ifmapList.get(0).getSize(), T, 0));
 
     /* line buffer */
-    lbuf = new ConvLayerLineBuffer(getOwner(), cp, T);
+    lbuf = new ConvLayerLineBuffer(getOwner(), cp, T, 0);
     lbuf.setInput(input);
     DFEVector<DFEVar> kern = lbuf.getOutputVec();
 
     /* calculate the output */
-    for (int pc = 0; pc < cp.PC; ++pc) {
+    for (int pc = 0; pc < cp.PC.get(0); ++pc) {
       int offset = pc * cp.K * cp.K;
       DFEVar out = null;
       if (cp.K == 2) {
@@ -59,7 +67,7 @@ public class PoolingLayerKernel extends ConvLayerKernel {
       } else if (cp.K == 3) {
         out = KernelMath.max(
             KernelMath.max(KernelMath.max(KernelMath.max(kern.get(offset), kern.get(offset + 1)),
-                KernelMath.max(kern.get(offset + 2), kern.get(offset + 3))),
+                               KernelMath.max(kern.get(offset + 2), kern.get(offset + 3))),
                 KernelMath.max(KernelMath.max(kern.get(offset + 4), kern.get(offset + 5)),
                     KernelMath.max(kern.get(offset + 6), kern.get(offset + 7)))),
             kern.get(offset + 8));

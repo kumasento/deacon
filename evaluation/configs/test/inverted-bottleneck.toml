@@ -1,0 +1,33 @@
+NAME = "InvertedBottleneck"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 0
+FREQ = 350
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 32
+W = 32
+C = 2
+F = 4
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.conv1]
+H = 32
+W = 32
+C = 4
+F = 2
+K = 3
+P = 1
+S = 1
+SEQ = 1
+INPUT = "conv0"
+RESIDUAL = "conv0_1"
+TYPE = "DEPTHWISE_SEPARABLE"

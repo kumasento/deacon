@@ -10,18 +10,16 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 public class BatchNormKernel extends BaseNormKernel {
-
-  public static final String      COEFF_ROM_SUFFIX = "batch_norm_coeff";
-  public static final String      BIAS_ROM_SUFFIX  = "batch_norm_bias";
+  public static final String COEFF_ROM_SUFFIX = "batch_norm_coeff";
+  public static final String BIAS_ROM_SUFFIX = "batch_norm_bias";
 
   private final DFEVector<DFEVar> coeff;
   private final DFEVector<DFEVar> bias;
 
-  private final DFEVar            coeffROMAddr;
-  private final DFEVar            biasROMAddr;
+  private final DFEVar coeffROMAddr;
+  private final DFEVar biasROMAddr;
 
-  public BatchNormKernel(KernelBase<?> owner, ConvLayerParameters cp,
-      DFEType scalarT) {
+  public BatchNormKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType scalarT) {
     super(owner, cp, scalarT);
 
     coeffROMAddr = getROMAddrT().newInstance(owner);
@@ -31,10 +29,9 @@ public class BatchNormKernel extends BaseNormKernel {
     bias = initBiasROM();
 
     // core computation
-    for (int pf = 0; pf < cp.PF; pf++) {
+    for (int pf = 0; pf < cp.PF.get(0); pf++) {
       for (int pk = 0; pk < cp.PK; pk++) {
-        ofmap[pf * cp.PK + pk].connect(coeff[pf] * ifmap[pf * cp.PK + pk]
-            + bias[pf]);
+        ofmap[pf * cp.PK + pk].connect(coeff[pf] * ifmap[pf * cp.PK + pk] + bias[pf]);
       }
     }
   }
@@ -45,11 +42,11 @@ public class BatchNormKernel extends BaseNormKernel {
   }
 
   private int getROMWidth() {
-    return cp.PF;
+    return cp.PF.get(0);
   }
 
   private int getROMDepth() {
-    return cp.F / cp.PF;
+    return cp.F / cp.PF.get(0);
   }
 
   public DFEType getROMAddrT() {
@@ -57,17 +54,13 @@ public class BatchNormKernel extends BaseNormKernel {
   }
 
   public DFEVector<DFEVar> initCoeffROM() {
-    Memory<DFEVector<DFEVar>> mem = getOwner().mem.alloc(
-        getPortVecT(),
-        getROMDepth());
+    Memory<DFEVector<DFEVar>> mem = getOwner().mem.alloc(getPortVecT(), getROMDepth());
     mem.mapToCPU(cp.name + "_" + COEFF_ROM_SUFFIX);
     return mem.read(coeffROMAddr);
   }
 
   public DFEVector<DFEVar> initBiasROM() {
-    Memory<DFEVector<DFEVar>> mem = getOwner().mem.alloc(
-        getPortVecT(),
-        getROMDepth());
+    Memory<DFEVector<DFEVar>> mem = getOwner().mem.alloc(getPortVecT(), getROMDepth());
     mem.mapToCPU(cp.name + "_" + BIAS_ROM_SUFFIX);
     return mem.read(biasROMAddr);
   }

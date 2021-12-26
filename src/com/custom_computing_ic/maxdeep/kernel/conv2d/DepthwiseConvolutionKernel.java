@@ -1,7 +1,5 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradIfmapTransform;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradInverseTransform;
@@ -16,9 +14,10 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DepthwiseConvolutionKernel extends Kernel {
-
   public static final String[] INPUTS = {"ifmap", "weights", "bias"};
   public static final String[] OUTPUTS = {"ofmap"};
   public static final boolean OPT = true;
@@ -36,15 +35,16 @@ public class DepthwiseConvolutionKernel extends Kernel {
     if (useWinograd && parWidth != 1)
       throw new IllegalArgumentException("parWidth should be 1 if useWinograd is true");
     if (useWinograd && kernelSize != 3)
-      throw new IllegalArgumentException(String.format(
-          "kernelSize should be 3 if you use Winograd, got: %3d", kernelSize));
+      throw new IllegalArgumentException(
+          String.format("kernelSize should be 3 if you use Winograd, got: %3d", kernelSize));
 
     int tileInputHeight = tileHeight + kernelSize - 1;
     int tileInputWidth = tileWidth + kernelSize - 1;
 
     if (tileInputWidth % parWidth != 0)
       throw new IllegalArgumentException(String.format("The input width of tile (%d) be divisible "
-          + "by the number of parallelised units in the width axis (%d)", tileInputWidth, parWidth));
+              + "by the number of parallelised units in the width axis (%d)",
+          tileInputWidth, parWidth));
 
     if (!useWinograd) {
       // counters
@@ -59,9 +59,13 @@ public class DepthwiseConvolutionKernel extends Kernel {
       }
 
       // initialise the convolution layer parameter
-      ConvLayerParameters cp =
-          (new ConvLayerParameters.Builder(tileInputHeight, tileInputWidth, tileDepth, 1,
-              kernelSize)).PC(parDepth).PK(parWidth).dbg(dbg).useWinograd(useWinograd).build();
+      ConvLayerParameters cp = (new ConvLayerParameters.Builder(
+                                    tileInputHeight, tileInputWidth, tileDepth, 1, kernelSize))
+                                   .PC(parDepth)
+                                   .PK(parWidth)
+                                   .dbg(dbg)
+                                   .useWinograd(useWinograd)
+                                   .build();
 
       // vector size
       int ifmapVecSize = parWidth * parDepth;
@@ -83,7 +87,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
       DFEVector<DFEVar> ofmap = createStream(OUTPUTS[0], T, ofmapVecSize, ofmapEn, false);
 
       // initialise line buffer
-      ConvLayerLineBuffer lineBuffer = new ConvLayerLineBuffer(getKernel(), cp, T);
+      ConvLayerLineBuffer lineBuffer = new ConvLayerLineBuffer(getKernel(), cp, T, 0);
       lineBuffer.setInput(ifmap);
       DFEVector<DFEVar> lbuf = lineBuffer.getOutputVec();
 
@@ -119,9 +123,13 @@ public class DepthwiseConvolutionKernel extends Kernel {
       }
 
       // initialise the convolution layer parameter
-      ConvLayerParameters cp =
-          (new ConvLayerParameters.Builder(tileInputHeight, tileInputWidth, tileDepth, 1,
-              kernelSize)).PC(parDepth).PK(parWidth).dbg(dbg).useWinograd(useWinograd).build();
+      ConvLayerParameters cp = (new ConvLayerParameters.Builder(
+                                    tileInputHeight, tileInputWidth, tileDepth, 1, kernelSize))
+                                   .PC(parDepth)
+                                   .PK(parWidth)
+                                   .dbg(dbg)
+                                   .useWinograd(useWinograd)
+                                   .build();
 
       // vector size
       int ifmapVecSize = parWidth * parDepth;
@@ -143,7 +151,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
       DFEVector<DFEVar> ofmap = createStream(OUTPUTS[0], T, ofmapVecSize, ofmapEn, false);
 
       // initialise line buffer
-      ConvLayerLineBuffer lineBuffer = new ConvLayerLineBuffer(getKernel(), cp, T);
+      ConvLayerLineBuffer lineBuffer = new ConvLayerLineBuffer(getKernel(), cp, T, 0);
       lineBuffer.setInput(ifmap);
       DFEVector<DFEVar> lbuf = lineBuffer.getOutputVec();
 
@@ -156,11 +164,10 @@ public class DepthwiseConvolutionKernel extends Kernel {
       // connect output
       ofmap.connect(ofmapBias);
     }
-
   }
 
-  public static DFEVector<DFEVar> getIfmapWinogradPE(KernelBase<?> owner, DFEVector<DFEVar> ifmap,
-      int parInDepth, DFEType T) {
+  public static DFEVector<DFEVar> getIfmapWinogradPE(
+      KernelBase<?> owner, DFEVector<DFEVar> ifmap, int parInDepth, DFEType T) {
     int TILE_SIZE = WinogradTransform.TILE_SIZE;
     DFEVectorType<DFEVar> RT = new DFEVectorType<DFEVar>(T, parInDepth * TILE_SIZE * TILE_SIZE);
     DFEVector<DFEVar> R = RT.newInstance(owner);
@@ -180,8 +187,8 @@ public class DepthwiseConvolutionKernel extends Kernel {
     return R;
   }
 
-  public static DFEVector<DFEVar> getWeightsWinogradPE(KernelBase<?> owner,
-      DFEVector<DFEVar> weights, int parInDepth, int kernelSize, DFEType T) {
+  public static DFEVector<DFEVar> getWeightsWinogradPE(
+      KernelBase<?> owner, DFEVector<DFEVar> weights, int parInDepth, int kernelSize, DFEType T) {
     int TILE_SIZE = WinogradTransform.TILE_SIZE;
 
     DFEVectorType<DFEVar> RT = new DFEVectorType<DFEVar>(T, parInDepth * TILE_SIZE * TILE_SIZE);
@@ -252,15 +259,14 @@ public class DepthwiseConvolutionKernel extends Kernel {
       transform.setInputMatrix(TO);
       DFEVector<DFEVar> trans = transform.getOutput();
 
-      for (int j = 0; j < M * M; j++)
-        O[i * M * M + j].connect(trans[j]);
+      for (int j = 0; j < M * M; j++) O[i * M * M + j].connect(trans[j]);
     }
 
     return O;
   }
 
-  private DFEVector<DFEVar> addBias(DFEVector<DFEVar> ofmapPE, DFEVector<DFEVar> bias,
-      int parDepth, int parWidth) {
+  private DFEVector<DFEVar> addBias(
+      DFEVector<DFEVar> ofmapPE, DFEVector<DFEVar> bias, int parDepth, int parWidth) {
     DFEVector<DFEVar> ofmapPEBias = ofmapPE.getType().newInstance(getKernel());
     for (int pd = 0; pd < parDepth; pd++) {
       for (int pw = 0; pw < parWidth; pw++) {
@@ -270,9 +276,8 @@ public class DepthwiseConvolutionKernel extends Kernel {
     return ofmapPEBias;
   }
 
-  private DFEVector<DFEVar> addBiasWinograd(DFEVector<DFEVar> ofmapPE, DFEVector<DFEVar> bias,
-      int parDepth) {
-
+  private DFEVector<DFEVar> addBiasWinograd(
+      DFEVector<DFEVar> ofmapPE, DFEVector<DFEVar> bias, int parDepth) {
     int M = WinogradTransform.M;
     DFEVector<DFEVar> ofmapPEBias = ofmapPE.getType().newInstance(getKernel());
 
@@ -317,7 +322,7 @@ public class DepthwiseConvolutionKernel extends Kernel {
 
   /**
    * Create the ifmap for PE array from the output of the line buffer.
-   * 
+   *
    * @param lbuf
    * @return
    */
@@ -347,8 +352,8 @@ public class DepthwiseConvolutionKernel extends Kernel {
     return ifmapPE;
   }
 
-  public static List<DFEVector<DFEVar>> getWeightsPE(KernelBase<?> owner,
-      DFEVector<DFEVar> weights, int parDepth, int parWidth, int kernelSize, DFEType T) {
+  public static List<DFEVector<DFEVar>> getWeightsPE(KernelBase<?> owner, DFEVector<DFEVar> weights,
+      int parDepth, int parWidth, int kernelSize, DFEType T) {
     DFEVectorType<DFEVar> vT = new DFEVectorType<DFEVar>(T, kernelSize * kernelSize);
     List<DFEVector<DFEVar>> weightsPE = new ArrayList<DFEVector<DFEVar>>();
 
@@ -366,8 +371,8 @@ public class DepthwiseConvolutionKernel extends Kernel {
     return weightsPE;
   }
 
-  private DFEVector<DFEVar> createStream(String name, DFEType T, int vecSize, DFEVar enable,
-      boolean isInput) {
+  private DFEVector<DFEVar> createStream(
+      String name, DFEType T, int vecSize, DFEVar enable, boolean isInput) {
     DFEVectorType<DFEVar> vecT = new DFEVectorType<DFEVar>(T, vecSize);
     DFEVector<DFEVar> vec = vecT.newInstance(getKernel());
 

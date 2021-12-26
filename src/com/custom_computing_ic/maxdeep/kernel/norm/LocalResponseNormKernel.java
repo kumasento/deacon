@@ -1,36 +1,32 @@
 package com.custom_computing_ic.maxdeep.kernel.norm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocalResponseNormKernel extends BaseNormKernel {
-
   // private final DFEVar oh, ow, ih, iw;
 
   /**
    * LRN Kernel.
-   * 
+   *
    * This kernel component should be used as an individual kernel appended after
    * the CONV wrap kernel.
-   * 
+   *
    * @param owner
    * @param cp
    * @param scalarT
    */
-  public LocalResponseNormKernel(KernelBase<?> owner, ConvLayerParameters cp,
-      DFEType scalarT) {
+  public LocalResponseNormKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType scalarT) {
     super(owner, cp, scalarT);
 
     if (cp.PK != 1)
-      throw new IllegalArgumentException(
-          "PK should equal 1 when CONV is appended with LRN");
+      throw new IllegalArgumentException("PK should equal 1 when CONV is appended with LRN");
     if (cp.OH % cp.LRNLocalSize != 0)
       throw new IllegalArgumentException("H % LRNLocalSize should equal 0");
     if (cp.OW % cp.LRNLocalSize != 0)
@@ -58,7 +54,7 @@ public class LocalResponseNormKernel extends BaseNormKernel {
   public List<DFEVector<DFEVar>> createLRNWindowList() {
     List<DFEVector<DFEVar>> LRNWindowsList = new ArrayList<DFEVector<DFEVar>>();
 
-    for (int f = 0; f < cp.PF; f++) {
+    for (int f = 0; f < cp.PF.get(0); f++) {
       DFEVector<DFEVar> LRNWindow = getLRNWindowT().newInstance(getOwner());
       // PK is 1 so we can access ifmap value only by f.
       DFEVar inp = ifmap[f];
@@ -71,5 +67,4 @@ public class LocalResponseNormKernel extends BaseNormKernel {
 
     return LRNWindowsList;
   }
-
 }

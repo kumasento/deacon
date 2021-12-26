@@ -15,18 +15,18 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 /**
  * Buffer for output feature map stream.
- * 
+ *
  * HOW TO USE:
- * 
+ *
  * <pre>
  * {@link ConvLayerOfmapBuffer} obuf =
  *   new {@link ConvLayerOfmapBuffer}(getKernel(), cp, T);
  * data <== obuf.port(addr, dataIn, writeEn);
  * </pre>
- * 
+ *
  * @author Ruizhe Zhao
  * @since 03/08/2017
- * 
+ *
  */
 public class ConvLayerOfmapBuffer extends ConvLayerBaseFmapBuffer {
   private final ConvLayerParameters cp;
@@ -45,24 +45,25 @@ public class ConvLayerOfmapBuffer extends ConvLayerBaseFmapBuffer {
 
   private final int MAX_WRITE_LATENCY = 10;
 
-  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType T) {
-    this(owner, params, T, "");
+  public ConvLayerOfmapBuffer(
+      KernelBase<?> owner, ConvLayerParameters params, DFEType T, int index) {
+    this(owner, params, T, index, "");
   }
 
   /**
-   * 
+   *
    * @param owner
    * @param params
    * @param T
    */
-  public ConvLayerOfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType T,
-      String prefix) {
+  public ConvLayerOfmapBuffer(
+      KernelBase<?> owner, ConvLayerParameters params, DFEType T, int index, String prefix) {
     super(owner);
 
     this.cp = params;
     this.T = T;
 
-    int width = getWidth();
+    int width = getWidth(index);
     int depth = getDepth();
 
     owner.getManager().logMsg("[ConvLayerOfmapBuffer] depth = %5d addr_bits = %5d\n", depth,
@@ -127,28 +128,28 @@ public class ConvLayerOfmapBuffer extends ConvLayerBaseFmapBuffer {
     return portVecT;
   }
 
-  public int getWidth() {
+  public int getWidth(int index) {
     if (cp.type == Type.POINTWISE) {
-      return cp.PF * cp.PH * cp.PW;
+      return cp.PF.get(index) * cp.PH * cp.PW;
     } else {
       if (cp.useWinograd) {
-        return cp.PF * WinogradTransform.M * WinogradTransform.M;
+        return cp.PF.get(index) * WinogradTransform.M * WinogradTransform.M;
       } else if (cp.seq == CompSeq.CHANNEL_MAJOR || cp.seq == CompSeq.FILTER_MAJOR) {
-        return cp.PK * cp.PF;
+        return cp.PK * cp.PF.get(index);
       } else {
-        throw new IllegalArgumentException(String.format(
-            "Computation sequence %s has not been supported yet", cp.seq));
+        throw new IllegalArgumentException(
+            String.format("Computation sequence %s has not been supported yet", cp.seq));
       }
     }
   }
 
   public int getDepth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR)
-      return MathUtils.nextPowerOfTwo(cp.F * cp.OH * cp.OW / getWidth());
+      return MathUtils.nextPowerOfTwo(cp.F * cp.OH * cp.OW / getWidth(0));
     else if (cp.seq == CompSeq.FILTER_MAJOR)
-      return MathUtils.nextPowerOfTwo(cp.PF * cp.OH * cp.OW / getWidth());
+      return MathUtils.nextPowerOfTwo(cp.PF.get(0) * cp.OH * cp.OW / getWidth(0));
     else
-      throw new IllegalArgumentException(String.format(
-          "Computation sequence %s has not been supported yet", cp.seq));
+      throw new IllegalArgumentException(
+          String.format("Computation sequence %s has not been supported yet", cp.seq));
   }
 }

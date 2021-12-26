@@ -1,0 +1,70 @@
+In file included from ../../src/single_pw_s2/SinglePwS2CpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:996:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+../../src/single_pw_s2/SinglePwS2CpuCode.cpp:81:73:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1010:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+../../src/single_pw_s2/SinglePwS2CpuCode.cpp:81:73:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:235:28: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  235 |                   "output[%d] = %10.6f + %10.6f = ", oi,
+      |                           ~^                         ~~
+      |                            |                         |
+      |                            int                       long unsigned int
+      |                           %ld
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1226 10:52:08.467479 24414 SinglePwS2CpuCode.cpp:70] num frac bits: 0
+I1226 10:52:08.467801 24414 SinglePwS2CpuCode.cpp:74] input[0] = -1.95943  dfe = -2
+I1226 10:52:08.467878 24414 SinglePwS2CpuCode.cpp:74] input[1] = -0.71415  dfe = -1
+I1226 10:52:08.467895 24414 SinglePwS2CpuCode.cpp:74] input[2] = 0.80067  dfe = 1
+I1226 10:52:08.468171 24414 layers.h:975] Running golden function ...
+I1226 10:52:08.468430 24414 layers.h:984]        STANDARD 2 x 4 x 4 -> 2 x 2 x 2
+I1226 10:52:08.469477 24414 utils.h:383] Burst aligning input array of size: 64 to 192
+I1226 10:52:08.469498 24414 SinglePwS2CpuCode.cpp:95] Tiled input size (burst aligned): 192
+I1226 10:52:08.469511 24414 utils.h:383] Burst aligning input array of size: 16 to 192
+I1226 10:52:08.469524 24414 SinglePwS2CpuCode.cpp:98] Tiled output size (burst aligned): 192
+I1226 10:52:08.469535 24414 layers.h:758] Writing DRAM to 0 with size 0x180
+I1226 10:52:08.473966 24414 SinglePwS2CpuCode.cpp:106] Running ...
+I1226 10:52:08.589104 24414 SinglePwS2CpuCode.cpp:111] Done
+I1226 10:52:08.589151 24414 layers.h:775] Reading DRAM from 0x180 with size 0x180
+I1226 10:52:08.591441 24414 SinglePwS2CpuCode.cpp:118] output_dfe[0] = -2
+I1226 10:52:08.591477 24414 SinglePwS2CpuCode.cpp:118] output_dfe[1] = -1
+I1226 10:52:08.591491 24414 SinglePwS2CpuCode.cpp:118] output_dfe[2] = 1
+I1226 10:52:08.591503 24414 SinglePwS2CpuCode.cpp:118] output_dfe[3] = 3
+I1226 10:52:08.591516 24414 SinglePwS2CpuCode.cpp:118] output_dfe[4] = -2
+I1226 10:52:08.591527 24414 SinglePwS2CpuCode.cpp:118] output_dfe[5] = 1
+I1226 10:52:08.591539 24414 SinglePwS2CpuCode.cpp:118] output_dfe[6] = -1
+I1226 10:52:08.591552 24414 SinglePwS2CpuCode.cpp:118] output_dfe[7] = -1
+I1226 10:52:08.591563 24414 SinglePwS2CpuCode.cpp:118] output_dfe[8] = 2
+I1226 10:52:08.591575 24414 SinglePwS2CpuCode.cpp:118] output_dfe[9] = -1
+I1226 10:52:08.591588 24414 SinglePwS2CpuCode.cpp:124] elapsed time: 0.115068s
+I1226 10:52:08.591609 24414 SinglePwS2CpuCode.cpp:138] [Ops] layer                          conv0 = 3.2e-05 M
+I1226 10:52:08.591624 24414 SinglePwS2CpuCode.cpp:142] OPS:    6.4e-08 G
+I1226 10:52:08.591635 24414 SinglePwS2CpuCode.cpp:143] FPS:    17.381
+I1226 10:52:08.591650 24414 SinglePwS2CpuCode.cpp:146] GFLOPs: 5.56192e-07
+I1226 10:52:08.591662 24414 SinglePwS2CpuCode.cpp:153] Examine results ...
+I1226 10:52:08.591672 24414 SinglePwS2CpuCode.cpp:155] output_cpu[0] = -2
+I1226 10:52:08.591683 24414 SinglePwS2CpuCode.cpp:155] output_cpu[1] = -1
+I1226 10:52:08.591696 24414 SinglePwS2CpuCode.cpp:155] output_cpu[2] = 1
+I1226 10:52:08.591706 24414 SinglePwS2CpuCode.cpp:155] output_cpu[3] = 3
+I1226 10:52:08.591717 24414 SinglePwS2CpuCode.cpp:155] output_cpu[4] = -2
+I1226 10:52:08.591728 24414 SinglePwS2CpuCode.cpp:161] output_dfe[0] = -2
+I1226 10:52:08.591739 24414 SinglePwS2CpuCode.cpp:161] output_dfe[1] = -1
+I1226 10:52:08.591750 24414 SinglePwS2CpuCode.cpp:161] output_dfe[2] = 1
+I1226 10:52:08.591763 24414 SinglePwS2CpuCode.cpp:161] output_dfe[3] = 3
+I1226 10:52:08.591775 24414 SinglePwS2CpuCode.cpp:161] output_dfe[4] = -2
+I1226 10:52:08.591789 24414 SinglePwS2CpuCode.cpp:172] Evaluating difference ...
+I1226 10:52:08.591799 24414 SinglePwS2CpuCode.cpp:173] Mask: 00000000
+I1226 10:52:08.591826 24414 SinglePwS2CpuCode.cpp:201] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

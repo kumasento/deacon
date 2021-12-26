@@ -335,21 +335,21 @@ template <typename T>
 std::vector<T> ReorderInput(std::vector<T> &input,
                             const ConvLayerParameters &cp,
                             const size_t batch_size) {
-  if (cp.dfe.PC <= 1) return input;
+  if (cp.dfe.PC[0] <= 1) return input;
 
-  LOG(INFO) << "Reordering input for PC = " << cp.dfe.PC << '\n';
+  LOG(INFO) << "Reordering input for PC = " << cp.dfe.PC[0] << '\n';
 
   std::vector<T> reordered(input.size());
   for (size_t i = 0; i < batch_size; ++i) {
     auto offset = i * cp.dfe.TC * cp.dfe.TH * cp.dfe.TW;
-    for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
-      for (int h = 0; h < cp.dfe.TH; ++h)
-        for (int w = 0; w < cp.dfe.TW; ++w)
-          for (int p = 0; p < cp.dfe.PC; ++p) {
+    for (uint64_t c = 0; c < cp.dfe.TC; c += cp.dfe.PC[0])
+      for (uint64_t h = 0; h < cp.dfe.TH; ++h)
+        for (uint64_t w = 0; w < cp.dfe.TW; ++w)
+          for (uint64_t p = 0; p < cp.dfe.PC[0]; ++p) {
             auto src =
                 offset + (c + p) * cp.dfe.TH * cp.dfe.TW + h * cp.dfe.TW + w;
             auto dst = offset + c * cp.dfe.TH * cp.dfe.TW +
-                       h * cp.dfe.TW * cp.dfe.PC + w * cp.dfe.PC + p;
+                       h * cp.dfe.TW * cp.dfe.PC[0] + w * cp.dfe.PC[0] + p;
             reordered[dst] = input[src];
           }
   }
@@ -360,22 +360,22 @@ template <typename T>
 std::vector<T> ReorderOutput(std::vector<T> &output,
                              const ConvLayerParameters &cp,
                              const size_t batch_size) {
-  if (cp.dfe.PF <= 1) return output;  // no need to reorder.
+  if (cp.dfe.PF[0] <= 1) return output;  // no need to reorder.
 
-  LOG(INFO) << "Reordering output for PF = " << cp.dfe.PF
+  LOG(INFO) << "Reordering output for PF = " << cp.dfe.PF[0]
             << " TOH = " << cp.dfe.TOH << " TOW = " << cp.dfe.TOW << '\n';
 
   std::vector<T> reordered(output.size());
   for (size_t i = 0; i < batch_size; ++i) {
     auto offset = i * cp.dfe.TF * cp.dfe.TOH * cp.dfe.TOW;
-    for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
-      for (int h = 0; h < cp.dfe.TOH; ++h)
-        for (int w = 0; w < cp.dfe.TOW; ++w)
-          for (int p = 0; p < cp.dfe.PF; ++p) {
+    for (uint64_t f = 0; f < cp.dfe.TF; f += cp.dfe.PF[0])
+      for (uint64_t h = 0; h < cp.dfe.TOH; ++h)
+        for (uint64_t w = 0; w < cp.dfe.TOW; ++w)
+          for (uint64_t p = 0; p < cp.dfe.PF[0]; ++p) {
             auto dst =
                 offset + (f + p) * cp.dfe.TOH * cp.dfe.TOW + h * cp.dfe.TOW + w;
             auto src = offset + f * cp.dfe.TOH * cp.dfe.TOW +
-                       h * cp.dfe.TOW * cp.dfe.PF + w * cp.dfe.PF + p;
+                       h * cp.dfe.TOW * cp.dfe.PF[0] + w * cp.dfe.PF[0] + p;
             reordered[dst] = output[src];
           }
   }
@@ -555,7 +555,8 @@ std::vector<T> CreateConvLayerTiledInput(std::vector<T> &input, int H, int W,
 #ifdef TRACE
                       if (c == 0 && h == 0)
                         printf(
-                            "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = %3d w "
+                            "tc = %3d t_oh = %3d t_ow = %3d c = %3d h = "
+                            "%3d w "
                             "= "
                             "%3d pc = %3d ph = %3d pw = %3d src_hi = %3d "
                             "src_wi = %3d "
@@ -780,46 +781,46 @@ size_t ReadDRAM(std::vector<T> &arr, size_t base_addr, max_engine_t *engine) {
   return base_addr + arr.size() * sizeof(T);
 }
 
-template <typename T, typename S = double>
-S **SplitCoeffAndAssign(S **ptr, T *data, const ConvLayerParameters &cp) {
-  uint64_t cols = (uint64_t)std::ceil(static_cast<double>(cp.C) / cp.dfe.PC);
-  uint64_t fmem_size =
-      cols * (uint64_t)std::ceil(static_cast<double>(cp.F) / cp.dfe.PF);
+// template <typename T, typename S = double>
+// S **SplitCoeffAndAssign(S **ptr, T *data, const ConvLayerParameters &cp) {
+//   uint64_t cols = (uint64_t)std::ceil(static_cast<double>(cp.C) / cp.dfe.PC);
+//   uint64_t fmem_size =
+//       cols * (uint64_t)std::ceil(static_cast<double>(cp.F) / cp.dfe.PF);
 
-  // if (std::is_same<S, uint64_t>::value) fmem_size /= 8;
+//   // if (std::is_same<S, uint64_t>::value) fmem_size /= 8;
 
-  bool convert = (std::is_same<T, float>::value);
+//   bool convert = (std::is_same<T, float>::value);
 
-  for (uint64_t pf = 0; pf < cp.dfe.PF; ++pf)
-    for (uint64_t pc = 0; pc < cp.dfe.PC; ++pc)
-      for (int kx = 0; kx < cp.K; ++kx)
-        for (int ky = 0; ky < cp.K; ++ky) {
-          S *arr = (S *)malloc(sizeof(S) * fmem_size);
+//   for (uint64_t pf = 0; pf < cp.dfe.PF; ++pf)
+//     for (uint64_t pc = 0; pc < cp.dfe.PC; ++pc)
+//       for (int kx = 0; kx < cp.K; ++kx)
+//         for (int ky = 0; ky < cp.K; ++ky) {
+//           S *arr = (S *)malloc(sizeof(S) * fmem_size);
 
-          for (int f = 0; f < cp.F; f += cp.dfe.PF)
-            for (int c = 0; c < cp.C; c += cp.dfe.PC) {
-              auto idx = f / cp.dfe.PF * cols + c / cp.dfe.PC;
-              T value = data[(f + pf) * (cp.C * cp.K * cp.K) +
-                             (c + pc) * (cp.K * cp.K) + (kx * cp.K) + ky];
-              if (convert) {
-                arr[idx] = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
-              } else {
-                // *((T *)arr + idx) = value;
-                arr[idx] = value;
-#ifdef TRACE
-                LOG(INFO) << "idx = " << idx << " value = " << std::hex
-                          << static_cast<int16_t>(value)
-                          << " arr[idx] = " << arr[idx] << '\n';
-#endif
-              }
-            }
+//           for (int f = 0; f < cp.F; f += cp.dfe.PF)
+//             for (int c = 0; c < cp.C; c += cp.dfe.PC) {
+//               auto idx = f / cp.dfe.PF * cols + c / cp.dfe.PC;
+//               T value = data[(f + pf) * (cp.C * cp.K * cp.K) +
+//                              (c + pc) * (cp.K * cp.K) + (kx * cp.K) + ky];
+//               if (convert) {
+//                 arr[idx] = FixedToFloat<T>(value, cp.dfe.num_frac_bits);
+//               } else {
+//                 // *((T *)arr + idx) = value;
+//                 arr[idx] = value;
+// #ifdef TRACE
+//                 LOG(INFO) << "idx = " << idx << " value = " << std::hex
+//                           << static_cast<int16_t>(value)
+//                           << " arr[idx] = " << arr[idx] << '\n';
+// #endif
+//               }
+//             }
 
-          *ptr = arr;
-          ++ptr;
-        }
+//           *ptr = arr;
+//           ++ptr;
+//         }
 
-  return ptr;
-}
+//   return ptr;
+// }
 
 /*! Run convolution layer on DFE.
  *
@@ -861,8 +862,9 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
 
   // check whether the given convolution layer can be placed on DFE
   CHECK_EQ(static_cast<int>(DFE_K), K);
-  // auto DFE_USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM") == 1;
-  // CHECK(!DFE_USE_DRAM) << "We don't support DRAM mode in software yet";
+  // auto DFE_USE_DRAM = max_get_constant_uint64t(max_file, "USE_DRAM") ==
+  // 1; CHECK(!DFE_USE_DRAM) << "We don't support DRAM mode in software
+  // yet";
 
   // alias
   auto T_OH = DFE_TOH;
@@ -912,9 +914,9 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   typename DfeT::dfe_run_actions_t actions;
   actions.param_batch_size = N_T;
 
-  if (DFE_COEFF_ON_CHIP)
-    SplitCoeffAndAssign<T>((double **)(&(actions.param_batch_size) + 1),
-                           weights.data(), cp);
+  // if (DFE_COEFF_ON_CHIP)
+  // SplitCoeffAndAssign<T>((double **)(&(actions.param_batch_size) + 1),
+  //                        weights.data(), cp);
 #ifndef USE_DRAM
   actions.instream_ifmap = tiled_input.data();
   actions.instream_coeff_0 = tiled_weights.data();
@@ -965,4 +967,94 @@ void ConvLayerDfe(std::vector<T> &input, std::vector<T> &weights,
   LOG(INFO) << "Tiled GFLOPS: " << tiled_gflops;
 }
 #endif
+
+template <typename data_t>
+void process(std::vector<data_t> &input_dfe, std::string data_file,
+             int batch_size, std::vector<ConvLayerParameters> &cps,
+             std::vector<std::vector<data_t>> &buffers) {
+  LOG(INFO) << "Running golden function ...\n";
+
+  auto dummy_bias = std::vector<data_t>();
+  buffers.push_back(input_dfe);
+
+  std::unordered_map<std::string, int> name_to_output;
+
+  for (size_t i = 0; i < cps.size(); ++i) {
+    ConvLayerParameters cp = cps[i];
+    LOG(INFO) << std::setw(15) << std::setfill(' ') << cp.dfe.TYPE << " "
+              << cp.C << " x " << cp.H << " x " << cp.W << " -> " << cp.F
+              << " x " << cp.getOutputHeight() << " x " << cp.getOutputWidth()
+              << '\n';
+
+    auto output_cpu = std::vector<data_t>(cp.F * cp.getOutputHeight() *
+                                          cp.getOutputWidth() * batch_size);
+    if (cp.dfe.TYPE == "STANDARD") {
+      std::vector<float> weights = ReadDataFile(data_file, cp.dfe.name);
+      std::vector<data_t> weights_dfe =
+          FloatToFixed<data_t>(weights, cp.dfe.num_frac_bits);
+
+      ConvLayerCpuBatched<data_t>(
+          buffers.back(), weights_dfe, dummy_bias, output_cpu, batch_size, cp.H,
+          cp.W, cp.C, cp.F, cp.K, cp.P, cp.S,
+          /*use_bias=*/false,
+          /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
+    } else if (cp.dfe.TYPE == "DEPTHWISE_SEPARABLE") {
+      std::vector<float> weights_dw, weights_pw;
+      weights_dw = ReadDataFile(data_file, cp.dfe.name + "_dw");
+      weights_pw = ReadDataFile(data_file, cp.dfe.name + "_pw");
+
+      std::vector<data_t> weights_dw_dfe, weights_pw_dfe;
+      weights_dw_dfe = FloatToFixed<data_t>(weights_dw, cp.dfe.num_frac_bits);
+      weights_pw_dfe = FloatToFixed<data_t>(weights_pw, cp.dfe.num_frac_bits);
+
+      DepthwiseSeparableConvLayerCpuBatched<data_t>(
+          buffers.back(), weights_dw_dfe, weights_pw_dfe, dummy_bias,
+          output_cpu, batch_size, cp.H, cp.W, cp.C, cp.F, cp.K, cp.P, cp.S,
+          /*use_bias=*/false,
+          /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
+    } else {
+      LOG(ERROR) << "Doesn't recognize type: " << cp.dfe.TYPE << '\n';
+    }
+
+    for (uint64_t j = 0; j < cp.dfe.NUM_OUTPUTS; ++j) {
+      std::string key = cp.dfe.name;
+      if (j != 0) key += "_" + std::to_string(j);
+      if (cp.dfe.OUTPUTS[j].find("OFMAP") != std::string::npos)
+        name_to_output[key] = buffers.size();
+      else if (cp.dfe.OUTPUTS[j].find("IFMAP") != std::string::npos)
+        name_to_output[key] = buffers.size() - 1;
+      else
+        LOG(ERROR) << "Unrecognised output type: " << cp.dfe.OUTPUTS[j] << '\n';
+    }
+
+    if (!cp.dfe.RESIDUAL.empty()) {
+      if (cp.dfe.RESIDUAL == cp.dfe.INPUTS[1]) {
+        LOG(INFO) << "Shortcut is enabled for layer " << cp.dfe.name << "\n";
+        // ----> HACK: assume the input to shortcut comes from two layers
+        // before.
+        std::vector<float> weights =
+            ReadDataFile(data_file, cp.dfe.name + "_1");
+        std::vector<data_t> weights_dfe =
+            FloatToFixed<data_t>(weights, cp.dfe.num_frac_bits);
+        auto shortcut = std::vector<data_t>(cp.F * cp.getOutputHeight() *
+                                            cp.getOutputWidth() * batch_size);
+
+        ConvLayerCpuBatched<data_t>(
+            buffers[buffers.size() - 3], weights_dfe, dummy_bias, shortcut,
+            batch_size, cp.H * 2, cp.W * 2, cps[i - 2].C, cp.F, cp.K, cp.P, 2,
+            /*use_bias=*/false,
+            /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
+        for (size_t i = 0; i < output_cpu.size(); ++i)
+          output_cpu[i] = FixedPointAdd<data_t>(output_cpu[i], shortcut[i]);
+
+      } else {
+        auto &residual = buffers[name_to_output[cp.dfe.RESIDUAL]];
+        for (size_t i = 0; i < output_cpu.size(); ++i)
+          output_cpu[i] = FixedPointAdd<data_t>(output_cpu[i], residual[i]);
+      }
+    }
+
+    buffers.push_back(output_cpu);
+  }
+}
 #endif

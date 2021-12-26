@@ -1,0 +1,59 @@
+Fri 20:38: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 20:38: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 20:38: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 20:38: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 20:38: WARNING: to that of a similar bitstream.
+Fri 20:38: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 20:38: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 20:38: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 20:38: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 20:38: WARNING: to that of a similar bitstream.
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1224 20:39:16.021873 42067 TwoConvCfParFirstCpuCode.cpp:71] num frac bits: 8
+I1224 20:39:16.022269 42067 TwoConvCfParFirstCpuCode.cpp:75] input[0] = -1.95943  dfe = -1.96094
+I1224 20:39:16.022655 42067 TwoConvCfParFirstCpuCode.cpp:75] input[1] = -0.71415  dfe = -0.714844
+I1224 20:39:16.022672 42067 TwoConvCfParFirstCpuCode.cpp:75] input[2] = 0.80067  dfe = 0.800781
+I1224 20:39:16.022970 42067 TwoConvCfParFirstCpuCode.cpp:83] Running golden function ...
+I1224 20:39:16.023010 42067 TwoConvCfParFirstCpuCode.cpp:92]        STANDARD 2 x 32 x 32 -> 2 x 32 x 32
+I1224 20:39:16.024541 42067 TwoConvCfParFirstCpuCode.cpp:92]        STANDARD 2 x 32 x 32 -> 4 x 32 x 32
+I1224 20:39:16.026183 42067 layers.h:340] Reordering input for PC = 2
+I1224 20:39:16.026224 42067 utils.h:383] Burst aligning input array of size: 4096 to 4224
+I1224 20:39:16.026255 42067 TwoConvCfParFirstCpuCode.cpp:161] Tiled input size (burst aligned): 4224
+I1224 20:39:16.026502 42067 utils.h:383] Burst aligning input array of size: 8192 to 8256
+I1224 20:39:16.026759 42067 TwoConvCfParFirstCpuCode.cpp:164] Tiled output size (burst aligned): 8256
+I1224 20:39:16.026998 42067 layers.h:757] Writing DRAM to 0 with size 0x2100
+I1224 20:39:16.040634 42067 TwoConvCfParFirstCpuCode.cpp:172] Running ...
+I1224 20:39:16.189414 42067 TwoConvCfParFirstCpuCode.cpp:178] Done
+I1224 20:39:16.189465 42067 layers.h:774] Reading DRAM from 0x2100 with size 0x4080
+I1224 20:39:16.203116 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[0] = -27.1875
+I1224 20:39:16.203166 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[1] = -8.76562
+I1224 20:39:16.203181 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[2] = 41.1992
+I1224 20:39:16.203194 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[3] = -26.4531
+I1224 20:39:16.203207 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[4] = 26.2734
+I1224 20:39:16.203611 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[5] = -27.4766
+I1224 20:39:16.203946 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[6] = -24.2031
+I1224 20:39:16.204197 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[7] = 39.4648
+I1224 20:39:16.204439 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[8] = 1.61328
+I1224 20:39:16.204689 42067 TwoConvCfParFirstCpuCode.cpp:185] output_dfe[9] = 58.7109
+I1224 20:39:16.204970 42067 TwoConvCfParFirstCpuCode.cpp:191] elapsed time: 0.148701s
+I1224 20:39:16.205240 42067 TwoConvCfParFirstCpuCode.cpp:205] [Ops] layer                          conv0 = 0.073728 M
+I1224 20:39:16.205482 42067 TwoConvCfParFirstCpuCode.cpp:205] [Ops] layer                          conv1 = 0.147456 M
+I1224 20:39:16.205714 42067 TwoConvCfParFirstCpuCode.cpp:209] OPS:    0.000442368 G
+I1224 20:39:16.205973 42067 TwoConvCfParFirstCpuCode.cpp:210] FPS:    13.4498
+I1224 20:39:16.206241 42067 TwoConvCfParFirstCpuCode.cpp:213] GFLOPs: 0.00297489
+I1224 20:39:16.206509 42067 TwoConvCfParFirstCpuCode.cpp:220] Examine results ...
+I1224 20:39:16.206791 42067 TwoConvCfParFirstCpuCode.cpp:222] output_cpu[0] = -27.207
+I1224 20:39:16.207067 42067 TwoConvCfParFirstCpuCode.cpp:222] output_cpu[1] = -8.76562
+I1224 20:39:16.207329 42067 TwoConvCfParFirstCpuCode.cpp:222] output_cpu[2] = 41.207
+I1224 20:39:16.207593 42067 TwoConvCfParFirstCpuCode.cpp:222] output_cpu[3] = -26.418
+I1224 20:39:16.207821 42067 TwoConvCfParFirstCpuCode.cpp:222] output_cpu[4] = 26.2891
+I1224 20:39:16.208047 42067 TwoConvCfParFirstCpuCode.cpp:228] output_dfe[0] = -27.1875
+I1224 20:39:16.208284 42067 TwoConvCfParFirstCpuCode.cpp:228] output_dfe[1] = -8.76562
+I1224 20:39:16.208513 42067 TwoConvCfParFirstCpuCode.cpp:228] output_dfe[2] = 41.1992
+I1224 20:39:16.208767 42067 TwoConvCfParFirstCpuCode.cpp:228] output_dfe[3] = -26.4531
+I1224 20:39:16.209033 42067 TwoConvCfParFirstCpuCode.cpp:228] output_dfe[4] = 26.2734
+I1224 20:39:16.209373 42067 TwoConvCfParFirstCpuCode.cpp:239] Evaluating difference ...
+I1224 20:39:16.209511 42067 TwoConvCfParFirstCpuCode.cpp:240] Mask: 00000xff
+Result mis-matched at   2160: cpu 119.207031 dfe 125.277344
+I1224 20:39:16.210166 42067 TwoConvCfParFirstCpuCode.cpp:268] num_failed: 1 total: 8192 avg_diff: 0.0228233 min_diff: 0 max_diff: 6.07031

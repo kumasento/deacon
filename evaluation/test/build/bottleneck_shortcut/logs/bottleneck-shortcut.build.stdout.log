@@ -1,0 +1,282 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=bottleneck_shortcut MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 BottleneckShortcutManager \
+	DFEModel=MAIA maxFileName=BottleneckShortcut target='DFE' enableMPCX=false \
+	FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/bottleneck_shortcut/data/data-bottleneck-shortcut.txt 
+]0; maxJavaRun: BottleneckShortcutManager DFEModel=MAIA maxFileName=BottleneckShortcut target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/bottleneck_shortcut/data/data-bottleneck-shortcut.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : bottleneck_shortcut
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : bottleneck_shortcut.BottleneckShortcutManager
+Class arguments     : DFEModel=MAIA maxFileName=BottleneckShortcut target=DFE enableMPCX=false FREQ=350 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/bottleneck_shortcut/data/data-bottleneck-shortcut.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Sat 19:14: MaxCompiler version: 2021.1
+Sat 19:14: Build "BottleneckShortcut" start time: Sat Dec 25 19:14:54 GMT 2021
+Sat 19:14: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Sat 19:14: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_FREQ_350
+Sat 19:14: Detailed build log available in "_build.log"
+Sat 19:14: 
+Sat 19:14: ENGINE BUILD PARAMETERS
+Sat 19:14: 	              Build name: BottleneckShortcut_MAIA_DFE_FREQ_350                                                                              
+Sat 19:14: 	             maxFileName: BottleneckShortcut                                                                                                
+Sat 19:14: 	                  target: DFE                                                                                                               
+Sat 19:14: 	                DFEModel: MAIA                                                                                                              
+Sat 19:14: 	              enableMPCX: false                                                                                                             
+Sat 19:14: 	                bitWidth: 32                                                                                                                
+Sat 19:14: 	                     WBW: 32                                                                                                                
+Sat 19:14: 	                   DTYPE: fixed                                                                                                             
+Sat 19:14: 	           NUM_FRAC_BITS: 8                                                                                                                 
+Sat 19:14: 	                      PF: 1                                                                                                                 
+Sat 19:14: 	                      PC: 1                                                                                                                 
+Sat 19:14: 	                      PK: 1                                                                                                                 
+Sat 19:14: 	                       H: 1                                                                                                                 
+Sat 19:14: 	                       W: 1                                                                                                                 
+Sat 19:14: 	                       C: 1                                                                                                                 
+Sat 19:14: 	                       F: 1                                                                                                                 
+Sat 19:14: 	                       K: 1                                                                                                                 
+Sat 19:14: 	                     PAD: 0                                                                                                                 
+Sat 19:14: 	                       S: 1                                                                                                                 
+Sat 19:14: 	                     SEQ: 0                                                                                                                 
+Sat 19:14: 	                    FREQ: 350                                                                                                               
+Sat 19:14: 	                USE_DRAM: false                                                                                                             
+Sat 19:14: 	                 USE_BNN: false                                                                                                             
+Sat 19:14: 	            USE_WINOGRAD: false                                                                                                             
+Sat 19:14: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                             
+Sat 19:14: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                 
+Sat 19:14: 	                   DEBUG: false                                                                                                             
+Sat 19:14: 	           COEFF_ON_CHIP: false                                                                                                             
+Sat 19:14: 	              INIT_COEFF: false                                                                                                             
+Sat 19:14: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/bottleneck_shortcut/data/data-bottleneck-shortcut.txt
+Sat 19:15: Generating kernel conv0 ...
+Sat 19:15: Instantiating kernel "conv0"
+Sat 19:15: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: coeffOnChip = true
+Sat 19:15: Input height = 112, output height = 112, pad = 0
+Sat 19:15: Counter H = 112 W = 112
+Sat 19:15: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: Ifmap buffer configuration 1048576 x 1
+Sat 19:15: loop = false
+Sat 19:15: Read for key = conv0 depth = 4096
+Sat 19:15: ROM created for conv0 of depth 4096 and type {DFEVectorType: 1 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@26b3fd41
+Sat 19:15: Building the CORE arithmetic unit for "conv0" ...
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: CORE ifmap vector size: 1
+Sat 19:15: CORE coefficient vector size: 1
+Sat 19:15: CORE ofmap vector size: 1
+Sat 19:15: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Sat 19:15: Connecting to output: ofmap
+Sat 19:15: Connecting to output: ofmap_1
+Sat 19:15: Compiling kernel "conv0"
+Sat 19:15: 
+Sat 19:15: Generating kernel conv1 ...
+Sat 19:15: Instantiating kernel "conv1"
+Sat 19:15: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: coeffOnChip = true
+Sat 19:15: Input height = 56, output height = 56, pad = 1
+Sat 19:15: Counter H = 58 W = 58
+Sat 19:15: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: Ifmap buffer configuration 262144 x 1
+Sat 19:15: loop = false
+Sat 19:15: Building line buffer for "conv1" ...
+Sat 19:15: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Sat 19:15: Line buffer input vector size: 1, output vector size: 9.
+Sat 19:15: Number of separated line buffers: 1
+Sat 19:15: Initialising line buffer kernel with 3 x 58 x 1
+Sat 19:15: Size of line buffer output: 3
+Sat 19:15: Number of line buffer output chunks: 3
+Sat 19:15: Connecting outputs from chunk (#000) ...
+Sat 19:15: Connecting outputs from chunk (#001) ...
+Sat 19:15: Connecting outputs from chunk (#002) ...
+Sat 19:15: Read for key = conv1 depth = 4096
+Sat 19:15: ROM created for conv1 of depth 4096 and type {DFEVectorType: 9 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b76ff4e
+Sat 19:15: Building the CORE arithmetic unit for "conv1" ...
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: CORE ifmap vector size: 9
+Sat 19:15: CORE coefficient vector size: 9
+Sat 19:15: CORE ofmap vector size: 1
+Sat 19:15: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Sat 19:15: Ifmap buffer configuration 262144 x 1
+Sat 19:15: loop = false
+Sat 19:15: Connecting to output: ofmap
+Sat 19:15: Connecting to output: ofmap_1
+Sat 19:15: Compiling kernel "conv1"
+Sat 19:15: 
+Sat 19:15: Generating kernel conv2 ...
+Sat 19:15: Instantiating kernel "conv2"
+Sat 19:15: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: coeffOnChip = true
+Sat 19:15: Input height = 56, output height = 56, pad = 0
+Sat 19:15: Counter H = 56 W = 56
+Sat 19:15: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Sat 19:15: Ifmap buffer configuration 4096 x 1
+Sat 19:15: loop = false
+Sat 19:15: Read for key = conv2 depth = 16384
+Sat 19:15: ROM created for conv2 of depth 16384 and type {DFEVectorType: 1 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7997b197
+Sat 19:15: Building the CORE arithmetic unit for "conv2" ...
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: CORE ifmap vector size: 1
+Sat 19:15: CORE coefficient vector size: 1
+Sat 19:15: CORE ofmap vector size: 1
+Sat 19:15: Ifmap buffer configuration 4096 x 1
+Sat 19:15: loop = false
+Sat 19:15: Read for key = conv2_1 depth = 16384
+Sat 19:15: ROM created for conv2_1 of depth 16384 and type {DFEVectorType: 1 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49f5c307
+Sat 19:15: Building the CORE arithmetic unit for "conv2" ...
+Sat 19:15: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Sat 19:15: CORE ifmap vector size: 1
+Sat 19:15: CORE coefficient vector size: 1
+Sat 19:15: CORE ofmap vector size: 1
+Sat 19:15: [ConvLayerOfmapBuffer] depth = 1048576 addr_bits =    20
+Sat 19:15: Connecting to output: ofmap
+Sat 19:15: Compiling kernel "conv2"
+Sat 19:15: 
+Sat 19:15: Generating padding kernels for DRAM access
+Sat 19:15: Instantiating kernel "ifmap_unpad"
+Sat 19:15: Compiling kernel "ifmap_unpad"
+Sat 19:15: 
+Sat 19:15: Instantiating kernel "ofmap_pad"
+Sat 19:15: Compiling kernel "ofmap_pad"
+Sat 19:15: 
+Sat 19:15: Setting up stream connections for conv0
+Sat 19:15: Setting up stream connections for conv1
+Sat 19:15: Connecting ifmap <== conv0: ofmap
+Sat 19:15: Connecting ifmap_1 <== conv0: ofmap_1
+Sat 19:15: Setting up stream connections for conv2
+Sat 19:15: Connecting ifmap <== conv1: ofmap
+Sat 19:15: Connecting ifmap_1 <== conv1: ofmap_1
+Sat 19:15: DRAM will be used to build the design
+Sat 19:15: Setup streams for kernel "conv0"
+Sat 19:15: # cycles:       51380224
+Sat 19:15: # ifmap stream: 802816
+Sat 19:15: # coeff stream: 4096
+Sat 19:15: # ofmap stream: 200704
+Sat 19:15: coeff vec size: 1
+Sat 19:15: coeff stream bit width: 8
+Sat 19:15: coeff stream chunk size: 1
+Sat 19:15: Setup streams for kernel "conv1"
+Sat 19:15: # cycles:       13778944
+Sat 19:15: # ifmap stream: 200704
+Sat 19:15: # coeff stream: 36864
+Sat 19:15: # ofmap stream: 200704
+Sat 19:15: coeff vec size: 9
+Sat 19:15: coeff stream bit width: 72
+Sat 19:15: coeff stream chunk size: 9
+Sat 19:15: Setup streams for kernel "conv2"
+Sat 19:15: # cycles:       51380224
+Sat 19:15: # ifmap stream: 200704
+Sat 19:15: # coeff stream: 16384
+Sat 19:15: # ofmap stream: 802816
+Sat 19:15: coeff vec size: 1
+Sat 19:15: coeff stream bit width: 8
+Sat 19:15: coeff stream chunk size: 1
+Sat 19:15: Generating input files (VHDL, netlists, vendor specific IP cores)
+Sat 20:57: Running back-end  build (15 phases)
+Sat 20:57: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Sat 20:57: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Sat 20:57: Executing Synthesis Strategy VIVADO_DEFAULT
+Sat 21:11: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Sat 21:11: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Sat 21:12: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Sat 21:12: 
+Sat 21:12: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Sat 21:12: For this compile, we estimate this process may take longer than 1 hour.
+Sat 21:12: We recommend running in simulation to verify correctness before building hardware.
+Sat 21:12: 
+Sat 21:12: PRELIMINARY RESOURCE USAGE
+Sat 21:12: FPGA: xcVU9P-FLGB2104-2-E
+Sat 21:12: Logic utilization:      221143 / 3546720 (6.24%)
+Sat 21:12:   LUTs:                  86421 / 1182240 (7.31%)
+Sat 21:12:   Primary FFs:          134722 / 2364480 (5.70%)
+Sat 21:12: DSP blocks:                 33 / 6840    (0.48%)
+Sat 21:12: Block memory (BRAM18):    1218 / 4320    (28.19%)
+Sat 21:12: Block memory (URAM):        74 / 960     (7.71%)
+Sat 21:12: 
+Sat 21:12: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Sat 21:12: 
+Sat 21:12: PRELIMINARY POWER REPORT
+Sat 21:12: Total On-Chip Power (W) 10.34 (budget: 91.80) 
+Sat 21:12: Dynamic Power (W)        7.66 
+Sat 21:12: Device Static Power(W)   2.68 
+Sat 21:12: 
+Sat 21:12: (7/15) - Place DFE (VivadoImplementation)
+Sat 21:12: Executing the following 10 Implementation Strategies in 4 threads:
+Sat 21:12:  - VIVADO_DEFAULT
+Sat 21:12:  - MAXELER1
+Sat 21:12:  - MAXELER2
+Sat 21:12:  - MAXELER3
+Sat 21:12:  - MAXELER4
+Sat 21:12:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Sat 21:12:  - PERFORMANCE_EXPLORE
+Sat 21:12:  - PERFORMANCE_EXTRA_TIMING_OPT
+Sat 21:12:  - PERFORMANCE_NET_DELAY_HIGH
+Sat 21:12:  - PERFORMANCE_REFINE_PLACEMENT
+Sat 22:38: Implementation: Strategy "VIVADO_DEFAULT" failed timing with score 73143 (best score 73143)
+Sat 22:50: Implementation: Strategy "MAXELER2" failed timing with score 215985 (best score 73143)
+Sat 23:01: Implementation: Strategy "MAXELER1" failed timing with score 140717 (best score 73143)
+Sat 23:09: Implementation: Strategy "MAXELER3" failed timing with score 21828 (best score 21828)
+Sun 00:20: Implementation: Strategy "MAXELER4" failed timing with score 33689 (best score 21828)
+Sun 00:34: Implementation: Strategy "PERFORMANCE_EXPLORE" failed timing with score 284497 (best score 21828)
+Sun 00:35: Implementation: Strategy "PERFORMANCE_EARLY_BLOCK_PLACEMENT" failed timing with score 32512 (best score 21828)
+Sun 00:44: Implementation: Strategy "PERFORMANCE_EXTRA_TIMING_OPT" failed timing with score 67479 (best score 21828)
+Sun 02:11: Implementation: Strategy "PERFORMANCE_REFINE_PLACEMENT" failed timing with score 54620 (best score 21828)
+Sun 02:15: Implementation: Strategy "PERFORMANCE_NET_DELAY_HIGH" failed timing with score 297529 (best score 21828)
+Sun 02:15: Implementation: Failed to meet timing! Best score: 21828
+Sun 02:15: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Sun 02:15: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Sun 02:15: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Sun 02:15: 
+Sun 02:15: FINAL POWER REPORT
+Sun 02:15: Total On-Chip Power (W) 11.95 (budget: 91.80) 
+Sun 02:15: Dynamic Power (W)        9.24 
+Sun 02:15: Device Static Power(W)   2.71 
+Sun 02:15: 
+Sun 02:15: (11/15) - Generate Configuration (VivadoBitgen)
+Sun 02:24: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Sun 02:27: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Sun 02:27: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Sun 02:27: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Sun 02:27: 
+Sun 02:27: FINAL RESOURCE USAGE
+Sun 02:27: FPGA: xcVU9P-FLGB2104-2-E
+Sun 02:27: Logic utilization:      201825 / 3546720 (5.69%)
+Sun 02:27:   LUTs:                  76285 / 1182240 (6.45%)
+Sun 02:27:   Primary FFs:          125540 / 2364480 (5.31%)
+Sun 02:27: DSP blocks:                 30 / 6840    (0.44%)
+Sun 02:27: Block memory (BRAM18):    1218 / 4320    (28.19%)
+Sun 02:27: Block memory (URAM):        74 / 960     (7.71%)
+Sun 02:27: 
+Sun 02:27: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_FREQ_350/results/BottleneckShortcut.max (MD5Sum: 71c28cc645e300a6be4cb2dd10003458)

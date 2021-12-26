@@ -1,0 +1,8 @@
+Exception in thread "main" (WARNING: unlogged MaxelerException) com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError: Found incorrectly formatted parameter: copy.txt
+	at com.maxeler.maxcompiler.v2.build.EngineParameters.initialiseProperties(EngineParameters.java:869)
+	at com.maxeler.maxcompiler.v2.build.EngineParameters.<init>(EngineParameters.java:822)
+	at com.maxeler.maxcompiler.v2.build.EngineParameters.<init>(EngineParameters.java:801)
+	at com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters.<init>(ConvLayerEngineParameters.java:69)
+	at single_conv_k7.SingleConvK7EngineParameters.<init>(SingleConvK7EngineParameters.java:8)
+	at single_conv_k7.SingleConvK7Manager.main(SingleConvK7Manager.java:51)
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvK7_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvK7.max] Error 1

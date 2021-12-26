@@ -2,9 +2,10 @@ package residual;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
-import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Output;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.OutputType;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Pooling;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerEngineParameters;
 import com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils;
 import com.custom_computing_ic.maxdeep.manager.ManagerInterface;
@@ -22,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResidualManager extends Max5LMemManager implements ManagerInterface {
-  public ResidualManager(
-      ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
+  public ResidualManager(ConvLayerEngineParameters params, List<ConvLayerParameters> cps) {
     super(params);
 
     getCurrentKernelConfig().debug.setEnableLatencyAnnotation(true);
@@ -51,12 +51,14 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
     ResidualEngineParameters params = new ResidualEngineParameters(args);
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
-    
-    cps.add(new ConvLayerParameters
-                .Builder(4, 4, 4, 4, 3)
+
+    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 3)
+                .input("")
+                .output(new Output(OutputType.OFMAP, 0))
+                .output(new Output(OutputType.IFMAP, 0))
                 .BW(16)
                 .WBW(16)
-                .numFracBits(8)
+                .numFracBits(0)
                 .type(Type.STANDARD)
                 .name("conv0")
                 .pad(1)
@@ -65,8 +67,6 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                
-                .output(OutputType.OFMAP).output(OutputType.IFMAP)
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -74,12 +74,12 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
-    cps.add(new ConvLayerParameters
-                .Builder(4, 4, 4, 4, 3)
+
+    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 3)
+                .input("conv0")
                 .BW(16)
                 .WBW(16)
-                .numFracBits(8)
+                .numFracBits(0)
                 .type(Type.STANDARD)
                 .name("conv1")
                 .pad(1)
@@ -88,8 +88,6 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("conv0")
-                
                 .residual("conv0_1")
                 .PF(1)
                 .PC(1)
@@ -97,7 +95,6 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
                 .namedRegion("")
                 .pooling(Pooling.MAX)
                 .build());
-            
 
     ResidualManager mgr = new ResidualManager(params, cps);
     mgr.createSLiCinterface(mgr.interfaceDefault(cps, params));
@@ -115,7 +112,7 @@ public class ResidualManager extends Max5LMemManager implements ManagerInterface
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXTRA_TIMING_OPT);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_NET_DELAY_HIGH);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_REFINE_PLACEMENT);
-    buildConfig.setParallelism(10);
+    buildConfig.setParallelism(4);
 
     mgr.build();
   }

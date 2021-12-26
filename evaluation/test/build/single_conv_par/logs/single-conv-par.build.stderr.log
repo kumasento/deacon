@@ -6,3 +6,35 @@ Thu 19:31: WARNING: MaxCompiler has detected and optimized one or more multiply 
 Thu 19:31: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
 Thu 19:31: WARNING: precision but may mean that the output of this bitstream is not bit-identical
 Thu 19:31: WARNING: to that of a similar bitstream.
+Fri 23:05: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Fri 23:05: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Fri 23:05: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+Sat 02:06: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER3] Implementation strategy MAXELER3 Output log file created failed
+Sat 02:07: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER1] Implementation strategy MAXELER1 Output log file created failed
+Sat 02:10: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER4] Implementation strategy MAXELER4 Output log file created failed
+Sat 02:35: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_NET_DELAY_HIGH] Implementation strategy PERFORMANCE_NET_DELAY_HIGH Output log file created failed
+Sat 11:03: WARNING: Block conv0 is on multiple SLRs with following site types: DSP48E2 SLICE
+Sat 11:03: WARNING: Signal paths between two SLRs induce large delays and this can significantly impact timing.
+Sat 11:03: WARNING: For details of placement on SLRs, please see AerialView image.
+Sat 11:03: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/PERFORMANCE_EXTRA_TIMING_OPT/slr_report
+Sat 11:04: WARNING: Implementation: Strategy "PERFORMANCE_EXTRA_TIMING_OPT" failed routing due to congestion. 35682 / 5207197 nets failed routing (0.69%). Timing score = 82946964
+Sat 11:19: WARNING: Block conv0 is on multiple SLRs with following site types: DSP48E2 SLICE
+Sat 11:19: WARNING: Signal paths between two SLRs induce large delays and this can significantly impact timing.
+Sat 11:19: WARNING: For details of placement on SLRs, please see AerialView image.
+Sat 11:19: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/PERFORMANCE_REFINE_PLACEMENT/slr_report
+Sat 11:19: WARNING: Implementation: Strategy "PERFORMANCE_REFINE_PLACEMENT" failed routing due to congestion. 25047 / 5207164 nets failed routing (0.48%). Timing score = 88359915
+Sat 11:52: WARNING: Block conv0 is on multiple SLRs with following site types: DSP48E2 SLICE
+Sat 11:52: WARNING: Signal paths between two SLRs induce large delays and this can significantly impact timing.
+Sat 11:52: WARNING: For details of placement on SLRs, please see AerialView image.
+Sat 11:52: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/VIVADO_DEFAULT/slr_report
+Sat 11:52: WARNING: Implementation: Strategy "VIVADO_DEFAULT" failed routing due to congestion. 24399 / 5207164 nets failed routing (0.47%). Timing score = 56565748
+Sat 12:19: WARNING: Block conv0 is on multiple SLRs with following site types: DSP48E2 SLICE
+Sat 12:19: WARNING: Signal paths between two SLRs induce large delays and this can significantly impact timing.
+Sat 12:19: WARNING: For details of placement on SLRs, please see AerialView image.
+Sat 12:19: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/PERFORMANCE_EXPLORE/slr_report
+Sat 12:19: WARNING: Implementation: Strategy "PERFORMANCE_EXPLORE" failed routing due to congestion. 21739 / 5207427 nets failed routing (0.42%). Timing score = 106901341
+Sat 12:42: WARNING: Block conv0 is on multiple SLRs with following site types: DSP48E2 SLICE
+Sat 12:42: WARNING: Signal paths between two SLRs induce large delays and this can significantly impact timing.
+Sat 12:42: WARNING: For details of placement on SLRs, please see AerialView image.
+Sat 12:42: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/PERFORMANCE_EARLY_BLOCK_PLACEMENT/slr_report
+Sat 12:43: WARNING: Implementation: Strategy "PERFORMANCE_EARLY_BLOCK_PLACEMENT" failed routing due to congestion. 24592 / 5207107 nets failed routing (0.47%). Timing score = 62301741

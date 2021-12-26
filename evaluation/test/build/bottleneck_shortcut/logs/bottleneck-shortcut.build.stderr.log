@@ -1,0 +1,34 @@
+Sat 19:15: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Sat 19:15: WARNING: Unconnected elements in design 'conv1'
+Sat 19:15: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_FREQ_350/scratch/conv1_graph_warnings.txt
+Sat 19:15: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sat 19:15: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sat 19:15: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sat 19:15: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sat 19:15: WARNING: to that of a similar bitstream.
+Sat 19:15: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sat 19:15: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sat 19:15: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sat 19:15: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sat 19:15: WARNING: to that of a similar bitstream.
+Sat 21:11: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Sat 21:11: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Sat 21:11: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+Sun 02:27: ERROR: FAILED TO MEET TIMING! Best timing score: 21828. We strongly recommend you do not use this .max file.
+Sun 02:27: ERROR: Please see the timing report for more information and consult the MaxCompiler optimization cheat sheet for ideas on how to improve your design.
+Sun 02:27: ERROR: Timing report: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_FREQ_350/timingreport/index.html
+Sun 02:27: ERROR: MaxCompiler documentation: /vol/cc/opt/maxeler/maxcompiler-2021.1/docs/maxcompiler-optimization-cheat-sheet.pdf
+Sun 02:27: ERROR: ----------------------------
+Sun 02:27: ERROR: Exception in thread "main":
+Sun 02:27: ERROR:  
+Sun 02:27: ERROR:   Build failed to meet timing (best timing score 21828)
+Sun 02:27: ERROR: 
+Sun 02:27: ERROR: Exception Stack Trace com.maxeler.maxdc.BuildFailedTimingException: 
+Sun 02:27: ERROR:    at com.maxeler.maxdc.BuildManager.finalizeBuild(BuildManager.java:1907)
+Sun 02:27: ERROR:    at com.maxeler.maxdc.BuildManager.build(BuildManager.java:1754)
+Sun 02:27: ERROR:    at com.maxeler.platform.max5.libs.manager.Max5ManagerBuildInternal.realBuild(Unknown Source)
+Sun 02:27: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
+Sun 02:27: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
+Sun 02:27: ERROR:    at bottleneck_shortcut.BottleneckShortcutManager.main(BottleneckShortcutManager.java:143)
+Sun 02:27: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/BottleneckShortcut_MAIA_DFE_FREQ_350/results/BottleneckShortcut.max] Error 1

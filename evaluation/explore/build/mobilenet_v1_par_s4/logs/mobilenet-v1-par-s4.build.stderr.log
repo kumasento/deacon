@@ -1,112 +1,168 @@
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv0'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv0_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv1'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv1_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv2'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv2_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv3'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv3_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv4'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv4_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv5'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv5_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv6'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv6_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv7'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv7_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv8'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv8_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv9'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv9_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv10'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv10_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv11'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv11_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:49: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:49: WARNING: Unconnected elements in design 'conv12'
-Wed 21:49: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv12_graph_warnings.txt
-Wed 21:49: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:49: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:49: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:49: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:49: WARNING: to that of a similar bitstream.
-Wed 21:50: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
-Wed 21:50: WARNING: Unconnected elements in design 'conv13'
-Wed 21:50: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv13_graph_warnings.txt
-Wed 21:50: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
-Wed 21:50: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
-Wed 21:50: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
-Wed 21:50: WARNING: precision but may mean that the output of this bitstream is not bit-identical
-Wed 21:50: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv0'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv0_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv1'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv1_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv2'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv2_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv3'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv3_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv4'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv4_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv5'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv5_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv6'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv6_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv7'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv7_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv8'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv8_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv9'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv9_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv10'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv10_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv11'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv11_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv12'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv12_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 00:52: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Fri 00:52: WARNING: Unconnected elements in design 'conv13'
+Fri 00:52: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS4_MAIA_DFE_FREQ_300/scratch/conv13_graph_warnings.txt
+Fri 00:52: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 00:52: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 00:52: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 00:52: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 00:52: WARNING: to that of a similar bitstream.
+Fri 01:15: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Fri 01:15: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Fri 01:15: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+In file included from /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:21,
+                 from ../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h: In static member function ‘static DfeConvLayerParameters DfeConvLayerParameters::get(max_file_t*, std::string)’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h:76:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   76 |     for (int i = 0; i < dcp.NUM_INPUTS; ++i)
+      |                     ~~^~~~~~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/types.h:79:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   79 |     for (int i = 0; i < dcp.NUM_OUTPUTS; ++i)
+      |                     ~~^~~~~~~~~~~~~~~~~
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp: In function ‘int main(int, char**)’:
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:102:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<ConvLayerParameters>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  102 |     for (int i = 0; i < cps.size(); ++i) {
+      |                     ~~^~~~~~~~~~~~
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:139:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  139 |       for (int j = 0; j < cp.dfe.NUM_OUTPUTS; ++j) {
+      |                       ~~^~~~~~~~~~~~~~~~~~~~
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:153:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<signed char, std::allocator<signed char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  153 |         for (int i = 0; i < output_cpu.size(); ++i)
+      |                         ~~^~~~~~~~~~~~~~~~~~~
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:274:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<double>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  274 |     for (int i = 0; i < diffs.size(); ++i) {
+      |                     ~~^~~~~~~~~~~~~~
+In file included from ../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:166:62:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
+      |                       ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
+      |                         ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
+      |                           ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = signed char; size_t = long unsigned int]’:
+../../src/mobilenet_v1_par_s4/MobilenetV1ParS4CpuCode.cpp:194:64:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
+      |                     ~~^~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
+      |                       ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
+      |                         ~~^~~~~~~~~~~~
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
+  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
+      |                           ~~^~~~~~~~~~~
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

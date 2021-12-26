@@ -537,7 +537,7 @@ public class Resnet18Wb8Manager extends Max5LMemManager implements ManagerInterf
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXTRA_TIMING_OPT);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_NET_DELAY_HIGH);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_REFINE_PLACEMENT);
-    buildConfig.setParallelism(10);
+    buildConfig.setParallelism(4);
 
     mgr.build();
   }

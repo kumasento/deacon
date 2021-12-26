@@ -51,10 +51,11 @@ public class SingleConvManager extends Max5LMemManager implements ManagerInterfa
 
     List<ConvLayerParameters> cps = new ArrayList<ConvLayerParameters>();
 
-    cps.add(new ConvLayerParameters.Builder(32, 32, 4, 8, 3)
+    cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 3)
+                .input("")
                 .BW(16)
                 .WBW(16)
-                .numFracBits(8)
+                .numFracBits(0)
                 .type(Type.STANDARD)
                 .name("conv0")
                 .pad(1)
@@ -63,8 +64,6 @@ public class SingleConvManager extends Max5LMemManager implements ManagerInterfa
                 .dbg(params.getDebug())
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
-                .input("")
-
                 .residual("")
                 .PF(1)
                 .PC(1)
@@ -89,7 +88,7 @@ public class SingleConvManager extends Max5LMemManager implements ManagerInterfa
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_EXTRA_TIMING_OPT);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_NET_DELAY_HIGH);
     buildConfig.addImplementationStrategy(ImplementationStrategy.PERFORMANCE_REFINE_PLACEMENT);
-    buildConfig.setParallelism(10);
+    buildConfig.setParallelism(4);
 
     mgr.build();
   }

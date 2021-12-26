@@ -21,8 +21,8 @@ static const char *GetStringConstant(max_file_t *max_file,
 }
 
 struct DfeConvLayerParameters {
-  uint64_t PF;
-  uint64_t PC;
+  std::vector<uint64_t> PF;
+  std::vector<uint64_t> PC;
   uint64_t PK;
   uint64_t TH;
   uint64_t TW;
@@ -36,6 +36,10 @@ struct DfeConvLayerParameters {
   std::string TYPE;
   std::string SEQ;
   std::string name;
+  std::string RESIDUAL;
+  uint64_t NUM_INPUTS, NUM_OUTPUTS;
+  std::vector<std::string> INPUTS;
+  std::vector<std::string> OUTPUTS;
   bool wino_coeff_offline;
   bool coeff_on_chip;
   uint64_t num_frac_bits;
@@ -56,8 +60,6 @@ struct DfeConvLayerParameters {
     dcp.TOW = GetConstant(max_file, name + "_OW");
     dcp.TC = GetConstant(max_file, name + "_C");
     dcp.TF = GetConstant(max_file, name + "_F");
-    dcp.PC = GetConstant(max_file, name + "_PC");
-    dcp.PF = GetConstant(max_file, name + "_PF");
     dcp.PK = GetConstant(max_file, name + "_PK");
     dcp.PAD = GetConstant(max_file, name + "_PAD");
     dcp.STRIDE = GetConstant(max_file, name + "_STRIDE");
@@ -66,7 +68,22 @@ struct DfeConvLayerParameters {
     dcp.SEQ = GetStringConstant(max_file, name + "_SEQ");
     dcp.coeff_on_chip = GetConstant(max_file, name + "_COEFF_ON_CHIP") == 1;
     dcp.num_frac_bits = GetConstant(max_file, name + "_num_frac_bits");
+    dcp.RESIDUAL = GetStringConstant(max_file, name + "_RESIDUAL");
+    dcp.NUM_INPUTS = GetConstant(max_file, name + "_NUM_INPUTS");
+    dcp.NUM_OUTPUTS = GetConstant(max_file, name + "_NUM_OUTPUTS");
+    for (uint64_t i = 0; i < dcp.NUM_INPUTS; ++i)
+      dcp.INPUTS.push_back(
+          GetStringConstant(max_file, name + "_INPUT_" + std::to_string(i)));
+    for (uint64_t i = 0; i < dcp.NUM_OUTPUTS; ++i)
+      dcp.OUTPUTS.push_back(
+          GetStringConstant(max_file, name + "_OUTPUT_" + std::to_string(i)));
 
+    for (uint64_t i = 0; i < dcp.NUM_INPUTS; ++i)
+      dcp.PC.push_back(
+          GetConstant(max_file, name + "_PC_" + std::to_string(i)));
+    for (uint64_t i = 0; i < dcp.NUM_OUTPUTS; ++i)
+      dcp.PF.push_back(
+          GetConstant(max_file, name + "_PF_" + std::to_string(i)));
     // Globals
     dcp.wino_coeff_offline = GetConstant(max_file, "WINO_COEFF_OFFLINE") == 1;
 
@@ -75,9 +92,9 @@ struct DfeConvLayerParameters {
 #endif
 
   void dump() {
-    LOG(INFO) << "\n + DFE parameters:"
-              << "\n   * PC = " << PC << "\n   * PF = " << PF
-              << "\n   * PK = " << PK << '\n';
+    // LOG(INFO) << "\n + DFE parameters:"
+    //           << "\n   * PC = " << PC << "\n   * PF = " << PF
+    //           << "\n   * PK = " << PK << '\n';
   }
 };
 

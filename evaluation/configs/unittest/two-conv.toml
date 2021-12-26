@@ -1,0 +1,29 @@
+NAME = "two_conv"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 0
+FREQ = 200
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 2
+W = 2
+C = 4
+F = 8
+K = 3
+S = 1
+P = 1
+TYPE = "STANDARD"
+
+[layers.conv1]
+H = 2
+W = 2
+C = 8
+F = 4
+K = 3
+S = 1
+P = 1
+TYPE = "STANDARD"

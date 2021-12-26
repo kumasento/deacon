@@ -1,0 +1,38 @@
+BUILD_NAME_OPTION = _FREQ_200_DBG
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=single_conv_k7 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 SingleConvK7Manager \
+	DFEModel=MAIA maxFileName=SingleConvK7 target='DFE_SIM' enableMPCX=false \
+	FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_k7/data/data-single-conv copy.txt 
+]0; maxJavaRun: SingleConvK7Manager DFEModel=MAIA maxFileName=SingleConvK7 target=DFE_SIM enableMPCX=false FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_k7/data/data-single-conv copy.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : single_conv_k7
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : single_conv_k7.SingleConvK7Manager
+Class arguments     : DFEModel=MAIA maxFileName=SingleConvK7 target=DFE_SIM enableMPCX=false FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_k7/data/data-single-conv copy.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+

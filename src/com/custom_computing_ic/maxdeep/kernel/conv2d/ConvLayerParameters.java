@@ -5,7 +5,7 @@ package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.lib.ConvLayerLineBuffer;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.winograd.WinogradTransform;
-import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
+// import com.custom_computing_ic.maxdeep.kernel.pool.PoolingLayerParameters;
 import com.custom_computing_ic.maxdeep.lib.LayerParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -23,12 +23,13 @@ import java.util.List;
  *
  */
 public class ConvLayerParameters extends LayerParameters {
-  public final int PC, PF, PK, PH, PW; // level of parallelisation
+  public final int PK, PH, PW; // level of parallelisation
+  public final List<Integer> PC, PF;
   public final int H; // height
   public final int W; // width
   public final int OH;
   public final int OW;
-  public final int C; // number of channels
+  public int C; // number of channels
   public final int F; // number of filters
   public final int K; // kernel size
   public final int PAD; // padding size
@@ -49,17 +50,18 @@ public class ConvLayerParameters extends LayerParameters {
   public int winoW;
   public String residual = "";
   public List<String> inputs;
-  public List<OutputType> outputs;
+  public List<Output> outputs;
   public int numOutputs = 1;
   public String coeffFile = "";
 
   public String namedRegion = "";
 
-  public PoolingLayerParameters pool;
+  // public PoolingLayerParameters pool;
 
   public enum Pooling { AVG, MAX }
 
   public Pooling pooling;
+  private Builder builder;
 
   /**
    * Computation sequence
@@ -91,7 +93,23 @@ public class ConvLayerParameters extends LayerParameters {
     OFMAP // duplicate the output stream
   }
 
+  public static class Output {
+    public OutputType type;
+    public int index;
+
+    public Output(OutputType type, int index) {
+      this.type = type;
+      this.index = index;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%s_%d", this.type, this.index);
+    }
+  }
+
   public ConvLayerParameters(Builder builder) {
+    this.builder = builder;
     // inherited from the parent
     this.BW = builder.BW;
     this.WBW = builder.WBW;
@@ -117,7 +135,7 @@ public class ConvLayerParameters extends LayerParameters {
     this.dbg = builder.dbg;
     this.type = builder.type;
     this.LRNLocalSize = 0;
-    this.pool = builder.pool;
+    // this.pool = builder.pool;
     this.useDRAM = builder.useDRAM;
     this.useWinograd = builder.useWinograd;
     this.winogradWeightsOffline = builder.winogradWeightsOffline;
@@ -145,7 +163,7 @@ public class ConvLayerParameters extends LayerParameters {
         .WBW(WBW)
         .numFracBits(numFracBits)
         .PF(1)
-        .PC(PC)
+        .PC(PC.get(0))
         .PK(PK)
         .coeffOnChip(coeffOnChip)
         .useDRAM(useDRAM)
@@ -166,8 +184,8 @@ public class ConvLayerParameters extends LayerParameters {
         .BW(BW)
         .WBW(WBW)
         .numFracBits(numFracBits)
-        .PC(PC)
-        .PF(PF)
+        .PC(PC.get(0))
+        .PF(PF.get(0))
         .PK(PK)
         .pad(0)
         .stride(1)
@@ -220,32 +238,33 @@ public class ConvLayerParameters extends LayerParameters {
       int PH = WinogradTransform.M;
       int PW = WinogradTransform.M;
 
-      return ((long) winoH * winoW * C * F) / (PC * PF * PH * PW);
+      return ((long) winoH * winoW * C * F) / (PC.get(0) * PF.get(0) * PH * PW);
     }
 
     long H = getPaddedHeight();
     long W = getPaddedWidth();
 
     if (type == Type.IDENTITY)
-      return ((long) H * W * C / (PC * PK));
+      return ((long) H * W * C / (PC.get(0) * PK));
     if (type == Type.CONCAT) // read happens in parallel
-      return ((long) H * W * C / (PC * PK));
+      return ((long) H * W * C / (PC.get(0) * PK));
     if (type == Type.POOLING)
-      return ((long) H * W * C / (PC * PK));
+      return ((long) H * W * C / (PC.get(0) * PK));
     if (type == Type.STANDARD)
-      return ((long) H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
-      return ((long) H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
     if (type == Type.DEPTHWISE_SEPARABLE_V2)
-      return ((long) H * W * C) / (PC * PK) + ((long) H * W * C * F) / (PC * PF * PK);
+      return ((long) H * W * C) / (PC.get(0) * PK)
+          + ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
     if (type == Type.POINTWISE)
-      return ((long) H * W * C * F) / (PC * PF * PH * PW);
+      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PH * PW);
     throw new IllegalArgumentException(
         "getNumCycles has not implemented for the current type: " + type.name());
   }
 
   public int getPoolNumCycles() {
-    return (OH * OW * F) / (PK * PF);
+    return (OH * OW * F) / (PK * PF.get(0));
   }
 
   @Override
@@ -254,12 +273,12 @@ public class ConvLayerParameters extends LayerParameters {
   }
 
   @Override
-  public int getIfmapVecSize() {
+  public int getIfmapVecSize(int i) {
     if (type == Type.POINTWISE)
-      return PC * PH * PW;
+      return PC.get(i) * PH * PW;
 
     // standard
-    return useWinograd ? PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES : PC * PK;
+    return useWinograd ? PC.get(i) * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES : PC.get(i) * PK;
   }
 
   @Override
@@ -271,15 +290,20 @@ public class ConvLayerParameters extends LayerParameters {
     if (type == Type.POINTWISE)
       return C * F;
 
-    return C * (F / PF + 1) * Math.max(K * K, PF);
+    throw new IllegalArgumentException("Not recognized type.");
+    // return C * (F / PF.get(i) + 1) * Math.max(K * K, PF.get(i));
   }
 
   @Override
-  public int getCoeffVecSize() {
+  public int getCoeffVecSize(int i) {
+    return getCoeffVecSize(i, 0);
+  }
+
+  public int getCoeffVecSize(int i, int j) {
     // The weights offline mode of Winograd will increase the vector size of
     // coefficients.
     if (useWinograd && winogradWeightsOffline)
-      return PC * PF * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
+      return PC.get(i) * PF.get(j) * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
     if (type == Type.IDENTITY)
       return 0;
     if (type == Type.POOLING)
@@ -287,52 +311,59 @@ public class ConvLayerParameters extends LayerParameters {
     if (type == Type.CONCAT)
       return 0;
     if (type == Type.POINTWISE)
-      return PC * PF;
+      return PC.get(i) * PF.get(j);
     if (type == Type.DEPTHWISE_SEPARABLE_V2)
-      return PC * Math.max(K * K, PF);
+      return PC.get(i) * Math.max(K * K, PF.get(j));
     if (type == Type.STANDARD || type == Type.DEPTHWISE_SEPARABLE)
-      return (PC * PF * K * K);
+      return (PC.get(i) * PF.get(j) * K * K);
 
     throw new IllegalArgumentException(
         "getCoeffVecSize has not implemented for the current type: " + type.name());
   }
 
-  public int getCoeffStreamLMemBitWidth() {
-    return getCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getCoeffStreamLMemBitWidth(int i) {
+    return getCoeffLMemVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getCoeffLMemVecSize() {
-    return getCoeffVecSize();
+  public int getCoeffLMemVecSize(int i) {
+    return getCoeffVecSize(i);
   }
 
-  public int getCoeffNumVec() {
+  public int getCoeffNumVec(int i) {
+    return getCoeffNumVec(i, 0);
+  }
+
+  public int getCoeffNumVec(int i, int j) {
     int total = 0;
     if (type == Type.DEPTHWISE_SEPARABLE)
       total = C * K * K;
     else if (type == Type.STANDARD || type == Type.POINTWISE)
       total = C * F * K * K;
 
-    return total / getCoeffVecSize();
+    // This is because we need to make sure that every convolution in the same kernel takes the same
+    // amount of cycles, thus the input channels should be scaled.
+    total *= PC.get(i) / PC.get(0);
+    return total / getCoeffVecSize(i, j);
   }
 
   public long getDepthwiseCoeffStreamNumElems() {
     return C * K * K;
   }
 
-  public int getDepthwiseCoeffVecSize() {
-    return PC * K * K;
+  public int getDepthwiseCoeffVecSize(int i) {
+    return PC.get(i) * K * K;
   }
 
-  public int getDepthwiseCoeffLMemVecSize() {
-    return PC;
+  public int getDepthwiseCoeffLMemVecSize(int i) {
+    return PC.get(i);
   }
 
   public long getPointwiseCoeffStreamNumElems() {
     return C * F;
   }
 
-  public int getPointwiseCoeffVecSize() {
-    return PC * PF;
+  public int getPointwiseCoeffVecSize(int i) {
+    return PC.get(i) * PF.get(i);
   }
 
   @Override
@@ -341,8 +372,8 @@ public class ConvLayerParameters extends LayerParameters {
   }
 
   @Override
-  public int getOfmapVecSize() {
-    return useWinograd ? WinogradTransform.M * WinogradTransform.M * PF : PK * PF;
+  public int getOfmapVecSize(int i) {
+    return useWinograd ? WinogradTransform.M * WinogradTransform.M * PF.get(i) : PK * PF.get(i);
   }
 
   public long getIfmapStreamSize() {
@@ -370,36 +401,36 @@ public class ConvLayerParameters extends LayerParameters {
     return sizeInBytes * getOfmapStreamNumElems();
   }
 
-  public int getCoeffStreamBitWidth() {
-    return getCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getCoeffStreamBitWidth(int i) {
+    return getCoeffVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getCoeffStreamChunkSize() {
-    return getCoeffVecSize() / (PC * PF);
+  public int getCoeffStreamChunkSize(int i) {
+    return getCoeffVecSize(i) / (PC.get(i) * PF.get(i));
   }
 
-  public DFEVectorType<DFEVar> getCoeffVecT(DFEType baseT) {
-    return new DFEVectorType<DFEVar>(baseT, getCoeffVecSize());
+  public DFEVectorType<DFEVar> getCoeffVecT(int i, DFEType baseT) {
+    return new DFEVectorType<DFEVar>(baseT, getCoeffVecSize(i));
   }
 
-  public int getDepthwiseCoeffStreamBitWidth() {
-    return getDepthwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getDepthwiseCoeffStreamBitWidth(int i) {
+    return getDepthwiseCoeffVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getDepthwiseCoeffStreamLMemBitWidth() {
-    return getDepthwiseCoeffLMemVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getDepthwiseCoeffStreamLMemBitWidth(int i) {
+    return getDepthwiseCoeffLMemVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getPointwiseCoeffStreamBitWidth() {
-    return getPointwiseCoeffVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getPointwiseCoeffStreamBitWidth(int i) {
+    return getPointwiseCoeffVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getIfmapStreamBitWidth() {
-    return getIfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getIfmapStreamBitWidth(int i) {
+    return getIfmapVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
-  public int getOfmapStreamBitWidth() {
-    return getOfmapVecSize() * getCPUTypes().sizeInBytes() * 8;
+  public int getOfmapStreamBitWidth(int i) {
+    return getOfmapVecSize(i) * getCPUTypes().sizeInBytes() * 8;
   }
 
   /**
@@ -418,12 +449,12 @@ public class ConvLayerParameters extends LayerParameters {
     private final int OW;
     private String residual = "";
     private List<String> inputs; // string indicates the input port
-    private List<OutputType> outputs; // enums indicate what the output stream should output.
+    private List<Output> outputs; // enums indicate what the output stream should output.
     private int numOutputs = 1; // number of output ports
     private int BW; /* bit width */
     private int WBW;
-    private int PC;
-    private int PF;
+    private List<Integer> PC;
+    private List<Integer> PF;
     private int PK;
     private int PH;
     private int PW;
@@ -434,7 +465,7 @@ public class ConvLayerParameters extends LayerParameters {
     private String dtype;
     private int numFracBits;
     private Type type;
-    private PoolingLayerParameters pool;
+    // private PoolingLayerParameters pool;
     private boolean useDRAM;
     private boolean dbg;
     private boolean useWinograd;
@@ -471,8 +502,8 @@ public class ConvLayerParameters extends LayerParameters {
       this.K = K;
       this.H = this.OH - 2 * this.P - 1 + this.K;
       this.W = this.OW - 2 * this.P - 1 + this.K;
-      this.PF = 1;
-      this.PC = 1;
+      this.PF = new ArrayList<Integer>();
+      this.PC = new ArrayList<Integer>();
       this.PK = 1;
       this.PH = 1;
       this.PW = 1;
@@ -485,7 +516,7 @@ public class ConvLayerParameters extends LayerParameters {
       this.coeffOnChip = false;
       this.initCoeff = false;
       this.inputs = new ArrayList<String>();
-      this.outputs = new ArrayList<OutputType>();
+      this.outputs = new ArrayList<Output>();
       this.numOutputs = 1;
       this.namedRegion = "";
       this.pooling = Pooling.MAX;
@@ -501,7 +532,7 @@ public class ConvLayerParameters extends LayerParameters {
       return this;
     }
 
-    public Builder output(OutputType output) {
+    public Builder output(Output output) {
       this.outputs.add(output);
       return this;
     }
@@ -512,6 +543,15 @@ public class ConvLayerParameters extends LayerParameters {
         return this;
 
       this.inputs.add(input);
+      return this;
+    }
+
+    public Builder PCList(List<Integer> PC) {
+      for (int i = 0; i < PC.size(); i++) this.PC.add(PC.get(i));
+      return this;
+    }
+    public Builder PFList(List<Integer> PF) {
+      for (int i = 0; i < PF.size(); i++) this.PF.add(PF.get(i));
       return this;
     }
 
@@ -532,7 +572,7 @@ public class ConvLayerParameters extends LayerParameters {
     }
 
     private int getInputDim(int outputDim, int kernelDim, int pad, int stride) {
-      if (type == Type.POINTWISE)
+      if (type == Type.POINTWISE || K == 1)
         return outputDim * stride;
       if (pad == 1 && stride == 2 && kernelDim == 3)
         return outputDim * 2;
@@ -602,7 +642,7 @@ public class ConvLayerParameters extends LayerParameters {
         throw new IllegalArgumentException("PF should be larger than 0");
       if (F % PF != 0)
         throw new IllegalArgumentException("F % PF should equal 0");
-      this.PF = PF;
+      this.PF.add(PF);
       return this;
     }
 
@@ -625,7 +665,7 @@ public class ConvLayerParameters extends LayerParameters {
         throw new IllegalArgumentException("PC should be larger than 0");
       if (C % PC != 0)
         throw new IllegalArgumentException("C % PC should equal 0");
-      this.PC = PC;
+      this.PC.add(PC);
       return this;
     }
 
@@ -674,11 +714,11 @@ public class ConvLayerParameters extends LayerParameters {
       return this;
     }
 
-    public Builder pool(PoolingLayerParameters pool) {
-      this.pool = pool;
+    // public Builder pool(PoolingLayerParameters pool) {
+    //   this.pool = pool;
 
-      return this;
-    }
+    //   return this;
+    // }
 
     public Builder useDRAM(boolean useDRAM) {
       this.useDRAM = useDRAM;

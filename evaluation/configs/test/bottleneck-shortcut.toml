@@ -1,0 +1,47 @@
+NAME = "bottleneck_shortcut"
+
+[global]
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+FREQ = 350
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 1
+P = 0
+S = 2
+INPUT = "ifmap"
+OUTPUT = ["OFMAP", "IFMAP"] # the ifmap in this case has been truncated by striding
+TYPE = "STANDARD"
+
+# Extra input to convolution, if not being identified as RESIDUAL, will simply be duplicated.
+[layers.conv1]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = ["conv0", "conv0_1"]
+OUTPUT = ["OFMAP", "IFMAP_1"] # IFMAP points to the corresponding input "conv0_1"
+TYPE = "STANDARD"
+
+[layers.conv2]
+H = 56
+W = 56
+C = 64
+F = 256
+K = 1
+P = 0
+S = 1
+INPUT = ["conv1", "conv1_1"] 
+SEQ = 1
+RESIDUAL = "conv1_1" # Since conv1_1 is an input, we will perform projection.
+TYPE = "STANDARD"

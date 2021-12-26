@@ -23,8 +23,8 @@ public class ConvLayerKernelFactory {
       return new PointwiseConvolutionKernel(owner, cp, T, WT);
     if (cp.type == Type.DEPTHWISE_SEPARABLE)
       return new DepthwiseSeparableConvLayerKernel(owner, cp, T, WT);
-    if (cp.type == Type.DEPTHWISE_SEPARABLE_V2)
-      return new DepthwiseSeparableConvLayerKernelV2(owner, cp, T);
+    // if (cp.type == Type.DEPTHWISE_SEPARABLE_V2)
+    //   return new DepthwiseSeparableConvLayerKernelV2(owner, cp, T);
 
     throw new IllegalArgumentException(String.format(
         "ConvLayerKernel type %s cannot be recognised by the factory.", cp.type.name()));

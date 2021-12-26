@@ -1,0 +1,19 @@
+NAME = "single_pw_s2"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 0
+FREQ = 200
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 2
+W = 2
+C = 2
+F = 2
+K = 1
+S = 2
+P = 0
+TYPE = "STANDARD"

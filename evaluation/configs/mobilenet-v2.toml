@@ -1,0 +1,455 @@
+NAME = "mobilenet_v2"
+
+[global]
+BW = 8
+WBW = 8
+NUM_FRAC_BITS = 0
+FREQ = 350
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 112
+W = 112
+C = 3
+F = 32
+K = 3
+P = 1
+S = 2
+SEQ = 1
+TYPE = "STANDARD"
+
+# first block, no residual connection.
+
+[layers.b0c0]
+H = 112
+W = 112
+C = 32
+F = 16
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b0c1]
+H = 112
+W = 112
+C = 16
+F = 16
+K = 3
+P = 1
+S = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ------------------------------------------
+# repeat 2 blocks
+
+# ---
+[layers.b1c0]
+H = 112
+W = 112
+C = 16
+F = 96 # 16 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b1c1]
+H = 56
+W = 56
+C = 96
+F = 24
+K = 3
+P = 1
+S = 2
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b2c0]
+H = 56
+W = 56
+C = 24
+F = 144 # 24 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b2c1]
+H = 56
+W = 56
+C = 144
+F = 24
+K = 3
+P = 1
+S = 1
+INPUT = "b2c0"
+RESIDUAL = "b2c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ------------------------------------------
+# repeat 3 blocks
+
+# ---
+[layers.b3c0]
+H = 56
+W = 56
+C = 24
+F = 144 # 24 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b3c1]
+H = 28
+W = 28
+C = 144
+F = 32
+K = 3
+P = 1
+S = 2
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b4c0]
+H = 28
+W = 28
+C = 32
+F = 192 # 32 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b4c1]
+H = 28
+W = 28
+C = 192
+F = 32
+K = 3
+P = 1
+S = 1
+INPUT = "b4c0"
+RESIDUAL = "b4c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b5c0]
+H = 28
+W = 28
+C = 32
+F = 192 # 32 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b5c1]
+H = 28
+W = 28
+C = 192
+F = 32
+K = 3
+P = 1
+S = 1
+INPUT = "b5c0"
+RESIDUAL = "b5c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ------------------------------------------
+# repeat 4 blocks
+
+# ---
+[layers.b6c0]
+H = 28
+W = 28
+C = 32
+F = 192 # 32 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b6c1]
+H = 14
+W = 14
+C = 192
+F = 64
+K = 3
+P = 1
+S = 2
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b7c0]
+H = 14
+W = 14
+C = 64
+F = 384 # 64 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b7c1]
+H = 14
+W = 14
+C = 384
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "b7c0"
+RESIDUAL = "b7c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b8c0]
+H = 14
+W = 14
+C = 64
+F = 384 # 64 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b8c1]
+H = 14
+W = 14
+C = 384
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "b8c0"
+RESIDUAL = "b8c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b9c0]
+H = 14
+W = 14
+C = 64
+F = 384 # 64 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b9c1]
+H = 14
+W = 14
+C = 384
+F = 64
+K = 3
+P = 1
+S = 1
+SEQ = 1
+INPUT = "b9c0"
+RESIDUAL = "b9c0_1"
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ------------------------------------------
+# repeat 3 blocks
+
+# ---
+[layers.b10c0]
+H = 14 
+W = 14 
+C = 64
+F = 384 # 64 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b10c1]
+H = 14 
+W = 14 
+C = 384
+F = 96
+K = 3
+P = 1
+S = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b11c0]
+H = 14 
+W = 14 
+C = 96
+F = 576 # 96 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b11c1]
+H = 14 
+W = 14 
+C = 576
+F = 96
+K = 3
+P = 1
+S = 1
+INPUT = "b11c0"
+RESIDUAL = "b11c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b12c0]
+H = 14 
+W = 14 
+C = 96
+F = 576 # 96 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b12c1]
+H = 14 
+W = 14 
+C = 576
+F = 96
+K = 3
+P = 1
+S = 1
+INPUT = "b12c0"
+RESIDUAL = "b12c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+
+# ------------------------------------------
+# repeat 3 blocks
+
+# ---
+[layers.b13c0]
+H = 14 
+W = 14 
+C = 96
+F = 576 # 576 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b13c1]
+H = 7 
+W = 7 
+C = 576
+F = 160
+K = 3
+P = 1
+S = 2
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b14c0]
+H = 7
+W = 7 
+C = 160
+F = 960 # 160 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b14c1]
+H = 7 
+W = 7 
+C = 960
+F = 160
+K = 3
+P = 1
+S = 1
+INPUT = "b14c0"
+RESIDUAL = "b14c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.b15c0]
+H = 7
+W = 7 
+C = 160
+F = 960 # 160 * 6
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+TYPE = "STANDARD"
+
+[layers.b15c1]
+H = 7 
+W = 7 
+C = 960
+F = 160
+K = 3
+P = 1
+S = 1
+INPUT = "b15c0"
+RESIDUAL = "b15c0_1"
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ------------------------------------------
+# repeat 1 block
+
+# ---
+[layers.b16c0]
+H = 7
+W = 7 
+C = 160
+F = 960 # 160 * 6
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"
+
+[layers.b16c1]
+H = 7 
+W = 7 
+C = 960
+F = 320
+K = 3
+P = 1
+S = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+
+# ---
+[layers.convlast]
+H = 7
+W = 7 
+C = 320
+F = 1280
+K = 1
+P = 0
+S = 1
+TYPE = "STANDARD"

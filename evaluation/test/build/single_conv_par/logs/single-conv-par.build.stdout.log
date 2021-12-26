@@ -213,3 +213,47 @@ Thu 19:31: coeff vec size: 2304
 Thu 19:31: coeff stream bit width: 36864
 Thu 19:31: coeff stream chunk size: 9
 Thu 19:32: Generating input files (VHDL, netlists, vendor specific IP cores)
+Thu 21:08: Running back-end  build (15 phases)
+Thu 21:08: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 21:08: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Thu 21:08: Executing Synthesis Strategy VIVADO_DEFAULT
+Fri 23:05: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Fri 23:05: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Fri 23:07: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Fri 23:07: 
+Fri 23:07: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Fri 23:07: For this compile, we estimate this process may take longer than 1 hour.
+Fri 23:07: We recommend running in simulation to verify correctness before building hardware.
+Fri 23:07: 
+Fri 23:07: PRELIMINARY RESOURCE USAGE
+Fri 23:07: FPGA: xcVU9P-FLGB2104-2-E
+Fri 23:07: Logic utilization:     3183806 / 3546720 (89.77%)
+Fri 23:07:   LUTs:                 141438 / 1182240 (11.96%)
+Fri 23:07:   Primary FFs:         3042368 / 2364480 (128.67%)
+Fri 23:07: DSP blocks:               2313 / 6840    (33.82%)
+Fri 23:07: Block memory (BRAM18):     565 / 4320    (13.08%)
+Fri 23:07: Block memory (URAM):        21 / 960     (2.19%)
+Fri 23:07: 
+Fri 23:07: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Fri 23:07: 
+Fri 23:07: PRELIMINARY POWER REPORT
+Fri 23:07: Total On-Chip Power (W) 20.08 (budget: 91.80) 
+Fri 23:07: Dynamic Power (W)       17.22 
+Fri 23:07: Device Static Power(W)   2.86 
+Fri 23:07: 
+Fri 23:07: (7/15) - Place DFE (VivadoImplementation)
+Fri 23:07: Executing the following 10 Implementation Strategies in 10 threads:
+Fri 23:07:  - VIVADO_DEFAULT
+Fri 23:07:  - MAXELER1
+Fri 23:07:  - MAXELER2
+Fri 23:07:  - MAXELER3
+Fri 23:07:  - MAXELER4
+Fri 23:07:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Fri 23:07:  - PERFORMANCE_EXPLORE
+Fri 23:07:  - PERFORMANCE_EXTRA_TIMING_OPT
+Fri 23:07:  - PERFORMANCE_NET_DELAY_HIGH
+Fri 23:07:  - PERFORMANCE_REFINE_PLACEMENT
+Sat 02:06: Implementation: Strategy "MAXELER3" failed (no timing score) Output log file created
+Sat 02:07: Implementation: Strategy "MAXELER1" failed (no timing score) Output log file created
+Sat 02:10: Implementation: Strategy "MAXELER4" failed (no timing score) Output log file created
+Sat 02:35: Implementation: Strategy "PERFORMANCE_NET_DELAY_HIGH" failed (no timing score) Output log file created

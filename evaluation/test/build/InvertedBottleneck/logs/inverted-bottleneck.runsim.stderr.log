@@ -1,0 +1,52 @@
+Fri 16:37: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Fri 16:37: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Fri 16:37: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Fri 16:37: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Fri 16:37: WARNING: to that of a similar bitstream.
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1224 16:38:06.943217 120261 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
+I1224 16:38:06.943655 120261 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1224 16:38:06.944006 120261 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1224 16:38:06.944303 120261 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1224 16:38:06.944563 120261 InvertedbottleneckCpuCode.cpp:83] Running golden function ...
+I1224 16:38:06.944826 120261 InvertedbottleneckCpuCode.cpp:92]        STANDARD 2 x 32 x 32 -> 4 x 32 x 32
+I1224 16:38:06.945894 120261 InvertedbottleneckCpuCode.cpp:92] DEPTHWISE_SEPARABLE 4 x 32 x 32 -> 2 x 32 x 32
+I1224 16:38:06.947731 120261 utils.h:383] Burst aligning input array of size: 4096 to 4224
+I1224 16:38:06.947788 120261 InvertedbottleneckCpuCode.cpp:161] Tiled input size (burst aligned): 4224
+I1224 16:38:06.948212 120261 utils.h:383] Burst aligning input array of size: 4096 to 4224
+I1224 16:38:06.948467 120261 InvertedbottleneckCpuCode.cpp:164] Tiled output size (burst aligned): 4224
+I1224 16:38:06.948685 120261 layers.h:757] Writing DRAM to 0 with size 0x2100
+I1224 16:38:06.963855 120261 InvertedbottleneckCpuCode.cpp:172] Running ...
+I1224 16:38:07.137424 120261 InvertedbottleneckCpuCode.cpp:178] Done
+I1224 16:38:07.137470 120261 layers.h:774] Reading DRAM from 0x2100 with size 0x2100
+I1224 16:38:07.146137 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[0] = 11
+I1224 16:38:07.146183 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[1] = -5
+I1224 16:38:07.146188 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[2] = 0
+I1224 16:38:07.146193 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[3] = 0
+I1224 16:38:07.146198 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[4] = -1
+I1224 16:38:07.146201 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[5] = 5
+I1224 16:38:07.146206 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[6] = -3
+I1224 16:38:07.146210 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[7] = 26
+I1224 16:38:07.146214 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[8] = 10
+I1224 16:38:07.146219 120261 InvertedbottleneckCpuCode.cpp:185] output_dfe[9] = -14
+I1224 16:38:07.146224 120261 InvertedbottleneckCpuCode.cpp:191] elapsed time: 0.173479s
+I1224 16:38:07.146229 120261 InvertedbottleneckCpuCode.cpp:205] [Ops] layer                          conv0 = 0.016384 M
+I1224 16:38:07.146632 120261 InvertedbottleneckCpuCode.cpp:205] [Ops] layer                          conv1 = 0.090112 M
+I1224 16:38:07.146638 120261 InvertedbottleneckCpuCode.cpp:209] OPS:    0.000212992 G
+I1224 16:38:07.146915 120261 InvertedbottleneckCpuCode.cpp:210] FPS:    11.5288
+I1224 16:38:07.146922 120261 InvertedbottleneckCpuCode.cpp:213] GFLOPs: 0.00122777
+I1224 16:38:07.146927 120261 InvertedbottleneckCpuCode.cpp:220] Examine results ...
+I1224 16:38:07.146931 120261 InvertedbottleneckCpuCode.cpp:222] output_cpu[0] = 11
+I1224 16:38:07.147184 120261 InvertedbottleneckCpuCode.cpp:222] output_cpu[1] = -5
+I1224 16:38:07.147429 120261 InvertedbottleneckCpuCode.cpp:222] output_cpu[2] = 0
+I1224 16:38:07.147670 120261 InvertedbottleneckCpuCode.cpp:222] output_cpu[3] = 0
+I1224 16:38:07.147675 120261 InvertedbottleneckCpuCode.cpp:222] output_cpu[4] = -1
+I1224 16:38:07.147940 120261 InvertedbottleneckCpuCode.cpp:228] output_dfe[0] = 11
+I1224 16:38:07.148176 120261 InvertedbottleneckCpuCode.cpp:228] output_dfe[1] = -5
+I1224 16:38:07.148437 120261 InvertedbottleneckCpuCode.cpp:228] output_dfe[2] = 0
+I1224 16:38:07.148663 120261 InvertedbottleneckCpuCode.cpp:228] output_dfe[3] = 0
+I1224 16:38:07.148905 120261 InvertedbottleneckCpuCode.cpp:228] output_dfe[4] = -1
+I1224 16:38:07.149137 120261 InvertedbottleneckCpuCode.cpp:239] Evaluating difference ...
+I1224 16:38:07.149313 120261 InvertedbottleneckCpuCode.cpp:240] Mask: 00000000
+I1224 16:38:07.149567 120261 InvertedbottleneckCpuCode.cpp:268] num_failed: 0 total: 4096 avg_diff: 0 min_diff: 0 max_diff: 0

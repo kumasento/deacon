@@ -1,0 +1,35 @@
+NAME = "residual"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 0
+FREQ = 350
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 2
+W = 2
+C = 2
+F = 2
+K = 3
+P = 1
+S = 1
+OUTPUT = ["OFMAP", "IFMAP"]
+P_F = [1, 1]
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.conv1]
+H = 2
+W = 2
+C = 2
+F = 2
+K = 3
+P = 1
+S = 1
+INPUT = "conv0"
+RESIDUAL = "conv0_1"
+SEQ = 1
+TYPE = "STANDARD"

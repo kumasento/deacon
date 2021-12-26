@@ -24,10 +24,16 @@ import java.util.List;
  */
 public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   private final DFEVar f, c, h, w;
+  private DFEVector<DFEVar> ifmap, ofmap;
 
   public PointwiseConvolutionKernel(
       KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
     super(owner, cp, T, WT);
+
+    if (cp.inputs.size() > 1 || cp.outputs.size() > 1)
+      throw new IllegalArgumentException("Cannot have more than 1 input or output.");
+    this.ifmap = ifmapList.get(0);
+    this.ofmap = ofmapList.get(0);
 
     // if (cp.seq != ConvLayerParameters.CompSeq.FILTER_MAJOR)
     // throw new IllegalArgumentException("Only support filter major in Pointwise
@@ -46,30 +52,30 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
 
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        if (cp.C / cp.PC == 1)
+        if (cp.C / cp.PC.get(0) == 1)
           c = constant.var(0).cast(countT);
         else
-          c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+          c = chain.addCounter(cp.C / cp.PC.get(0), 1).cast(countT);
 
-        if (cp.F / cp.PF == 1)
+        if (cp.F / cp.PF.get(0) == 1)
           f = constant.var(0).cast(countT);
         else
-          f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
+          f = chain.addCounter(cp.F / cp.PF.get(0), 1).cast(countT);
 
         h = chain.addCounter(cp.H / cp.PH, 1).cast(countT);
         w = chain.addCounter(cp.W / cp.PW, 1).cast(countT);
         break;
 
       case FILTER_MAJOR:
-        if (cp.F / cp.PF == 1)
+        if (cp.F / cp.PF.get(0) == 1)
           f = constant.var(0).cast(countT);
         else
-          f = chain.addCounter(cp.F / cp.PF, 1).cast(countT);
+          f = chain.addCounter(cp.F / cp.PF.get(0), 1).cast(countT);
 
-        if (cp.C / cp.PC == 1)
+        if (cp.C / cp.PC.get(0) == 1)
           c = constant.var(0).cast(countT);
         else
-          c = chain.addCounter(cp.C / cp.PC, 1).cast(countT);
+          c = chain.addCounter(cp.C / cp.PC.get(0), 1).cast(countT);
 
         h = chain.addCounter(cp.H / cp.PH, 1).cast(countT);
         w = chain.addCounter(cp.W / cp.PW, 1).cast(countT);
@@ -103,10 +109,12 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
         } else {
           // this.coeff = readCoeffFMemList(
           //     addr, getROMList(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)), WT);
-          this.coeff = getROM(cp, cp.name, cp.getCoeffNumVec(), cp.getCoeffVecT(WT)).read(addr);
+          this.coeff =
+              getROM(cp, cp.name, cp.getCoeffNumVec(0), cp.getCoeffVecT(0, WT), 0).read(addr);
         }
       } else {
-        this.coeff = (new DFEVectorType<DFEVar>(WT, cp.PC * cp.PF)).newInstance(owner);
+        this.coeff =
+            (new DFEVectorType<DFEVar>(WT, cp.PC.get(0) * cp.PF.get(0))).newInstance(owner);
       }
     }
 
@@ -128,12 +136,12 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
         ibuf.port(ifmap, ibufAddr, ibufWriteEn.and(initCoeff.complement()));
 
     // output feature map buffer
-    ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(owner, cp, T);
+    ConvLayerOfmapBuffer obuf = new ConvLayerOfmapBuffer(owner, cp, T, 0);
     obuf.setReset(getObufReset(c));
 
     // dot-product units
-    DFEVector<DFEVar> procResult =
-        process(owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC, cp.PF, T, WT, c, cp.dbg);
+    DFEVector<DFEVar> procResult = process(
+        owner, ibufOutput, coeff, cp.PH, cp.PW, cp.PC.get(0), cp.PF.get(0), T, WT, c, cp.dbg);
 
     if (cp.dbg) {
       debug.simPrintf("dp_out[%3d, %3d, %3d] = %KObj%\n", f, h, w, procResult);
@@ -145,19 +153,15 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   }
 
   public DFEVar getCoeffFMemAddr(DFEType addrT) {
-    return (f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC))).cast(addrT)
+    return (
+        f.cast(addrT) * constant.var(((int) Math.ceil((double) cp.C / cp.PC.get(0)))).cast(addrT)
         + c.cast(addrT))
         .cast(addrT);
   }
 
   @Override
-  public int getIfmapVecSize() {
-    return cp.PH * cp.PW * cp.PC;
-  }
-
-  @Override
-  public DFEVectorType<DFEVar> getIfmapVecT() {
-    return ifmapVecT;
+  public int getIfmapVecSize(int i) {
+    return cp.PH * cp.PW * cp.PC.get(i);
   }
 
   @Override
@@ -176,18 +180,18 @@ public class PointwiseConvolutionKernel extends BaseConvLayerKernel {
   @Override
   public List<Integer> getCoeffVecSizeList() {
     List<Integer> coeffVecSizeList = new ArrayList<Integer>();
-    coeffVecSizeList.add(cp.PC * cp.PF);
+    coeffVecSizeList.add(cp.PC.get(0) * cp.PF.get(0));
     return coeffVecSizeList;
   }
 
   @Override
   public DFEVar getOfmapEn() {
-    return c.eq(cp.C / cp.PC - 1).and(getObufWriteEn(cp, h, w));
+    return c.eq(cp.C / cp.PC.get(0) - 1).and(getObufWriteEn(cp, h, w));
   }
 
   @Override
-  public int getOfmapVecSize() {
-    return cp.PF * cp.PH * cp.PW;
+  public int getOfmapVecSize(int i) {
+    return cp.PF.get(i) * cp.PH * cp.PW;
   }
 
   public static DFEVector<DFEVar> process(KernelBase<?> owner, DFEVector<DFEVar> ifmap,

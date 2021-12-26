@@ -1,56 +1,60 @@
-In file included from ../../src/residual/ResidualCpuCode.cpp:10:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderInput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
-../../src/residual/ResidualCpuCode.cpp:82:62:   required from here
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:345:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  345 |     for (int c = 0; c < cp.dfe.TC; c += cp.dfe.PC)
-      |                     ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:346:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  346 |       for (int h = 0; h < cp.dfe.TH; ++h)
-      |                       ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:347:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  347 |         for (int w = 0; w < cp.dfe.TW; ++w)
-      |                         ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:348:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  348 |           for (int p = 0; p < cp.dfe.PC; ++p) {
-      |                           ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘std::vector<T> ReorderOutput(std::vector<T>&, const ConvLayerParameters&, size_t) [with T = short int; size_t = long unsigned int]’:
-../../src/residual/ResidualCpuCode.cpp:109:64:   required from here
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:371:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  371 |     for (int f = 0; f < cp.dfe.TF; f += cp.dfe.PF)
-      |                     ~~^~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:372:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  372 |       for (int h = 0; h < cp.dfe.TOH; ++h)
-      |                       ~~^~~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:373:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  373 |         for (int w = 0; w < cp.dfe.TOW; ++w)
-      |                         ~~^~~~~~~~~~~~
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:374:29: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const uint64_t’ {aka ‘const long unsigned int’} [-Wsign-compare]
-  374 |           for (int p = 0; p < cp.dfe.PF; ++p) {
-      |                           ~~^~~~~~~~~~~
+Sat 14:56: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sat 14:56: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sat 14:56: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sat 14:56: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sat 14:56: WARNING: to that of a similar bitstream.
+Sat 14:56: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sat 14:56: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sat 14:56: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sat 14:56: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sat 14:56: WARNING: to that of a similar bitstream.
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1222 16:48:00.615279 171349 ResidualCpuCode.cpp:71] num frac bits: 8
-I1222 16:48:00.615545 171349 ResidualCpuCode.cpp:75] input[0] = -1.02637  dfe = -1.02734
-I1222 16:48:00.615952 171349 ResidualCpuCode.cpp:75] input[1] = -0.374079  dfe = -0.375
-I1222 16:48:00.616221 171349 ResidualCpuCode.cpp:75] input[2] = 0.419399  dfe = 0.417969
-I1222 16:48:00.616472 171349 utils.h:383] Burst aligning input array of size: 128 to 192
-I1222 16:48:00.616695 171349 ResidualCpuCode.cpp:88] Tiled input size (burst aligned): 192
-I1222 16:48:00.616982 171349 utils.h:383] Burst aligning input array of size: 128 to 192
-I1222 16:48:00.617216 171349 ResidualCpuCode.cpp:90] Tiled output size (burst aligned): 192
-I1222 16:48:00.617595 171349 layers.h:757] Writing DRAM to 0 with size 0x180
-I1222 16:48:00.622532 171349 ResidualCpuCode.cpp:99] Running ...
-I1222 16:48:01.421175 171349 ResidualCpuCode.cpp:105] Done
-I1222 16:48:01.421226 171349 layers.h:774] Reading DRAM from 0x180 with size 0x180
-I1222 16:48:01.424021 171349 ResidualCpuCode.cpp:112] output_dfe[0] = 18.7969
-I1222 16:48:01.424088 171349 ResidualCpuCode.cpp:112] output_dfe[1] = 15.8711
-I1222 16:48:01.424105 171349 ResidualCpuCode.cpp:112] output_dfe[2] = -2.36719
-I1222 16:48:01.424335 171349 ResidualCpuCode.cpp:112] output_dfe[3] = -3.93359
-I1222 16:48:01.424571 171349 ResidualCpuCode.cpp:112] output_dfe[4] = 32.75
-I1222 16:48:01.424787 171349 ResidualCpuCode.cpp:112] output_dfe[5] = -10.3438
-I1222 16:48:01.425007 171349 ResidualCpuCode.cpp:112] output_dfe[6] = -11.0352
-I1222 16:48:01.425231 171349 ResidualCpuCode.cpp:112] output_dfe[7] = 8.24219
-I1222 16:48:01.425457 171349 ResidualCpuCode.cpp:112] output_dfe[8] = -1.03516
-I1222 16:48:01.425669 171349 ResidualCpuCode.cpp:112] output_dfe[9] = 11.3008
-I1222 16:48:01.425904 171349 ResidualCpuCode.cpp:116] elapsed time: 0.798581s
-I1222 16:48:01.426136 171349 ResidualCpuCode.cpp:128] FPS:    2.50444
-I1222 16:48:01.426367 171349 ResidualCpuCode.cpp:129] GFLOPs: 2.30809e-05
+I1225 14:56:53.961122 263813 ResidualCpuCode.cpp:71] num frac bits: 0
+I1225 14:56:53.961416 263813 ResidualCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1225 14:56:53.961897 263813 ResidualCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1225 14:56:53.962143 263813 ResidualCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1225 14:56:53.962391 263813 ResidualCpuCode.cpp:83] Running golden function ...
+I1225 14:56:53.962682 263813 ResidualCpuCode.cpp:92]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
+E1225 14:56:53.963534 263813 ResidualCpuCode.cpp:135] Unrecognised output type: com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters$Output@4f8caaf3
+E1225 14:56:53.963564 263813 ResidualCpuCode.cpp:135] Unrecognised output type: com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters$Output@2b50150
+I1225 14:56:53.963815 263813 ResidualCpuCode.cpp:92]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
+E1225 14:56:53.964373 263813 ResidualCpuCode.cpp:135] Unrecognised output type: com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters$Output@15b986cd
+I1225 14:56:53.964426 263813 utils.h:383] Burst aligning input array of size: 16 to 192
+I1225 14:56:53.964656 263813 ResidualCpuCode.cpp:161] Tiled input size (burst aligned): 192
+I1225 14:56:53.964864 263813 utils.h:383] Burst aligning input array of size: 16 to 192
+I1225 14:56:53.965123 263813 ResidualCpuCode.cpp:164] Tiled output size (burst aligned): 192
+I1225 14:56:53.965348 263813 layers.h:757] Writing DRAM to 0 with size 0x180
+I1225 14:56:53.968226 263813 ResidualCpuCode.cpp:172] Running ...
+I1225 14:56:53.977795 263813 ResidualCpuCode.cpp:177] Done
+I1225 14:56:53.977829 263813 layers.h:774] Reading DRAM from 0x180 with size 0x180
+I1225 14:56:53.979977 263813 ResidualCpuCode.cpp:184] output_dfe[0] = -29
+I1225 14:56:53.980017 263813 ResidualCpuCode.cpp:184] output_dfe[1] = 5
+I1225 14:56:53.980032 263813 ResidualCpuCode.cpp:184] output_dfe[2] = -12
+I1225 14:56:53.980047 263813 ResidualCpuCode.cpp:184] output_dfe[3] = 4
+I1225 14:56:53.980329 263813 ResidualCpuCode.cpp:184] output_dfe[4] = -12
+I1225 14:56:53.980564 263813 ResidualCpuCode.cpp:184] output_dfe[5] = -16
+I1225 14:56:53.980798 263813 ResidualCpuCode.cpp:184] output_dfe[6] = 32
+I1225 14:56:53.981065 263813 ResidualCpuCode.cpp:184] output_dfe[7] = -19
+I1225 14:56:53.981324 263813 ResidualCpuCode.cpp:184] output_dfe[8] = 2
+I1225 14:56:53.981338 263813 ResidualCpuCode.cpp:184] output_dfe[9] = -12
+I1225 14:56:53.981659 263813 ResidualCpuCode.cpp:190] elapsed time: 0.00952489s
+I1225 14:56:53.981927 263813 ResidualCpuCode.cpp:204] [Ops] layer                          conv0 = 0.000288 M
+I1225 14:56:53.981947 263813 ResidualCpuCode.cpp:204] [Ops] layer                          conv1 = 0.000288 M
+I1225 14:56:53.982221 263813 ResidualCpuCode.cpp:208] OPS:    1.152e-06 G
+I1225 14:56:53.982477 263813 ResidualCpuCode.cpp:209] FPS:    209.976
+I1225 14:56:53.982743 263813 ResidualCpuCode.cpp:212] GFLOPs: 0.000120946
+I1225 14:56:53.982991 263813 ResidualCpuCode.cpp:219] Examine results ...
+I1225 14:56:53.983237 263813 ResidualCpuCode.cpp:221] output_cpu[0] = -29
+I1225 14:56:53.983490 263813 ResidualCpuCode.cpp:221] output_cpu[1] = 5
+I1225 14:56:53.983739 263813 ResidualCpuCode.cpp:221] output_cpu[2] = -12
+I1225 14:56:53.983963 263813 ResidualCpuCode.cpp:221] output_cpu[3] = 4
+I1225 14:56:53.984184 263813 ResidualCpuCode.cpp:221] output_cpu[4] = -12
+I1225 14:56:53.984414 263813 ResidualCpuCode.cpp:227] output_dfe[0] = -29
+I1225 14:56:53.984632 263813 ResidualCpuCode.cpp:227] output_dfe[1] = 5
+I1225 14:56:53.984855 263813 ResidualCpuCode.cpp:227] output_dfe[2] = -12
+I1225 14:56:53.985106 263813 ResidualCpuCode.cpp:227] output_dfe[3] = 4
+I1225 14:56:53.985347 263813 ResidualCpuCode.cpp:227] output_dfe[4] = -12
+I1225 14:56:53.985574 263813 ResidualCpuCode.cpp:238] Evaluating difference ...
+I1225 14:56:53.985935 263813 ResidualCpuCode.cpp:239] Mask: 00000000
+I1225 14:56:53.986179 263813 ResidualCpuCode.cpp:267] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

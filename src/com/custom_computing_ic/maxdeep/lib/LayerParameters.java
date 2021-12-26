@@ -29,9 +29,9 @@ public abstract class LayerParameters {
 
   public abstract long getOfmapStreamNumElems();
 
-  public abstract int getIfmapVecSize();
+  public abstract int getIfmapVecSize(int i);
 
-  public abstract int getCoeffVecSize();
+  public abstract int getCoeffVecSize(int i);
 
-  public abstract int getOfmapVecSize();
+  public abstract int getOfmapVecSize(int i);
 }

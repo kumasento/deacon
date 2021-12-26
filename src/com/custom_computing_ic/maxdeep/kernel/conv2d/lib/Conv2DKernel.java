@@ -41,6 +41,7 @@ public class Conv2DKernel extends KernelComponent {
   protected final DFEType T, WT;
 
   private static final boolean OPTIMISE_WINOGRAD_TRANSFORM = true;
+  private int C;
 
   /**
    * constructor
@@ -49,18 +50,25 @@ public class Conv2DKernel extends KernelComponent {
    * @param cp
    * @param T
    */
-  public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
-    this(owner, cp, T, T);
+  public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, int index) {
+    this(owner, cp, T, T, index);
   }
 
-  public Conv2DKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT) {
+  public Conv2DKernel(
+      KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT, int index) {
+    this(owner, cp, T, WT, index, 0);
+  }
+
+  public Conv2DKernel(
+      KernelBase<?> owner, ConvLayerParameters cp, DFEType T, DFEType WT, int index, int index2) {
     super(owner);
 
     this.cp = cp;
+    this.C = cp.C;
 
     int K = cp.K;
-    int PC = cp.PC;
-    int PF = cp.PF;
+    int PC = cp.PC.get(index);
+    int PF = cp.PF.get(index2);
     int PK = cp.PK;
 
     owner.getManager().logMsg(
@@ -83,12 +91,13 @@ public class Conv2DKernel extends KernelComponent {
     /**
      * Setup size of vectors in interface.
      */
-    int coeffVecSize = cp.getCoeffVecSize();
+    int coeffVecSize = cp.getCoeffVecSize(index);
     int ifmapVecSize = (cp.useWinograd)
-        ? (WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE * cp.PC)
+        ? (WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE * cp.PC.get(index))
         : (K * (K + PK - 1) * PC);
-    int ofmapVecSize = (cp.useWinograd) ? WinogradTransform.M * WinogradTransform.M * cp.PF
-                                        : (cp.type == Type.DEPTHWISE_SEPARABLE ? PK * PC : PK * PF);
+    int ofmapVecSize = (cp.useWinograd)
+        ? WinogradTransform.M * WinogradTransform.M * cp.PF.get(index2)
+        : (cp.type == Type.DEPTHWISE_SEPARABLE ? PK * PC : PK * PF);
     owner.getManager().logMsg(String.format("CORE ifmap vector size: %d", ifmapVecSize));
     owner.getManager().logMsg(String.format("CORE coefficient vector size: %d", coeffVecSize));
     owner.getManager().logMsg(String.format("CORE ofmap vector size: %d", ofmapVecSize));
@@ -108,9 +117,9 @@ public class Conv2DKernel extends KernelComponent {
      * computation
      */
     if (cp.useWinograd)
-      computeWinograd(ifmap, coeff, ofmap);
+      computeWinograd(ifmap, coeff, ofmap, index, index2);
     else
-      compute(ifmap, coeff, ofmap);
+      compute(ifmap, coeff, ofmap, index, index2);
 
     if (cp.dbg) {
       debug.simPrintf("[Conv2DKernel] ifmap = %KObj%\n", ifmap);
@@ -130,19 +139,20 @@ public class Conv2DKernel extends KernelComponent {
    * @param coeff
    * @param ofmap
    */
-  public void compute(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff, DFEVector<DFEVar> ofmap) {
+  public void compute(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff, DFEVector<DFEVar> ofmap,
+      int index, int index2) {
     int K = cp.K;
-    int PC = cp.PC;
-    int PF = cp.PF;
+    int PC = cp.PC.get(index);
+    int PF = cp.PF.get(index2);
     int PK = cp.PK;
 
     if (cp.type == Type.DEPTHWISE_SEPARABLE) {
       for (int pc = 0; pc < PC; pc++) {
         // create a new vector instance
-        List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc);
+        List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc, index);
 
         // coefficient chunk
-        DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(0, pc);
+        DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(0, pc, index);
 
         for (int pk = 0; pk < PK; pk++) {
           DFEVector<DFEVar> ifmapChunk = ifmapChunks.get(pk);
@@ -162,10 +172,10 @@ public class Conv2DKernel extends KernelComponent {
 
         for (int pc = 0; pc < PC; pc++) {
           // create a new vector instance
-          List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc);
+          List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc, index);
 
           // coefficient chunk
-          DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc);
+          DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc, index);
 
           for (int pk = 0; pk < PK; pk++) {
             DFEVector<DFEVar> ifmapChunk = ifmapChunks.get(pk);
@@ -180,16 +190,16 @@ public class Conv2DKernel extends KernelComponent {
     }
   }
 
-  public void computeWinograd(
-      DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff, DFEVector<DFEVar> ofmap) {
+  public void computeWinograd(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,
+      DFEVector<DFEVar> ofmap, int index, int index2) {
     getOwner().getManager().logMsg("Using WINOGRAD compute function ...");
     if (cp.winogradWeightsOffline)
       getOwner().getManager().logMsg("Winograd weights are computed offline");
 
     // transform ifmap and coefficient
-    DFEVector<DFEVar> ifmapWino = createWinogradTransformedIfmap(ifmap);
+    DFEVector<DFEVar> ifmapWino = createWinogradTransformedIfmap(ifmap, index);
     DFEVector<DFEVar> coeffWino =
-        (cp.winogradWeightsOffline) ? coeff : createWinogradTransformedCoeff(coeff);
+        (cp.winogradWeightsOffline) ? coeff : createWinogradTransformedCoeff(coeff, index, index2);
 
     if (cp.dbg) {
       debug.simPrintf("[Conv2DKernel] ifmap WINO = %KObj%\n", ifmapWino);
@@ -202,17 +212,17 @@ public class Conv2DKernel extends KernelComponent {
     // type of temporary output
     DFEVectorType<DFEVar> TOT = new DFEVectorType<DFEVar>(T, TILE_SIZE * TILE_SIZE);
     // type of output
-    DFEVectorType<DFEVar> OT = new DFEVectorType<DFEVar>(T, cp.PF * M * M);
+    DFEVectorType<DFEVar> OT = new DFEVectorType<DFEVar>(T, cp.PF.get(index2) * M * M);
 
-    getOwner().getManager().logMsg(String.format(
-        "CORE consume %d number of multipliers ...", cp.PC * cp.PF * TILE_SIZE * TILE_SIZE));
+    getOwner().getManager().logMsg(String.format("CORE consume %d number of multipliers ...",
+        cp.PC.get(index) * cp.PF.get(index2) * TILE_SIZE * TILE_SIZE));
 
-    for (int f = 0; f < cp.PF; f++) {
+    for (int f = 0; f < cp.PF.get(index2); f++) {
       DFEVector<DFEVar> TO = TOT.newInstance(getOwner());
 
-      for (int c = 0; c < cp.PC; c++) {
-        getOwner().getManager().logMsg(
-            String.format("CORE setting up element-wise multiply (#%03d) ...", f * cp.PC + c));
+      for (int c = 0; c < cp.PC.get(index); c++) {
+        getOwner().getManager().logMsg(String.format(
+            "CORE setting up element-wise multiply (#%03d) ...", f * cp.PC.get(index) + c));
 
         DFEVector<DFEVar> tmp = TOT.newInstance(getOwner());
 
@@ -222,7 +232,7 @@ public class Conv2DKernel extends KernelComponent {
 
         for (int j = 0; j < TILE_SIZE * TILE_SIZE; j++) {
           int ifmapIdx = c * TILE_SIZE * TILE_SIZE + j;
-          int coeffIdx = (f * cp.PC + c) * TILE_SIZE * TILE_SIZE + j;
+          int coeffIdx = (f * cp.PC.get(index) + c) * TILE_SIZE * TILE_SIZE + j;
 
           // getOwner().optimization.pushDSPFactor(1.0);
           DFEVar r = ifmapWino[ifmapIdx] * coeffWino[coeffIdx];
@@ -250,15 +260,16 @@ public class Conv2DKernel extends KernelComponent {
     }
   }
 
-  public DFEVector<DFEVar> createWinogradTransformedIfmap(DFEVector<DFEVar> ifmap) {
+  public DFEVector<DFEVar> createWinogradTransformedIfmap(DFEVector<DFEVar> ifmap, int index) {
     int TILE_SIZE = WinogradTransform.TILE_SIZE;
-    DFEVectorType<DFEVar> RT = new DFEVectorType<DFEVar>(T, cp.PC * TILE_SIZE * TILE_SIZE);
+    DFEVectorType<DFEVar> RT =
+        new DFEVectorType<DFEVar>(T, cp.PC.get(index) * TILE_SIZE * TILE_SIZE);
 
     getOwner().getManager().logMsg(String.format(
         "CORE initialised WINOGRAD transformed ifmap %d x %d x %d", cp.PC, TILE_SIZE, TILE_SIZE));
     DFEVector<DFEVar> R = RT.newInstance(getOwner());
 
-    for (int i = 0; i < cp.PC; i++) {
+    for (int i = 0; i < cp.PC.get(index); i++) {
       WinogradIfmapTransform winogradTransform =
           new WinogradIfmapTransform(getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM, cp.dbg);
 
@@ -282,16 +293,18 @@ public class Conv2DKernel extends KernelComponent {
     return R;
   }
 
-  public DFEVector<DFEVar> createWinogradTransformedCoeff(DFEVector<DFEVar> coeff) {
+  public DFEVector<DFEVar> createWinogradTransformedCoeff(
+      DFEVector<DFEVar> coeff, int index, int index2) {
     int TILE_SIZE = WinogradTransform.TILE_SIZE;
 
-    DFEVectorType<DFEVar> RT = new DFEVectorType<DFEVar>(T, cp.PF * cp.PC * TILE_SIZE * TILE_SIZE);
+    DFEVectorType<DFEVar> RT =
+        new DFEVectorType<DFEVar>(T, cp.PF.get(index2) * cp.PC.get(index) * TILE_SIZE * TILE_SIZE);
     DFEVector<DFEVar> R = RT.newInstance(getOwner());
     getOwner().getManager().logMsg(
-        String.format("CORE initialised WINOGRAD transformed coeff %d x %d x %d x %d", cp.PF, cp.PC,
+        String.format("CORE initialised WINOGRAD transformed coeff %s x %s x %d x %d", cp.PF, cp.PC,
             TILE_SIZE, TILE_SIZE));
 
-    for (int i = 0; i < cp.PF * cp.PC; i++) {
+    for (int i = 0; i < cp.PF.get(index2) * cp.PC.get(index); i++) {
       WinogradWeightsTransform winogradTransform =
           new WinogradWeightsTransform(getOwner(), T, OPTIMISE_WINOGRAD_TRANSFORM);
 
@@ -348,9 +361,9 @@ public class Conv2DKernel extends KernelComponent {
    * @param pc
    * @return
    */
-  private List<DFEVector<DFEVar>> getIfmapChunksAt(int pc) {
+  private List<DFEVector<DFEVar>> getIfmapChunksAt(int pc, int index) {
     int K = cp.K;
-    int PC = cp.PC;
+    int PC = cp.PC.get(index);
     int PK = cp.PK;
 
     if (pc >= PC)
@@ -370,9 +383,9 @@ public class Conv2DKernel extends KernelComponent {
     return unpackIfmapChunk(ifmapPackedChunk, cp);
   }
 
-  private DFEVector<DFEVar> getCoeffChunkAt(int pf, int pc) {
+  private DFEVector<DFEVar> getCoeffChunkAt(int pf, int pc, int index) {
     int K = cp.K;
-    int PC = cp.PC;
+    int PC = cp.PC.get(index);
 
     int coeffChunkSize = K * K;
 

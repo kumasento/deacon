@@ -1,0 +1,72 @@
+In file included from ../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp:11:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:996:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp:82:73:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1010:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp:82:73:   required from here
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
+      |                                  ~^                         ~~
+      |                                   |                         |
+      |                                   int                       long unsigned int
+      |                                  %ld
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:235:28: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  235 |                   "output[%d] = %10.6f + %10.6f = ", oi,
+      |                           ~^                         ~~
+      |                            |                         |
+      |                            int                       long unsigned int
+      |                           %ld
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
+I1226 10:52:09.497692 24858 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
+I1226 10:52:09.498078 24858 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1226 10:52:09.498179 24858 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1226 10:52:09.498203 24858 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1226 10:52:09.498227 24858 layers.h:975] Running golden function ...
+I1226 10:52:09.498251 24858 layers.h:984]        STANDARD 2 x 2 x 2 -> 4 x 2 x 2
+I1226 10:52:09.499470 24858 layers.h:984] DEPTHWISE_SEPARABLE 4 x 2 x 2 -> 2 x 2 x 2
+I1226 10:52:09.501431 24858 utils.h:383] Burst aligning input array of size: 16 to 192
+I1226 10:52:09.501451 24858 InvertedbottleneckCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1226 10:52:09.501463 24858 utils.h:383] Burst aligning input array of size: 16 to 192
+I1226 10:52:09.501475 24858 InvertedbottleneckCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1226 10:52:09.501490 24858 layers.h:758] Writing DRAM to 0 with size 0x180
+I1226 10:52:09.506405 24858 InvertedbottleneckCpuCode.cpp:107] Running ...
+I1226 10:52:09.713871 24858 InvertedbottleneckCpuCode.cpp:113] Done
+I1226 10:52:09.713922 24858 layers.h:775] Reading DRAM from 0x180 with size 0x180
+I1226 10:52:09.716414 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[0] = 17
+I1226 10:52:09.716457 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[1] = 12
+I1226 10:52:09.716480 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[2] = -1
+I1226 10:52:09.716503 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[3] = -6
+I1226 10:52:09.716517 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[4] = -18
+I1226 10:52:09.716529 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[5] = -20
+I1226 10:52:09.716542 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[6] = -4
+I1226 10:52:09.716554 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[7] = 6
+I1226 10:52:09.716565 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[8] = 3
+I1226 10:52:09.716576 24858 InvertedbottleneckCpuCode.cpp:120] output_dfe[9] = 19
+I1226 10:52:09.716588 24858 InvertedbottleneckCpuCode.cpp:126] elapsed time: 0.207412s
+I1226 10:52:09.716609 24858 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv0 = 6.4e-05 M
+I1226 10:52:09.716624 24858 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv1 = 0.000352 M
+I1226 10:52:09.716635 24858 InvertedbottleneckCpuCode.cpp:144] OPS:    8.32e-07 G
+I1226 10:52:09.716648 24858 InvertedbottleneckCpuCode.cpp:145] FPS:    9.64262
+I1226 10:52:09.716660 24858 InvertedbottleneckCpuCode.cpp:148] GFLOPs: 4.01133e-06
+I1226 10:52:09.716672 24858 InvertedbottleneckCpuCode.cpp:155] Examine results ...
+I1226 10:52:09.716683 24858 InvertedbottleneckCpuCode.cpp:157] output_cpu[0] = 17
+I1226 10:52:09.716696 24858 InvertedbottleneckCpuCode.cpp:157] output_cpu[1] = 12
+I1226 10:52:09.716707 24858 InvertedbottleneckCpuCode.cpp:157] output_cpu[2] = -1
+I1226 10:52:09.716718 24858 InvertedbottleneckCpuCode.cpp:157] output_cpu[3] = -6
+I1226 10:52:09.716729 24858 InvertedbottleneckCpuCode.cpp:157] output_cpu[4] = -18
+I1226 10:52:09.716742 24858 InvertedbottleneckCpuCode.cpp:163] output_dfe[0] = 17
+I1226 10:52:09.716753 24858 InvertedbottleneckCpuCode.cpp:163] output_dfe[1] = 12
+I1226 10:52:09.716764 24858 InvertedbottleneckCpuCode.cpp:163] output_dfe[2] = -1
+I1226 10:52:09.716775 24858 InvertedbottleneckCpuCode.cpp:163] output_dfe[3] = -6
+I1226 10:52:09.716786 24858 InvertedbottleneckCpuCode.cpp:163] output_dfe[4] = -18
+I1226 10:52:09.716800 24858 InvertedbottleneckCpuCode.cpp:174] Evaluating difference ...
+I1226 10:52:09.716810 24858 InvertedbottleneckCpuCode.cpp:175] Mask: 00000000
+I1226 10:52:09.716831 24858 InvertedbottleneckCpuCode.cpp:203] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

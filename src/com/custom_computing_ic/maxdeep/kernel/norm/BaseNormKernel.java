@@ -9,12 +9,11 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
 
 public abstract class BaseNormKernel extends KernelComponent {
-
   protected final ConvLayerParameters cp;
-  protected final DFEType             T;
+  protected final DFEType T;
 
-  protected final DFEVector<DFEVar>   ifmap;
-  protected final DFEVector<DFEVar>   ofmap;
+  protected final DFEVector<DFEVar> ifmap;
+  protected final DFEVector<DFEVar> ofmap;
 
   public BaseNormKernel(KernelBase<?> owner, ConvLayerParameters cp, DFEType T) {
     super(owner);
@@ -36,7 +35,7 @@ public abstract class BaseNormKernel extends KernelComponent {
   }
 
   public int getIfmapVecSize() {
-    return cp.PF * cp.PK;
+    return cp.PF.get(0) * cp.PK;
   }
 
   public DFEVectorType<DFEVar> getIfmapVecT() {
@@ -44,7 +43,7 @@ public abstract class BaseNormKernel extends KernelComponent {
   }
 
   public int getOfmapVecSize() {
-    return cp.PF * cp.PK;
+    return cp.PF.get(0) * cp.PK;
   }
 
   public DFEVectorType<DFEVar> getOfmapVecT() {

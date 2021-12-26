@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+DIR="$(dirname "$(dirname "$(realpath "$0")")")"
+
+python3 "${DIR}/evaluation/scripts/tool.py" --cfg "${DIR}/evaluation/configs/unittest" -j 10 -d "${DIR}/evaluation/unittest" gen
+python3 "${DIR}/evaluation/scripts/tool.py" --cfg "${DIR}/evaluation/configs/unittest" -j 10 -d "${DIR}/evaluation/unittest" runsim --dbg

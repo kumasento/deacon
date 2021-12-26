@@ -4,6 +4,7 @@ import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.CompSeq;
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.RamWriteMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Stream.OffsetExpr;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
@@ -27,10 +28,10 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
  * @author Ruizhe Zhao
  *
  */
-public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
+public class ConvLayerIfmapBuffer extends KernelComponent {
   private final ConvLayerParameters cp;
+  private int C;
 
-  private final DFEType scalarT;
   private final DFEVectorType<DFEVar> portVecT;
   private final DFEType addrT;
 
@@ -41,18 +42,24 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
   private final DFEVar writeEn;
 
   public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
-    this(owner, params, scalarT, false, "");
+    this(owner, params, scalarT, false, false, true, 0, "");
   }
 
   public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT,
-      boolean loop, String prefix) {
+      boolean forceFull, boolean pad) {
+    this(owner, params, scalarT, false, forceFull, pad, 0, "");
+  }
+
+  public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT,
+      boolean loop, boolean forceFull, boolean pad, int index, String prefix) {
     super(owner);
 
     this.cp = params;
-    this.scalarT = scalarT;
 
-    int width = getWidth();
-    int depth = MathUtils.nextPowerOfTwo(getDepth());
+    // width depends on the stream parallelism, depth doesn't (stays the same for all ifmap buffer).
+    this.C = this.cp.C;
+    int width = getWidth(index);
+    int depth = MathUtils.nextPowerOfTwo(getDepth(pad, forceFull));
 
     owner.getManager().logMsg(String.format("Ifmap buffer configuration %d x %d", depth, width));
     // System.out.printf("[ConvLayerIfmapBuffer] width = %d depth = %d\n",
@@ -105,36 +112,33 @@ public class ConvLayerIfmapBuffer extends ConvLayerBaseFmapBuffer {
     return portVecT;
   }
 
-  public int getWidth() {
+  public int getWidth(int index) {
     if (cp.type == Type.POINTWISE)
-      return cp.PH * cp.PW * cp.PC;
+      return cp.PH * cp.PW * cp.PC.get(index);
 
-    return cp.useWinograd ? cp.PC * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES : cp.PC * cp.PK;
+    return cp.useWinograd ? cp.PC.get(index) * ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES
+                          : cp.PC.get(index) * cp.PK;
   }
 
-  public int getDepth() {
-    if (cp.type == Type.POINTWISE) {
-      return cp.H * cp.W * cp.C / (cp.PH * cp.PW * cp.PC);
-    } else {
-      int height = cp.H + 2 * cp.PAD;
-      int width = cp.W + 2 * cp.PAD;
+  public int getDepth(boolean pad, boolean forceFull) {
+    if (cp.type != Type.STANDARD && cp.type != Type.DEPTHWISE_SEPARABLE)
+      throw new IllegalArgumentException(
+          "Only STANDARD / DEPTHWISE_SEPARABLE is supported for now.");
 
-      if (cp.seq == CompSeq.CHANNEL_MAJOR) {
-        return cp.useWinograd ? ((height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                   * (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                   / ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
-                              : height * (width / cp.PK);
-      } else if (cp.seq == CompSeq.FILTER_MAJOR) {
-        return cp.useWinograd
-            ? ((cp.C / cp.PC) * (height + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                * (width + ConvLayerLineBuffer.WINO_LBUF_PADDING_WIDTH)
-                / ConvLayerLineBuffer.WINO_LBUF_NUM_PIPES)
-            : (cp.C / cp.PC) * height * (width / cp.PK);
-      } else {
-        throw new IllegalArgumentException(
-            String.format("Computation sequence %s has not been supported yet", cp.seq));
-      }
+    int height = cp.H;
+    int width = cp.W;
+    if (pad) {
+      height += 2 * cp.PAD;
+      width += 2 * cp.PAD;
     }
+
+    if (cp.seq == CompSeq.FILTER_MAJOR || forceFull)
+      return (C / cp.PC.get(0)) * height * (width / cp.PK);
+    if (cp.seq == CompSeq.CHANNEL_MAJOR)
+      return height * (width / cp.PK);
+
+    throw new IllegalArgumentException(
+        String.format("Computation sequence %s has not been supported yet", cp.seq));
   }
 
   public Memory<DFEVector<DFEVar>> getMem() {

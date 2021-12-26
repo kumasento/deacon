@@ -1,0 +1,423 @@
+NAME = "squeezenet_par_b16"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 8
+FREQ = 350
+USE_DRAM = true
+COEFF_ON_CHIP = true
+
+[layers.conv0]
+H = 112
+W = 112
+C = 3
+F = 64
+K = 3
+P = 1
+S = 2
+SEQ = 0
+TYPE = "STANDARD"
+
+[layers.pool0]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+P = 1
+S = 2
+TYPE = "POOLING"
+
+[layers.fire0s]
+H = 56
+W = 56
+C = 64
+F = 16
+K = 1
+P = 0
+S = 1
+OUTPUT = ["OFMAP", "OFMAP"]
+TYPE = "POINTWISE"
+
+[layers.fire0e0]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 1
+P = 0
+S = 1
+INPUT = "fire0s"
+TYPE = "POINTWISE"
+
+[layers.fire0e1]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "fire0s_1"
+TYPE = "STANDARD"
+
+[layers.fire0c]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = ["fire0e0", "fire0e1"]
+TYPE = "CONCAT"
+
+[layers.fire1s]
+H = 56
+W = 56
+C = 128
+F = 16
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+INPUT = "fire0c"
+TYPE = "POINTWISE"
+
+[layers.fire1e0]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 1
+P = 0
+S = 1
+INPUT = "fire1s"
+TYPE = "POINTWISE"
+
+[layers.fire1e1]
+H = 56
+W = 56
+C = 16
+F = 64
+K = 3
+P = 1
+S = 1
+INPUT = "fire1s_1"
+TYPE = "STANDARD"
+
+[layers.fire1c]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = ["fire1e0", "fire1e1"]
+TYPE = "CONCAT"
+
+
+[layers.pool1]
+H = 28
+W = 28
+C = 128
+F = 128
+K = 3
+P = 1
+S = 2
+P_C = 2
+P_F = 2
+TYPE = "POOLING"
+
+
+
+[layers.fire2s]
+H = 28
+W = 28
+C = 128
+F = 32
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+TYPE = "POINTWISE"
+
+[layers.fire2e0]
+H = 28
+W = 28
+C = 32
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = "fire2s"
+TYPE = "POINTWISE"
+
+[layers.fire2e1]
+H = 28
+W = 28
+C = 32
+F = 128
+K = 3
+P = 1
+S = 1
+INPUT = "fire2s_1"
+TYPE = "STANDARD"
+
+[layers.fire2c]
+H = 28
+W = 28
+C = 128
+F = 256
+K = 1
+P = 0
+S = 1
+INPUT = ["fire2e0", "fire2e1"]
+TYPE = "CONCAT"
+
+[layers.fire3s]
+H = 28
+W = 28
+C = 256
+F = 32
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+INPUT = "fire2c"
+TYPE = "POINTWISE"
+
+[layers.fire3e0]
+H = 28
+W = 28
+C = 32
+F = 128
+K = 1
+P = 0
+S = 1
+INPUT = "fire3s"
+TYPE = "POINTWISE"
+
+[layers.fire3e1]
+H = 28
+W = 28
+C = 32
+F = 128
+K = 3
+P = 1
+S = 1
+INPUT = "fire3s_1"
+TYPE = "STANDARD"
+
+[layers.fire3c]
+H = 28
+W = 28
+C = 128
+F = 256
+K = 1
+P = 0
+S = 1
+INPUT = ["fire3e0", "fire3e1"]
+TYPE = "CONCAT"
+
+
+[layers.pool2]
+H = 14
+W = 14
+C = 256
+F = 256
+K = 3
+P = 1
+S = 2
+P_C = 2
+P_F = 2
+TYPE = "POOLING"
+
+
+
+[layers.fire4s]
+H = 14
+W = 14
+C = 256
+F = 48
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+TYPE = "POINTWISE"
+
+[layers.fire4e0]
+H = 14
+W = 14
+C = 48
+F = 192
+K = 1
+P = 0
+S = 1
+INPUT = "fire4s"
+TYPE = "POINTWISE"
+
+[layers.fire4e1]
+H = 14
+W = 14
+C = 48
+F = 192
+K = 3
+P = 1
+S = 1
+INPUT = "fire4s_1"
+TYPE = "STANDARD"
+
+[layers.fire4c]
+H = 14
+W = 14
+C = 192
+F = 384
+K = 1
+P = 0
+S = 1
+INPUT = ["fire4e0", "fire4e1"]
+TYPE = "CONCAT"
+
+[layers.fire5s]
+H = 14
+W = 14
+C = 384
+F = 48
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+INPUT = "fire4c"
+TYPE = "POINTWISE"
+
+[layers.fire5e0]
+H = 14
+W = 14
+C = 48
+F = 192
+K = 1
+P = 0
+S = 1
+INPUT = "fire5s"
+TYPE = "POINTWISE"
+
+[layers.fire5e1]
+H = 14
+W = 14
+C = 48
+F = 192
+K = 3
+P = 1
+S = 1
+INPUT = "fire5s_1"
+TYPE = "STANDARD"
+
+[layers.fire5c]
+H = 14
+W = 14
+C = 192
+F = 384
+K = 1
+P = 0
+S = 1
+INPUT = ["fire5e0", "fire5e1"]
+TYPE = "CONCAT"
+
+[layers.fire6s]
+H = 14
+W = 14
+C = 384
+F = 64
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+TYPE = "POINTWISE"
+
+[layers.fire6e0]
+H = 14
+W = 14
+C = 64
+F = 256
+K = 1
+P = 0
+S = 1
+INPUT = "fire6s"
+TYPE = "POINTWISE"
+
+[layers.fire6e1]
+H = 14
+W = 14
+C = 64
+F = 256
+K = 3
+P = 1
+S = 1
+INPUT = "fire6s_1"
+TYPE = "STANDARD"
+
+[layers.fire6c]
+H = 14
+W = 14
+C = 256
+F = 512
+K = 1
+P = 0
+S = 1
+INPUT = ["fire6e0", "fire6e1"]
+TYPE = "CONCAT"
+
+[layers.fire7s]
+H = 14
+W = 14
+C = 512
+F = 64
+K = 1
+P = 0
+S = 1
+P_C = 2
+OUTPUT = ["OFMAP", "OFMAP"]
+INPUT = "fire6c"
+TYPE = "POINTWISE"
+
+[layers.fire7e0]
+H = 14
+W = 14
+C = 64
+F = 256
+K = 1
+P = 0
+S = 1
+INPUT = "fire7s"
+TYPE = "POINTWISE"
+
+[layers.fire7e1]
+H = 14
+W = 14
+C = 64
+F = 256
+K = 3
+P = 1
+S = 1
+INPUT = "fire7s_1"
+TYPE = "STANDARD"
+
+[layers.fire7c]
+H = 14
+W = 14
+C = 256
+F = 512
+K = 1
+P = 0
+S = 1
+INPUT = ["fire7e0", "fire7e1"]
+TYPE = "CONCAT"
