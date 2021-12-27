@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """ Helps run evaluation build. """
-
 import argparse
 import copy
 import functools
 import logging
 import multiprocessing as mp
 import os
+import re
 import subprocess
 from typing import Dict, List
 
 import colorlog
 import numpy as np
+import pandas as pd
 import toml
 
 np.random.seed(42)
@@ -271,9 +272,112 @@ class RunCommandRunner(CommandRunner):
     def cmd(self):
         return "run"
 
-    def get_cmd(self, **kwargs) -> List[str]:
-        cmd = super().get_cmd(**kwargs)
-        return cmd
+    def get_perf(self):
+        run_script = os.path.join(self.root_dir, "eval.sh")
+        with open(run_script, "w") as f:
+            f.write(
+                f'make run FREQ={self.args.freq} CLI_OPTIONS="-n {self.args.num_iters}"'
+            )
+        os.system(f"chmod +x {run_script}")
+
+        cmd = f"""ssh -t lima01 "cd {self.root_dir} && zsh -ic {run_script}" """
+        ret = subprocess.run(
+            cmd,
+            shell=True,
+            # cwd=self.root_dir,
+            stdout=open(self.get_log_file("stdout"), "w"),
+            stderr=open(self.get_log_file("stderr"), "w"),
+        )
+        if ret.returncode != 0:
+            logger.error(f"Failed command: {cmd}, return code: {ret.returncode}")
+        else:
+            logger.info(f"Succeeded command: {cmd}, return code: {ret.returncode}")
+
+    def fetch_perf_numbers(self):
+        log_file = self.get_log_file("stdout")
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+
+        data = {}
+        for line in lines:
+            if "OPS" in line:
+                data["OPS"] = float(line.split()[-2])
+            if "FPS" in line:
+                data["FPS"] = float(line.split()[-1])
+            if "GFLOPs" in line:
+                data["GFLOPs"] = float(line.split()[-1])
+
+        return data
+
+    def find_maxdc(self):
+        for root, dirs, files in os.walk(self.root_dir):
+            for file_name in files:
+                if ".maxdc" in file_name:
+                    return os.path.join(root, file_name)
+        return None
+
+    def parse_build_log(self, path: str):
+        with open(path, "r") as f:
+            lines = f.readlines()
+
+        data = {}
+
+        i = next(i for i, l in enumerate(lines) if "FINAL RESOURCE" in l)
+        for line in lines[i + 1 : i + 8]:
+            line = line[line.index("PROGRESS:") + len("PROGRESS:") :]
+            line = line.strip()
+            m = re.search("\s+\d+ / \d+", line)
+            if m:
+                resource = line.split(":")[0].strip()
+                usage = line.split(":")[1].strip()
+                used = usage.split("/")[0].strip()
+                # total = usage.split("/")[1].split("(")[0].strip()
+                data[resource] = float(used)
+
+        i = next(i for i, l in enumerate(lines) if "FINAL POWER REPORT" in l)
+        for line in lines[i + 1 : i + 4]:
+            line = line[line.index("PROGRESS:") + len("PROGRESS:") :]
+            line = line.strip()
+            number = 0.0
+            labels = []
+            for token in line.split():
+                try:
+                    number = float(token)
+                    break
+                except ValueError:
+                    labels.append(token)
+
+            data[" ".join(labels)] = number
+
+        return data
+
+    def fetch_resource_numbers(self):
+        # first find the maxdc file
+        maxdc_file = self.find_maxdc()
+        with open(maxdc_file, "r") as f:
+            lines = f.readlines()
+
+        path = lines[0].strip()
+        build_log = os.path.join(path, "_build.log")
+        return self.parse_build_log(build_log)
+
+    def run(self):
+        self.get_perf()
+
+        data = {}
+        data.update(self.fetch_perf_numbers())
+        data.update(self.fetch_resource_numbers())
+
+        data["FPS/W"] = data["FPS"] / data["Total On-Chip Power (W)"]
+        data["FPS/DSP"] = data["FPS"] / data["DSP blocks"]
+        data["GFLOPs/W"] = data["GFLOPs"] / data["Total On-Chip Power (W)"]
+        data["GFLOPs/DSP"] = data["GFLOPs"] / data["DSP blocks"]
+        self.logger.info(data)
+
+        data = {k: [v] for k, v in data.items()}
+
+        df = pd.DataFrame(data)
+        df.to_csv(os.path.join(self.root_dir, "result.csv"))
 
 
 def run(args):
@@ -495,6 +599,9 @@ def main():
     run_parser = subparsers.add_parser("run", help="Run build")
     run_parser.add_argument(
         "--freq", type=int, default=0, help="Overwrite clock frequency"
+    )
+    run_parser.add_argument(
+        "-n", "--num-iters", type=int, default=100, help="How many cycles should it run"
     )
     run_parser.set_defaults(func=run)
 

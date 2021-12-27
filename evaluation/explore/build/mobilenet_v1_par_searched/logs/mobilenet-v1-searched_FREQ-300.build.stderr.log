@@ -1,0 +1,80 @@
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:58: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:58: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:58: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:58: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:58: WARNING: to that of a similar bitstream.
+Sun 20:59: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:59: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:59: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:59: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:59: WARNING: to that of a similar bitstream.
+Sun 20:59: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:59: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:59: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:59: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:59: WARNING: to that of a similar bitstream.
+Sun 20:59: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:59: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:59: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:59: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:59: WARNING: to that of a similar bitstream.
+Sun 20:59: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Sun 20:59: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Sun 20:59: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Sun 20:59: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Sun 20:59: WARNING: to that of a similar bitstream.
+Mon 00:51: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Mon 00:51: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Mon 00:51: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+In file included from /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c:56:
+/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParSearched_MAIA_DFE_FREQ_300/results/MobilenetV1ParSearched.max: In function ‘MobilenetV1ParSearched_static_init’:
+/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParSearched_MAIA_DFE_FREQ_300/results/MobilenetV1ParSearched.max:71344: note: ‘-Wmisleading-indentation’ is disabled from this point onwards, since column-tracking was disabled due to the size of the code/headers
+71344 |  time_t timeout_previous = max_load_timeout(stored_maxfile, 30);
+      | 
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

@@ -38,3 +38,33 @@ Sat 12:42: WARNING: Signal paths between two SLRs induce large delays and this c
 Sat 12:42: WARNING: For details of placement on SLRs, please see AerialView image.
 Sat 12:42: WARNING: AerialView image is available in: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/scratch/xilinx_vivado/implementation/PERFORMANCE_EARLY_BLOCK_PLACEMENT/slr_report
 Sat 12:43: WARNING: Implementation: Strategy "PERFORMANCE_EARLY_BLOCK_PLACEMENT" failed routing due to congestion. 24592 / 5207107 nets failed routing (0.47%). Timing score = 62301741
+Sun 20:56: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER2] Implementation strategy MAXELER2 failed
+Sun 20:56: ERROR: Unable to generate resource usage information: Unable to find .rpt to derive resource annotation from
+Sun 20:56: ERROR: Build pass 'Generate Resource Report' failed.
+Sun 20:58: ERROR: Error annotating source files.
+Sun 20:58: ERROR: Build pass 'Generate Annotated Source Code' failed.
+Sun 20:58: ERROR: Unable find report with power info for stage FINAL
+Sun 20:58: ERROR: Build pass 'Analyse Power Usage' failed.
+Sun 20:58: ERROR: Could not find post route design checkpoint file.
+Sun 20:58: ERROR: Build pass 'Generate Configuration' failed.
+Sun 20:58: ERROR: Could not find post route design checkpoint file
+Sun 20:58: ERROR: Build pass 'Update Checksum' failed.
+Sun 20:58: ERROR: Could not find post route design checkpoint
+Sun 20:58: ERROR: Build pass 'Convert Programming File' failed.
+Sun 20:58: ERROR: Could not find bitstream checksum file.
+Sun 20:58: ERROR: Build pass 'Generate MaxFile' failed.
+Sun 20:58: ERROR: Terminating build as some build passes did not run successfully.
+Sun 20:58: ERROR: ----------------------------
+Sun 20:58: ERROR: Exception in thread "main":
+Sun 20:58: ERROR:  
+Sun 20:58: ERROR:   7 build passes failed.
+Sun 20:58: ERROR: 
+Sun 20:58: ERROR: Exception Stack Trace com.maxeler.maxdc.MaxDCException: 
+Sun 20:58: ERROR:    at com.maxeler.maxdc.BuildManager.finalizeBuild(BuildManager.java:1896)
+Sun 20:58: ERROR:    at com.maxeler.maxdc.BuildManager.build(BuildManager.java:1754)
+Sun 20:58: ERROR:    at com.maxeler.platform.max5.libs.manager.Max5ManagerBuildInternal.realBuild(Unknown Source)
+Sun 20:58: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
+Sun 20:58: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
+Sun 20:58: ERROR:    at single_conv_par.SingleConvParManager.main(SingleConvParManager.java:94)
+Sun 20:58: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvPar_MAIA_DFE_FREQ_200/results/SingleConvPar.max] Error 1

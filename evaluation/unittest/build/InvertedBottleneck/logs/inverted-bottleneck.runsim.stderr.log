@@ -25,48 +25,48 @@ In file included from ../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1226 11:50:30.267951 122839 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
-I1226 11:50:30.268254 122839 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1226 11:50:30.268332 122839 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1226 11:50:30.268349 122839 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1226 11:50:30.268368 122839 layers.h:975] Running golden function ...
-I1226 11:50:30.268384 122839 layers.h:984]        STANDARD 2 x 2 x 2 -> 4 x 2 x 2
-I1226 11:50:30.269759 122839 layers.h:984] DEPTHWISE_SEPARABLE 4 x 2 x 2 -> 2 x 2 x 2
-I1226 11:50:30.271806 122839 utils.h:383] Burst aligning input array of size: 16 to 192
-I1226 11:50:30.271828 122839 InvertedbottleneckCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1226 11:50:30.271840 122839 utils.h:383] Burst aligning input array of size: 16 to 192
-I1226 11:50:30.271852 122839 InvertedbottleneckCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1226 11:50:30.271867 122839 layers.h:758] Writing DRAM to 0 with size 0x180
-I1226 11:50:30.276930 122839 InvertedbottleneckCpuCode.cpp:107] Running ...
-I1226 11:50:30.408233 122839 InvertedbottleneckCpuCode.cpp:113] Done
-I1226 11:50:30.408282 122839 layers.h:775] Reading DRAM from 0x180 with size 0x180
-I1226 11:50:30.410671 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[0] = 17
-I1226 11:50:30.410702 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[1] = 12
-I1226 11:50:30.410715 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[2] = -1
-I1226 11:50:30.410727 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[3] = -6
-I1226 11:50:30.410738 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[4] = -18
-I1226 11:50:30.410750 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[5] = -20
-I1226 11:50:30.410763 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[6] = -4
-I1226 11:50:30.410773 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[7] = 6
-I1226 11:50:30.410784 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[8] = 3
-I1226 11:50:30.410796 122839 InvertedbottleneckCpuCode.cpp:120] output_dfe[9] = 19
-I1226 11:50:30.410807 122839 InvertedbottleneckCpuCode.cpp:126] elapsed time: 0.131241s
-I1226 11:50:30.410828 122839 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv0 = 6.4e-05 M
-I1226 11:50:30.410842 122839 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv1 = 0.000352 M
-I1226 11:50:30.410854 122839 InvertedbottleneckCpuCode.cpp:144] OPS:    8.32e-07 G
-I1226 11:50:30.410866 122839 InvertedbottleneckCpuCode.cpp:145] FPS:    15.2392
-I1226 11:50:30.410879 122839 InvertedbottleneckCpuCode.cpp:148] GFLOPs: 6.3395e-06
-I1226 11:50:30.410892 122839 InvertedbottleneckCpuCode.cpp:155] Examine results ...
-I1226 11:50:30.410902 122839 InvertedbottleneckCpuCode.cpp:157] output_cpu[0] = 17
-I1226 11:50:30.410914 122839 InvertedbottleneckCpuCode.cpp:157] output_cpu[1] = 12
-I1226 11:50:30.410925 122839 InvertedbottleneckCpuCode.cpp:157] output_cpu[2] = -1
-I1226 11:50:30.410938 122839 InvertedbottleneckCpuCode.cpp:157] output_cpu[3] = -6
-I1226 11:50:30.410948 122839 InvertedbottleneckCpuCode.cpp:157] output_cpu[4] = -18
-I1226 11:50:30.410960 122839 InvertedbottleneckCpuCode.cpp:163] output_dfe[0] = 17
-I1226 11:50:30.410972 122839 InvertedbottleneckCpuCode.cpp:163] output_dfe[1] = 12
-I1226 11:50:30.410984 122839 InvertedbottleneckCpuCode.cpp:163] output_dfe[2] = -1
-I1226 11:50:30.410995 122839 InvertedbottleneckCpuCode.cpp:163] output_dfe[3] = -6
-I1226 11:50:30.411005 122839 InvertedbottleneckCpuCode.cpp:163] output_dfe[4] = -18
-I1226 11:50:30.411018 122839 InvertedbottleneckCpuCode.cpp:174] Evaluating difference ...
-I1226 11:50:30.411028 122839 InvertedbottleneckCpuCode.cpp:175] Mask: 00000000
-I1226 11:50:30.411074 122839 InvertedbottleneckCpuCode.cpp:203] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0
+I1227 14:45:13.694528 417029 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
+I1227 14:45:13.694792 417029 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1227 14:45:13.694859 417029 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1227 14:45:13.694872 417029 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1227 14:45:13.694887 417029 layers.h:975] Running golden function ...
+I1227 14:45:13.694906 417029 layers.h:984]        STANDARD 2 x 2 x 2 -> 4 x 2 x 2
+I1227 14:45:13.696156 417029 layers.h:984] DEPTHWISE_SEPARABLE 4 x 2 x 2 -> 2 x 2 x 2
+I1227 14:45:13.697667 417029 utils.h:383] Burst aligning input array of size: 16 to 192
+I1227 14:45:13.697693 417029 InvertedbottleneckCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1227 14:45:13.697707 417029 utils.h:383] Burst aligning input array of size: 16 to 192
+I1227 14:45:13.697722 417029 InvertedbottleneckCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1227 14:45:13.697744 417029 layers.h:758] Writing DRAM to 0 with size 0x180
+I1227 14:45:13.703130 417029 InvertedbottleneckCpuCode.cpp:107] Running ...
+I1227 14:45:13.822985 417029 InvertedbottleneckCpuCode.cpp:113] Done
+I1227 14:45:13.823027 417029 layers.h:775] Reading DRAM from 0x180 with size 0x180
+I1227 14:45:13.825809 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[0] = 17
+I1227 14:45:13.825846 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[1] = 12
+I1227 14:45:13.825861 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[2] = -1
+I1227 14:45:13.825875 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[3] = -6
+I1227 14:45:13.825886 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[4] = -18
+I1227 14:45:13.825899 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[5] = -20
+I1227 14:45:13.825912 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[6] = -4
+I1227 14:45:13.825924 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[7] = 6
+I1227 14:45:13.825937 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[8] = 3
+I1227 14:45:13.825948 417029 InvertedbottleneckCpuCode.cpp:120] output_dfe[9] = 19
+I1227 14:45:13.825961 417029 InvertedbottleneckCpuCode.cpp:126] elapsed time: 0.119788s
+I1227 14:45:13.825982 417029 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv0 = 6.4e-05 M
+I1227 14:45:13.825997 417029 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv1 = 0.000352 M
+I1227 14:45:13.826009 417029 InvertedbottleneckCpuCode.cpp:144] OPS:    8.32e-07 G
+I1227 14:45:13.826022 417029 InvertedbottleneckCpuCode.cpp:145] FPS:    16.6962
+I1227 14:45:13.826035 417029 InvertedbottleneckCpuCode.cpp:148] GFLOPs: 6.94562e-06
+I1227 14:45:13.826046 417029 InvertedbottleneckCpuCode.cpp:155] Examine results ...
+I1227 14:45:13.826077 417029 InvertedbottleneckCpuCode.cpp:157] output_cpu[0] = 17
+I1227 14:45:13.826090 417029 InvertedbottleneckCpuCode.cpp:157] output_cpu[1] = 12
+I1227 14:45:13.826102 417029 InvertedbottleneckCpuCode.cpp:157] output_cpu[2] = -1
+I1227 14:45:13.826113 417029 InvertedbottleneckCpuCode.cpp:157] output_cpu[3] = -6
+I1227 14:45:13.826124 417029 InvertedbottleneckCpuCode.cpp:157] output_cpu[4] = -18
+I1227 14:45:13.826136 417029 InvertedbottleneckCpuCode.cpp:163] output_dfe[0] = 17
+I1227 14:45:13.826148 417029 InvertedbottleneckCpuCode.cpp:163] output_dfe[1] = 12
+I1227 14:45:13.826159 417029 InvertedbottleneckCpuCode.cpp:163] output_dfe[2] = -1
+I1227 14:45:13.826170 417029 InvertedbottleneckCpuCode.cpp:163] output_dfe[3] = -6
+I1227 14:45:13.826181 417029 InvertedbottleneckCpuCode.cpp:163] output_dfe[4] = -18
+I1227 14:45:13.826195 417029 InvertedbottleneckCpuCode.cpp:174] Evaluating difference ...
+I1227 14:45:13.826205 417029 InvertedbottleneckCpuCode.cpp:175] Mask: 00000000
+I1227 14:45:13.826238 417029 InvertedbottleneckCpuCode.cpp:203] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

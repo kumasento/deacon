@@ -1,0 +1,2 @@
+Sun 20:19: ERROR: Prematurely halting process: export XILINX_LOCAL_USER_DATA=no; vivado  -mode batch -source get_part_details.tcl 2>&1 > vivado_part_details.log
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1Searched_MAIA_DFE_FREQ_300/results/MobilenetV1Searched.max] Error 130

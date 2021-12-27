@@ -520,3 +520,89 @@ Sun 12:38: coeff vec size: 4
 Sun 12:38: coeff stream bit width: 32
 Sun 12:38: coeff stream chunk size: 1
 Sun 12:38: Generating input files (VHDL, netlists, vendor specific IP cores)
+Sun 14:21: Running back-end  build (15 phases)
+Sun 14:21: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Sun 14:21: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Sun 14:21: Executing Synthesis Strategy VIVADO_DEFAULT
+Sun 14:38: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Sun 14:38: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Sun 14:38: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Sun 14:38: 
+Sun 14:38: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Sun 14:38: For this compile, we estimate this process may take longer than 1 hour.
+Sun 14:38: We recommend running in simulation to verify correctness before building hardware.
+Sun 14:38: 
+Sun 14:38: PRELIMINARY RESOURCE USAGE
+Sun 14:38: FPGA: xcVU9P-FLGB2104-2-E
+Sun 14:38: Logic utilization:      246397 / 3546720 (6.95%)
+Sun 14:38:   LUTs:                  94133 / 1182240 (7.96%)
+Sun 14:38:   Primary FFs:          152264 / 2364480 (6.44%)
+Sun 14:38: DSP blocks:                144 / 6840    (2.11%)
+Sun 14:38: Block memory (BRAM18):    2946 / 4320    (68.19%)
+Sun 14:38: Block memory (URAM):       208 / 960     (21.67%)
+Sun 14:38: 
+Sun 14:38: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Sun 14:38: 
+Sun 14:38: PRELIMINARY POWER REPORT
+Sun 14:38: Total On-Chip Power (W) 11.45 (budget: 91.80) 
+Sun 14:38: Dynamic Power (W)        8.73 
+Sun 14:38: Device Static Power(W)   2.72 
+Sun 14:38: 
+Sun 14:38: (7/15) - Place DFE (VivadoImplementation)
+Sun 14:38: Executing the following 10 Implementation Strategies in 4 threads:
+Sun 14:38:  - VIVADO_DEFAULT
+Sun 14:38:  - MAXELER1
+Sun 14:38:  - MAXELER2
+Sun 14:38:  - MAXELER3
+Sun 14:38:  - MAXELER4
+Sun 14:38:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Sun 14:38:  - PERFORMANCE_EXPLORE
+Sun 14:38:  - PERFORMANCE_EXTRA_TIMING_OPT
+Sun 14:38:  - PERFORMANCE_NET_DELAY_HIGH
+Sun 14:38:  - PERFORMANCE_REFINE_PLACEMENT
+Sun 16:13: Implementation: Strategy "MAXELER2" met timing with score 0 (best score 0)
+Sun 16:14: Implementation: Strategy "MAXELER1" was cancelled (no timing score)
+Sun 16:14: Implementation: Strategy "VIVADO_DEFAULT" was cancelled (no timing score)
+Sun 16:14: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Sun 16:14: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Sun 16:14: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Sun 16:14: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Sun 16:14: 
+Sun 16:14: FINAL POWER REPORT
+Sun 16:14: Total On-Chip Power (W) 13.20 (budget: 91.80) 
+Sun 16:14: Dynamic Power (W)       10.45 
+Sun 16:14: Device Static Power(W)   2.75 
+Sun 16:14: 
+Sun 16:14: (11/15) - Generate Configuration (VivadoBitgen)
+Sun 16:24: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Sun 16:27: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Sun 16:28: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Sun 16:28: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Sun 16:28: 
+Sun 16:28: FINAL RESOURCE USAGE
+Sun 16:28: FPGA: xcVU9P-FLGB2104-2-E
+Sun 16:28: Logic utilization:      225496 / 3546720 (6.36%)
+Sun 16:28:   LUTs:                  83117 / 1182240 (7.03%)
+Sun 16:28:   Primary FFs:          142379 / 2364480 (6.02%)
+Sun 16:28: DSP blocks:                134 / 6840    (1.96%)
+Sun 16:28: Block memory (BRAM18):    2946 / 4320    (68.19%)
+Sun 16:28: Block memory (URAM):       208 / 960     (21.67%)
+Sun 16:28: 
+Sun 16:28: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max (MD5Sum: e7e6bb1357e8037e96363ef9acc48f1b)
+Sun 16:28: Build completed: Sun Dec 26 16:28:18 GMT 2021 (took 3 hours, 50 mins, 59 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/../scratch/Resnet50A.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/../scratch/Resnet50A.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max Resnet50A_FREQ_300_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_6548850837270465540/cobject/max_7387731480386585164.c -o /tmp/sliccompile_6548850837270465540/cobject/max_7387731480386585164.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results/Resnet50A.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_1930827649043061428.o 
+ld -r /tmp/sliccompile_6548850837270465540/cobject/max_7387731480386585164.c.o max_1930827649043061428.o -o Resnet50A_FREQ_300_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/test/build/resnet_50_a'
+g++ ../../src/resnet_50_a/Resnet50ACpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/results -DDESIGN_NAME=Resnet50A -c -o Resnet50A_FREQ_300_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o Resnet50A_FREQ_300_dfe Resnet50A_FREQ_300_dfe.o Resnet50A_FREQ_300_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

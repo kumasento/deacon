@@ -1,0 +1,74 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=mobilenet_v1 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 8192 MobilenetV1Manager \
+	DFEModel=MAIA maxFileName=MobilenetV1 target='DFE' enableMPCX=false \
+	FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v1/data/data-mobilenet-v1-searched.txt 
+]0; maxJavaRun: MobilenetV1Manager DFEModel=MAIA maxFileName=MobilenetV1 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v1/data/data-mobilenet-v1-searched.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : mobilenet_v1
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : mobilenet_v1.MobilenetV1Manager
+Class arguments     : DFEModel=MAIA maxFileName=MobilenetV1 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v1/data/data-mobilenet-v1-searched.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 8192 MB
+----------------------------------------------------------
+
+Sun 20:16: MaxCompiler version: 2021.1
+Sun 20:16: Build "MobilenetV1" start time: Sun Dec 26 20:16:59 GMT 2021
+Sun 20:16: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Sun 20:16: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1_MAIA_DFE_FREQ_200
+Sun 20:16: Detailed build log available in "_build.log"
+Sun 20:16: 
+Sun 20:16: ENGINE BUILD PARAMETERS
+Sun 20:16: 	              Build name: MobilenetV1_MAIA_DFE_FREQ_200                                                                                   
+Sun 20:16: 	             maxFileName: MobilenetV1                                                                                                     
+Sun 20:16: 	                  target: DFE                                                                                                             
+Sun 20:16: 	                DFEModel: MAIA                                                                                                            
+Sun 20:16: 	              enableMPCX: false                                                                                                           
+Sun 20:16: 	                bitWidth: 32                                                                                                              
+Sun 20:16: 	                     WBW: 32                                                                                                              
+Sun 20:16: 	                   DTYPE: fixed                                                                                                           
+Sun 20:16: 	           NUM_FRAC_BITS: 8                                                                                                               
+Sun 20:16: 	                      PF: 1                                                                                                               
+Sun 20:16: 	                      PC: 1                                                                                                               
+Sun 20:16: 	                      PK: 1                                                                                                               
+Sun 20:16: 	                       H: 1                                                                                                               
+Sun 20:16: 	                       W: 1                                                                                                               
+Sun 20:16: 	                       C: 1                                                                                                               
+Sun 20:16: 	                       F: 1                                                                                                               
+Sun 20:16: 	                       K: 1                                                                                                               
+Sun 20:16: 	                     PAD: 0                                                                                                               
+Sun 20:16: 	                       S: 1                                                                                                               
+Sun 20:16: 	                     SEQ: 0                                                                                                               
+Sun 20:16: 	                    FREQ: 200                                                                                                             
+Sun 20:16: 	                USE_DRAM: false                                                                                                           
+Sun 20:16: 	                 USE_BNN: false                                                                                                           
+Sun 20:16: 	            USE_WINOGRAD: false                                                                                                           
+Sun 20:16: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                           
+Sun 20:16: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                               
+Sun 20:16: 	                   DEBUG: false                                                                                                           
+Sun 20:16: 	           COEFF_ON_CHIP: false                                                                                                           
+Sun 20:16: 	              INIT_COEFF: false                                                                                                           
+Sun 20:16: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v1/data/data-mobilenet-v1-searched.txt

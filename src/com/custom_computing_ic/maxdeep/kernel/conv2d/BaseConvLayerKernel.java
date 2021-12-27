@@ -268,6 +268,17 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return getROM(cp, key, depth, vt, index, 0);
   }
 
+  /**
+   * If depth is smaller than 2, we will pad the memory depth to 2 and fill the padded area with
+   * invalid data.
+   * @param cp
+   * @param key
+   * @param depth
+   * @param vt
+   * @param index
+   * @param index2
+   * @return
+   */
   public Memory<DFEVector<DFEVar>> getROM(ConvLayerParameters cp, String key, int depth,
       DFEVectorType<DFEVar> vt, int index, int index2) {
     double[] rawData = readROMFile(key, cp.coeffFile);
@@ -301,10 +312,11 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
                          rawData[(f + pf) * (C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k], vt);
     }
 
-    Bits[] memData = new Bits[depth];
+    Bits[] memData = new Bits[Math.max(depth, 2)];
     for (int i = 0; i < depth; ++i) memData[i] = vt.encodeConstant(parts[i]);
+    for (int i = depth; i < Math.max(depth, 2); ++i) memData[i] = vt.encodeConstant(parts[0]);
 
-    Memory<DFEVector<DFEVar>> ROM = mem.alloc(vt, depth);
+    Memory<DFEVector<DFEVar>> ROM = mem.alloc(vt, Math.max(depth, 2));
     ROM.setContents(memData);
     getOwner().getManager().logMsg(
         "ROM created for %s of depth %d and type %s: %s\n", key, depth, vt, ROM);

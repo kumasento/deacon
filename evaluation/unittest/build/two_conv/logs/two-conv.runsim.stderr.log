@@ -25,48 +25,48 @@ In file included from ../../src/two_conv/TwoConvCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1226 11:50:28.863237 122415 TwoConvCpuCode.cpp:71] num frac bits: 0
-I1226 11:50:28.863576 122415 TwoConvCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1226 11:50:28.863667 122415 TwoConvCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1226 11:50:28.863688 122415 TwoConvCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1226 11:50:28.863716 122415 layers.h:975] Running golden function ...
-I1226 11:50:28.863749 122415 layers.h:984]        STANDARD 4 x 2 x 2 -> 8 x 2 x 2
-I1226 11:50:28.869118 122415 layers.h:984]        STANDARD 8 x 2 x 2 -> 4 x 2 x 2
-I1226 11:50:28.874444 122415 utils.h:383] Burst aligning input array of size: 32 to 192
-I1226 11:50:28.874475 122415 TwoConvCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1226 11:50:28.874487 122415 utils.h:383] Burst aligning input array of size: 32 to 192
-I1226 11:50:28.874505 122415 TwoConvCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1226 11:50:28.874517 122415 layers.h:758] Writing DRAM to 0 with size 0x180
-I1226 11:50:28.880045 122415 TwoConvCpuCode.cpp:107] Running ...
-I1226 11:50:29.638132 122415 TwoConvCpuCode.cpp:112] Done
-I1226 11:50:29.638176 122415 layers.h:775] Reading DRAM from 0x180 with size 0x180
-I1226 11:50:29.640702 122415 TwoConvCpuCode.cpp:119] output_dfe[0] = 48
-I1226 11:50:29.640745 122415 TwoConvCpuCode.cpp:119] output_dfe[1] = 9
-I1226 11:50:29.640760 122415 TwoConvCpuCode.cpp:119] output_dfe[2] = -21
-I1226 11:50:29.640774 122415 TwoConvCpuCode.cpp:119] output_dfe[3] = -15
-I1226 11:50:29.640785 122415 TwoConvCpuCode.cpp:119] output_dfe[4] = -47
-I1226 11:50:29.640797 122415 TwoConvCpuCode.cpp:119] output_dfe[5] = -29
-I1226 11:50:29.640808 122415 TwoConvCpuCode.cpp:119] output_dfe[6] = -13
-I1226 11:50:29.640820 122415 TwoConvCpuCode.cpp:119] output_dfe[7] = -64
-I1226 11:50:29.640831 122415 TwoConvCpuCode.cpp:119] output_dfe[8] = 19
-I1226 11:50:29.640842 122415 TwoConvCpuCode.cpp:119] output_dfe[9] = -50
-I1226 11:50:29.640854 122415 TwoConvCpuCode.cpp:125] elapsed time: 0.758017s
-I1226 11:50:29.640868 122415 TwoConvCpuCode.cpp:139] [Ops] layer                          conv0 = 0.002304 M
-I1226 11:50:29.640882 122415 TwoConvCpuCode.cpp:139] [Ops] layer                          conv1 = 0.002304 M
-I1226 11:50:29.640893 122415 TwoConvCpuCode.cpp:143] OPS:    9.216e-06 G
-I1226 11:50:29.640905 122415 TwoConvCpuCode.cpp:144] FPS:    2.63846
-I1226 11:50:29.640918 122415 TwoConvCpuCode.cpp:147] GFLOPs: 1.2158e-05
-I1226 11:50:29.640929 122415 TwoConvCpuCode.cpp:154] Examine results ...
-I1226 11:50:29.640939 122415 TwoConvCpuCode.cpp:156] output_cpu[0] = 48
-I1226 11:50:29.640951 122415 TwoConvCpuCode.cpp:156] output_cpu[1] = 9
-I1226 11:50:29.640964 122415 TwoConvCpuCode.cpp:156] output_cpu[2] = -21
-I1226 11:50:29.640975 122415 TwoConvCpuCode.cpp:156] output_cpu[3] = -15
-I1226 11:50:29.640987 122415 TwoConvCpuCode.cpp:156] output_cpu[4] = -47
-I1226 11:50:29.641000 122415 TwoConvCpuCode.cpp:162] output_dfe[0] = 48
-I1226 11:50:29.641011 122415 TwoConvCpuCode.cpp:162] output_dfe[1] = 9
-I1226 11:50:29.641022 122415 TwoConvCpuCode.cpp:162] output_dfe[2] = -21
-I1226 11:50:29.641033 122415 TwoConvCpuCode.cpp:162] output_dfe[3] = -15
-I1226 11:50:29.641045 122415 TwoConvCpuCode.cpp:162] output_dfe[4] = -47
-I1226 11:50:29.641074 122415 TwoConvCpuCode.cpp:173] Evaluating difference ...
-I1226 11:50:29.641085 122415 TwoConvCpuCode.cpp:174] Mask: 00000000
-I1226 11:50:29.641119 122415 TwoConvCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0
+I1227 14:45:13.945039 417195 TwoConvCpuCode.cpp:71] num frac bits: 0
+I1227 14:45:13.945336 417195 TwoConvCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1227 14:45:13.945632 417195 TwoConvCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1227 14:45:13.945909 417195 TwoConvCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1227 14:45:13.945930 417195 layers.h:975] Running golden function ...
+I1227 14:45:13.945955 417195 layers.h:984]        STANDARD 4 x 2 x 2 -> 8 x 2 x 2
+I1227 14:45:13.952153 417195 layers.h:984]        STANDARD 8 x 2 x 2 -> 4 x 2 x 2
+I1227 14:45:13.958573 417195 utils.h:383] Burst aligning input array of size: 32 to 192
+I1227 14:45:13.958595 417195 TwoConvCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1227 14:45:13.958606 417195 utils.h:383] Burst aligning input array of size: 32 to 192
+I1227 14:45:13.958621 417195 TwoConvCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1227 14:45:13.958631 417195 layers.h:758] Writing DRAM to 0 with size 0x180
+I1227 14:45:13.963073 417195 TwoConvCpuCode.cpp:107] Running ...
+I1227 14:45:14.973098 417195 TwoConvCpuCode.cpp:112] Done
+I1227 14:45:14.973145 417195 layers.h:775] Reading DRAM from 0x180 with size 0x180
+I1227 14:45:14.975872 417195 TwoConvCpuCode.cpp:119] output_dfe[0] = 48
+I1227 14:45:14.975939 417195 TwoConvCpuCode.cpp:119] output_dfe[1] = 9
+I1227 14:45:14.976202 417195 TwoConvCpuCode.cpp:119] output_dfe[2] = -21
+I1227 14:45:14.976452 417195 TwoConvCpuCode.cpp:119] output_dfe[3] = -15
+I1227 14:45:14.976709 417195 TwoConvCpuCode.cpp:119] output_dfe[4] = -47
+I1227 14:45:14.976984 417195 TwoConvCpuCode.cpp:119] output_dfe[5] = -29
+I1227 14:45:14.977222 417195 TwoConvCpuCode.cpp:119] output_dfe[6] = -13
+I1227 14:45:14.977483 417195 TwoConvCpuCode.cpp:119] output_dfe[7] = -64
+I1227 14:45:14.977746 417195 TwoConvCpuCode.cpp:119] output_dfe[8] = 19
+I1227 14:45:14.977994 417195 TwoConvCpuCode.cpp:119] output_dfe[9] = -50
+I1227 14:45:14.978250 417195 TwoConvCpuCode.cpp:125] elapsed time: 1.00996s
+I1227 14:45:14.978498 417195 TwoConvCpuCode.cpp:139] [Ops] layer                          conv0 = 0.002304 M
+I1227 14:45:14.978739 417195 TwoConvCpuCode.cpp:139] [Ops] layer                          conv1 = 0.002304 M
+I1227 14:45:14.979004 417195 TwoConvCpuCode.cpp:143] OPS:    9.216e-06 G
+I1227 14:45:14.979272 417195 TwoConvCpuCode.cpp:144] FPS:    1.98028
+I1227 14:45:14.979526 417195 TwoConvCpuCode.cpp:147] GFLOPs: 9.12515e-06
+I1227 14:45:14.979826 417195 TwoConvCpuCode.cpp:154] Examine results ...
+I1227 14:45:14.980065 417195 TwoConvCpuCode.cpp:156] output_cpu[0] = 48
+I1227 14:45:14.980345 417195 TwoConvCpuCode.cpp:156] output_cpu[1] = 9
+I1227 14:45:14.980598 417195 TwoConvCpuCode.cpp:156] output_cpu[2] = -21
+I1227 14:45:14.980901 417195 TwoConvCpuCode.cpp:156] output_cpu[3] = -15
+I1227 14:45:14.981127 417195 TwoConvCpuCode.cpp:156] output_cpu[4] = -47
+I1227 14:45:14.981343 417195 TwoConvCpuCode.cpp:162] output_dfe[0] = 48
+I1227 14:45:14.981626 417195 TwoConvCpuCode.cpp:162] output_dfe[1] = 9
+I1227 14:45:14.981863 417195 TwoConvCpuCode.cpp:162] output_dfe[2] = -21
+I1227 14:45:14.982137 417195 TwoConvCpuCode.cpp:162] output_dfe[3] = -15
+I1227 14:45:14.982364 417195 TwoConvCpuCode.cpp:162] output_dfe[4] = -47
+I1227 14:45:14.982678 417195 TwoConvCpuCode.cpp:173] Evaluating difference ...
+I1227 14:45:14.982936 417195 TwoConvCpuCode.cpp:174] Mask: 00000000
+I1227 14:45:14.983181 417195 TwoConvCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0

@@ -1,0 +1,13 @@
+Exception in thread "main" (WARNING: unlogged MaxelerException) com.maxeler.maxdc.MaxDCException: 
+Cannot create lock file in the build directory.
+This means a build is most likely already running in that directory.
+If you are sure this is not the case run:
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConv_MAIA_DFE_SIM_FREQ_200_DBG/_lock
+	at com.maxeler.maxdc.BuildManager.<init>(BuildManager.java:783)
+	at com.maxeler.platform.max5.manager.Max5ManagerBase.<init>(Unknown Source)
+	at com.maxeler.platform.max5.manager.Max5LimaManager.<init>(Unknown Source)
+	at com.maxeler.platform.max5.manager.Max5LimaManager.<init>(Unknown Source)
+	at com.custom_computing_ic.maxdeep.manager.Max5LMemManager.<init>(Max5LMemManager.java:15)
+	at single_dws_conv.SingleDwsConvManager.<init>(SingleDwsConvManager.java:27)
+	at single_dws_conv.SingleDwsConvManager.main(SingleDwsConvManager.java:76)
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConv_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConv.max] Error 1

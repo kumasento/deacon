@@ -36,147 +36,147 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
 JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Sun 11:50: MaxCompiler version: 2021.1
-Sun 11:50: Build "TwoConv" start time: Sun Dec 26 11:50:14 GMT 2021
-Sun 11:50: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Sun 11:50: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG
-Sun 11:50: Detailed build log available in "_build.log"
-Sun 11:50: 
-Sun 11:50: ENGINE BUILD PARAMETERS
-Sun 11:50: 	              Build name: TwoConv_MAIA_DFE_SIM_FREQ_200_DBG                                                               
-Sun 11:50: 	             maxFileName: TwoConv                                                                                         
-Sun 11:50: 	                  target: DFE_SIM                                                                                         
-Sun 11:50: 	                DFEModel: MAIA                                                                                            
-Sun 11:50: 	              enableMPCX: false                                                                                           
-Sun 11:50: 	                bitWidth: 32                                                                                              
-Sun 11:50: 	                     WBW: 32                                                                                              
-Sun 11:50: 	                   DTYPE: fixed                                                                                           
-Sun 11:50: 	           NUM_FRAC_BITS: 8                                                                                               
-Sun 11:50: 	                      PF: 1                                                                                               
-Sun 11:50: 	                      PC: 1                                                                                               
-Sun 11:50: 	                      PK: 1                                                                                               
-Sun 11:50: 	                       H: 1                                                                                               
-Sun 11:50: 	                       W: 1                                                                                               
-Sun 11:50: 	                       C: 1                                                                                               
-Sun 11:50: 	                       F: 1                                                                                               
-Sun 11:50: 	                       K: 1                                                                                               
-Sun 11:50: 	                     PAD: 0                                                                                               
-Sun 11:50: 	                       S: 1                                                                                               
-Sun 11:50: 	                     SEQ: 0                                                                                               
-Sun 11:50: 	                    FREQ: 200                                                                                             
-Sun 11:50: 	                USE_DRAM: false                                                                                           
-Sun 11:50: 	                 USE_BNN: false                                                                                           
-Sun 11:50: 	            USE_WINOGRAD: false                                                                                           
-Sun 11:50: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                           
-Sun 11:50: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                               
-Sun 11:50: 	                   DEBUG: true                                                                                            
-Sun 11:50: 	           COEFF_ON_CHIP: false                                                                                           
-Sun 11:50: 	              INIT_COEFF: false                                                                                           
-Sun 11:50: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/two_conv/data/data-two-conv.txt
-Sun 11:50: Generating kernel conv0 ...
-Sun 11:50: Instantiating kernel "conv0"
-Sun 11:50: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: coeffOnChip = true
-Sun 11:50: Input height = 2, output height = 2, pad = 1
-Sun 11:50: Counter H = 4 W = 4
-Sun 11:50: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Sun 11:50: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Sun 11:50: Ifmap buffer configuration 64 x 1
-Sun 11:50: loop = false
-Sun 11:50: Building line buffer for "conv0" ...
-Sun 11:50: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Sun 11:50: Line buffer input vector size: 1, output vector size: 9.
-Sun 11:50: Number of separated line buffers: 1
-Sun 11:50: Initialising line buffer kernel with 3 x 4 x 1
-Sun 11:50: Size of line buffer output: 3
-Sun 11:50: Number of line buffer output chunks: 3
-Sun 11:50: Connecting outputs from chunk (#000) ...
-Sun 11:50: Connecting outputs from chunk (#001) ...
-Sun 11:50: Connecting outputs from chunk (#002) ...
-Sun 11:50: Read for key = conv0 depth = 32 raw data = 288
-Sun 11:50: ROM created for conv0 of depth 32 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@53aad5d5
-Sun 11:50: Building the CORE arithmetic unit for "conv0" ...
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: CORE ifmap vector size: 9
-Sun 11:50: CORE coefficient vector size: 9
-Sun 11:50: CORE ofmap vector size: 1
-Sun 11:50: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Sun 11:50: Connecting to output: ofmap
-Sun 11:50: Compiling kernel "conv0"
-Sun 11:50: 
-Sun 11:50: Generating kernel conv1 ...
-Sun 11:50: Instantiating kernel "conv1"
-Sun 11:50: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: coeffOnChip = true
-Sun 11:50: Input height = 2, output height = 2, pad = 1
-Sun 11:50: Counter H = 4 W = 4
-Sun 11:50: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Sun 11:50: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Sun 11:50: Ifmap buffer configuration 128 x 1
-Sun 11:50: loop = false
-Sun 11:50: Building line buffer for "conv1" ...
-Sun 11:50: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Sun 11:50: Line buffer input vector size: 1, output vector size: 9.
-Sun 11:50: Number of separated line buffers: 1
-Sun 11:50: Initialising line buffer kernel with 3 x 4 x 1
-Sun 11:50: Size of line buffer output: 3
-Sun 11:50: Number of line buffer output chunks: 3
-Sun 11:50: Connecting outputs from chunk (#000) ...
-Sun 11:50: Connecting outputs from chunk (#001) ...
-Sun 11:50: Connecting outputs from chunk (#002) ...
-Sun 11:50: Read for key = conv1 depth = 32 raw data = 288
-Sun 11:50: ROM created for conv1 of depth 32 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a4ca3f6
-Sun 11:50: Building the CORE arithmetic unit for "conv1" ...
-Sun 11:50: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Sun 11:50: CORE ifmap vector size: 9
-Sun 11:50: CORE coefficient vector size: 9
-Sun 11:50: CORE ofmap vector size: 1
-Sun 11:50: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Sun 11:50: Connecting to output: ofmap
-Sun 11:50: Compiling kernel "conv1"
-Sun 11:50: 
-Sun 11:50: Generating padding kernels for DRAM access
-Sun 11:50: Instantiating kernel "ifmap_unpad"
-Sun 11:50: Compiling kernel "ifmap_unpad"
-Sun 11:50: 
-Sun 11:50: Instantiating kernel "ofmap_pad"
-Sun 11:50: Compiling kernel "ofmap_pad"
-Sun 11:50: 
-Sun 11:50: Setting up stream connections for conv0
-Sun 11:50: Setting up stream connections for conv1
-Sun 11:50: Connecting ifmap <== conv0: ofmap
-Sun 11:50: DRAM will be used to build the design
-Sun 11:50: Setup streams for kernel "conv0"
-Sun 11:50: # cycles:       512
-Sun 11:50: # ifmap stream: 16
-Sun 11:50: # ofmap stream: 32
-Sun 11:50: coeff vec size: 9
-Sun 11:50: coeff stream bit width: 144
-Sun 11:50: coeff stream chunk size: 9
+Mon 14:44: MaxCompiler version: 2021.1
+Mon 14:44: Build "TwoConv" start time: Mon Dec 27 14:44:59 GMT 2021
+Mon 14:44: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Mon 14:44: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG
+Mon 14:44: Detailed build log available in "_build.log"
+Mon 14:44: 
+Mon 14:44: ENGINE BUILD PARAMETERS
+Mon 14:44: 	              Build name: TwoConv_MAIA_DFE_SIM_FREQ_200_DBG                                                               
+Mon 14:44: 	             maxFileName: TwoConv                                                                                         
+Mon 14:44: 	                  target: DFE_SIM                                                                                         
+Mon 14:44: 	                DFEModel: MAIA                                                                                            
+Mon 14:44: 	              enableMPCX: false                                                                                           
+Mon 14:44: 	                bitWidth: 32                                                                                              
+Mon 14:44: 	                     WBW: 32                                                                                              
+Mon 14:44: 	                   DTYPE: fixed                                                                                           
+Mon 14:44: 	           NUM_FRAC_BITS: 8                                                                                               
+Mon 14:44: 	                      PF: 1                                                                                               
+Mon 14:44: 	                      PC: 1                                                                                               
+Mon 14:44: 	                      PK: 1                                                                                               
+Mon 14:44: 	                       H: 1                                                                                               
+Mon 14:44: 	                       W: 1                                                                                               
+Mon 14:44: 	                       C: 1                                                                                               
+Mon 14:44: 	                       F: 1                                                                                               
+Mon 14:44: 	                       K: 1                                                                                               
+Mon 14:44: 	                     PAD: 0                                                                                               
+Mon 14:44: 	                       S: 1                                                                                               
+Mon 14:44: 	                     SEQ: 0                                                                                               
+Mon 14:44: 	                    FREQ: 200                                                                                             
+Mon 14:44: 	                USE_DRAM: false                                                                                           
+Mon 14:44: 	                 USE_BNN: false                                                                                           
+Mon 14:44: 	            USE_WINOGRAD: false                                                                                           
+Mon 14:44: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                           
+Mon 14:44: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                               
+Mon 14:44: 	                   DEBUG: true                                                                                            
+Mon 14:44: 	           COEFF_ON_CHIP: false                                                                                           
+Mon 14:44: 	              INIT_COEFF: false                                                                                           
+Mon 14:44: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/two_conv/data/data-two-conv.txt
+Mon 14:45: Generating kernel conv0 ...
+Mon 14:45: Instantiating kernel "conv0"
+Mon 14:45: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: coeffOnChip = true
+Mon 14:45: Input height = 2, output height = 2, pad = 1
+Mon 14:45: Counter H = 4 W = 4
+Mon 14:45: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:45: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:45: Ifmap buffer configuration 64 x 1
+Mon 14:45: loop = false
+Mon 14:45: Building line buffer for "conv0" ...
+Mon 14:45: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Mon 14:45: Line buffer input vector size: 1, output vector size: 9.
+Mon 14:45: Number of separated line buffers: 1
+Mon 14:45: Initialising line buffer kernel with 3 x 4 x 1
+Mon 14:45: Size of line buffer output: 3
+Mon 14:45: Number of line buffer output chunks: 3
+Mon 14:45: Connecting outputs from chunk (#000) ...
+Mon 14:45: Connecting outputs from chunk (#001) ...
+Mon 14:45: Connecting outputs from chunk (#002) ...
+Mon 14:45: Read for key = conv0 depth = 32 raw data = 288
+Mon 14:45: ROM created for conv0 of depth 32 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@53aad5d5
+Mon 14:45: Building the CORE arithmetic unit for "conv0" ...
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: CORE ifmap vector size: 9
+Mon 14:45: CORE coefficient vector size: 9
+Mon 14:45: CORE ofmap vector size: 1
+Mon 14:45: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:45: Connecting to output: ofmap
+Mon 14:45: Compiling kernel "conv0"
+Mon 14:45: 
+Mon 14:45: Generating kernel conv1 ...
+Mon 14:45: Instantiating kernel "conv1"
+Mon 14:45: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: coeffOnChip = true
+Mon 14:45: Input height = 2, output height = 2, pad = 1
+Mon 14:45: Counter H = 4 W = 4
+Mon 14:45: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:45: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Mon 14:45: Ifmap buffer configuration 128 x 1
+Mon 14:45: loop = false
+Mon 14:45: Building line buffer for "conv1" ...
+Mon 14:45: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Mon 14:45: Line buffer input vector size: 1, output vector size: 9.
+Mon 14:45: Number of separated line buffers: 1
+Mon 14:45: Initialising line buffer kernel with 3 x 4 x 1
+Mon 14:45: Size of line buffer output: 3
+Mon 14:45: Number of line buffer output chunks: 3
+Mon 14:45: Connecting outputs from chunk (#000) ...
+Mon 14:45: Connecting outputs from chunk (#001) ...
+Mon 14:45: Connecting outputs from chunk (#002) ...
+Mon 14:45: Read for key = conv1 depth = 32 raw data = 288
+Mon 14:45: ROM created for conv1 of depth 32 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@a4ca3f6
+Mon 14:45: Building the CORE arithmetic unit for "conv1" ...
+Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Mon 14:45: CORE ifmap vector size: 9
+Mon 14:45: CORE coefficient vector size: 9
+Mon 14:45: CORE ofmap vector size: 1
+Mon 14:45: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Mon 14:45: Connecting to output: ofmap
+Mon 14:45: Compiling kernel "conv1"
+Mon 14:45: 
+Mon 14:45: Generating padding kernels for DRAM access
+Mon 14:45: Instantiating kernel "ifmap_unpad"
+Mon 14:45: Compiling kernel "ifmap_unpad"
+Mon 14:45: 
+Mon 14:45: Instantiating kernel "ofmap_pad"
+Mon 14:45: Compiling kernel "ofmap_pad"
+Mon 14:45: 
+Mon 14:45: Setting up stream connections for conv0
+Mon 14:45: Setting up stream connections for conv1
+Mon 14:45: Connecting ifmap <== conv0: ofmap
+Mon 14:45: DRAM will be used to build the design
+Mon 14:45: Setup streams for kernel "conv0"
+Mon 14:45: # cycles:       512
+Mon 14:45: # ifmap stream: 16
+Mon 14:45: # ofmap stream: 32
+Mon 14:45: coeff vec size: 9
+Mon 14:45: coeff stream bit width: 144
+Mon 14:45: coeff stream chunk size: 9
 cp.C = 8
-Sun 11:50: Setup streams for kernel "conv1"
-Sun 11:50: # cycles:       512
-Sun 11:50: # ifmap stream: 32
-Sun 11:50: # ofmap stream: 16
-Sun 11:50: coeff vec size: 9
-Sun 11:50: coeff stream bit width: 144
-Sun 11:50: coeff stream chunk size: 9
-Sun 11:50: Running back-end simulation build (3 phases)
-Sun 11:50: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Sun 11:50: (2/3) - Compile Simulation Modules (SimCompilePass)
-Sun 11:50: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Sun 11:50: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max (MD5Sum: 524c7376a3be0a3be2911b90dbd99fec)
-Sun 11:50: Build completed: Sun Dec 26 11:50:23 GMT 2021 (took 9 secs)
+Mon 14:45: Setup streams for kernel "conv1"
+Mon 14:45: # cycles:       512
+Mon 14:45: # ifmap stream: 32
+Mon 14:45: # ofmap stream: 16
+Mon 14:45: coeff vec size: 9
+Mon 14:45: coeff stream bit width: 144
+Mon 14:45: coeff stream chunk size: 9
+Mon 14:45: Running back-end simulation build (3 phases)
+Mon 14:45: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Mon 14:45: (2/3) - Compile Simulation Modules (SimCompilePass)
+Mon 14:45: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Mon 14:45: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max (MD5Sum: 65c6996cfd5e745bab547cd72b1a521c)
+Mon 14:45: Build completed: Mon Dec 27 14:45:08 GMT 2021 (took 8 secs)
 cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/Maxfiles.h
 sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max TwoConv_FREQ_200_DBG_sim.o
 Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_5730979510602349624/cobject/max_181511388040535375.c -o /tmp/sliccompile_5730979510602349624/cobject/max_181511388040535375.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_5430533574561762732.o 
-ld -r /tmp/sliccompile_5730979510602349624/cobject/max_181511388040535375.c.o max_5430533574561762732.o -o TwoConv_FREQ_200_DBG_sim.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_6415472035099573118/cobject/max_8848960086237220987.c -o /tmp/sliccompile_6415472035099573118/cobject/max_8848960086237220987.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results/TwoConv.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_5379618903558201717.o 
+ld -r /tmp/sliccompile_6415472035099573118/cobject/max_8848960086237220987.c.o max_5379618903558201717.o -o TwoConv_FREQ_200_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/two_conv'
 g++ ../../src/two_conv/TwoConvCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/TwoConv_MAIA_DFE_SIM_FREQ_200_DBG/results -D__SIM__ -DDESIGN_NAME=TwoConv -c -o TwoConv_FREQ_200_DBG_simc.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -o TwoConv_FREQ_200_DBG_sim TwoConv_FREQ_200_DBG_sim.o TwoConv_FREQ_200_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
@@ -66131,8 +66131,8 @@ PADDING: 20 191 (192) nInputs 32
 make stopsim
 make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/two_conv'
 maxcompilersim -n rz3515c -cLIMA stop
-Terminating MaxelerOS daemon (PID 122410)...
+Terminating MaxelerOS daemon (PID 417188)...
 MaxelerOS daemon killed
-Terminating simulated system (PID 122403)...
+Terminating simulated system (PID 417177)...
 Simulated system killed
 make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/two_conv'

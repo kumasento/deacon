@@ -81,9 +81,10 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
   // }
 
   public Stream depthwiseConvolution(Stream ifmap) {
-    DFEType dwAddrT = dfeUInt(MathUtils.bitsToAddress(dcp.getCoeffNumVec(ifmap.index)));
-    DFEVar dwAddr = c.cast(dwAddrT);
     logMsg("Depthwise coeff ROM depth = %d", dcp.getCoeffNumVec(ifmap.index));
+    DFEType dwAddrT =
+        dfeUInt(Math.max(1, MathUtils.bitsToAddressPowerOfTwo(dcp.getCoeffNumVec(ifmap.index))));
+    DFEVar dwAddr = c.cast(dwAddrT);
 
     DFEVector<DFEVar> coeff = getROM(dcp, dcp.name, dcp.getCoeffNumVec(ifmap.index),
         dcp.getCoeffVecT(ifmap.index, WT), ifmap.index)
@@ -94,7 +95,8 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
   }
 
   public Stream pointwiseConvolution(Stream ifmap) {
-    DFEType pwAddrT = dfeUInt(MathUtils.bitsToAddress(pcp.getCoeffNumVec(ifmap.index)));
+    DFEType pwAddrT =
+        dfeUInt(Math.max(1, MathUtils.bitsToAddressPowerOfTwo(pcp.getCoeffNumVec(ifmap.index))));
     DFEVar pwAddr = f.mul(cp.C / cp.PC.get(ifmap.index)).add(c).cast(pwAddrT);
     logMsg("Pointwise coeff ROM depth = %d", pcp.getCoeffNumVec(ifmap.index));
 

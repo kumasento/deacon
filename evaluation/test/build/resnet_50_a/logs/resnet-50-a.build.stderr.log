@@ -60,3 +60,8 @@ Sun 12:38: WARNING: to that of a similar bitstream.
 Sun 12:38: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
 Sun 12:38: WARNING: Unconnected elements in design 'b4c2'
 Sun 12:38: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet50A_MAIA_DFE_FREQ_300/scratch/b4c2_graph_warnings.txt
+Sun 14:38: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Sun 14:38: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Sun 14:38: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
