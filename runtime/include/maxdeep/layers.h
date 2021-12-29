@@ -339,18 +339,27 @@ std::vector<T> ReorderInput(std::vector<T> &input,
 
   LOG(INFO) << "Reordering input for PC = " << cp.dfe.PC[0] << '\n';
 
-  std::vector<T> reordered(input.size());
+  auto TC = (size_t)ceil((double)cp.dfe.TC / cp.dfe.PC[0]) * cp.dfe.PC[0];
+  auto N = TC * cp.dfe.TH * cp.dfe.TW * batch_size;
+
+  std::vector<T> reordered(N);
   for (size_t i = 0; i < batch_size; ++i) {
-    auto offset = i * cp.dfe.TC * cp.dfe.TH * cp.dfe.TW;
+    auto src_offset = i * cp.dfe.TC * cp.dfe.TH * cp.dfe.TW;
+    auto dst_offset = i * TC * cp.dfe.TH * cp.dfe.TW;
+
     for (uint64_t c = 0; c < cp.dfe.TC; c += cp.dfe.PC[0])
       for (uint64_t h = 0; h < cp.dfe.TH; ++h)
         for (uint64_t w = 0; w < cp.dfe.TW; ++w)
           for (uint64_t p = 0; p < cp.dfe.PC[0]; ++p) {
-            auto src =
-                offset + (c + p) * cp.dfe.TH * cp.dfe.TW + h * cp.dfe.TW + w;
-            auto dst = offset + c * cp.dfe.TH * cp.dfe.TW +
+            auto src = src_offset + (c + p) * cp.dfe.TH * cp.dfe.TW +
+                       h * cp.dfe.TW + w;
+            auto dst = dst_offset + c * cp.dfe.TH * cp.dfe.TW +
                        h * cp.dfe.TW * cp.dfe.PC[0] + w * cp.dfe.PC[0] + p;
-            reordered[dst] = input[src];
+
+            if (c + p >= cp.dfe.TC)
+              reordered[dst] = 0;
+            else
+              reordered[dst] = input[src];
           }
   }
   return reordered;
@@ -365,16 +374,24 @@ std::vector<T> ReorderOutput(std::vector<T> &output,
   LOG(INFO) << "Reordering output for PF = " << cp.dfe.PF[0]
             << " TOH = " << cp.dfe.TOH << " TOW = " << cp.dfe.TOW << '\n';
 
-  std::vector<T> reordered(output.size());
+  auto TF = (size_t)ceil((double)cp.dfe.TF / cp.dfe.PF[0]) * cp.dfe.PF[0];
+  auto N = batch_size * TF * cp.dfe.TOH * cp.dfe.TOW;
+
+  std::vector<T> reordered(N);
   for (size_t i = 0; i < batch_size; ++i) {
-    auto offset = i * cp.dfe.TF * cp.dfe.TOH * cp.dfe.TOW;
+    // src can have padded TF.
+    auto src_offset = i * TF * cp.dfe.TOH * cp.dfe.TOW;
+    auto dst_offset = i * cp.dfe.TF * cp.dfe.TOH * cp.dfe.TOW;
+
     for (uint64_t f = 0; f < cp.dfe.TF; f += cp.dfe.PF[0])
       for (uint64_t h = 0; h < cp.dfe.TOH; ++h)
         for (uint64_t w = 0; w < cp.dfe.TOW; ++w)
           for (uint64_t p = 0; p < cp.dfe.PF[0]; ++p) {
-            auto dst =
-                offset + (f + p) * cp.dfe.TOH * cp.dfe.TOW + h * cp.dfe.TOW + w;
-            auto src = offset + f * cp.dfe.TOH * cp.dfe.TOW +
+            if (f + p >= cp.dfe.TF) continue;
+
+            auto dst = dst_offset + (f + p) * cp.dfe.TOH * cp.dfe.TOW +
+                       h * cp.dfe.TOW + w;
+            auto src = src_offset + f * cp.dfe.TOH * cp.dfe.TOW +
                        h * cp.dfe.TOW * cp.dfe.PF[0] + w * cp.dfe.PF[0] + p;
             reordered[dst] = output[src];
           }
@@ -1032,6 +1049,10 @@ void process(std::vector<data_t> &input_dfe, std::string data_file,
         LOG(INFO) << "Shortcut is enabled for layer " << cp.dfe.name << "\n";
         // ----> HACK: assume the input to shortcut comes from two layers
         // before.
+        // HACK 2: we decide the depth of the block by the kernel size of the
+        // residual layer.
+        int prev = cp.dfe.K == 3 ? 2 : 3;
+
         std::vector<float> weights =
             ReadDataFile(data_file, cp.dfe.name + "_1");
         std::vector<data_t> weights_dfe =
@@ -1039,9 +1060,12 @@ void process(std::vector<data_t> &input_dfe, std::string data_file,
         auto shortcut = std::vector<data_t>(cp.F * cp.getOutputHeight() *
                                             cp.getOutputWidth() * batch_size);
 
+#ifdef TRACE
+        std::cout << "Shortcut:\n";
+#endif
         ConvLayerCpuBatched<data_t>(
-            buffers[buffers.size() - 3], weights_dfe, dummy_bias, shortcut,
-            batch_size, cp.H * 2, cp.W * 2, cps[i - 2].C, cp.F, cp.K, cp.P, 2,
+            buffers[buffers.size() - prev], weights_dfe, dummy_bias, shortcut,
+            batch_size, cp.H * 2, cp.W * 2, cps[i - prev + 1].C, cp.F, 1, 0, 2,
             /*use_bias=*/false,
             /*use_fixed_point=*/true, cp.dfe.num_frac_bits);
         for (size_t i = 0; i < output_cpu.size(); ++i)

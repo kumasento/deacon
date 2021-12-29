@@ -145,7 +145,7 @@ public class ConvLayerOfmapBuffer extends ConvLayerBaseFmapBuffer {
 
   public int getDepth() {
     if (cp.seq == CompSeq.CHANNEL_MAJOR)
-      return MathUtils.nextPowerOfTwo(cp.F * cp.OH * cp.OW / getWidth(0));
+      return MathUtils.nextPowerOfTwo(cp.padF() * cp.OH * cp.OW / getWidth(0));
     else if (cp.seq == CompSeq.FILTER_MAJOR)
       return MathUtils.nextPowerOfTwo(cp.PF.get(0) * cp.OH * cp.OW / getWidth(0));
     else

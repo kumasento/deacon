@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.IllegalArgumentException: F (3) % PF (2) should equal 0
+	at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters$Builder.PF(ConvLayerParameters.java:653)
+	at single_conv.SingleConvManager.main(SingleConvManager.java:69)
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConv_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConv.max] Error 1

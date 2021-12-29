@@ -77,6 +77,7 @@ public class BottleneckShortcutImbalancedParManager
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     cps.add(new ConvLayerParameters.Builder(2, 2, 2, 2, 3)
@@ -103,6 +104,7 @@ public class BottleneckShortcutImbalancedParManager
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     cps.add(new ConvLayerParameters.Builder(2, 2, 2, 8, 1)
@@ -126,6 +128,7 @@ public class BottleneckShortcutImbalancedParManager
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     BottleneckShortcutImbalancedParManager mgr =
@@ -136,6 +139,7 @@ public class BottleneckShortcutImbalancedParManager
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

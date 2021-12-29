@@ -1,6 +1,6 @@
 In file included from ../../src/two_conv/TwoConvCpuCode.cpp:11:
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:996:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1013:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/two_conv/TwoConvCpuCode.cpp:82:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -9,7 +9,7 @@ In file included from ../../src/two_conv/TwoConvCpuCode.cpp:11:
       |                                   int                       long unsigned int
       |                                  %ld
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1010:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1027:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/two_conv/TwoConvCpuCode.cpp:82:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -25,48 +25,48 @@ In file included from ../../src/two_conv/TwoConvCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1227 14:45:13.945039 417195 TwoConvCpuCode.cpp:71] num frac bits: 0
-I1227 14:45:13.945336 417195 TwoConvCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1227 14:45:13.945632 417195 TwoConvCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1227 14:45:13.945909 417195 TwoConvCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1227 14:45:13.945930 417195 layers.h:975] Running golden function ...
-I1227 14:45:13.945955 417195 layers.h:984]        STANDARD 4 x 2 x 2 -> 8 x 2 x 2
-I1227 14:45:13.952153 417195 layers.h:984]        STANDARD 8 x 2 x 2 -> 4 x 2 x 2
-I1227 14:45:13.958573 417195 utils.h:383] Burst aligning input array of size: 32 to 192
-I1227 14:45:13.958595 417195 TwoConvCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1227 14:45:13.958606 417195 utils.h:383] Burst aligning input array of size: 32 to 192
-I1227 14:45:13.958621 417195 TwoConvCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1227 14:45:13.958631 417195 layers.h:758] Writing DRAM to 0 with size 0x180
-I1227 14:45:13.963073 417195 TwoConvCpuCode.cpp:107] Running ...
-I1227 14:45:14.973098 417195 TwoConvCpuCode.cpp:112] Done
-I1227 14:45:14.973145 417195 layers.h:775] Reading DRAM from 0x180 with size 0x180
-I1227 14:45:14.975872 417195 TwoConvCpuCode.cpp:119] output_dfe[0] = 48
-I1227 14:45:14.975939 417195 TwoConvCpuCode.cpp:119] output_dfe[1] = 9
-I1227 14:45:14.976202 417195 TwoConvCpuCode.cpp:119] output_dfe[2] = -21
-I1227 14:45:14.976452 417195 TwoConvCpuCode.cpp:119] output_dfe[3] = -15
-I1227 14:45:14.976709 417195 TwoConvCpuCode.cpp:119] output_dfe[4] = -47
-I1227 14:45:14.976984 417195 TwoConvCpuCode.cpp:119] output_dfe[5] = -29
-I1227 14:45:14.977222 417195 TwoConvCpuCode.cpp:119] output_dfe[6] = -13
-I1227 14:45:14.977483 417195 TwoConvCpuCode.cpp:119] output_dfe[7] = -64
-I1227 14:45:14.977746 417195 TwoConvCpuCode.cpp:119] output_dfe[8] = 19
-I1227 14:45:14.977994 417195 TwoConvCpuCode.cpp:119] output_dfe[9] = -50
-I1227 14:45:14.978250 417195 TwoConvCpuCode.cpp:125] elapsed time: 1.00996s
-I1227 14:45:14.978498 417195 TwoConvCpuCode.cpp:139] [Ops] layer                          conv0 = 0.002304 M
-I1227 14:45:14.978739 417195 TwoConvCpuCode.cpp:139] [Ops] layer                          conv1 = 0.002304 M
-I1227 14:45:14.979004 417195 TwoConvCpuCode.cpp:143] OPS:    9.216e-06 G
-I1227 14:45:14.979272 417195 TwoConvCpuCode.cpp:144] FPS:    1.98028
-I1227 14:45:14.979526 417195 TwoConvCpuCode.cpp:147] GFLOPs: 9.12515e-06
-I1227 14:45:14.979826 417195 TwoConvCpuCode.cpp:154] Examine results ...
-I1227 14:45:14.980065 417195 TwoConvCpuCode.cpp:156] output_cpu[0] = 48
-I1227 14:45:14.980345 417195 TwoConvCpuCode.cpp:156] output_cpu[1] = 9
-I1227 14:45:14.980598 417195 TwoConvCpuCode.cpp:156] output_cpu[2] = -21
-I1227 14:45:14.980901 417195 TwoConvCpuCode.cpp:156] output_cpu[3] = -15
-I1227 14:45:14.981127 417195 TwoConvCpuCode.cpp:156] output_cpu[4] = -47
-I1227 14:45:14.981343 417195 TwoConvCpuCode.cpp:162] output_dfe[0] = 48
-I1227 14:45:14.981626 417195 TwoConvCpuCode.cpp:162] output_dfe[1] = 9
-I1227 14:45:14.981863 417195 TwoConvCpuCode.cpp:162] output_dfe[2] = -21
-I1227 14:45:14.982137 417195 TwoConvCpuCode.cpp:162] output_dfe[3] = -15
-I1227 14:45:14.982364 417195 TwoConvCpuCode.cpp:162] output_dfe[4] = -47
-I1227 14:45:14.982678 417195 TwoConvCpuCode.cpp:173] Evaluating difference ...
-I1227 14:45:14.982936 417195 TwoConvCpuCode.cpp:174] Mask: 00000000
-I1227 14:45:14.983181 417195 TwoConvCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0
+I1229 19:18:51.752228 446166 TwoConvCpuCode.cpp:71] num frac bits: 0
+I1229 19:18:51.752512 446166 TwoConvCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1229 19:18:51.752800 446166 TwoConvCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1229 19:18:51.753088 446166 TwoConvCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1229 19:18:51.753374 446166 layers.h:992] Running golden function ...
+I1229 19:18:51.753661 446166 layers.h:1001]        STANDARD 4 x 2 x 2 -> 8 x 2 x 2
+I1229 19:18:51.760473 446166 layers.h:1001]        STANDARD 8 x 2 x 2 -> 4 x 2 x 2
+I1229 19:18:51.767043 446166 utils.h:383] Burst aligning input array of size: 32 to 192
+I1229 19:18:51.767082 446166 TwoConvCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1229 19:18:51.767094 446166 utils.h:383] Burst aligning input array of size: 32 to 192
+I1229 19:18:51.767112 446166 TwoConvCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1229 19:18:51.767122 446166 layers.h:775] Writing DRAM to 0 with size 0x180
+I1229 19:18:51.770712 446166 TwoConvCpuCode.cpp:107] Running ...
+I1229 19:18:52.657102 446166 TwoConvCpuCode.cpp:112] Done
+I1229 19:18:52.657147 446166 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1229 19:18:52.659502 446166 TwoConvCpuCode.cpp:119] output_dfe[0] = 48
+I1229 19:18:52.659528 446166 TwoConvCpuCode.cpp:119] output_dfe[1] = 9
+I1229 19:18:52.659541 446166 TwoConvCpuCode.cpp:119] output_dfe[2] = -21
+I1229 19:18:52.659554 446166 TwoConvCpuCode.cpp:119] output_dfe[3] = -15
+I1229 19:18:52.659564 446166 TwoConvCpuCode.cpp:119] output_dfe[4] = -47
+I1229 19:18:52.659575 446166 TwoConvCpuCode.cpp:119] output_dfe[5] = -29
+I1229 19:18:52.659587 446166 TwoConvCpuCode.cpp:119] output_dfe[6] = -13
+I1229 19:18:52.659597 446166 TwoConvCpuCode.cpp:119] output_dfe[7] = -64
+I1229 19:18:52.659610 446166 TwoConvCpuCode.cpp:119] output_dfe[8] = 19
+I1229 19:18:52.659621 446166 TwoConvCpuCode.cpp:119] output_dfe[9] = -50
+I1229 19:18:52.659631 446166 TwoConvCpuCode.cpp:125] elapsed time: 0.886326s
+I1229 19:18:52.659644 446166 TwoConvCpuCode.cpp:139] [Ops] layer                          conv0 = 0.002304 M
+I1229 19:18:52.659657 446166 TwoConvCpuCode.cpp:139] [Ops] layer                          conv1 = 0.002304 M
+I1229 19:18:52.659668 446166 TwoConvCpuCode.cpp:143] OPS:    9.216e-06 G
+I1229 19:18:52.659680 446166 TwoConvCpuCode.cpp:144] FPS:    2.25651
+I1229 19:18:52.659693 446166 TwoConvCpuCode.cpp:147] GFLOPs: 1.0398e-05
+I1229 19:18:52.659704 446166 TwoConvCpuCode.cpp:154] Examine results ...
+I1229 19:18:52.659713 446166 TwoConvCpuCode.cpp:156] output_cpu[0] = 48
+I1229 19:18:52.659725 446166 TwoConvCpuCode.cpp:156] output_cpu[1] = 9
+I1229 19:18:52.659737 446166 TwoConvCpuCode.cpp:156] output_cpu[2] = -21
+I1229 19:18:52.659749 446166 TwoConvCpuCode.cpp:156] output_cpu[3] = -15
+I1229 19:18:52.659759 446166 TwoConvCpuCode.cpp:156] output_cpu[4] = -47
+I1229 19:18:52.659770 446166 TwoConvCpuCode.cpp:162] output_dfe[0] = 48
+I1229 19:18:52.659781 446166 TwoConvCpuCode.cpp:162] output_dfe[1] = 9
+I1229 19:18:52.659793 446166 TwoConvCpuCode.cpp:162] output_dfe[2] = -21
+I1229 19:18:52.659804 446166 TwoConvCpuCode.cpp:162] output_dfe[3] = -15
+I1229 19:18:52.659816 446166 TwoConvCpuCode.cpp:162] output_dfe[4] = -47
+I1229 19:18:52.659827 446166 TwoConvCpuCode.cpp:173] Evaluating difference ...
+I1229 19:18:52.659837 446166 TwoConvCpuCode.cpp:174] Mask: 00000000
+I1229 19:18:52.659868 446166 TwoConvCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0

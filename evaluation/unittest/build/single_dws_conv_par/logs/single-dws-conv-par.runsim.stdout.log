@@ -4,7 +4,7 @@ Using maxj batch compiler.
 jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
 MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
 	MAXAPPPKG=single_dws_conv_par MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
-	maxJavaRun -v -m 8192 SingleDwsConvParManager \
+	maxJavaRun -v -m 16384 SingleDwsConvParManager \
 	DFEModel=MAIA maxFileName=SingleDwsConvPar target='DFE_SIM' enableMPCX=false \
 	FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt 
 ]0; maxJavaRun: SingleDwsConvParManager DFEModel=MAIA maxFileName=SingleDwsConvPar target=DFE_SIM enableMPCX=false FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt maxJavaRun : Execute Java program with Maxeler environment
@@ -33,153 +33,151 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
                       /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
-JVM memory limit    : 8192 MB
+JVM memory limit    : 16384 MB
 ----------------------------------------------------------
 
-Mon 14:44: MaxCompiler version: 2021.1
-Mon 14:44: Build "SingleDwsConvPar" start time: Mon Dec 27 14:44:59 GMT 2021
-Mon 14:44: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Mon 14:44: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG
-Mon 14:44: Detailed build log available in "_build.log"
-Mon 14:44: 
-Mon 14:44: ENGINE BUILD PARAMETERS
-Mon 14:44: 	              Build name: SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG                                                                            
-Mon 14:44: 	             maxFileName: SingleDwsConvPar                                                                                                      
-Mon 14:44: 	                  target: DFE_SIM                                                                                                               
-Mon 14:44: 	                DFEModel: MAIA                                                                                                                  
-Mon 14:44: 	              enableMPCX: false                                                                                                                 
-Mon 14:44: 	                bitWidth: 32                                                                                                                    
-Mon 14:44: 	                     WBW: 32                                                                                                                    
-Mon 14:44: 	                   DTYPE: fixed                                                                                                                 
-Mon 14:44: 	           NUM_FRAC_BITS: 8                                                                                                                     
-Mon 14:44: 	                      PF: 1                                                                                                                     
-Mon 14:44: 	                      PC: 1                                                                                                                     
-Mon 14:44: 	                      PK: 1                                                                                                                     
-Mon 14:44: 	                       H: 1                                                                                                                     
-Mon 14:44: 	                       W: 1                                                                                                                     
-Mon 14:44: 	                       C: 1                                                                                                                     
-Mon 14:44: 	                       F: 1                                                                                                                     
-Mon 14:44: 	                       K: 1                                                                                                                     
-Mon 14:44: 	                     PAD: 0                                                                                                                     
-Mon 14:44: 	                       S: 1                                                                                                                     
-Mon 14:44: 	                     SEQ: 0                                                                                                                     
-Mon 14:44: 	                    FREQ: 200                                                                                                                   
-Mon 14:44: 	                USE_DRAM: false                                                                                                                 
-Mon 14:44: 	                 USE_BNN: false                                                                                                                 
-Mon 14:44: 	            USE_WINOGRAD: false                                                                                                                 
-Mon 14:44: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                 
-Mon 14:44: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                     
-Mon 14:44: 	                   DEBUG: true                                                                                                                  
-Mon 14:44: 	           COEFF_ON_CHIP: false                                                                                                                 
-Mon 14:44: 	              INIT_COEFF: false                                                                                                                 
-Mon 14:44: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt
-Mon 14:45: Generating kernel conv0 ...
-Mon 14:45: Instantiating kernel "conv0"
-Mon 14:45: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Mon 14:45: coeffOnChip = true
-Mon 14:45: Input height = 2, output height = 2, pad = 1
-Mon 14:45: Counter H = 4 W = 4
-Mon 14:45: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Mon 14:45: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Mon 14:45: Building line buffer for "conv0" ...
-Mon 14:45: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Mon 14:45: Line buffer input vector size: 2, output vector size: 18.
-Mon 14:45: Number of separated line buffers: 2
-Mon 14:45: Initialising line buffer kernel with 3 x 4 x 1
-Mon 14:45: Size of line buffer output: 3
-Mon 14:45: Number of line buffer output chunks: 3
-Mon 14:45: Connecting outputs from chunk (#000) ...
-Mon 14:45: Connecting outputs from chunk (#001) ...
-Mon 14:45: Connecting outputs from chunk (#002) ...
-Mon 14:45: Initialising line buffer kernel with 3 x 4 x 1
-Mon 14:45: Size of line buffer output: 3
-Mon 14:45: Number of line buffer output chunks: 3
-Mon 14:45: Connecting outputs from chunk (#000) ...
-Mon 14:45: Connecting outputs from chunk (#001) ...
-Mon 14:45: Connecting outputs from chunk (#002) ...
-Mon 14:45: Depthwise coeff ROM depth = 1
-Mon 14:45: Read for key = conv0_dw depth = 1 raw data = 18
-Mon 14:45: ROM created for conv0_dw of depth 1 and type {DFEVectorType: 18 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@11c9af63
-Mon 14:45: Building the CORE arithmetic unit for "conv0_dw" ...
-Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Mon 14:45: CORE ifmap vector size: 18
-Mon 14:45: CORE coefficient vector size: 18
-Mon 14:45: CORE ofmap vector size: 2
-Mon 14:45: Ifmap buffer configuration 16 x 2
-Mon 14:45: loop = false
-Mon 14:45: Pointwise coeff ROM depth = 1
-Mon 14:45: Read for key = conv0_pw depth = 1 raw data = 4
-Mon 14:45: ROM created for conv0_pw of depth 1 and type {DFEVectorType: 4 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@67c33749
-Mon 14:45: Building the CORE arithmetic unit for "conv0_pw" ...
-Mon 14:45: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Mon 14:45: CORE ifmap vector size: 2
-Mon 14:45: CORE coefficient vector size: 4
-Mon 14:45: CORE ofmap vector size: 2
-Mon 14:45: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Mon 14:45: Connecting to output: ofmap
-Mon 14:45: Compiling kernel "conv0"
-Mon 14:45: 
-Mon 14:45: Generating padding kernels for DRAM access
-Mon 14:45: Instantiating kernel "ifmap_unpad"
-Mon 14:45: Compiling kernel "ifmap_unpad"
-Mon 14:45: 
-Mon 14:45: Instantiating kernel "ofmap_pad"
-Mon 14:45: Compiling kernel "ofmap_pad"
-Mon 14:45: 
-Mon 14:45: Setting up stream connections for conv0
-Mon 14:45: DRAM will be used to build the design
-Mon 14:45: Setup streams for kernel "conv0"
-Mon 14:45: # cycles:       16
-Mon 14:45: # ifmap stream: 8
-Mon 14:45: # ofmap stream: 8
-Mon 14:45: coeff vec size: 36
-Mon 14:45: coeff stream bit width: 576
-Mon 14:45: coeff stream chunk size: 9
-Mon 14:45: Running back-end simulation build (3 phases)
-Mon 14:45: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Mon 14:45: (2/3) - Compile Simulation Modules (SimCompilePass)
-Mon 14:45: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Mon 14:45: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max (MD5Sum: 59be1e05ef7072caa8613a0219eee426)
-Mon 14:45: Build completed: Mon Dec 27 14:45:13 GMT 2021 (took 13 secs)
+Wed 19:18: MaxCompiler version: 2021.1
+Wed 19:18: Build "SingleDwsConvPar" start time: Wed Dec 29 19:18:27 GMT 2021
+Wed 19:18: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Wed 19:18: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG
+Wed 19:18: Detailed build log available in "_build.log"
+Wed 19:18: 
+Wed 19:18: ENGINE BUILD PARAMETERS
+Wed 19:18: 	              Build name: SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG                                                                            
+Wed 19:18: 	             maxFileName: SingleDwsConvPar                                                                                                      
+Wed 19:18: 	                  target: DFE_SIM                                                                                                               
+Wed 19:18: 	                DFEModel: MAIA                                                                                                                  
+Wed 19:18: 	              enableMPCX: false                                                                                                                 
+Wed 19:18: 	                bitWidth: 32                                                                                                                    
+Wed 19:18: 	                     WBW: 32                                                                                                                    
+Wed 19:18: 	                   DTYPE: fixed                                                                                                                 
+Wed 19:18: 	           NUM_FRAC_BITS: 8                                                                                                                     
+Wed 19:18: 	                      PF: 1                                                                                                                     
+Wed 19:18: 	                      PC: 1                                                                                                                     
+Wed 19:18: 	                      PK: 1                                                                                                                     
+Wed 19:18: 	                       H: 1                                                                                                                     
+Wed 19:18: 	                       W: 1                                                                                                                     
+Wed 19:18: 	                       C: 1                                                                                                                     
+Wed 19:18: 	                       F: 1                                                                                                                     
+Wed 19:18: 	                       K: 1                                                                                                                     
+Wed 19:18: 	                     PAD: 0                                                                                                                     
+Wed 19:18: 	                       S: 1                                                                                                                     
+Wed 19:18: 	                     SEQ: 0                                                                                                                     
+Wed 19:18: 	                    FREQ: 200                                                                                                                   
+Wed 19:18: 	                USE_DRAM: false                                                                                                                 
+Wed 19:18: 	                 USE_BNN: false                                                                                                                 
+Wed 19:18: 	            USE_WINOGRAD: false                                                                                                                 
+Wed 19:18: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                 
+Wed 19:18: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                     
+Wed 19:18: 	                   DEBUG: true                                                                                                                  
+Wed 19:18: 	           COEFF_ON_CHIP: false                                                                                                                 
+Wed 19:18: 	              INIT_COEFF: false                                                                                                                 
+Wed 19:18: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt
+Wed 19:18: Generating kernel conv0 ...
+Wed 19:18: Instantiating kernel "conv0"
+Wed 19:18: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Wed 19:18: coeffOnChip = true
+Wed 19:18: Input height = 2, output height = 2, pad = 1
+Wed 19:18: Counter H = 4 W = 4
+Wed 19:18: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 19:18: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 19:18: Building line buffer for "conv0" ...
+Wed 19:18: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Wed 19:18: Line buffer input vector size: 2, output vector size: 18.
+Wed 19:18: Number of separated line buffers: 2
+Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
+Wed 19:18: Size of line buffer output: 3
+Wed 19:18: Number of line buffer output chunks: 3
+Wed 19:18: Connecting outputs from chunk (#000) ...
+Wed 19:18: Connecting outputs from chunk (#001) ...
+Wed 19:18: Connecting outputs from chunk (#002) ...
+Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
+Wed 19:18: Size of line buffer output: 3
+Wed 19:18: Number of line buffer output chunks: 3
+Wed 19:18: Connecting outputs from chunk (#000) ...
+Wed 19:18: Connecting outputs from chunk (#001) ...
+Wed 19:18: Connecting outputs from chunk (#002) ...
+Wed 19:18: Depthwise coeff ROM depth = 1
+Wed 19:18: ROM created for conv0_dw of depth 1 and type {DFEVectorType: 18 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@11c9af63
+Wed 19:18: Building the CORE arithmetic unit for "conv0_dw" ...
+Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Wed 19:18: CORE ifmap vector size: 18
+Wed 19:18: CORE coefficient vector size: 18
+Wed 19:18: CORE ofmap vector size: 2
+Wed 19:18: Ifmap buffer configuration 16 x 2
+Wed 19:18: loop = false
+Wed 19:18: Pointwise coeff ROM depth = 1
+Wed 19:18: ROM created for conv0_pw of depth 1 and type {DFEVectorType: 4 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4efc180e
+Wed 19:18: Building the CORE arithmetic unit for "conv0_pw" ...
+Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Wed 19:18: CORE ifmap vector size: 2
+Wed 19:18: CORE coefficient vector size: 4
+Wed 19:18: CORE ofmap vector size: 2
+Wed 19:18: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Wed 19:18: Connecting to output: ofmap
+Wed 19:18: Compiling kernel "conv0"
+Wed 19:18: 
+Wed 19:18: Generating padding kernels for DRAM access
+Wed 19:18: Instantiating kernel "ifmap_unpad"
+Wed 19:18: Compiling kernel "ifmap_unpad"
+Wed 19:18: 
+Wed 19:18: Instantiating kernel "ofmap_pad"
+Wed 19:18: Compiling kernel "ofmap_pad"
+Wed 19:18: 
+Wed 19:18: Setting up stream connections for conv0
+Wed 19:18: DRAM will be used to build the design
+Wed 19:18: Setup streams for kernel "conv0"
+Wed 19:18: # cycles:       16
+Wed 19:18: # ifmap stream: 8
+Wed 19:18: # ofmap stream: 8
+Wed 19:18: coeff vec size: 36
+Wed 19:18: coeff stream bit width: 576
+Wed 19:18: coeff stream chunk size: 9
+Wed 19:18: Running back-end simulation build (3 phases)
+Wed 19:18: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Wed 19:18: (2/3) - Compile Simulation Modules (SimCompilePass)
+Wed 19:18: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Wed 19:18: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max (MD5Sum: ceb08d4ed40e4e25ea005d88572f1aee)
+Wed 19:18: Build completed: Wed Dec 29 19:18:43 GMT 2021 (took 16 secs)
 cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/Maxfiles.h
 sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max SingleDwsConvPar_FREQ_200_DBG_sim.o
 Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_3055170655900520638/cobject/max_4513038993984258068.c -o /tmp/sliccompile_3055170655900520638/cobject/max_4513038993984258068.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_1023923916441578219.o 
-ld -r /tmp/sliccompile_3055170655900520638/cobject/max_4513038993984258068.c.o max_1023923916441578219.o -o SingleDwsConvPar_FREQ_200_DBG_sim.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_1313136341259021338/cobject/max_6131269118804431371.c -o /tmp/sliccompile_1313136341259021338/cobject/max_6131269118804431371.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvPar.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_6499305694860980158.o 
+ld -r /tmp/sliccompile_1313136341259021338/cobject/max_6131269118804431371.c.o max_6499305694860980158.o -o SingleDwsConvPar_FREQ_200_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par'
 g++ ../../src/single_dws_conv_par/SingleDwsConvParCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvPar_MAIA_DFE_SIM_FREQ_200_DBG/results -D__SIM__ -DDESIGN_NAME=SingleDwsConvPar -c -o SingleDwsConvPar_FREQ_200_DBG_simc.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -o SingleDwsConvPar_FREQ_200_DBG_sim SingleDwsConvPar_FREQ_200_DBG_sim.o SingleDwsConvPar_FREQ_200_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
-maxcompilersim -n rz3515d -cLIMA -d1 restart
+maxcompilersim -n rz3515f -cLIMA -d1 restart
 
-Simulated system 'rz3515d' started:
+Simulated system 'rz3515f' started:
     Board:                   MAX5C (default: 48GB RAM)
     RAM size for simulation: 51539607552 bytes.
     Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
-    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515d-cccad5.log
-    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515d-cccad5_daemon.log
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515f-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515f-cccad5_daemon.log
 
 Simulated devices available:
-    rz3515d0:rz3515d
+    rz3515f0:rz3515f
 
 To use simulated devices you need to set the environment variables
 LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
 you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
 tutorial for details).  Also, ensure that you add the correct simulated
-system name (namely "rz3515d") to your SLiC configuration. The following
+system name (namely "rz3515f") to your SLiC configuration. The following
 examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
 Example for BASH:
     export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
     export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515d"
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515f"
 Example for CSH:
     setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
     setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515d"
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515f"
 
-SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515d" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./SingleDwsConvPar_FREQ_200_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt -g
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515f" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./SingleDwsConvPar_FREQ_200_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par/data/data-single-dws-conv-par.txt -g
 f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =  -2.000000 weight =  -1.000000
 output[0] =   0.000000 +   2.000000 =   2.000000
 f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =  -1.000000
@@ -483,6 +481,7 @@ UNPADDING: 11 (192) nInputs 8
 UNPADDING: 12 (192) nInputs 8
 UNPADDING: 13 (192) nInputs 8
 UNPADDING: 14 (192) nInputs 8
+UNPADDING: 15 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -504,54 +503,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 0 0
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/0] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 0 en = 0
-[DotProd] vecA = < 0 >
-[DotProd] vecB = < 0 >
-[DotProd] vecC = < 0 >
-[DotProd] vecA = < 0 >
-[DotProd] vecB = < -1 >
-[DotProd] vecC = < 0 >
-[DotProd] vecA = < 0 >
-[DotProd] vecB = < 0 >
-[DotProd] vecC = < 0 >
-[DotProd] vecA = < 0 >
-[DotProd] vecB = < -2 >
-[DotProd] vecC = < 0 >
-[Conv2DKernel] ifmap = < 0 :: 0 >
-[Conv2DKernel] coeff = < 0 :: -1 :: 0 :: -2 >
-[Conv2DKernel] ofmap = < 0 :: 0 >
-[ConvLayerOfmapBuffer] input          = < 0 :: 0 >
-[ConvLayerOfmapBuffer] read           = < 0 :: 0 >
-[ConvLayerOfmapBuffer] output         = < 0 :: 0 >
-[ConvLayerOfmapBuffer] writeEn        = 0
-[ConvLayerOfmapBuffer] addr           = 0
-[ConvLayerOfmapBuffer] actual output  = < 0 :: 0 >
-[ConvLayerOfmapBuffer] actual writeEn = 0
-[ConvLayerOfmapBuffer] actual addr    = 2
-[ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 15 (192) nInputs 8
-conv0f = 0 c = 0 h = 0 w = 1
-ifmapEn = 0
-ofmapEn = 0
-oh = 0 ow = 0
-ofmap buffer addr = 0
-isInPaddedArea = 1
-Line buffer inputVec = < 0 :: 0 >
-Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[DotProd] vecA = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[DotProd] vecB = < -1 :: 2 :: 1 :: 0 :: -1 :: -1 :: -2 :: 2 :: 0 >
-[DotProd] vecC = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[DotProd] vecA = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[DotProd] vecB = < 1 :: -2 :: 2 :: 1 :: -1 :: -1 :: -1 :: -1 :: 0 >
-[DotProd] vecC = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[Conv2DKernel] ifmap = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
-[Conv2DKernel] coeff = < -1 :: 2 :: 1 :: 0 :: -1 :: -1 :: -2 :: 2 :: 0 :: 1 :: -2 :: 2 :: 1 :: -1 :: -1 :: -1 :: -1 :: 0 >
-[Conv2DKernel] ofmap = < 0 :: 0 >
-[ConvLayerIfmapBuffer] input = < 0 :: 0 >
-[ConvLayerIfmapBuffer] output = < 0 :: 0 >
-[ConvLayerIfmapBuffer] addr = 1 1
-[ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 1 en = 0
+[conv0][0/0/0/0] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 0 read addr = 0 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -577,6 +529,53 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
 UNPADDING: 16 (192) nInputs 8
+conv0f = 0 c = 0 h = 0 w = 1
+ifmapEn = 0
+ofmapEn = 0
+oh = 0 ow = 0
+ofmap buffer addr = 0
+isInPaddedArea = 1
+Line buffer inputVec = < 0 :: 0 >
+Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[DotProd] vecA = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[DotProd] vecB = < -1 :: 2 :: 1 :: 0 :: -1 :: -1 :: -2 :: 2 :: 0 >
+[DotProd] vecC = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[DotProd] vecA = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[DotProd] vecB = < 1 :: -2 :: 2 :: 1 :: -1 :: -1 :: -1 :: -1 :: 0 >
+[DotProd] vecC = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[Conv2DKernel] ifmap = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 >
+[Conv2DKernel] coeff = < -1 :: 2 :: 1 :: 0 :: -1 :: -1 :: -2 :: 2 :: 0 :: 1 :: -2 :: 2 :: 1 :: -1 :: -1 :: -1 :: -1 :: 0 >
+[Conv2DKernel] ofmap = < 0 :: 0 >
+[ConvLayerIfmapBuffer] input = < 0 :: 0 >
+[ConvLayerIfmapBuffer] output = < 0 :: 0 >
+[ConvLayerIfmapBuffer] addr = 1 1
+[ConvLayerIfmapBuffer] writeEn = 0 0
+[conv0][0/0/0/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 1 read addr = 1 en = 0
+[DotProd] vecA = < 0 >
+[DotProd] vecB = < 0 >
+[DotProd] vecC = < 0 >
+[DotProd] vecA = < 0 >
+[DotProd] vecB = < -1 >
+[DotProd] vecC = < 0 >
+[DotProd] vecA = < 0 >
+[DotProd] vecB = < 0 >
+[DotProd] vecC = < 0 >
+[DotProd] vecA = < 0 >
+[DotProd] vecB = < -2 >
+[DotProd] vecC = < 0 >
+[Conv2DKernel] ifmap = < 0 :: 0 >
+[Conv2DKernel] coeff = < 0 :: -1 :: 0 :: -2 >
+[Conv2DKernel] ofmap = < 0 :: 0 >
+[ConvLayerOfmapBuffer] input          = < 0 :: 0 >
+[ConvLayerOfmapBuffer] read           = < 0 :: 0 >
+[ConvLayerOfmapBuffer] output         = < 0 :: 0 >
+[ConvLayerOfmapBuffer] writeEn        = 0
+[ConvLayerOfmapBuffer] addr           = 0
+[ConvLayerOfmapBuffer] actual output  = < 0 :: 0 >
+[ConvLayerOfmapBuffer] actual writeEn = 0
+[ConvLayerOfmapBuffer] actual addr    = 2
+[ConvLayerOfmapBuffer] latency        = 2
+UNPADDING: 17 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -598,7 +597,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 2 2
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/2] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 2 en = 0
+[conv0][0/0/0/2] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 2 read addr = 2 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -623,7 +622,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 17 (192) nInputs 8
+UNPADDING: 18 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -645,7 +644,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 3 3
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/3] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 3 en = 0
+[conv0][0/0/0/3] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 3 read addr = 3 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -670,7 +669,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 18 (192) nInputs 8
+UNPADDING: 19 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -692,7 +691,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 4 4
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/0] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 4 en = 0
+[conv0][0/0/1/0] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 4 read addr = 4 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -717,7 +716,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 19 (192) nInputs 8
+UNPADDING: 20 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -739,7 +738,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 5 5
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 5 en = 0
+[conv0][0/0/1/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 5 read addr = 5 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -764,7 +763,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 20 (192) nInputs 8
+UNPADDING: 21 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -786,7 +785,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 6 6
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/2] [bufferizeIfmap] At stream 0: data = < -4 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 6 en = 0
+[conv0][0/0/1/2] [bufferizeIfmap] At stream 0: data = < -4 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 6 read addr = 6 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -811,7 +810,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 21 (192) nInputs 8
+UNPADDING: 22 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -833,7 +832,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 7 7
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/3] [bufferizeIfmap] At stream 0: data = < 2 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 7 en = 0
+[conv0][0/0/1/3] [bufferizeIfmap] At stream 0: data = < 2 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 7 read addr = 7 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -858,7 +857,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 22 (192) nInputs 8
+UNPADDING: 23 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -880,7 +879,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 8 8
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/2/0] [bufferizeIfmap] At stream 0: data = < 2 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 8 en = 0
+[conv0][0/0/2/0] [bufferizeIfmap] At stream 0: data = < 2 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 8 read addr = 8 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -905,7 +904,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 23 (192) nInputs 8
+UNPADDING: 24 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -927,7 +926,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 9 9
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/2/1] [bufferizeIfmap] At stream 0: data = < 2 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 9 en = 0
+[conv0][0/0/2/1] [bufferizeIfmap] At stream 0: data = < 2 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 9 read addr = 9 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -952,7 +951,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 24 (192) nInputs 8
+UNPADDING: 25 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 1
@@ -974,7 +973,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 5 :: 1 >
 [ConvLayerIfmapBuffer] addr = 10 10
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/2/2] [bufferizeIfmap] At stream 0: data = < 5 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 10 en = 1
+[conv0][0/0/2/2] [bufferizeIfmap] At stream 0: data = < 5 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 10 read addr = 10 en = 1
 [DotProd] vecA = < 5 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -999,7 +998,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 25 (192) nInputs 8
+UNPADDING: 26 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -1021,7 +1020,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < -1 :: -3 >
 [ConvLayerIfmapBuffer] addr = 11 11
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/2/3] [bufferizeIfmap] At stream 0: data = < -1 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 11 en = 1
+[conv0][0/0/2/3] [bufferizeIfmap] At stream 0: data = < -1 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 11 read addr = 11 en = 1
 [DotProd] vecA = < -1 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1046,7 +1045,8 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 26 (192) nInputs 8
+PADDING: fffeffff 0 (192) nInputs 8
+UNPADDING: 27 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1068,7 +1068,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 12 12
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/3/0] [bufferizeIfmap] At stream 0: data = < 0 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 12 en = 0
+[conv0][0/0/3/0] [bufferizeIfmap] At stream 0: data = < 0 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 12 read addr = 12 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1093,8 +1093,8 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: fffeffff 0 (192) nInputs 8
-UNPADDING: 27 (192) nInputs 8
+PADDING: 60003 1 (192) nInputs 8
+UNPADDING: 28 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1116,7 +1116,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 13 13
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/3/1] [bufferizeIfmap] At stream 0: data = < -3 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 13 en = 0
+[conv0][0/0/3/1] [bufferizeIfmap] At stream 0: data = < -3 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 13 read addr = 13 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1141,8 +1141,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: 60003 1 (192) nInputs 8
-UNPADDING: 28 (192) nInputs 8
+UNPADDING: 29 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -1164,7 +1163,7 @@ Line buffer outputVec = < 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1
 [ConvLayerIfmapBuffer] output = < -6 :: -3 >
 [ConvLayerIfmapBuffer] addr = 14 14
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/3/2] [bufferizeIfmap] At stream 0: data = < -6 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 14 en = 1
+[conv0][0/0/3/2] [bufferizeIfmap] At stream 0: data = < -6 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 14 read addr = 14 en = 1
 [DotProd] vecA = < -6 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1189,7 +1188,7 @@ Line buffer outputVec = < 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 29 (192) nInputs 8
+UNPADDING: 30 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -1211,7 +1210,7 @@ Line buffer outputVec = < -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 15 15
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/3/3] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 15 en = 1
+[conv0][0/0/3/3] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 15 read addr = 15 en = 1
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1236,7 +1235,8 @@ Line buffer outputVec = < -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 30 (192) nInputs 8
+PADDING: 60003 2 (192) nInputs 8
+UNPADDING: 31 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1258,7 +1258,7 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 0 0
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/0] [bufferizeIfmap] At stream 0: data = < 1 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 0 en = 0
+[conv0][0/0/0/0] [bufferizeIfmap] At stream 0: data = < 1 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 0 read addr = 0 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1283,8 +1283,8 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: 60003 2 (192) nInputs 8
-UNPADDING: 31 (192) nInputs 8
+PADDING: 0 3 (192) nInputs 8
+UNPADDING: 32 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1306,7 +1306,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 1 1
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/1] [bufferizeIfmap] At stream 0: data = < 1 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 1 en = 0
+[conv0][0/0/0/1] [bufferizeIfmap] At stream 0: data = < 1 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 1 read addr = 1 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1331,8 +1331,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: 0 3 (192) nInputs 8
-UNPADDING: 32 (192) nInputs 8
+UNPADDING: 33 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -1354,7 +1353,7 @@ Line buffer outputVec = < 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 2 2
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/2] [bufferizeIfmap] At stream 0: data = < 2 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 2 en = 0
+[conv0][0/0/0/2] [bufferizeIfmap] At stream 0: data = < 2 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 2 read addr = 2 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1379,7 +1378,7 @@ Line buffer outputVec = < 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 33 (192) nInputs 8
+UNPADDING: 34 (192) nInputs 8
 conv0f = 0 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1401,7 +1400,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 2 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 3 3
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/0/3] [bufferizeIfmap] At stream 0: data = < -1 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 3 en = 0
+[conv0][0/0/0/3] [bufferizeIfmap] At stream 0: data = < -1 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 3 read addr = 3 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1426,7 +1425,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 2 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 34 (192) nInputs 8
+UNPADDING: 35 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1448,7 +1447,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 ::
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 4 4
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/0] [bufferizeIfmap] At stream 0: data = < 0 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 4 en = 0
+[conv0][0/0/1/0] [bufferizeIfmap] At stream 0: data = < 0 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 4 read addr = 4 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1473,7 +1472,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 35 (192) nInputs 8
+UNPADDING: 36 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -1495,7 +1494,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 5 5
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 5 en = 0
+[conv0][0/0/1/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 5 read addr = 5 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1520,7 +1519,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 36 (192) nInputs 8
+UNPADDING: 37 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -1542,7 +1541,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 6 6
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/2] [bufferizeIfmap] At stream 0: data = < -2 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 6 en = 0
+[conv0][0/0/1/2] [bufferizeIfmap] At stream 0: data = < -2 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 6 read addr = 6 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1567,7 +1566,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 37 (192) nInputs 8
+UNPADDING: 38 (192) nInputs 8
 conv0f = 0 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1589,7 +1588,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 7 7
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/1/3] [bufferizeIfmap] At stream 0: data = < -2 :: 3 >, addr (dfeFix(4, 0, UNSIGNED)) = 7 en = 0
+[conv0][0/0/1/3] [bufferizeIfmap] At stream 0: data = < -2 :: 3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 7 read addr = 7 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1614,7 +1613,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 38 (192) nInputs 8
+UNPADDING: 39 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1636,7 +1635,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 8 8
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/2/0] [bufferizeIfmap] At stream 0: data = < 4 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 8 en = 0
+[conv0][0/0/2/0] [bufferizeIfmap] At stream 0: data = < 4 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 8 read addr = 8 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1661,7 +1660,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 39 (192) nInputs 8
+UNPADDING: 40 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -1683,7 +1682,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 9 9
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/2/1] [bufferizeIfmap] At stream 0: data = < 1 :: 1 >, addr (dfeFix(4, 0, UNSIGNED)) = 9 en = 0
+[conv0][0/0/2/1] [bufferizeIfmap] At stream 0: data = < 1 :: 1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 9 read addr = 9 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1708,7 +1707,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 40 (192) nInputs 8
+UNPADDING: 41 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 1
@@ -1730,7 +1729,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0
 [ConvLayerIfmapBuffer] output = < 1 :: 5 >
 [ConvLayerIfmapBuffer] addr = 10 10
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/2/2] [bufferizeIfmap] At stream 0: data = < 1 :: 5 >, addr (dfeFix(4, 0, UNSIGNED)) = 10 en = 1
+[conv0][0/0/2/2] [bufferizeIfmap] At stream 0: data = < 1 :: 5 >, write addr (dfeFix(4, 0, UNSIGNED)) = 10 read addr = 10 en = 1
 [DotProd] vecA = < 1 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1755,7 +1754,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 41 (192) nInputs 8
+UNPADDING: 42 (192) nInputs 8
 conv0f = 0 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -1777,7 +1776,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0
 [ConvLayerIfmapBuffer] output = < 6 :: 2 >
 [ConvLayerIfmapBuffer] addr = 11 11
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/2/3] [bufferizeIfmap] At stream 0: data = < 6 :: 2 >, addr (dfeFix(4, 0, UNSIGNED)) = 11 en = 1
+[conv0][0/0/2/3] [bufferizeIfmap] At stream 0: data = < 6 :: 2 >, write addr (dfeFix(4, 0, UNSIGNED)) = 11 read addr = 11 en = 1
 [DotProd] vecA = < 6 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1802,7 +1801,8 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 42 (192) nInputs 8
+PADDING: fff6fffb 4 (192) nInputs 8
+UNPADDING: 43 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1824,7 +1824,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 12 12
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/3/0] [bufferizeIfmap] At stream 0: data = < -2 :: -3 >, addr (dfeFix(4, 0, UNSIGNED)) = 12 en = 0
+[conv0][0/0/3/0] [bufferizeIfmap] At stream 0: data = < -2 :: -3 >, write addr (dfeFix(4, 0, UNSIGNED)) = 12 read addr = 12 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1849,8 +1849,8 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: fff6fffb 4 (192) nInputs 8
-UNPADDING: 43 (192) nInputs 8
+PADDING: fffcfffe 5 (192) nInputs 8
+UNPADDING: 44 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1872,7 +1872,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerIfmapBuffer] output = < 0 :: 0 >
 [ConvLayerIfmapBuffer] addr = 13 13
 [ConvLayerIfmapBuffer] writeEn = 0 0
-[conv0][0/0/3/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 13 en = 0
+[conv0][0/0/3/1] [bufferizeIfmap] At stream 0: data = < 0 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 13 read addr = 13 en = 0
 [DotProd] vecA = < 0 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1897,8 +1897,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 2
-PADDING: fffcfffe 5 (192) nInputs 8
-UNPADDING: 44 (192) nInputs 8
+UNPADDING: 45 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -1920,7 +1919,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: -
 [ConvLayerIfmapBuffer] output = < -4 :: -1 >
 [ConvLayerIfmapBuffer] addr = 14 14
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/3/2] [bufferizeIfmap] At stream 0: data = < -4 :: -1 >, addr (dfeFix(4, 0, UNSIGNED)) = 14 en = 1
+[conv0][0/0/3/2] [bufferizeIfmap] At stream 0: data = < -4 :: -1 >, write addr (dfeFix(4, 0, UNSIGNED)) = 14 read addr = 14 en = 1
 [DotProd] vecA = < -4 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1945,7 +1944,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 45 (192) nInputs 8
+UNPADDING: 46 (192) nInputs 8
 conv0f = 0 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -1967,7 +1966,7 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: -1 :: 
 [ConvLayerIfmapBuffer] output = < -4 :: 0 >
 [ConvLayerIfmapBuffer] addr = 15 15
 [ConvLayerIfmapBuffer] writeEn = 1 1
-[conv0][0/0/3/3] [bufferizeIfmap] At stream 0: data = < -4 :: 0 >, addr (dfeFix(4, 0, UNSIGNED)) = 15 en = 1
+[conv0][0/0/3/3] [bufferizeIfmap] At stream 0: data = < -4 :: 0 >, write addr (dfeFix(4, 0, UNSIGNED)) = 15 read addr = 15 en = 1
 [DotProd] vecA = < -4 >
 [DotProd] vecB = < 0 >
 [DotProd] vecC = < 0 >
@@ -1992,7 +1991,6 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: -1 :: 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 2
-UNPADDING: 46 (192) nInputs 8
 PADDING: 20001 6 (192) nInputs 8
 UNPADDING: 47 (192) nInputs 8
 PADDING: 0 7 (192) nInputs 8
@@ -2326,9 +2324,9 @@ PADDING: 0 190 (192) nInputs 8
 PADDING: 0 191 (192) nInputs 8
 make stopsim
 make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par'
-maxcompilersim -n rz3515d -cLIMA stop
-Terminating MaxelerOS daemon (PID 418692)...
+maxcompilersim -n rz3515f -cLIMA stop
+Terminating MaxelerOS daemon (PID 444611)...
 MaxelerOS daemon killed
-Terminating simulated system (PID 418686)...
+Terminating simulated system (PID 444603)...
 Simulated system killed
 make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_par'

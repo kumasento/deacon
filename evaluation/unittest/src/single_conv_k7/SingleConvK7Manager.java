@@ -71,6 +71,7 @@ public class SingleConvK7Manager extends Max5LMemManager implements ManagerInter
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     SingleConvK7Manager mgr = new SingleConvK7Manager(params, cps);
@@ -80,6 +81,7 @@ public class SingleConvK7Manager extends Max5LMemManager implements ManagerInter
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

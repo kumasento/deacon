@@ -75,6 +75,7 @@ public class BottleneckShortcutManager extends Max5LMemManager implements Manage
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     cps.add(new ConvLayerParameters.Builder(3, 3, 2, 2, 3)
@@ -101,6 +102,7 @@ public class BottleneckShortcutManager extends Max5LMemManager implements Manage
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     cps.add(new ConvLayerParameters.Builder(3, 3, 2, 4, 1)
@@ -124,6 +126,7 @@ public class BottleneckShortcutManager extends Max5LMemManager implements Manage
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     BottleneckShortcutManager mgr = new BottleneckShortcutManager(params, cps);
@@ -133,6 +136,7 @@ public class BottleneckShortcutManager extends Max5LMemManager implements Manage
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

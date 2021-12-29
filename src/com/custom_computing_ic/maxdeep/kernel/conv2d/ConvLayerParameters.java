@@ -44,6 +44,7 @@ public class ConvLayerParameters extends LayerParameters {
   public boolean winogradWeightsOffline;
   public final boolean coeffOnChip;
   public final boolean initCoeff;
+  public final double dspFactor;
 
   public static final int WINOGRAD_TILE_SIZE = 4;
   public int winoH;
@@ -150,11 +151,57 @@ public class ConvLayerParameters extends LayerParameters {
     this.coeffFile = builder.coeffFile;
     this.namedRegion = builder.namedRegion;
     this.pooling = builder.pooling;
+    this.dspFactor = builder.dspFactor;
+  }
+
+  public int PF() {
+    return PF.get(0);
+  }
+  public int PF(int i) {
+    return PF.get(i);
+  }
+  public int PC() {
+    return PC.get(0);
+  }
+  public int PC(int i) {
+    return PC.get(i);
+  }
+
+  public int F() {
+    return this.F;
+  }
+
+  public int F(int i) {
+    return (int) ((double) this.F * this.PF(i) / this.PF(0));
+  }
+
+  public int C() {
+    return this.C;
+  }
+
+  public int C(int i) {
+    return (int) ((double) this.C * this.PC(i) / this.PC(0));
+  }
+
+  public int padF() {
+    return padF(0);
+  }
+
+  public int padF(int i) {
+    return (int) Math.ceil((double) F(i) / PF.get(0)) * PF.get(0);
+  }
+
+  public int padC() {
+    return padC(0);
+  }
+
+  public int padC(int i) {
+    return (int) Math.ceil((double) C(i) / PC.get(0)) * PC.get(0);
   }
 
   public ConvLayerParameters createDepthwiseParameters() {
     /**
-     * TODO: One thing not clear - PC is actually not sensible here However, we
+     * TODO: One thing not clear - PC is actually not sensible here. However, we
      * still need it to specify correct number of line buffers.
      */
     return new ConvLayerParameters.Builder(OH, OW, C, C, K)
@@ -192,6 +239,28 @@ public class ConvLayerParameters extends LayerParameters {
         .coeffOnChip(coeffOnChip)
         .useDRAM(useDRAM)
         .name(name + "_pw")
+        .type(Type.STANDARD)
+        .coeffFile(coeffFile)
+        .seq(seq)
+        .dbg(dbg)
+        .build();
+  }
+
+  public ConvLayerParameters createShortcutParameters(int i) {
+    return new ConvLayerParameters.Builder(OH, OW, C, F, 1)
+        .dtype(dtype)
+        .BW(BW)
+        .WBW(WBW)
+        .numFracBits(numFracBits)
+        .PC(PC.get(0))
+        .PC(PC.get(1))
+        .PF(PF.get(0)) // since shortcut, just need to produce at the first output.
+        .PK(PK)
+        .pad(PAD) // inherit the padding
+        .stride(1)
+        .coeffOnChip(coeffOnChip)
+        .useDRAM(useDRAM)
+        .name(name)
         .type(Type.STANDARD)
         .coeffFile(coeffFile)
         .seq(seq)
@@ -245,31 +314,27 @@ public class ConvLayerParameters extends LayerParameters {
     long W = getPaddedWidth();
 
     if (type == Type.IDENTITY)
-      return ((long) H * W * C / (PC.get(0) * PK));
+      return ((long) H * W * padC() / (PC.get(0) * PK));
     if (type == Type.CONCAT) // read happens in parallel
-      return ((long) H * W * C / (PC.get(0) * PK));
+      return ((long) H * W * padC() / (PC.get(0) * PK));
     if (type == Type.POOLING)
-      return ((long) H * W * C / (PC.get(0) * PK));
+      return ((long) H * W * padC() / (PC.get(0) * PK));
     if (type == Type.STANDARD)
-      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
+      return ((long) H * W * padC() * padF()) / (PC.get(0) * PF.get(0) * PK);
     if (type == Type.DEPTHWISE_SEPARABLE)
-      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
-    if (type == Type.DEPTHWISE_SEPARABLE_V2)
-      return ((long) H * W * C) / (PC.get(0) * PK)
-          + ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PK);
-    if (type == Type.POINTWISE)
-      return ((long) H * W * C * F) / (PC.get(0) * PF.get(0) * PH * PW);
+      return ((long) H * W * padC() * padF()) / (PC.get(0) * PF.get(0) * PK);
     throw new IllegalArgumentException(
         "getNumCycles has not implemented for the current type: " + type.name());
   }
 
+  @Deprecated
   public int getPoolNumCycles() {
     return (OH * OW * F) / (PK * PF.get(0));
   }
 
   @Override
   public long getIfmapStreamNumElems() {
-    return useWinograd ? C * winoH * winoW : C * H * W;
+    return useWinograd ? padC() * winoH * winoW : padC() * H * W;
   }
 
   @Override
@@ -284,11 +349,11 @@ public class ConvLayerParameters extends LayerParameters {
   @Override
   public long getCoeffStreamNumElems() {
     if (useWinograd && winogradWeightsOffline)
-      return C * F * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
+      return padC() * padF() * WinogradTransform.TILE_SIZE * WinogradTransform.TILE_SIZE;
     if (type == Type.STANDARD)
-      return C * F * K * K;
+      return padC() * padF() * K * K;
     if (type == Type.POINTWISE)
-      return C * F;
+      return padC() * padF();
 
     throw new IllegalArgumentException("Not recognized type.");
     // return C * (F / PF.get(i) + 1) * Math.max(K * K, PF.get(i));
@@ -333,21 +398,26 @@ public class ConvLayerParameters extends LayerParameters {
     return getCoeffNumVec(i, 0);
   }
 
+  /**
+   * Number of coefficient vectors, each of shape PF x PC
+   * @param i
+   * @param j
+   * @return
+   */
   public int getCoeffNumVec(int i, int j) {
     int total = 0;
-    if (type == Type.DEPTHWISE_SEPARABLE)
-      total = C * K * K;
-    else if (type == Type.STANDARD || type == Type.POINTWISE)
-      total = C * F * K * K;
-
     // This is because we need to make sure that every convolution in the same kernel takes the same
     // amount of cycles, thus the input channels should be scaled.
-    total *= PC.get(i) / PC.get(0);
+    if (type == Type.DEPTHWISE_SEPARABLE)
+      total = padC(i) * K * K;
+    else if (type == Type.STANDARD || type == Type.POINTWISE)
+      total = padC(i) * padF(j) * K * K;
+
     return total / getCoeffVecSize(i, j);
   }
 
   public long getDepthwiseCoeffStreamNumElems() {
-    return C * K * K;
+    return padC() * K * K;
   }
 
   public int getDepthwiseCoeffVecSize(int i) {
@@ -359,7 +429,7 @@ public class ConvLayerParameters extends LayerParameters {
   }
 
   public long getPointwiseCoeffStreamNumElems() {
-    return C * F;
+    return padC() * padF();
   }
 
   public int getPointwiseCoeffVecSize(int i) {
@@ -368,7 +438,7 @@ public class ConvLayerParameters extends LayerParameters {
 
   @Override
   public long getOfmapStreamNumElems() {
-    return F * OH * OW;
+    return padF() * OH * OW;
   }
 
   @Override
@@ -475,6 +545,7 @@ public class ConvLayerParameters extends LayerParameters {
     private String coeffFile = "";
     private String namedRegion = "";
     private Pooling pooling;
+    private double dspFactor = 1.0;
 
     public Builder(int OH, int OW, int C, int F, int K) {
       if (OH <= 0)
@@ -520,6 +591,12 @@ public class ConvLayerParameters extends LayerParameters {
       this.numOutputs = 1;
       this.namedRegion = "";
       this.pooling = Pooling.MAX;
+      this.dspFactor = 0.5;
+    }
+
+    public Builder dspFactor(double dspFactor) {
+      this.dspFactor = dspFactor;
+      return this;
     }
 
     public Builder pooling(Pooling pooling) {
@@ -575,6 +652,8 @@ public class ConvLayerParameters extends LayerParameters {
       if (type == Type.POINTWISE || K == 1)
         return outputDim * stride;
       if (pad == 1 && stride == 2 && kernelDim == 3)
+        return outputDim * 2;
+      if (pad == 3 && stride == 2 && kernelDim == 7)
         return outputDim * 2;
       return (outputDim - 1) * stride + kernelDim - 2 * pad;
     }
@@ -640,8 +719,9 @@ public class ConvLayerParameters extends LayerParameters {
     public Builder PF(int PF) {
       if (PF <= 0)
         throw new IllegalArgumentException("PF should be larger than 0");
-      if (F % PF != 0)
-        throw new IllegalArgumentException("F % PF should equal 0");
+      // if (F % PF != 0)
+      //   throw new IllegalArgumentException(
+      //       String.format("F (%d) %% PF (%d) should equal 0", F, PF));
       this.PF.add(PF);
       return this;
     }
@@ -663,8 +743,8 @@ public class ConvLayerParameters extends LayerParameters {
     public Builder PC(int PC) {
       if (PC <= 0)
         throw new IllegalArgumentException("PC should be larger than 0");
-      if (C % PC != 0)
-        throw new IllegalArgumentException("C % PC should equal 0");
+      // if (C % PC != 0)
+      //   throw new IllegalArgumentException("C % PC should equal 0");
       this.PC.add(PC);
       return this;
     }

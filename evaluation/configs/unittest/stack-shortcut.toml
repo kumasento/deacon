@@ -1,0 +1,39 @@
+NAME = "stack_shortcut"
+
+[global]
+BW = 16
+WBW = 16
+NUM_FRAC_BITS = 0
+FREQ = 200
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.resnetv15stage2conv0fwd]
+H = 2
+W = 2
+C = 2
+F = 4
+K = 3
+S = 2
+P = 1
+P_C = [ 1,]
+P_F = [ 2, 1,]
+SEQ = 0
+TYPE = "STANDARD"
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage2conv1fwd]
+H = 2
+W = 2
+C = 4
+F = 4
+K = 3
+S = 1
+P = 1
+P_C = [ 2, 1,]
+P_F = [ 1,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage2conv0fwd", "resnetv15stage2conv0fwd_1",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage2conv0fwd_1"

@@ -75,6 +75,7 @@ public class InvertedbottleneckManager extends Max5LMemManager implements Manage
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     cps.add(new ConvLayerParameters.Builder(2, 2, 4, 2, 3)
@@ -96,6 +97,7 @@ public class InvertedbottleneckManager extends Max5LMemManager implements Manage
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     InvertedbottleneckManager mgr = new InvertedbottleneckManager(params, cps);
@@ -105,6 +107,7 @@ public class InvertedbottleneckManager extends Max5LMemManager implements Manage
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

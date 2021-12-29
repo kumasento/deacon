@@ -82,8 +82,8 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
 
   public Stream depthwiseConvolution(Stream ifmap) {
     logMsg("Depthwise coeff ROM depth = %d", dcp.getCoeffNumVec(ifmap.index));
-    DFEType dwAddrT =
-        dfeUInt(Math.max(1, MathUtils.bitsToAddressPowerOfTwo(dcp.getCoeffNumVec(ifmap.index))));
+    DFEType dwAddrT = dfeUInt(Math.max(
+        1, MathUtils.bitsToAddress(MathUtils.nextPowerOfTwo(dcp.getCoeffNumVec(ifmap.index)))));
     DFEVar dwAddr = c.cast(dwAddrT);
 
     DFEVector<DFEVar> coeff = getROM(dcp, dcp.name, dcp.getCoeffNumVec(ifmap.index),
@@ -95,9 +95,9 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
   }
 
   public Stream pointwiseConvolution(Stream ifmap) {
-    DFEType pwAddrT =
-        dfeUInt(Math.max(1, MathUtils.bitsToAddressPowerOfTwo(pcp.getCoeffNumVec(ifmap.index))));
-    DFEVar pwAddr = f.mul(cp.C / cp.PC.get(ifmap.index)).add(c).cast(pwAddrT);
+    DFEType pwAddrT = dfeUInt(Math.max(
+        1, MathUtils.bitsToAddress(MathUtils.nextPowerOfTwo(pcp.getCoeffNumVec(ifmap.index)))));
+    DFEVar pwAddr = f.mul(cp.padC() / cp.PC.get(ifmap.index)).add(c).cast(pwAddrT);
     logMsg("Pointwise coeff ROM depth = %d", pcp.getCoeffNumVec(ifmap.index));
 
     DFEVector<DFEVar> coeff = getROM(pcp, pcp.name, pcp.getCoeffNumVec(ifmap.index),
@@ -114,7 +114,7 @@ public class DepthwiseSeparableConvLayerKernel extends ConvLayerKernel {
     pcp = cp.createPointwiseParameters();
     Stream ifmap = padIfmap(new Stream(ifmapList.get(i), i));
 
-    if (needLineBuffer(i))
+    if (needLineBuffer(i, dcp))
       ifmap = lineBuffer(ifmap);
     if (isBypass(i))
       throw new IllegalArgumentException("Cannot bypass.");

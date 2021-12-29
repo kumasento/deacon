@@ -71,6 +71,7 @@ public class SingleDwsConvManager extends Max5LMemManager implements ManagerInte
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     SingleDwsConvManager mgr = new SingleDwsConvManager(params, cps);
@@ -80,6 +81,7 @@ public class SingleDwsConvManager extends Max5LMemManager implements ManagerInte
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

@@ -1,0 +1,75 @@
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:33: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:33: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:33: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:33: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:33: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Mon 22:34: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Mon 22:34: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Mon 22:34: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Mon 22:34: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Mon 22:34: WARNING: to that of a similar bitstream.
+Tue 02:39: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Tue 02:39: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Tue 02:39: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

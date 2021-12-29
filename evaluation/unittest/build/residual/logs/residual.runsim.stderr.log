@@ -1,6 +1,6 @@
 In file included from ../../src/residual/ResidualCpuCode.cpp:11:
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:996:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1013:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/residual/ResidualCpuCode.cpp:82:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -9,7 +9,7 @@ In file included from ../../src/residual/ResidualCpuCode.cpp:11:
       |                                   int                       long unsigned int
       |                                  %ld
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1010:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1027:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/residual/ResidualCpuCode.cpp:82:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -25,48 +25,48 @@ In file included from ../../src/residual/ResidualCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1227 14:45:14.040180 417275 ResidualCpuCode.cpp:71] num frac bits: 0
-I1227 14:45:14.040467 417275 ResidualCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1227 14:45:14.040544 417275 ResidualCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1227 14:45:14.040560 417275 ResidualCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1227 14:45:14.040576 417275 layers.h:975] Running golden function ...
-I1227 14:45:14.040597 417275 layers.h:984]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
-I1227 14:45:14.041965 417275 layers.h:984]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
-I1227 14:45:14.043017 417275 utils.h:383] Burst aligning input array of size: 16 to 192
-I1227 14:45:14.043036 417275 ResidualCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1227 14:45:14.043047 417275 utils.h:383] Burst aligning input array of size: 16 to 192
-I1227 14:45:14.043071 417275 ResidualCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1227 14:45:14.043082 417275 layers.h:758] Writing DRAM to 0 with size 0x180
-I1227 14:45:14.047351 417275 ResidualCpuCode.cpp:107] Running ...
-I1227 14:45:14.195580 417275 ResidualCpuCode.cpp:112] Done
-I1227 14:45:14.195609 417275 layers.h:775] Reading DRAM from 0x180 with size 0x180
-I1227 14:45:14.197429 417275 ResidualCpuCode.cpp:119] output_dfe[0] = -29
-I1227 14:45:14.197463 417275 ResidualCpuCode.cpp:119] output_dfe[1] = 5
-I1227 14:45:14.197477 417275 ResidualCpuCode.cpp:119] output_dfe[2] = -12
-I1227 14:45:14.197489 417275 ResidualCpuCode.cpp:119] output_dfe[3] = 4
-I1227 14:45:14.197502 417275 ResidualCpuCode.cpp:119] output_dfe[4] = -12
-I1227 14:45:14.197516 417275 ResidualCpuCode.cpp:119] output_dfe[5] = -16
-I1227 14:45:14.197528 417275 ResidualCpuCode.cpp:119] output_dfe[6] = 32
-I1227 14:45:14.197540 417275 ResidualCpuCode.cpp:119] output_dfe[7] = -19
-I1227 14:45:14.197552 417275 ResidualCpuCode.cpp:119] output_dfe[8] = 2
-I1227 14:45:14.197563 417275 ResidualCpuCode.cpp:119] output_dfe[9] = -12
-I1227 14:45:14.197575 417275 ResidualCpuCode.cpp:125] elapsed time: 0.148174s
-I1227 14:45:14.197588 417275 ResidualCpuCode.cpp:139] [Ops] layer                          conv0 = 0.000288 M
-I1227 14:45:14.197602 417275 ResidualCpuCode.cpp:139] [Ops] layer                          conv1 = 0.000288 M
-I1227 14:45:14.197614 417275 ResidualCpuCode.cpp:143] OPS:    1.152e-06 G
-I1227 14:45:14.197626 417275 ResidualCpuCode.cpp:144] FPS:    13.4977
-I1227 14:45:14.197639 417275 ResidualCpuCode.cpp:147] GFLOPs: 7.77466e-06
-I1227 14:45:14.197652 417275 ResidualCpuCode.cpp:154] Examine results ...
-I1227 14:45:14.197661 417275 ResidualCpuCode.cpp:156] output_cpu[0] = -29
-I1227 14:45:14.197674 417275 ResidualCpuCode.cpp:156] output_cpu[1] = 5
-I1227 14:45:14.197685 417275 ResidualCpuCode.cpp:156] output_cpu[2] = -12
-I1227 14:45:14.197697 417275 ResidualCpuCode.cpp:156] output_cpu[3] = 4
-I1227 14:45:14.197708 417275 ResidualCpuCode.cpp:156] output_cpu[4] = -12
-I1227 14:45:14.197719 417275 ResidualCpuCode.cpp:162] output_dfe[0] = -29
-I1227 14:45:14.197731 417275 ResidualCpuCode.cpp:162] output_dfe[1] = 5
-I1227 14:45:14.197743 417275 ResidualCpuCode.cpp:162] output_dfe[2] = -12
-I1227 14:45:14.197755 417275 ResidualCpuCode.cpp:162] output_dfe[3] = 4
-I1227 14:45:14.197767 417275 ResidualCpuCode.cpp:162] output_dfe[4] = -12
-I1227 14:45:14.197782 417275 ResidualCpuCode.cpp:173] Evaluating difference ...
-I1227 14:45:14.197791 417275 ResidualCpuCode.cpp:174] Mask: 00000000
-I1227 14:45:14.197813 417275 ResidualCpuCode.cpp:202] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0
+I1229 19:18:53.467162 446479 ResidualCpuCode.cpp:71] num frac bits: 0
+I1229 19:18:53.467432 446479 ResidualCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1229 19:18:53.467504 446479 ResidualCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1229 19:18:53.467517 446479 ResidualCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1229 19:18:53.467535 446479 layers.h:992] Running golden function ...
+I1229 19:18:53.467555 446479 layers.h:1001]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
+I1229 19:18:53.468783 446479 layers.h:1001]        STANDARD 2 x 2 x 2 -> 2 x 2 x 2
+I1229 19:18:53.474295 446479 utils.h:383] Burst aligning input array of size: 16 to 192
+I1229 19:18:53.474313 446479 ResidualCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1229 19:18:53.474324 446479 utils.h:383] Burst aligning input array of size: 16 to 192
+I1229 19:18:53.474336 446479 ResidualCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1229 19:18:53.474347 446479 layers.h:775] Writing DRAM to 0 with size 0x180
+I1229 19:18:53.479516 446479 ResidualCpuCode.cpp:107] Running ...
+I1229 19:18:53.650202 446479 ResidualCpuCode.cpp:112] Done
+I1229 19:18:53.650241 446479 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1229 19:18:53.652815 446479 ResidualCpuCode.cpp:119] output_dfe[0] = -29
+I1229 19:18:53.652842 446479 ResidualCpuCode.cpp:119] output_dfe[1] = 5
+I1229 19:18:53.652855 446479 ResidualCpuCode.cpp:119] output_dfe[2] = -12
+I1229 19:18:53.652866 446479 ResidualCpuCode.cpp:119] output_dfe[3] = 4
+I1229 19:18:53.652877 446479 ResidualCpuCode.cpp:119] output_dfe[4] = -12
+I1229 19:18:53.652889 446479 ResidualCpuCode.cpp:119] output_dfe[5] = -16
+I1229 19:18:53.652899 446479 ResidualCpuCode.cpp:119] output_dfe[6] = 32
+I1229 19:18:53.652911 446479 ResidualCpuCode.cpp:119] output_dfe[7] = -19
+I1229 19:18:53.652922 446479 ResidualCpuCode.cpp:119] output_dfe[8] = 2
+I1229 19:18:53.652932 446479 ResidualCpuCode.cpp:119] output_dfe[9] = -12
+I1229 19:18:53.652945 446479 ResidualCpuCode.cpp:125] elapsed time: 0.170616s
+I1229 19:18:53.652957 446479 ResidualCpuCode.cpp:139] [Ops] layer                          conv0 = 0.000288 M
+I1229 19:18:53.652971 446479 ResidualCpuCode.cpp:139] [Ops] layer                          conv1 = 0.000288 M
+I1229 19:18:53.652982 446479 ResidualCpuCode.cpp:143] OPS:    1.152e-06 G
+I1229 19:18:53.652994 446479 ResidualCpuCode.cpp:144] FPS:    11.7222
+I1229 19:18:53.653007 446479 ResidualCpuCode.cpp:147] GFLOPs: 6.75201e-06
+I1229 19:18:53.653019 446479 ResidualCpuCode.cpp:154] Examine results ...
+I1229 19:18:53.653034 446479 ResidualCpuCode.cpp:156] output_cpu[0] = -29
+I1229 19:18:53.653046 446479 ResidualCpuCode.cpp:156] output_cpu[1] = 5
+I1229 19:18:53.653076 446479 ResidualCpuCode.cpp:156] output_cpu[2] = -12
+I1229 19:18:53.653088 446479 ResidualCpuCode.cpp:156] output_cpu[3] = 4
+I1229 19:18:53.653103 446479 ResidualCpuCode.cpp:156] output_cpu[4] = -12
+I1229 19:18:53.653115 446479 ResidualCpuCode.cpp:162] output_dfe[0] = -29
+I1229 19:18:53.653126 446479 ResidualCpuCode.cpp:162] output_dfe[1] = 5
+I1229 19:18:53.653137 446479 ResidualCpuCode.cpp:162] output_dfe[2] = -12
+I1229 19:18:53.653148 446479 ResidualCpuCode.cpp:162] output_dfe[3] = 4
+I1229 19:18:53.653159 446479 ResidualCpuCode.cpp:162] output_dfe[4] = -12
+I1229 19:18:53.653172 446479 ResidualCpuCode.cpp:173] Evaluating difference ...
+I1229 19:18:53.653182 446479 ResidualCpuCode.cpp:174] Mask: 00000000
+I1229 19:18:53.653213 446479 ResidualCpuCode.cpp:202] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

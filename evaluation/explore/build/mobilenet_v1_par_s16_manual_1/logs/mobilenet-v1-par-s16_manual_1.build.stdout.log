@@ -2224,3 +2224,48 @@ Mon 19:33:  - PERFORMANCE_EXPLORE
 Mon 19:33:  - PERFORMANCE_EXTRA_TIMING_OPT
 Mon 19:33:  - PERFORMANCE_NET_DELAY_HIGH
 Mon 19:33:  - PERFORMANCE_REFINE_PLACEMENT
+Mon 23:52: Implementation: Strategy "VIVADO_DEFAULT" met timing with score 0 (best score 0)
+Mon 23:52: Implementation: Strategy "MAXELER1" was cancelled (no timing score)
+Mon 23:52: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Mon 23:52: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Mon 23:53: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Mon 23:53: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Mon 23:53: 
+Mon 23:53: FINAL POWER REPORT
+Mon 23:53: Total On-Chip Power (W) 16.01 (budget: 91.80) 
+Mon 23:53: Dynamic Power (W)       13.20 
+Mon 23:53: Device Static Power(W)   2.81 
+Mon 23:53: 
+Mon 23:53: (11/15) - Generate Configuration (VivadoBitgen)
+Tue 00:13: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Tue 00:19: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Tue 00:19: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Tue 00:19: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Tue 00:19: 
+Tue 00:19: FINAL RESOURCE USAGE
+Tue 00:19: FPGA: xcVU9P-FLGB2104-2-E
+Tue 00:19: Logic utilization:      586417 / 3546720 (16.53%)
+Tue 00:19:   LUTs:                 114652 / 1182240 (9.70%)
+Tue 00:19:   Primary FFs:          471765 / 2364480 (19.95%)
+Tue 00:19: DSP blocks:               5425 / 6840    (79.31%)
+Tue 00:19: Block memory (BRAM18):    1518 / 4320    (35.14%)
+Tue 00:19: Block memory (URAM):       276 / 960     (28.75%)
+Tue 00:19: 
+Tue 00:19: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max (MD5Sum: 391c7f6af82d46aaa9f6a54940b21107)
+Tue 00:19: Build completed: Tue Dec 28 00:19:45 GMT 2021 (took 9 hours, 33 mins, 17 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/../scratch/MobilenetV1ParS16Manual1.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/../scratch/MobilenetV1ParS16Manual1.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max MobilenetV1ParS16Manual1_FREQ_300_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_8056340334133192182/cobject/max_8560476418499496238.c -o /tmp/sliccompile_8056340334133192182/cobject/max_8560476418499496238.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results/MobilenetV1ParS16Manual1.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_6347130801861330469.o 
+ld -r /tmp/sliccompile_8056340334133192182/cobject/max_8560476418499496238.c.o max_6347130801861330469.o -o MobilenetV1ParS16Manual1_FREQ_300_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v1_par_s16_manual_1'
+g++ ../../src/mobilenet_v1_par_s16_manual_1/MobilenetV1ParS16Manual1CpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV1ParS16Manual1_MAIA_DFE_FREQ_300/results -DDESIGN_NAME=MobilenetV1ParS16Manual1 -c -o MobilenetV1ParS16Manual1_FREQ_300_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o MobilenetV1ParS16Manual1_FREQ_300_dfe MobilenetV1ParS16Manual1_FREQ_300_dfe.o MobilenetV1ParS16Manual1_FREQ_300_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

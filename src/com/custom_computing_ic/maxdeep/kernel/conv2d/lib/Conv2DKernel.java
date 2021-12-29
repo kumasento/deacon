@@ -64,7 +64,7 @@ public class Conv2DKernel extends KernelComponent {
     super(owner);
 
     this.cp = cp;
-    this.C = cp.C;
+    this.C = cp.padC();
 
     int K = cp.K;
     int PC = cp.PC.get(index);
@@ -146,6 +146,7 @@ public class Conv2DKernel extends KernelComponent {
     int PF = cp.PF.get(index2);
     int PK = cp.PK;
 
+    getOwner().optimization.pushDSPFactor(cp.dspFactor);
     if (cp.type == Type.DEPTHWISE_SEPARABLE) {
       for (int pc = 0; pc < PC; pc++) {
         // create a new vector instance
@@ -185,9 +186,11 @@ public class Conv2DKernel extends KernelComponent {
         }
 
         for (int pk = 0; pk < PK; pk++)
-          ofmap[pf * PK + pk].connect(AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) * PC)));
+          ofmap.get(pf * PK + pk)
+              .connect(AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) * PC)));
       }
     }
+    getOwner().optimization.popDSPFactor();
   }
 
   public void computeWinograd(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff,

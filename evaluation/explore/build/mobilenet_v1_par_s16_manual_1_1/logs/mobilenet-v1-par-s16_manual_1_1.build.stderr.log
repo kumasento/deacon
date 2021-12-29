@@ -71,3 +71,5 @@ Mon 14:32: WARNING: to that of a similar bitstream.
 Mon 17:42: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
 Mon 17:42: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
 Mon 17:42: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
+/usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp

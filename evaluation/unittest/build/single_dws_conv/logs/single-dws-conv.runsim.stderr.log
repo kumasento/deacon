@@ -1,6 +1,6 @@
 In file included from ../../src/single_dws_conv/SingleDwsConvCpuCode.cpp:11:
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void ConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:996:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1013:34:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/single_dws_conv/SingleDwsConvCpuCode.cpp:81:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:311:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   311 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -9,7 +9,7 @@ In file included from ../../src/single_dws_conv/SingleDwsConvCpuCode.cpp:11:
       |                                   int                       long unsigned int
       |                                  %ld
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h: In instantiation of ‘void DepthwiseSeparableConvLayerCpuBatched(std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, std::vector<T>&, int, int, int, int, int, int, int, int, bool, bool, int) [with T = short int]’:
-/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1010:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
+/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:1027:52:   required from ‘void process(std::vector<T>&, std::string, int, std::vector<ConvLayerParameters>&, std::vector<std::vector<T> >&) [with data_t = short int; std::string = std::basic_string<char>]’
 ../../src/single_dws_conv/SingleDwsConvCpuCode.cpp:81:73:   required from here
 /mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include/maxdeep/layers.h:212:35: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
   212 |                   printf("output[%d] = %10.6f + %10.6f = ", oi,
@@ -25,46 +25,46 @@ In file included from ../../src/single_dws_conv/SingleDwsConvCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1227 14:45:12.688287 416431 SingleDwsConvCpuCode.cpp:70] num frac bits: 0
-I1227 14:45:12.688578 416431 SingleDwsConvCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
-I1227 14:45:12.688657 416431 SingleDwsConvCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
-I1227 14:45:12.688673 416431 SingleDwsConvCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
-I1227 14:45:12.688691 416431 layers.h:975] Running golden function ...
-I1227 14:45:12.688719 416431 layers.h:984] DEPTHWISE_SEPARABLE 2 x 2 x 2 -> 2 x 2 x 2
-I1227 14:45:12.690135 416431 utils.h:383] Burst aligning input array of size: 16 to 192
-I1227 14:45:12.690153 416431 SingleDwsConvCpuCode.cpp:95] Tiled input size (burst aligned): 192
-I1227 14:45:12.690165 416431 utils.h:383] Burst aligning input array of size: 16 to 192
-I1227 14:45:12.690177 416431 SingleDwsConvCpuCode.cpp:98] Tiled output size (burst aligned): 192
-I1227 14:45:12.690191 416431 layers.h:758] Writing DRAM to 0 with size 0x180
-I1227 14:45:12.713615 416431 SingleDwsConvCpuCode.cpp:106] Running ...
-I1227 14:45:12.771144 416431 SingleDwsConvCpuCode.cpp:111] Done
-I1227 14:45:12.771193 416431 layers.h:775] Reading DRAM from 0x180 with size 0x180
-I1227 14:45:12.773710 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[0] = -1
-I1227 14:45:12.773739 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[1] = 3
-I1227 14:45:12.773746 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[2] = 3
-I1227 14:45:12.773753 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[3] = 0
-I1227 14:45:12.773759 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[4] = -2
-I1227 14:45:12.773766 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[5] = 6
-I1227 14:45:12.773773 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[6] = 6
-I1227 14:45:12.773778 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[7] = 0
-I1227 14:45:12.773784 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[8] = -5
-I1227 14:45:12.773790 416431 SingleDwsConvCpuCode.cpp:118] output_dfe[9] = -2
-I1227 14:45:12.773797 416431 SingleDwsConvCpuCode.cpp:124] elapsed time: 0.0574486s
-I1227 14:45:12.773804 416431 SingleDwsConvCpuCode.cpp:138] [Ops] layer                          conv0 = 0.000176 M
-I1227 14:45:12.773813 416431 SingleDwsConvCpuCode.cpp:142] OPS:    3.52e-07 G
-I1227 14:45:12.773819 416431 SingleDwsConvCpuCode.cpp:143] FPS:    34.8137
-I1227 14:45:12.773826 416431 SingleDwsConvCpuCode.cpp:146] GFLOPs: 6.12721e-06
-I1227 14:45:12.773833 416431 SingleDwsConvCpuCode.cpp:153] Examine results ...
-I1227 14:45:12.773838 416431 SingleDwsConvCpuCode.cpp:155] output_cpu[0] = -1
-I1227 14:45:12.773845 416431 SingleDwsConvCpuCode.cpp:155] output_cpu[1] = 3
-I1227 14:45:12.773850 416431 SingleDwsConvCpuCode.cpp:155] output_cpu[2] = 3
-I1227 14:45:12.773856 416431 SingleDwsConvCpuCode.cpp:155] output_cpu[3] = 0
-I1227 14:45:12.773861 416431 SingleDwsConvCpuCode.cpp:155] output_cpu[4] = -2
-I1227 14:45:12.773867 416431 SingleDwsConvCpuCode.cpp:161] output_dfe[0] = -1
-I1227 14:45:12.773874 416431 SingleDwsConvCpuCode.cpp:161] output_dfe[1] = 3
-I1227 14:45:12.773880 416431 SingleDwsConvCpuCode.cpp:161] output_dfe[2] = 3
-I1227 14:45:12.773885 416431 SingleDwsConvCpuCode.cpp:161] output_dfe[3] = 0
-I1227 14:45:12.773891 416431 SingleDwsConvCpuCode.cpp:161] output_dfe[4] = -2
-I1227 14:45:12.773897 416431 SingleDwsConvCpuCode.cpp:172] Evaluating difference ...
-I1227 14:45:12.773903 416431 SingleDwsConvCpuCode.cpp:173] Mask: 00000000
-I1227 14:45:12.773931 416431 SingleDwsConvCpuCode.cpp:201] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0
+I1229 19:18:48.931357 444211 SingleDwsConvCpuCode.cpp:70] num frac bits: 0
+I1229 19:18:48.931643 444211 SingleDwsConvCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
+I1229 19:18:48.931717 444211 SingleDwsConvCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
+I1229 19:18:48.931732 444211 SingleDwsConvCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
+I1229 19:18:48.931751 444211 layers.h:992] Running golden function ...
+I1229 19:18:48.931777 444211 layers.h:1001] DEPTHWISE_SEPARABLE 2 x 2 x 2 -> 2 x 2 x 2
+I1229 19:18:48.934077 444211 utils.h:383] Burst aligning input array of size: 16 to 192
+I1229 19:18:48.934116 444211 SingleDwsConvCpuCode.cpp:95] Tiled input size (burst aligned): 192
+I1229 19:18:48.934135 444211 utils.h:383] Burst aligning input array of size: 16 to 192
+I1229 19:18:48.934156 444211 SingleDwsConvCpuCode.cpp:98] Tiled output size (burst aligned): 192
+I1229 19:18:48.934176 444211 layers.h:775] Writing DRAM to 0 with size 0x180
+I1229 19:18:48.938481 444211 SingleDwsConvCpuCode.cpp:106] Running ...
+I1229 19:18:49.078399 444211 SingleDwsConvCpuCode.cpp:111] Done
+I1229 19:18:49.078462 444211 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1229 19:18:49.080322 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[0] = -1
+I1229 19:18:49.080374 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[1] = 3
+I1229 19:18:49.080389 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[2] = 3
+I1229 19:18:49.080400 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[3] = 0
+I1229 19:18:49.080411 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[4] = -2
+I1229 19:18:49.080422 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[5] = 6
+I1229 19:18:49.080433 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[6] = 6
+I1229 19:18:49.080446 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[7] = 0
+I1229 19:18:49.080456 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[8] = -5
+I1229 19:18:49.080467 444211 SingleDwsConvCpuCode.cpp:118] output_dfe[9] = -2
+I1229 19:18:49.080478 444211 SingleDwsConvCpuCode.cpp:124] elapsed time: 0.139837s
+I1229 19:18:49.080499 444211 SingleDwsConvCpuCode.cpp:138] [Ops] layer                          conv0 = 0.000176 M
+I1229 19:18:49.080513 444211 SingleDwsConvCpuCode.cpp:142] OPS:    3.52e-07 G
+I1229 19:18:49.080525 444211 SingleDwsConvCpuCode.cpp:143] FPS:    14.3023
+I1229 19:18:49.080539 444211 SingleDwsConvCpuCode.cpp:146] GFLOPs: 2.51721e-06
+I1229 19:18:49.080551 444211 SingleDwsConvCpuCode.cpp:153] Examine results ...
+I1229 19:18:49.080561 444211 SingleDwsConvCpuCode.cpp:155] output_cpu[0] = -1
+I1229 19:18:49.080574 444211 SingleDwsConvCpuCode.cpp:155] output_cpu[1] = 3
+I1229 19:18:49.080585 444211 SingleDwsConvCpuCode.cpp:155] output_cpu[2] = 3
+I1229 19:18:49.080596 444211 SingleDwsConvCpuCode.cpp:155] output_cpu[3] = 0
+I1229 19:18:49.080607 444211 SingleDwsConvCpuCode.cpp:155] output_cpu[4] = -2
+I1229 19:18:49.080619 444211 SingleDwsConvCpuCode.cpp:161] output_dfe[0] = -1
+I1229 19:18:49.080631 444211 SingleDwsConvCpuCode.cpp:161] output_dfe[1] = 3
+I1229 19:18:49.080642 444211 SingleDwsConvCpuCode.cpp:161] output_dfe[2] = 3
+I1229 19:18:49.080653 444211 SingleDwsConvCpuCode.cpp:161] output_dfe[3] = 0
+I1229 19:18:49.080664 444211 SingleDwsConvCpuCode.cpp:161] output_dfe[4] = -2
+I1229 19:18:49.080677 444211 SingleDwsConvCpuCode.cpp:172] Evaluating difference ...
+I1229 19:18:49.080687 444211 SingleDwsConvCpuCode.cpp:173] Mask: 00000000
+I1229 19:18:49.080714 444211 SingleDwsConvCpuCode.cpp:201] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

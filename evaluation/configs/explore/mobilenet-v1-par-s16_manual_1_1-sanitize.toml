@@ -1,0 +1,190 @@
+NAME = "mobilenet_v1_par_s16_manual_1_1"
+
+[global]
+BW = 8
+WBW = 8
+FREQ = 300
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.conv0]
+H = 112
+W = 112
+C = 3
+F = 32
+K = 3
+S = 2
+P = 1
+SEQ = 0
+TYPE = "STANDARD"
+INPUTS = []
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv1]
+H = 112
+W = 112
+C = 32
+F = 64
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv0",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv2]
+H = 56
+W = 56
+C = 64
+F = 128
+K = 3
+S = 2
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv1",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv3]
+H = 56
+W = 56
+C = 128
+F = 128
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv2",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv4]
+H = 28
+W = 28
+C = 128
+F = 256
+K = 3
+S = 2
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv3",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv5]
+H = 28
+W = 28
+C = 256
+F = 256
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv4",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv6]
+H = 14
+W = 14
+C = 256
+F = 512
+K = 3
+S = 2
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv5",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv7]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv6",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv8]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv7",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv9]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv8",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv10]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv9",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv11]
+H = 14
+W = 14
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv10",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv12]
+H = 7
+W = 7
+C = 512
+F = 1024
+K = 3
+S = 2
+P = 1
+SEQ = 0
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv11",]
+OUTPUTS = [ "OFMAP",]
+
+[layers.conv13]
+H = 7
+W = 7
+C = 1024
+F = 1024
+K = 3
+S = 1
+P = 1
+SEQ = 1
+TYPE = "DEPTHWISE_SEPARABLE"
+INPUTS = [ "conv12",]
+OUTPUTS = [ "OFMAP",]

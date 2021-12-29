@@ -38,8 +38,10 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   private final Memory<DFEVector<DFEVar>> mem;
   private final DFEVector<DFEVar> port;
   private final DFEVar addr;
+  private final DFEVar readAddr;
   private final DFEVector<DFEVar> data;
   private final DFEVar writeEn;
+  private final DFEVar mux;
 
   public ConvLayerIfmapBuffer(KernelBase<?> owner, ConvLayerParameters params, DFEType scalarT) {
     this(owner, params, scalarT, false, false, true, 0, "");
@@ -57,7 +59,7 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     this.cp = params;
 
     // width depends on the stream parallelism, depth doesn't (stays the same for all ifmap buffer).
-    this.C = this.cp.C;
+    this.C = this.cp.padC();
     int width = getWidth(index);
     int depth = MathUtils.nextPowerOfTwo(getDepth(pad, forceFull));
 
@@ -70,15 +72,17 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
 
     this.mem = owner.mem.alloc(portVecT, depth);
     this.addr = addrT.newInstance(owner);
+    this.readAddr = addrT.newInstance(owner);
     this.data = portVecT.newInstance(owner);
     this.writeEn = dfeBool().newInstance(owner);
+    this.mux = dfeBool().newInstance(owner);
 
     OffsetExpr writeLatency = stream.makeOffsetAutoLoop(prefix + "_IBUF_WRITE_LATENCY");
 
     owner.getManager().logMsg(String.format("loop = %s", loop));
     if (!loop) {
       // this.port = mem.port(addr, data, writeEn, RamWriteMode.WRITE_FIRST);
-      this.port = control.mux(writeEn, mem.read(addr), data);
+      this.port = control.mux(mux, mem.read(readAddr), data);
       mem.write(addr, data, writeEn);
     } else {
       this.port = mem.read(addr);
@@ -104,7 +108,19 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
   public DFEVector<DFEVar> port(DFEVector<DFEVar> data, DFEVar addr, DFEVar writeEn) {
     this.data.connect(data);
     this.addr.connect(addr);
+    this.readAddr.connect(addr);
     this.writeEn.connect(writeEn);
+    this.mux.connect(writeEn);
+    return this.port;
+  }
+
+  public DFEVector<DFEVar> port(
+      DFEVector<DFEVar> data, DFEVar addr, DFEVar readAddr, DFEVar writeEn, DFEVar mux) {
+    this.data.connect(data);
+    this.addr.connect(addr);
+    this.readAddr.connect(readAddr);
+    this.writeEn.connect(writeEn);
+    this.mux.connect(mux);
     return this.port;
   }
 
@@ -133,7 +149,7 @@ public class ConvLayerIfmapBuffer extends KernelComponent {
     }
 
     if (cp.seq == CompSeq.FILTER_MAJOR || forceFull)
-      return (C / cp.PC.get(0)) * height * (width / cp.PK);
+      return (cp.padC() / cp.PC.get(0)) * height * (width / cp.PK);
     if (cp.seq == CompSeq.CHANNEL_MAJOR)
       return height * (width / cp.PK);
 

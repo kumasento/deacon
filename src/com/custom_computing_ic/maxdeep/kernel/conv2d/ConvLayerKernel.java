@@ -91,18 +91,18 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     if (!cp.residual.isEmpty() && (cp.H != cp.OH || cp.W != cp.OW))
       throw new IllegalArgumentException(
           "The spatial dimensionality shouldn't change for residual connection.");
-    if (!cp.residual.isEmpty() && cp.C < cp.F / cp.PF.get(0) && !shortcut())
+    if (!cp.residual.isEmpty() && cp.padC() < cp.padF() / cp.PF.get(0) && !shortcut())
       throw new IllegalArgumentException(
-          "There will be insufficient input of residuals given cp.C < cp.F.");
+          "There will be insufficient input of residuals given cp.padC < cp.padF.");
     // check data type
     if (cp.BW == 1)
       throw new IllegalArgumentException("BW = 1 is not supported.");
     // check ofmap
     if (cp.outputs.get(0).type != OutputType.OFMAP)
       throw new IllegalArgumentException("The first output should be OFMAP type.");
-    for (int i = 1; i < cp.outputs.size(); ++i)
-      if (cp.outputs.get(i).type == OutputType.OFMAP)
-        throw new IllegalArgumentException("Cannot have OFMAP output at indices besides 0.");
+    // for (int i = 1; i < cp.outputs.size(); ++i)
+    //   if (cp.outputs.get(i).type == OutputType.OFMAP)
+    //     throw new IllegalArgumentException("Cannot have OFMAP output at indices besides 0.");
 
     this.prefix = prefix;
 
@@ -154,8 +154,9 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public DFEVector<DFEVar> getIfmapByOfmapAddr(ConvLayerIfmapBuffer ibuf, int index) {
     if (cp.seq == CompSeq.CHANNEL_MAJOR)
       throw new IllegalArgumentException("Only allowed for filter major.");
-    DFEVar addr =
-        f.mul(H * W).add((oh.add(cp.PAD)).mul(W)).add(ow.add(cp.PAD)).cast(ibuf.getAddrT());
+    int pad = cp.PAD;
+
+    DFEVar addr = f.mul(H * W).add((oh.add(pad)).mul(W)).add(ow.add(pad)).cast(ibuf.getAddrT());
 
     DFEVector<DFEVar> read = ibuf.getMem().read(addr);
 
@@ -176,7 +177,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
    * @param i
    * @return
    */
-  public DFEVector<DFEVar> initAndReadCoeff(int i) {
+  public DFEVector<DFEVar> initAndReadCoeff(int i, ConvLayerParameters cp) {
     int depth = cp.getCoeffNumVec(i);
     DFEVar coeffAddr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(depth)));
     debug("[initAndReadCoeff] stream %d: addr (" + coeffAddr.getType() + ") = %KObj%\n", i,
@@ -230,15 +231,26 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
     ConvLayerIfmapBuffer ibuf = new ConvLayerIfmapBuffer(getOwner(), cp, T, /*loop=*/false,
         forceFull, pad, ifmap.index, cp.name + "_" + Integer.toString(ifmap.index));
-    DFEVar ifmapBufferAddr = getIfmapBufferAddr(ibuf, c);
+    DFEVar ifmapBufferWriteAddr = getIfmapBufferAddr(ibuf, c);
     DFEVar ifmapBufferWriteEn = getIfmapBufferWriteEn();
+    DFEVar ifmapBufferReadAddr;
+    DFEVar mux;
+    if (cp.K == 1 && ifmap.index > 0 && this.cp.K == 3) { // shortcut
+      ifmapBufferReadAddr = oh.add(cp.PAD).mul(W).add(ow.add(cp.PAD)).cast(ibuf.getAddrT());
+      mux = constant.var(false);
+    } else {
+      ifmapBufferReadAddr = getIfmapBufferAddr(ibuf, c);
+      mux = ifmapBufferWriteEn;
+    }
     ibufMap.put(ifmap.index, ibuf);
 
-    debug("[bufferizeIfmap] At stream %d: data = %KObj%, addr (" + ifmapBufferAddr.getType()
-            + ") = %KObj% en = %KObj%\n",
-        ifmap.index, ifmap.data, ifmapBufferAddr, ifmapBufferWriteEn);
+    debug("[bufferizeIfmap] At stream %d: data = %KObj%, write addr ("
+            + ifmapBufferWriteAddr.getType() + ") = %KObj% read addr = %KObj% en = %KObj%\n",
+        ifmap.index, ifmap.data, ifmapBufferWriteAddr, ifmapBufferReadAddr, ifmapBufferWriteEn);
 
-    return new Stream(ibuf.port(ifmap.data, ifmapBufferAddr, ifmapBufferWriteEn), ifmap.index);
+    return new Stream(
+        ibuf.port(ifmap.data, ifmapBufferWriteAddr, ifmapBufferReadAddr, ifmapBufferWriteEn, mux),
+        ifmap.index);
   }
 
   public Stream padAndBufferize(Stream ifmap) {
@@ -253,7 +265,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
     return bufferizeIfmap(ifmap, cp);
   }
 
-  public boolean needLineBuffer(int i) {
+  public boolean needLineBuffer(int i, ConvLayerParameters cp) {
     return cp.K > 1 && !isBypass(i);
   }
 
@@ -272,7 +284,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   }
 
   public Stream convolution(Stream ifmap, ConvLayerParameters cp) {
-    DFEVector<DFEVar> coeff = initAndReadCoeff(ifmap.index);
+    DFEVector<DFEVar> coeff = initAndReadCoeff(ifmap.index, cp);
     Conv2DKernel conv2d = new Conv2DKernel(getOwner(), cp, T, WT, ifmap.index);
     conv2d.setInputs(ifmap.data, coeff);
     return new Stream(conv2d.getOfmap(), ifmap.index);
@@ -284,22 +296,19 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
    * @return
    */
   public Stream process(int i) {
-    ConvLayerParameters cp = this.cp;
-    // cp.C *= cp.PC.get(i) / cp.PC.get(0);
+    ConvLayerParameters cp = i == 0 ? this.cp : this.cp.createShortcutParameters(i);
 
     Stream ifmap = padAndBufferize(new Stream(ifmapList.get(i), i), cp);
     debug("[padAndBufferize] At stream %d = %KObj%\n", ifmap.index, ifmap.data);
 
-    if (needLineBuffer(i))
+    if (needLineBuffer(i, cp))
       ifmap = lineBuffer(ifmap, cp);
     if (isBypass(i)) {
-      // cp.C /= cp.PC.get(i) / cp.PC.get(0);
       return ifmap; // no need for further processing.
     }
 
     Stream ofmap = convolution(ifmap, cp);
 
-    // cp.C /= cp.PC.get(i) / cp.PC.get(0);
     return ofmap;
   }
 
@@ -393,19 +402,22 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
 
   public void initConvLayer() {
     /** Prepare the first output. */
-    this.ofmapList.get(0).connect(bufferizeOfmap(getResultOfmap()));
+    DFEVector<DFEVar> ofmap = bufferizeOfmap(getResultOfmap());
+    this.ofmapList.get(0).connect(ofmap);
 
     /** Connect the rest of the output. */
     for (int i = 1; i < cp.outputs.size(); ++i) {
-      if (cp.outputs.get(i).type != OutputType.IFMAP)
-        throw new IllegalArgumentException(
-            String.format("Output at index %d should be of type IFMAP."));
+      if (cp.outputs.get(i).type == OutputType.IFMAP) {
+        int index = cp.outputs.get(i).index;
+        if (!ibufMap.containsKey(index))
+          process(index);
 
-      int index = cp.outputs.get(i).index;
-      if (!ibufMap.containsKey(index))
-        process(index);
-
-      this.ofmapList.get(i).connect(getIfmapByOfmapAddr(ibufMap.get(index), index));
+        this.ofmapList.get(i).connect(getIfmapByOfmapAddr(ibufMap.get(index), index));
+      } else if (cp.outputs.get(i).type == OutputType.OFMAP) {
+        this.ofmapList.get(i).connect(ofmap);
+      } else {
+        throw new IllegalArgumentException();
+      }
     }
   }
 
@@ -441,9 +453,9 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public DFEVar getOfmapEn() {
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        return c.eq(cp.C / cp.PC.get(0) - 1).and(getOfmapBufferWriteEn());
+        return c.eq(cp.padC() / cp.PC.get(0) - 1).and(getOfmapBufferWriteEn());
       case FILTER_MAJOR:
-        return c.eq(cp.C / cp.PC.get(0) - 1).and(getOfmapBufferWriteEn());
+        return c.eq(cp.padC() / cp.PC.get(0) - 1).and(getOfmapBufferWriteEn());
       default:
         throw new IllegalArgumentException(
             String.format("Computation sequence %s has not been supported yet", cp.seq));
@@ -511,15 +523,15 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public DFEVar getCoeffFMemAddr(DFEType addrT) {
     // TODO: support cases that the weights are in channel major.
     return f.cast(addrT)
-        .mul(constant.var(((int) Math.ceil((double) cp.C / cp.PC.get(0)))).cast(addrT))
+        .mul(constant.var(((int) Math.ceil((double) cp.padC() / cp.PC.get(0)))).cast(addrT))
         .add(c.cast(addrT))
         .cast(addrT);
   }
 
   @Override
   public int getCoeffFMemSize(DFEType T) {
-    return ((int) Math.ceil((double) cp.C / cp.PC.get(0)))
-        * ((int) Math.ceil((double) cp.F / cp.PF.get(0)));
+    return ((int) Math.ceil((double) cp.padC() / cp.PC.get(0)))
+        * ((int) Math.ceil((double) cp.padF() / cp.PF.get(0)));
   }
 
   @Override
@@ -573,35 +585,37 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
   public void initCounterChain(DFEType countT) {
     CounterChain chain = getOwner().control.count.makeCounterChain();
 
+    int C = cp.padC();
+    int F = cp.padF();
     int PC = cp.PC.get(0);
     int PF = cp.PF.get(0);
 
     switch (cp.seq) {
       case CHANNEL_MAJOR:
-        if (cp.C / PC == 1)
+        if (C / PC == 1)
           c = constant.var(0).cast(countT);
         else
-          c = chain.addCounter(cp.C / PC, 1).cast(countT);
+          c = chain.addCounter(C / PC, 1).cast(countT);
 
-        if (cp.F / PF == 1)
+        if (F / PF == 1)
           f = constant.var(0).cast(countT);
         else
-          f = chain.addCounter(cp.F / PF, 1).cast(countT);
+          f = chain.addCounter(F / PF, 1).cast(countT);
 
         h = chain.addCounter(H / PH, 1).cast(countT);
         w = chain.addCounter(W / PW, 1).cast(countT);
         break;
 
       case FILTER_MAJOR:
-        if (cp.F / PF == 1)
+        if (F / PF == 1)
           f = constant.var(0).cast(countT);
         else
-          f = chain.addCounter(cp.F / PF, 1).cast(countT);
+          f = chain.addCounter(F / PF, 1).cast(countT);
 
-        if (cp.C / PC == 1)
+        if (C / PC == 1)
           c = constant.var(0).cast(countT);
         else
-          c = chain.addCounter(cp.C / PC, 1).cast(countT);
+          c = chain.addCounter(C / PC, 1).cast(countT);
 
         h = chain.addCounter(H / PH, 1).cast(countT);
         w = chain.addCounter(W / PW, 1).cast(countT);

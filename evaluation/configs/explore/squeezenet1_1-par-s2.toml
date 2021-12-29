@@ -1,0 +1,564 @@
+NAME = "squeezenet1_1_s2"
+
+[global]
+BW = 16
+WBW = 16
+FREQ = 200
+NUM_FRAC_BITS = 8
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.squeezenet0conv0fwd]
+H = 111
+W = 111
+C = 3
+F = 64
+K = 3
+S = 2
+P = 0
+P_C = [ 1,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = []
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0pool0fwd]
+H = 55
+W = 55
+C = 64
+F = 64
+K = 3
+S = 2
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "POOLING"
+INPUT = [ "squeezenet0conv0fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv1fwd]
+H = 55
+W = 55
+C = 64
+F = 16
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0pool0fwd",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv2fwd]
+H = 55
+W = 55
+C = 16
+F = 64
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv1fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv3fwd]
+H = 55
+W = 55
+C = 16
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv1fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat0]
+H = 55
+W = 55
+C = 64
+F = 128
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 0
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv2fwd", "squeezenet0conv3fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv4fwd]
+H = 55
+W = 55
+C = 128
+F = 16
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat0",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv5fwd]
+H = 55
+W = 55
+C = 16
+F = 64
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv4fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv6fwd]
+H = 55
+W = 55
+C = 16
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv4fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat1]
+H = 55
+W = 55
+C = 64
+F = 128
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 1
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv5fwd", "squeezenet0conv6fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0pool1fwd]
+H = 27
+W = 27
+C = 128
+F = 128
+K = 3
+S = 2
+P = 0
+P_C = [ 4,]
+P_F = [ 4,]
+SEQ = 0
+TYPE = "POOLING"
+INPUT = [ "squeezenet0concat1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv7fwd]
+H = 27
+W = 27
+C = 128
+F = 32
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0pool1fwd",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv8fwd]
+H = 27
+W = 27
+C = 32
+F = 128
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv7fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv9fwd]
+H = 27
+W = 27
+C = 32
+F = 128
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv7fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat2]
+H = 27
+W = 27
+C = 128
+F = 256
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 1
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv8fwd", "squeezenet0conv9fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv10fwd]
+H = 27
+W = 27
+C = 256
+F = 32
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat2",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv11fwd]
+H = 27
+W = 27
+C = 32
+F = 128
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv10fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv12fwd]
+H = 27
+W = 27
+C = 32
+F = 128
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv10fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat3]
+H = 27
+W = 27
+C = 128
+F = 256
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 0
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv11fwd", "squeezenet0conv12fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0pool2fwd]
+H = 13
+W = 13
+C = 256
+F = 256
+K = 3
+S = 2
+P = 0
+P_C = [ 4,]
+P_F = [ 4,]
+SEQ = 1
+TYPE = "POOLING"
+INPUT = [ "squeezenet0concat3",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv13fwd]
+H = 13
+W = 13
+C = 256
+F = 48
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0pool2fwd",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv14fwd]
+H = 13
+W = 13
+C = 48
+F = 192
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv13fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv15fwd]
+H = 13
+W = 13
+C = 48
+F = 192
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv13fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat4]
+H = 13
+W = 13
+C = 192
+F = 384
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 0
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv14fwd", "squeezenet0conv15fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv16fwd]
+H = 13
+W = 13
+C = 384
+F = 48
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat4",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv17fwd]
+H = 13
+W = 13
+C = 48
+F = 192
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv16fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv18fwd]
+H = 13
+W = 13
+C = 48
+F = 192
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv16fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat5]
+H = 13
+W = 13
+C = 192
+F = 384
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 1
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv17fwd", "squeezenet0conv18fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv19fwd]
+H = 13
+W = 13
+C = 384
+F = 64
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat5",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv20fwd]
+H = 13
+W = 13
+C = 64
+F = 256
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv19fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv21fwd]
+H = 13
+W = 13
+C = 64
+F = 256
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv19fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat6]
+H = 13
+W = 13
+C = 256
+F = 512
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 0
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv20fwd", "squeezenet0conv21fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv22fwd]
+H = 13
+W = 13
+C = 512
+F = 64
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2, 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat6",]
+OUTPUT = [ "OFMAP", "OFMAP",]
+
+[layers.squeezenet0conv23fwd]
+H = 13
+W = 13
+C = 64
+F = 256
+K = 1
+S = 1
+P = 0
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv22fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv24fwd]
+H = 13
+W = 13
+C = 64
+F = 256
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0conv22fwd_1",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0concat7]
+H = 13
+W = 13
+C = 256
+F = 512
+K = 1
+S = 1
+P = 0
+P_C = [ 2, 2,]
+P_F = [ 4,]
+SEQ = 1
+TYPE = "CONCAT"
+INPUT = [ "squeezenet0conv23fwd", "squeezenet0conv24fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.squeezenet0conv25fwd]
+H = 13
+W = 13
+C = 512
+F = 1000
+K = 1
+S = 1
+P = 0
+P_C = [ 4,]
+P_F = [ 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "squeezenet0concat7",]
+OUTPUT = [ "OFMAP",]

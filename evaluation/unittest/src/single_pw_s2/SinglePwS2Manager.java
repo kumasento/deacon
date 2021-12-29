@@ -71,6 +71,7 @@ public class SinglePwS2Manager extends Max5LMemManager implements ManagerInterfa
                 .PK(1)
                 .namedRegion("")
                 .pooling(Pooling.MAX)
+                .dspFactor(0.5)
                 .build());
 
     SinglePwS2Manager mgr = new SinglePwS2Manager(params, cps);
@@ -80,6 +81,7 @@ public class SinglePwS2Manager extends Max5LMemManager implements ManagerInterfa
 
     BuildConfig buildConfig = mgr.getBuildConfig();
     buildConfig.setBuildEffort(Effort.VERY_HIGH);
+    buildConfig.setOptimizationGoal(BuildConfig.OptimizationGoal.BALANCED);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER1);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER2);
     buildConfig.addImplementationStrategy(ImplementationStrategy.MAXELER3);

@@ -83,10 +83,21 @@ public class ConvLayerWrapKernel extends Kernel {
     } else if (cp.type == Type.CONCAT) {
       // Just implement the concat logic here.
 
-      if (cp.PF.get(0) != 1)
-        throw new IllegalArgumentException("PF should not be set for CONCAT");
-      if (cp.PC.size() > 1 || cp.PF.size() > 1)
-        throw new IllegalArgumentException();
+      // if (cp.PF.get(0) != 1)
+      //   throw new IllegalArgumentException("PF should not be set for CONCAT");
+      // if (cp.PC.size() > 1 || cp.PF.size() > 1)
+      //   throw new IllegalArgumentException();
+
+      if (cp.inputs.size() < 2)
+        throw new IllegalArgumentException("CONCAT should have more than 1 input.");
+
+      int PC = cp.PC.get(0);
+      for (int i = 1; i < cp.inputs.size(); ++i)
+        if (cp.PC.get(i) != PC)
+          throw new IllegalArgumentException("PC should be the same for CONCAT.");
+      for (int i = 1; i < cp.outputs.size(); ++i)
+        if (cp.PF.get(i) != cp.inputs.size() * PC)
+          throw new IllegalArgumentException("PF should be num_inputs * PC for CONCAT.");
 
       List<DFEVector<DFEVar>> ifmapList = new ArrayList<DFEVector<DFEVar>>();
       for (int i = 0; i < cp.inputs.size(); ++i)
@@ -98,8 +109,7 @@ public class ConvLayerWrapKernel extends Kernel {
       DFEVector<DFEVar> outVec = outT.newInstance(this);
 
       for (int i = 0; i < cp.inputs.size(); ++i)
-        for (int j = 0; j < cp.PC.get(0); ++j)
-          outVec.get(i * cp.PC.get(0) + j).connect(ifmapList.get(i).get(j));
+        for (int j = 0; j < PC; ++j) outVec.get(i * PC + j).connect(ifmapList.get(i).get(j));
 
       if (cp.dbg) {
         DFEVar cnt = control.count.simpleCounter(1000);
@@ -150,8 +160,8 @@ public class ConvLayerWrapKernel extends Kernel {
         getManager().logMsg("Connecting to output: %s\n", getOfmapName(i));
 
         if (outputType == OutputType.IFMAP) {
-          if (cp.K != 1 && cp.STRIDE == 2)
-            throw new IllegalArgumentException("Cannot duplicate S = 2 ifmap if K != 1");
+          // if (cp.K != 1 && cp.STRIDE == 2)
+          //   throw new IllegalArgumentException("Cannot duplicate S = 2 ifmap if K != 1");
           if (cp.seq != CompSeq.FILTER_MAJOR)
             throw new IllegalArgumentException(
                 "Should use FILTER_MAJOR if the ifmap will be duplicated.");

@@ -476,7 +476,6 @@ public class ConvLayerManagerUtils {
       String input, ConvLayerParameters cp, Map<String, ConvLayerParameters> cpm) {
     ConvLayerParameters icp = cpm.get(input);
 
-    System.out.println(String.format("cp.C = %s", cp.C));
     if (icp.getOfmapStreamNumElems() != cp.getIfmapStreamNumElems())
       throw new IllegalArgumentException(String.format(
           "Number of ofmap stream output %d from kernel %s doesn't match the ifmap stream number of elems %d for kernel %s\n",
@@ -737,15 +736,6 @@ public class ConvLayerManagerUtils {
     for (int i = 0; i < cps.size(); ++i) {
       ConvLayerParameters cp = cps.get(i);
 
-      if (cp.F % cp.PF.get(0) != 0)
-        throw new IllegalArgumentException("F % PF == 0");
-      if (cp.C % cp.PC.get(0) != 0)
-        throw new IllegalArgumentException("C % PC == 0");
-
-      // ei.setScalar(cp.name, ConvLayerWrapKernel.INIT_COEFF_NAME, idx.eq(i));
-      // ei.setTicks(cp.name, idx.eq(i).cast(CPUTypes.INT).mul(cp.F * cp.C * cp.K *
-      // cp.K));
-
       // if (!cp.residual.isEmpty())
       // ei.ignoreRoute(cp.residual + "_fanout");
     }
@@ -775,6 +765,8 @@ public class ConvLayerManagerUtils {
       mgr.addMaxFileConstant(name + "_OW", cp.OW);
       mgr.addMaxFileConstant(name + "_C", cp.C);
       mgr.addMaxFileConstant(name + "_F", cp.F);
+      mgr.addMaxFileConstant(name + "_PAD_C", cp.padC());
+      mgr.addMaxFileConstant(name + "_PAD_F", cp.padF());
       mgr.addMaxFileConstant(name + "_K", cp.K);
       mgr.addMaxFileConstant(name + "_PAD", cp.PAD);
       mgr.addMaxFileConstant(name + "_STRIDE", cp.STRIDE);

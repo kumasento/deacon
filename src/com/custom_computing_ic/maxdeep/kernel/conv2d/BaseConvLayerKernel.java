@@ -1,6 +1,7 @@
 package com.custom_computing_ic.maxdeep.kernel.conv2d;
 
 import com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerParameters.Type;
+import com.custom_computing_ic.maxdeep.kernel.conv2d.utils.CoeffROM;
 import com.custom_computing_ic.maxdeep.kernel.fuse.FusedConvLayerParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
@@ -109,8 +110,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
   public int getCoeffFMemSize(DFEType T) {
     if (cp.PC.size() > 1 || cp.PF.size() > 1)
       throw new IllegalArgumentException("PC and PF should not be larger than 1");
-    return ((int) Math.ceil((double) cp.C / cp.PC.get(0)))
-        * ((int) Math.ceil((double) cp.F / cp.PF.get(0)));
+    return ((int) Math.ceil((double) cp.padC() / cp.PC.get(0)))
+        * ((int) Math.ceil((double) cp.padF() / cp.PF.get(0)));
   }
 
   public abstract DFEVar getCoeffFMemAddr(DFEType addrT);
@@ -215,54 +216,6 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
     return;
   }
 
-  /** Rom related. */
-
-  public static double[] readROMFile(String key, String fileName) {
-    Scanner in = null;
-
-    try {
-      in = new Scanner(new File(fileName));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-
-    // TODO: properly throw.
-
-    // Find the correct line.
-    String line = in.nextLine();
-    while (!(line.startsWith("BEGIN") && line.contains(key))) {
-      if (!in.hasNext())
-        break;
-
-      line = in.nextLine();
-    }
-
-    if (!in.hasNext())
-      throw new IllegalArgumentException(
-          String.format("Cannot find key: %s from file: %s", key, fileName));
-
-    int numElems = in.nextInt();
-
-    double[] rawData = new double[numElems];
-    for (int i = 0; i < numElems; ++i) rawData[i] = in.nextDouble();
-
-    return rawData;
-  }
-
-  public boolean isTernaryType(DFEType T) {
-    return T.getTotalBits() == 2 && T.isUInt();
-  }
-
-  public boolean isTernaryType(DFEVectorType<DFEVar> T) {
-    return isTernaryType((DFEType) T.getContainedType());
-  }
-
-  public double convert(double data, DFEVectorType<DFEVar> T) {
-    if (isTernaryType(T))
-      return data > 0 ? 1 : (data < 0 ? 3 : 0);
-    return data;
-  }
-
   public Memory<DFEVector<DFEVar>> getROM(
       ConvLayerParameters cp, String key, int depth, DFEVectorType<DFEVar> vt, int index) {
     return getROM(cp, key, depth, vt, index, 0);
@@ -281,43 +234,8 @@ public abstract class BaseConvLayerKernel extends KernelComponent {
    */
   public Memory<DFEVector<DFEVar>> getROM(ConvLayerParameters cp, String key, int depth,
       DFEVectorType<DFEVar> vt, int index, int index2) {
-    double[] rawData = readROMFile(key, cp.coeffFile);
-
-    getOwner().getManager().logMsg(
-        "Read for key = %s depth = %d raw data = %d\n", key, depth, rawData.length);
-    if (rawData.length % depth != 0)
-      throw new IllegalArgumentException("number of data should be divisible by memory depth.");
-
-    double[][] parts = new double[depth][rawData.length / depth];
-
-    // The total number of channels should be scaled.
-    int C = cp.C * cp.PC.get(index) / cp.PC.get(0);
-    int PC = cp.PC.get(index);
-    int PF = cp.PF.get(index2);
-
-    if (cp.type == Type.DEPTHWISE_SEPARABLE) {
-      for (int pc = 0; pc < PC; ++pc)
-        for (int k = 0; k < cp.K * cp.K; ++k)
-          for (int c = 0; c < C; c += PC)
-            parts[c / PC][pc * cp.K * cp.K + k] =
-                convert(rawData[(c + pc) * (cp.K * cp.K) + k], vt);
-    } else {
-      for (int pf = 0; pf < PF; ++pf)
-        for (int pc = 0; pc < PC; ++pc)
-          for (int k = 0; k < cp.K * cp.K; ++k)
-            for (int f = 0; f < cp.F; f += PF)
-              for (int c = 0; c < C; c += PC)
-                parts[(f / PF) * (C / PC) + (c / PC)]
-                     [pf * PC * cp.K * cp.K + pc * cp.K * cp.K + k] = convert(
-                         rawData[(f + pf) * (C * cp.K * cp.K) + (c + pc) * (cp.K * cp.K) + k], vt);
-    }
-
-    Bits[] memData = new Bits[Math.max(depth, 2)];
-    for (int i = 0; i < depth; ++i) memData[i] = vt.encodeConstant(parts[i]);
-    for (int i = depth; i < Math.max(depth, 2); ++i) memData[i] = vt.encodeConstant(parts[0]);
-
     Memory<DFEVector<DFEVar>> ROM = mem.alloc(vt, Math.max(depth, 2));
-    ROM.setContents(memData);
+    ROM.setContents(CoeffROM.memData(cp, key, depth, vt, index, index2));
     getOwner().getManager().logMsg(
         "ROM created for %s of depth %d and type %s: %s\n", key, depth, vt, ROM);
 

@@ -81,13 +81,14 @@ def generate_data_array(N: int) -> np.ndarray:
 def generate_data_layer(name: str, cfg: Dict, data_file: str):
 
     if cfg["TYPE"] == "STANDARD":
-        for i in range(get_num_inputs(cfg)):
+        for i in range(max(get_num_inputs(cfg), 1)):
             with open(data_file, "a") as f:
                 f.write(f"BEGIN {name}_{i}\n")
                 # HACK:
                 C = cfg["C"]
                 if i > 0 and "SHORTCUT_C" in cfg:
-                    C = cfg["SHORTCUT_C"]
+                    C *= cfg["P_C"][i] / cfg["P_C"][0]
+                    C = int(C)
                 N = cfg["K"] * cfg["K"] * C * cfg["F"]
                 f.write(f"{N}\n")
                 arr = generate_data_array(N)
@@ -510,6 +511,7 @@ class AppGenerator:
                 .PK({cfg['P_K'] if 'P_K' in cfg else 1})
                 .namedRegion("{cfg['NAMED_REGION'] if 'NAMED_REGION' in cfg else ""}")
                 .pooling(Pooling.{cfg['POOLING'] if 'POOLING' in cfg else 'MAX'})
+                .dspFactor({self.cfg['global']['DSP_FACTOR'] if 'DSP_FACTOR' in self.cfg['global'] else 0.5})
                 .build());
             """
 
@@ -525,6 +527,11 @@ class AppGenerator:
             FREQ=self.cfg["global"]["FREQ"],
             USE_DRAM=str(self.cfg["global"]["USE_DRAM"]).lower(),
             CPS=cps,
+            OPTIMIZATION_GOAL=(
+                self.cfg["global"]["OPTIMIZATION_GOAL"]
+                if "OPTIMIZATION_GOAL" in self.cfg["global"]
+                else "BALANCED"
+            ),
         )
         os.system(f"clang-format -i {target_file}")
 

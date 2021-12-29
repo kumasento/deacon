@@ -19,10 +19,10 @@ public class PoolingLayerKernel extends ConvLayerKernel {
   @Override
   public void initCounterChain(DFEType countT) {
     CounterChain chain = getOwner().control.count.makeCounterChain();
-    if (cp.C / cp.PC.get(0) == 1)
+    if (cp.padC() / cp.PC.get(0) == 1)
       c = constant.var(0).cast(countT);
     else
-      c = chain.addCounter(cp.C / cp.PC.get(0), 1).cast(countT);
+      c = chain.addCounter(cp.padC() / cp.PC.get(0), 1).cast(countT);
 
     h = chain.addCounter(H / PH, 1).cast(countT);
     w = chain.addCounter(W / PW, 1).cast(countT);
@@ -36,7 +36,7 @@ public class PoolingLayerKernel extends ConvLayerKernel {
   public void kernelBody() {
     if (cp.PC.get(0) != cp.PF.get(0))
       throw new IllegalArgumentException("PC should equal to PF.");
-    if (cp.C != cp.F)
+    if (cp.padC() != cp.padF())
       throw new IllegalArgumentException("C should equal to F.");
     if (cp.pooling == Pooling.AVG)
       throw new IllegalArgumentException("Average pooling is not supported.");
