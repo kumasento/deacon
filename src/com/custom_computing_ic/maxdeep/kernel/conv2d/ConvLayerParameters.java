@@ -222,6 +222,7 @@ public class ConvLayerParameters extends LayerParameters {
         .coeffFile(coeffFile)
         .type(Type.DEPTHWISE_SEPARABLE)
         .name(name + "_dw")
+        .dspFactor(dspFactor)
         .build();
   }
 
@@ -243,6 +244,7 @@ public class ConvLayerParameters extends LayerParameters {
         .coeffFile(coeffFile)
         .seq(seq)
         .dbg(dbg)
+        .dspFactor(dspFactor)
         .build();
   }
 
@@ -265,6 +267,7 @@ public class ConvLayerParameters extends LayerParameters {
         .coeffFile(coeffFile)
         .seq(seq)
         .dbg(dbg)
+        .dspFactor(dspFactor)
         .build();
   }
 

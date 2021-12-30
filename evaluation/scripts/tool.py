@@ -14,6 +14,7 @@ import colorlog
 import numpy as np
 import pandas as pd
 import toml
+from pydeacon.graph import DeaconGraph
 
 np.random.seed(42)
 
@@ -171,6 +172,8 @@ class CommandRunner:
 
         self.cfg = toml.load(args.cfg)
         self.logger.info(f"Loaded config: {self.cfg}")
+        self.G = DeaconGraph()
+        self.G.load(args.cfg)
 
         self.root_dir = get_root_dir(args.cfg, self.cfg, parent_dir=args.root_dir)
         self.log_dir = os.path.join(self.root_dir, "logs")
@@ -275,6 +278,7 @@ class RunCommandRunner(CommandRunner):
 
     def get_perf(self):
         run_script = os.path.join(self.root_dir, "eval.sh")
+        self.logger.info(f"Dump to run_script: {run_script}")
         with open(run_script, "w") as f:
             f.write(
                 f'make run FREQ={self.args.freq} CLI_OPTIONS="-n {self.args.num_iters}"'
@@ -301,12 +305,16 @@ class RunCommandRunner(CommandRunner):
 
         data = {}
         for line in lines:
-            if "OPS" in line:
-                data["OPS"] = float(line.split()[-2])
+            # if "OPS" in line:
+            #     data["OPS"] = float(line.split()[-2])
             if "FPS" in line:
                 data["FPS"] = float(line.split()[-1])
-            if "GFLOPs" in line:
-                data["GFLOPs"] = float(line.split()[-1])
+                data["Sec/Frame"] = 1 / data["FPS"]
+            # if "GFLOPs" in line:
+            #     data["GFLOPs"] = float(line.split()[-1])
+
+        data["OPS"] = sum(node.ops for node in self.G.nodes)
+        data["GFLOPs"] = data["OPS"] * 1e-9 / data["Sec/Frame"]
 
         return data
 

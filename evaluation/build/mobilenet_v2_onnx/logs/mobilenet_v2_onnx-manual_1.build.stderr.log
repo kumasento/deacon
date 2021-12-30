@@ -1,0 +1,64 @@
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 12:53: WARNING: Unconnected elements in design 'conv10'
+Thu 12:53: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2Onnx_MAIA_DFE_FREQ_200/scratch/conv10_graph_warnings.txt
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 12:53: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 12:53: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 12:53: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 12:53: WARNING: to that of a similar bitstream.
+Thu 12:53: ERROR: ----------------------------
+Thu 12:53: ERROR: Exception in thread "main":
+Thu 12:53: ERROR:  
+Thu 12:53: ERROR:   Incompatible types in connect: {DFEVectorType: 2 x dfeFix(8, 8, 
+Thu 12:53: ERROR:   TWOSCOMPLEMENT)}.connect({DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)})
+Thu 12:53: ERROR: 
+Thu 12:53: ERROR: Exception Stack Trace com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError: 
+Thu 12:53: ERROR:    at com.maxeler.maxcompiler.v2.kernelcompiler.types._InternalUtils.assertTypes(_InternalUtils.java:29)
+Thu 12:53: ERROR:    at com.maxeler.maxcompiler.v2.kernelcompiler.types._InternalUtils.assertConnectTypes(_InternalUtils.java:14)
+Thu 12:53: ERROR:    at com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorBase.connect(DFEVectorBase.java:118)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernel.initConvLayer(ConvLayerKernel.java:415)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernel.kernelBody(ConvLayerKernel.java:144)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernel.<init>(ConvLayerKernel.java:136)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernel.<init>(ConvLayerKernel.java:66)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerKernelFactory.create(ConvLayerKernelFactory.java:21)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.kernel.conv2d.ConvLayerWrapKernel.<init>(ConvLayerWrapKernel.java:140)
+Thu 12:53: ERROR:    at com.custom_computing_ic.maxdeep.manager.ConvLayerManagerUtils.createKernelBlocks(ConvLayerManagerUtils.java:164)
+Thu 12:53: ERROR:    at mobilenet_v2_onnx.MobilenetV2OnnxManager.<init>(MobilenetV2OnnxManager.java:33)
+Thu 12:53: ERROR:    at mobilenet_v2_onnx.MobilenetV2OnnxManager.main(MobilenetV2OnnxManager.java:880)
+Thu 12:53: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2Onnx_MAIA_DFE_FREQ_200/results/MobilenetV2Onnx.max] Error 1

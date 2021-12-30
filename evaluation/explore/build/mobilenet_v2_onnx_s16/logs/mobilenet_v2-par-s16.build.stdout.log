@@ -3035,3 +3035,45 @@ Wed 15:01: Running back-end  build (15 phases)
 Wed 15:01: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
 Wed 15:01: (2/15) - Synthesize DFE Modules (VivadoSynth)
 Wed 15:01: Executing Synthesis Strategy VIVADO_DEFAULT
+Wed 19:23: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 19:24: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 19:26: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Wed 19:26: 
+Wed 19:26: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Wed 19:26: For this compile, we estimate this process may take longer than 1 hour.
+Wed 19:26: We recommend running in simulation to verify correctness before building hardware.
+Wed 19:26: 
+Wed 19:26: PRELIMINARY RESOURCE USAGE
+Wed 19:26: FPGA: xcVU9P-FLGB2104-2-E
+Wed 19:26: Logic utilization:     2251346 / 3546720 (63.48%)
+Wed 19:26:   LUTs:                 211558 / 1182240 (17.89%)
+Wed 19:26:   Primary FFs:         2039788 / 2364480 (86.27%)
+Wed 19:26: DSP blocks:              11309 / 6840    (165.34%)
+Wed 19:26: Block memory (BRAM18):    4513 / 4320    (104.47%)
+Wed 19:26: Block memory (URAM):       960 / 960     (100.00%)
+Wed 19:26: 
+Wed 19:26: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Wed 19:26: 
+Wed 19:26: PRELIMINARY POWER REPORT
+Wed 19:26: Total On-Chip Power (W) 22.33 (budget: 91.80) 
+Wed 19:26: Dynamic Power (W)       19.28 
+Wed 19:26: Device Static Power(W)   3.05 
+Wed 19:26: 
+Wed 19:26: (7/15) - Place DFE (VivadoImplementation)
+Wed 19:26: Executing the following 10 Implementation Strategies in 4 threads:
+Wed 19:26:  - VIVADO_DEFAULT
+Wed 19:26:  - MAXELER1
+Wed 19:26:  - MAXELER2
+Wed 19:26:  - MAXELER3
+Wed 19:26:  - MAXELER4
+Wed 19:26:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Wed 19:26:  - PERFORMANCE_EXPLORE
+Wed 19:26:  - PERFORMANCE_EXTRA_TIMING_OPT
+Wed 19:26:  - PERFORMANCE_NET_DELAY_HIGH
+Wed 19:26:  - PERFORMANCE_REFINE_PLACEMENT
+Wed 20:25: Implementation: Strategy "MAXELER2" failed (no timing score) Output log file created
+Wed 20:25: Implementation: Strategy "MAXELER3" failed (no timing score) Output log file created
+Wed 20:25: Implementation: Strategy "MAXELER1" failed (no timing score) Output log file created
+Wed 20:55: Implementation: Strategy "VIVADO_DEFAULT" failed (no timing score) Output log file created
+Wed 21:25: Implementation: Strategy "PERFORMANCE_EXPLORE" failed (no timing score) Output log file created
+Wed 21:27: Implementation: Strategy "MAXELER4" failed (no timing score) Output log file created

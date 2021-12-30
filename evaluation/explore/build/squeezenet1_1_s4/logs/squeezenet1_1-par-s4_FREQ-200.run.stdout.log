@@ -1,0 +1,90 @@
+
+##################################
+#
+# Welcome to lima01.doc.ic.ac.uk
+# This system is running CentOS Linux release 7.4.1708 (Core) 
+# kernel is 3.10.0-693.el7.x86_64
+#
+# You are logged in as rz3515
+#
+#
+# To interrogate the DFE system type:
+#
+# > maxtop
+#
+# As the FPGA is shared by everyone in the Custom Computing Research Group, please unload the design from the FPGA when your run is finished.
+
+##################################
+
+You're on a LIMA instance: lima01.doc.ic.ac.uk
+>>> NAS has been successfully mounted: /mnt/ccnas2/bdp/rz3515
+
+
+Welcome, rz3515!
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=/opt/maxeler/maxeleros/lib/libmaxeleros.so ./Squeezenet11S4_FREQ_200_dfe -n 100
+I1230 08:54:13.944700 23793 Squeezenet11S4CpuCode.cpp:106] num frac bits: 8
+I1230 08:54:13.999518 23793 Squeezenet11S4CpuCode.cpp:110] input[0] = -1.95943  dfe = -1.96094
+I1230 08:54:13.999603 23793 Squeezenet11S4CpuCode.cpp:110] input[1] = -0.71415  dfe = -0.714844
+I1230 08:54:13.999610 23793 Squeezenet11S4CpuCode.cpp:110] input[2] = 0.80067  dfe = 0.800781
+I1230 08:54:14.022425 23793 utils.h:383] Burst aligning input array of size: 14918700 to 14918784
+I1230 08:54:14.033573 23793 Squeezenet11S4CpuCode.cpp:131] Tiled input size (burst aligned): 14918784
+I1230 08:54:14.033593 23793 utils.h:383] Burst aligning input array of size: 16900000 to 16900608
+I1230 08:54:14.047283 23793 Squeezenet11S4CpuCode.cpp:134] Tiled output size (burst aligned): 16900608
+I1230 08:54:14.047307 23793 layers.h:775] Writing DRAM to 0 with size 0x1c74900
+I1230 08:54:14.081648 23793 Squeezenet11S4CpuCode.cpp:142] Running ...
+I1230 08:54:15.665432 23793 Squeezenet11S4CpuCode.cpp:147] Done
+I1230 08:54:15.665472 23793 layers.h:792] Reading DRAM from 0x1c74900 with size 0x203c400
+I1230 08:54:15.697994 23793 layers.h:374] Reordering output for PF = 4 TOH = 13 TOW = 13
+I1230 08:54:15.756044 23793 layers.h:399] Done
+I1230 08:54:15.756461 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[0] = 73.0898
+I1230 08:54:15.756510 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[1] = 116.824
+I1230 08:54:15.756522 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[2] = -64.5977
+I1230 08:54:15.756533 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[3] = -107.074
+I1230 08:54:15.756573 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[4] = 49.2383
+I1230 08:54:15.756584 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[5] = 31.9805
+I1230 08:54:15.756608 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[6] = -118.789
+I1230 08:54:15.756628 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[7] = -37.6992
+I1230 08:54:15.756642 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[8] = -19.5898
+I1230 08:54:15.756652 23793 Squeezenet11S4CpuCode.cpp:154] output_dfe[9] = 47.0391
+I1230 08:54:15.756664 23793 Squeezenet11S4CpuCode.cpp:160] elapsed time: 1.5837s
+I1230 08:54:15.756690 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv0fwd = 42.5814 M
+I1230 08:54:15.756721 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0pool0fwd = 0 M
+I1230 08:54:15.756733 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv1fwd = 6.1952 M
+I1230 08:54:15.756747 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv2fwd = 6.1952 M
+I1230 08:54:15.756768 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv3fwd = 55.7568 M
+I1230 08:54:15.756785 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat0 = 0 M
+I1230 08:54:15.756798 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv4fwd = 12.3904 M
+I1230 08:54:15.756808 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv5fwd = 6.1952 M
+I1230 08:54:15.756816 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv6fwd = 55.7568 M
+I1230 08:54:15.756826 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat1 = 0 M
+I1230 08:54:15.756836 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0pool1fwd = 0 M
+I1230 08:54:15.756845 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv7fwd = 5.97197 M
+I1230 08:54:15.756855 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv8fwd = 5.97197 M
+I1230 08:54:15.756881 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0conv9fwd = 53.7477 M
+I1230 08:54:15.756897 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat2 = 0 M
+I1230 08:54:15.756907 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv10fwd = 11.9439 M
+I1230 08:54:15.756917 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv11fwd = 5.97197 M
+I1230 08:54:15.756933 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv12fwd = 53.7477 M
+I1230 08:54:15.756947 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat3 = 0 M
+I1230 08:54:15.756956 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer            squeezenet0pool2fwd = 0 M
+I1230 08:54:15.756966 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv13fwd = 4.15334 M
+I1230 08:54:15.756979 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv14fwd = 3.11501 M
+I1230 08:54:15.756994 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv15fwd = 28.0351 M
+I1230 08:54:15.757006 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat4 = 0 M
+I1230 08:54:15.757015 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv16fwd = 6.23002 M
+I1230 08:54:15.757027 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv17fwd = 3.11501 M
+I1230 08:54:15.757041 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv18fwd = 28.0351 M
+I1230 08:54:15.757056 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat5 = 0 M
+I1230 08:54:15.757071 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv19fwd = 8.30669 M
+I1230 08:54:15.757086 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv20fwd = 5.53779 M
+I1230 08:54:15.757100 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv21fwd = 49.8401 M
+I1230 08:54:15.757114 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat6 = 0 M
+I1230 08:54:15.757135 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv22fwd = 11.0756 M
+I1230 08:54:15.757149 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv23fwd = 5.53779 M
+I1230 08:54:15.757158 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv24fwd = 49.8401 M
+I1230 08:54:15.757174 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer             squeezenet0concat7 = 0 M
+I1230 08:54:15.757189 23793 Squeezenet11S4CpuCode.cpp:174] [Ops] layer           squeezenet0conv25fwd = 173.056 M
+I1230 08:54:15.757198 23793 Squeezenet11S4CpuCode.cpp:178] OPS:    69.8304 G
+I1230 08:54:15.757208 23793 Squeezenet11S4CpuCode.cpp:179] FPS:    63.1433
+I1230 08:54:15.757217 23793 Squeezenet11S4CpuCode.cpp:182] GFLOPs: 44.0932

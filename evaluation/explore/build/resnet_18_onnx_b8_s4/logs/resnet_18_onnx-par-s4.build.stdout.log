@@ -1,0 +1,1247 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=resnet_18_onnx_b8_s4 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 32768 Resnet18OnnxB8S4Manager \
+	DFEModel=MAIA maxFileName=Resnet18OnnxB8S4 target='DFE' enableMPCX=false \
+	FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_onnx_b8_s4/data/data-resnet_18_onnx-par-s4.txt 
+]0; maxJavaRun: Resnet18OnnxB8S4Manager DFEModel=MAIA maxFileName=Resnet18OnnxB8S4 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_onnx_b8_s4/data/data-resnet_18_onnx-par-s4.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : resnet_18_onnx_b8_s4
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : resnet_18_onnx_b8_s4.Resnet18OnnxB8S4Manager
+Class arguments     : DFEModel=MAIA maxFileName=Resnet18OnnxB8S4 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_onnx_b8_s4/data/data-resnet_18_onnx-par-s4.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 32768 MB
+----------------------------------------------------------
+
+Thu 01:09: MaxCompiler version: 2021.1
+Thu 01:09: Build "Resnet18OnnxB8S4" start time: Thu Dec 30 01:09:59 GMT 2021
+Thu 01:09: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 01:09: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200
+Thu 01:09: Detailed build log available in "_build.log"
+Thu 01:10: 
+Thu 01:10: ENGINE BUILD PARAMETERS
+Thu 01:10: 	              Build name: Resnet18OnnxB8S4_MAIA_DFE_FREQ_200                                                                                      
+Thu 01:10: 	             maxFileName: Resnet18OnnxB8S4                                                                                                        
+Thu 01:10: 	                  target: DFE                                                                                                                     
+Thu 01:10: 	                DFEModel: MAIA                                                                                                                    
+Thu 01:10: 	              enableMPCX: false                                                                                                                   
+Thu 01:10: 	                bitWidth: 32                                                                                                                      
+Thu 01:10: 	                     WBW: 32                                                                                                                      
+Thu 01:10: 	                   DTYPE: fixed                                                                                                                   
+Thu 01:10: 	           NUM_FRAC_BITS: 8                                                                                                                       
+Thu 01:10: 	                      PF: 1                                                                                                                       
+Thu 01:10: 	                      PC: 1                                                                                                                       
+Thu 01:10: 	                      PK: 1                                                                                                                       
+Thu 01:10: 	                       H: 1                                                                                                                       
+Thu 01:10: 	                       W: 1                                                                                                                       
+Thu 01:10: 	                       C: 1                                                                                                                       
+Thu 01:10: 	                       F: 1                                                                                                                       
+Thu 01:10: 	                       K: 1                                                                                                                       
+Thu 01:10: 	                     PAD: 0                                                                                                                       
+Thu 01:10: 	                       S: 1                                                                                                                       
+Thu 01:10: 	                     SEQ: 0                                                                                                                       
+Thu 01:10: 	                    FREQ: 200                                                                                                                     
+Thu 01:10: 	                USE_DRAM: false                                                                                                                   
+Thu 01:10: 	                 USE_BNN: false                                                                                                                   
+Thu 01:10: 	            USE_WINOGRAD: false                                                                                                                   
+Thu 01:10: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                   
+Thu 01:10: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                       
+Thu 01:10: 	                   DEBUG: false                                                                                                                   
+Thu 01:10: 	           COEFF_ON_CHIP: false                                                                                                                   
+Thu 01:10: 	              INIT_COEFF: false                                                                                                                   
+Thu 01:10: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_onnx_b8_s4/data/data-resnet_18_onnx-par-s4.txt
+Thu 01:10: Generating kernel resnetv15conv0fwd ...
+Thu 01:10: Instantiating kernel "resnetv15conv0fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 224, output height = 224, pad = 3
+Thu 01:10: Counter H = 230 W = 230
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 262144 x 1
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15conv0fwd" ...
+Thu 01:10: Line buffer shape 7 x 224, produces 1 number of 7 x 7 tiles per cycle
+Thu 01:10: Line buffer input vector size: 1, output vector size: 49.
+Thu 01:10: Number of separated line buffers: 1
+Thu 01:10: Initialising line buffer kernel with 7 x 230 x 1
+Thu 01:10: Size of line buffer output: 7
+Thu 01:10: Number of line buffer output chunks: 7
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Connecting outputs from chunk (#003) ...
+Thu 01:10: Connecting outputs from chunk (#004) ...
+Thu 01:10: Connecting outputs from chunk (#005) ...
+Thu 01:10: Connecting outputs from chunk (#006) ...
+Thu 01:10: ROM created for resnetv15conv0fwd of depth 48 and type {DFEVectorType: 196 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@306cf3ea
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15conv0fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 49
+Thu 01:10: CORE coefficient vector size: 196
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15conv0fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15pool0fwd ...
+Thu 01:10: Instantiating kernel "resnetv15pool0fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 112, output height = 112, pad = 1
+Thu 01:10: Counter H = 114 W = 114
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Building line buffer for "resnetv15pool0fwd" ...
+Thu 01:10: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 114 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 114 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 114 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 114 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15pool0fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage1conv0fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage1conv0fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 56, output height = 56, pad = 1
+Thu 01:10: Counter H = 58 W = 58
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 65536 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage1conv0fwd" ...
+Thu 01:10: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage1conv0fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@54ffa561
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage1conv0fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Connecting to output: ofmap_1
+Thu 01:10: Compiling kernel "resnetv15stage1conv0fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage1conv1fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage1conv1fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 56, output height = 56, pad = 1
+Thu 01:10: Counter H = 58 W = 58
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 4096 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage1conv1fwd" ...
+Thu 01:10: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage1conv1fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@9f2fe2e
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage1conv1fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: Residual buffer depth = 4096
+Thu 01:10: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15stage1conv1fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage1conv2fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage1conv2fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 56, output height = 56, pad = 1
+Thu 01:10: Counter H = 58 W = 58
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 65536 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage1conv2fwd" ...
+Thu 01:10: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage1conv2fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@74ed3be4
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage1conv2fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Connecting to output: ofmap_1
+Thu 01:10: Compiling kernel "resnetv15stage1conv2fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage1conv3fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage1conv3fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 56, output height = 56, pad = 1
+Thu 01:10: Counter H = 58 W = 58
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 4096 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage1conv3fwd" ...
+Thu 01:10: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage1conv3fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3d0f2154
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage1conv3fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: Residual buffer depth = 4096
+Thu 01:10: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15stage1conv3fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage2conv0fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage2conv0fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 56, output height = 56, pad = 1
+Thu 01:10: Counter H = 58 W = 58
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 65536 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage2conv0fwd" ...
+Thu 01:10: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 58 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage2conv0fwd of depth 512 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4567dcbc
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage2conv0fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Connecting to output: ofmap_1
+Thu 01:10: Compiling kernel "resnetv15stage2conv0fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage2conv1fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage2conv1fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 28, output height = 28, pad = 1
+Thu 01:10: Counter H = 30 W = 30
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 1024 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage2conv1fwd" ...
+Thu 01:10: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage2conv1fwd of depth 1024 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@49d52df2
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage2conv1fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: Ifmap buffer configuration 1024 x 4
+Thu 01:10: loop = false
+Thu 01:10: ROM created for resnetv15stage2conv1fwd_1 of depth 1024 and type {DFEVectorType: 16 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@cff1a53
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage2conv1fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 4
+Thu 01:10: CORE coefficient vector size: 16
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15stage2conv1fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage2conv3fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage2conv3fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 28, output height = 28, pad = 1
+Thu 01:10: Counter H = 30 W = 30
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 32768 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage2conv3fwd" ...
+Thu 01:10: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage2conv3fwd of depth 1024 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4f1bfab4
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage2conv3fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Connecting to output: ofmap_1
+Thu 01:10: Compiling kernel "resnetv15stage2conv3fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage2conv4fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage2conv4fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 28, output height = 28, pad = 1
+Thu 01:10: Counter H = 30 W = 30
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 1024 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage2conv4fwd" ...
+Thu 01:10: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage2conv4fwd of depth 1024 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75a45239
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage2conv4fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: Residual buffer depth = 1024
+Thu 01:10: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Compiling kernel "resnetv15stage2conv4fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage3conv0fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage3conv0fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 28, output height = 28, pad = 1
+Thu 01:10: Counter H = 30 W = 30
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 32768 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage3conv0fwd" ...
+Thu 01:10: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 30 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage3conv0fwd of depth 2048 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e871f3
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage3conv0fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 01:10: Connecting to output: ofmap
+Thu 01:10: Connecting to output: ofmap_1
+Thu 01:10: Compiling kernel "resnetv15stage3conv0fwd"
+Thu 01:10: 
+Thu 01:10: Generating kernel resnetv15stage3conv1fwd ...
+Thu 01:10: Instantiating kernel "resnetv15stage3conv1fwd"
+Thu 01:10: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: coeffOnChip = true
+Thu 01:10: Input height = 14, output height = 14, pad = 1
+Thu 01:10: Counter H = 16 W = 16
+Thu 01:10: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:10: Ifmap buffer configuration 256 x 4
+Thu 01:10: loop = false
+Thu 01:10: Building line buffer for "resnetv15stage3conv1fwd" ...
+Thu 01:10: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:10: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:10: Number of separated line buffers: 4
+Thu 01:10: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:10: Size of line buffer output: 3
+Thu 01:10: Number of line buffer output chunks: 3
+Thu 01:10: Connecting outputs from chunk (#000) ...
+Thu 01:10: Connecting outputs from chunk (#001) ...
+Thu 01:10: Connecting outputs from chunk (#002) ...
+Thu 01:10: ROM created for resnetv15stage3conv1fwd of depth 4096 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@47c2ba49
+Thu 01:10: Building the CORE arithmetic unit for "resnetv15stage3conv1fwd" ...
+Thu 01:10: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:10: CORE ifmap vector size: 36
+Thu 01:10: CORE coefficient vector size: 144
+Thu 01:10: CORE ofmap vector size: 4
+Thu 01:10: Ifmap buffer configuration 256 x 4
+Thu 01:10: loop = false
+Thu 01:11: ROM created for resnetv15stage3conv1fwd_1 of depth 4096 and type {DFEVectorType: 16 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@277fb9b6
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage3conv1fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 4
+Thu 01:11: CORE coefficient vector size: 16
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 01:11: Connecting to output: ofmap
+Thu 01:11: Compiling kernel "resnetv15stage3conv1fwd"
+Thu 01:11: 
+Thu 01:11: Generating kernel resnetv15stage3conv3fwd ...
+Thu 01:11: Instantiating kernel "resnetv15stage3conv3fwd"
+Thu 01:11: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: coeffOnChip = true
+Thu 01:11: Input height = 14, output height = 14, pad = 1
+Thu 01:11: Counter H = 16 W = 16
+Thu 01:11: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: Ifmap buffer configuration 16384 x 4
+Thu 01:11: loop = false
+Thu 01:11: Building line buffer for "resnetv15stage3conv3fwd" ...
+Thu 01:11: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:11: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:11: Number of separated line buffers: 4
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: ROM created for resnetv15stage3conv3fwd of depth 4096 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@789e7ca
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage3conv3fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 36
+Thu 01:11: CORE coefficient vector size: 144
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 01:11: Connecting to output: ofmap
+Thu 01:11: Connecting to output: ofmap_1
+Thu 01:11: Compiling kernel "resnetv15stage3conv3fwd"
+Thu 01:11: 
+Thu 01:11: Generating kernel resnetv15stage3conv4fwd ...
+Thu 01:11: Instantiating kernel "resnetv15stage3conv4fwd"
+Thu 01:11: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: coeffOnChip = true
+Thu 01:11: Input height = 14, output height = 14, pad = 1
+Thu 01:11: Counter H = 16 W = 16
+Thu 01:11: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: Ifmap buffer configuration 256 x 4
+Thu 01:11: loop = false
+Thu 01:11: Building line buffer for "resnetv15stage3conv4fwd" ...
+Thu 01:11: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:11: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:11: Number of separated line buffers: 4
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: ROM created for resnetv15stage3conv4fwd of depth 4096 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@47e67742
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage3conv4fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 36
+Thu 01:11: CORE coefficient vector size: 144
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: Residual buffer depth = 256
+Thu 01:11: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 01:11: Connecting to output: ofmap
+Thu 01:11: Compiling kernel "resnetv15stage3conv4fwd"
+Thu 01:11: 
+Thu 01:11: Generating kernel resnetv15stage4conv0fwd ...
+Thu 01:11: Instantiating kernel "resnetv15stage4conv0fwd"
+Thu 01:11: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: coeffOnChip = true
+Thu 01:11: Input height = 14, output height = 14, pad = 1
+Thu 01:11: Counter H = 16 W = 16
+Thu 01:11: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: Ifmap buffer configuration 16384 x 4
+Thu 01:11: loop = false
+Thu 01:11: Building line buffer for "resnetv15stage4conv0fwd" ...
+Thu 01:11: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:11: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:11: Number of separated line buffers: 4
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 16 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: ROM created for resnetv15stage4conv0fwd of depth 8192 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@441b80bf
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage4conv0fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 36
+Thu 01:11: CORE coefficient vector size: 144
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 01:11: Connecting to output: ofmap
+Thu 01:11: Connecting to output: ofmap_1
+Thu 01:11: Compiling kernel "resnetv15stage4conv0fwd"
+Thu 01:11: 
+Thu 01:11: Generating kernel resnetv15stage4conv1fwd ...
+Thu 01:11: Instantiating kernel "resnetv15stage4conv1fwd"
+Thu 01:11: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: coeffOnChip = true
+Thu 01:11: Input height = 7, output height = 7, pad = 1
+Thu 01:11: Counter H = 9 W = 9
+Thu 01:11: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: Ifmap buffer configuration 128 x 4
+Thu 01:11: loop = false
+Thu 01:11: Building line buffer for "resnetv15stage4conv1fwd" ...
+Thu 01:11: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:11: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:11: Number of separated line buffers: 4
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: ROM created for resnetv15stage4conv1fwd of depth 16384 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@14be34fa
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage4conv1fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 36
+Thu 01:11: CORE coefficient vector size: 144
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: Ifmap buffer configuration 128 x 4
+Thu 01:11: loop = false
+Thu 01:11: ROM created for resnetv15stage4conv1fwd_1 of depth 16384 and type {DFEVectorType: 16 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@116ae9ac
+Thu 01:11: Building the CORE arithmetic unit for "resnetv15stage4conv1fwd" ...
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: CORE ifmap vector size: 4
+Thu 01:11: CORE coefficient vector size: 16
+Thu 01:11: CORE ofmap vector size: 4
+Thu 01:11: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 01:11: Connecting to output: ofmap
+Thu 01:11: Compiling kernel "resnetv15stage4conv1fwd"
+Thu 01:11: 
+Thu 01:11: Generating kernel resnetv15stage4conv3fwd ...
+Thu 01:11: Instantiating kernel "resnetv15stage4conv3fwd"
+Thu 01:11: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:11: coeffOnChip = true
+Thu 01:11: Input height = 7, output height = 7, pad = 1
+Thu 01:11: Counter H = 9 W = 9
+Thu 01:11: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:11: Ifmap buffer configuration 16384 x 4
+Thu 01:11: loop = false
+Thu 01:11: Building line buffer for "resnetv15stage4conv3fwd" ...
+Thu 01:11: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:11: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:11: Number of separated line buffers: 4
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:11: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:11: Size of line buffer output: 3
+Thu 01:11: Number of line buffer output chunks: 3
+Thu 01:11: Connecting outputs from chunk (#000) ...
+Thu 01:11: Connecting outputs from chunk (#001) ...
+Thu 01:11: Connecting outputs from chunk (#002) ...
+Thu 01:12: ROM created for resnetv15stage4conv3fwd of depth 16384 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3eb83530
+Thu 01:12: Building the CORE arithmetic unit for "resnetv15stage4conv3fwd" ...
+Thu 01:12: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:12: CORE ifmap vector size: 36
+Thu 01:12: CORE coefficient vector size: 144
+Thu 01:12: CORE ofmap vector size: 4
+Thu 01:12: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 01:12: Connecting to output: ofmap
+Thu 01:12: Connecting to output: ofmap_1
+Thu 01:12: Compiling kernel "resnetv15stage4conv3fwd"
+Thu 01:12: 
+Thu 01:12: Generating kernel resnetv15stage4conv4fwd ...
+Thu 01:12: Instantiating kernel "resnetv15stage4conv4fwd"
+Thu 01:12: T = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:12: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:12: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:12: coeffOnChip = true
+Thu 01:12: Input height = 7, output height = 7, pad = 1
+Thu 01:12: Counter H = 9 W = 9
+Thu 01:12: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:12: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 01:12: Ifmap buffer configuration 128 x 4
+Thu 01:12: loop = false
+Thu 01:12: Building line buffer for "resnetv15stage4conv4fwd" ...
+Thu 01:12: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 01:12: Line buffer input vector size: 4, output vector size: 36.
+Thu 01:12: Number of separated line buffers: 4
+Thu 01:12: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:12: Size of line buffer output: 3
+Thu 01:12: Number of line buffer output chunks: 3
+Thu 01:12: Connecting outputs from chunk (#000) ...
+Thu 01:12: Connecting outputs from chunk (#001) ...
+Thu 01:12: Connecting outputs from chunk (#002) ...
+Thu 01:12: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:12: Size of line buffer output: 3
+Thu 01:12: Number of line buffer output chunks: 3
+Thu 01:12: Connecting outputs from chunk (#000) ...
+Thu 01:12: Connecting outputs from chunk (#001) ...
+Thu 01:12: Connecting outputs from chunk (#002) ...
+Thu 01:12: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:12: Size of line buffer output: 3
+Thu 01:12: Number of line buffer output chunks: 3
+Thu 01:12: Connecting outputs from chunk (#000) ...
+Thu 01:12: Connecting outputs from chunk (#001) ...
+Thu 01:12: Connecting outputs from chunk (#002) ...
+Thu 01:12: Initialising line buffer kernel with 3 x 9 x 1
+Thu 01:12: Size of line buffer output: 3
+Thu 01:12: Number of line buffer output chunks: 3
+Thu 01:12: Connecting outputs from chunk (#000) ...
+Thu 01:12: Connecting outputs from chunk (#001) ...
+Thu 01:12: Connecting outputs from chunk (#002) ...
+Thu 01:12: ROM created for resnetv15stage4conv4fwd of depth 16384 and type {DFEVectorType: 144 x dfeFix(8, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3422b621
+Thu 01:12: Building the CORE arithmetic unit for "resnetv15stage4conv4fwd" ...
+Thu 01:12: WT = dfeFix(8, 0, TWOSCOMPLEMENT)
+Thu 01:12: CORE ifmap vector size: 36
+Thu 01:12: CORE coefficient vector size: 144
+Thu 01:12: CORE ofmap vector size: 4
+Thu 01:12: Residual buffer depth = 64
+Thu 01:12: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 01:12: Connecting to output: ofmap
+Thu 01:12: Compiling kernel "resnetv15stage4conv4fwd"
+Thu 01:12: 
+Thu 01:12: Generating padding kernels for DRAM access
+Thu 01:12: Instantiating kernel "ifmap_unpad"
+Thu 01:12: Compiling kernel "ifmap_unpad"
+Thu 01:12: 
+Thu 01:12: Instantiating kernel "ofmap_pad"
+Thu 01:12: Compiling kernel "ofmap_pad"
+Thu 01:12: 
+Thu 01:12: Setting up stream connections for resnetv15conv0fwd
+Thu 01:12: Setting up stream connections for resnetv15pool0fwd
+Thu 01:12: Connecting ifmap <== resnetv15conv0fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage1conv0fwd
+Thu 01:12: Connecting ifmap <== resnetv15pool0fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage1conv1fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage1conv0fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage1conv2fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage1conv1fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage1conv3fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage1conv2fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage2conv0fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage1conv3fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage2conv1fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage2conv0fwd: ofmap
+Thu 01:12: Connecting ifmap_1 <== resnetv15stage2conv0fwd: ofmap_1
+Thu 01:12: Setting up stream connections for resnetv15stage2conv3fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage2conv1fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage2conv4fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage2conv3fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage3conv0fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage2conv4fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage3conv1fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage3conv0fwd: ofmap
+Thu 01:12: Connecting ifmap_1 <== resnetv15stage3conv0fwd: ofmap_1
+Thu 01:12: Setting up stream connections for resnetv15stage3conv3fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage3conv1fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage3conv4fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage3conv3fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage4conv0fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage3conv4fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage4conv1fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage4conv0fwd: ofmap
+Thu 01:12: Connecting ifmap_1 <== resnetv15stage4conv0fwd: ofmap_1
+Thu 01:12: Setting up stream connections for resnetv15stage4conv3fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage4conv1fwd: ofmap
+Thu 01:12: Setting up stream connections for resnetv15stage4conv4fwd
+Thu 01:12: Connecting ifmap <== resnetv15stage4conv3fwd: ofmap
+Thu 01:12: DRAM will be used to build the design
+Thu 01:12: Setup streams for kernel "resnetv15conv0fwd"
+Thu 01:12: # cycles:       2539200
+Thu 01:12: # ifmap stream: 150528
+Thu 01:12: # ofmap stream: 802816
+Thu 01:12: coeff vec size: 196
+Thu 01:12: coeff stream bit width: 1568
+Thu 01:12: coeff stream chunk size: 49
+Thu 01:12: Setup streams for kernel "resnetv15pool0fwd"
+Thu 01:12: # cycles:       207936
+Thu 01:12: # ifmap stream: 802816
+Thu 01:12: # ofmap stream: 200704
+Thu 01:12: coeff vec size: 0
+Thu 01:12: coeff stream bit width: 0
+Thu 01:12: coeff stream chunk size: 0
+Thu 01:12: Setup streams for kernel "resnetv15stage1conv0fwd"
+Thu 01:12: # cycles:       861184
+Thu 01:12: # ifmap stream: 200704
+Thu 01:12: # ofmap stream: 200704
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage1conv1fwd"
+Thu 01:12: # cycles:       861184
+Thu 01:12: # ifmap stream: 200704
+Thu 01:12: # ofmap stream: 200704
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage1conv2fwd"
+Thu 01:12: # cycles:       861184
+Thu 01:12: # ifmap stream: 200704
+Thu 01:12: # ofmap stream: 200704
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage1conv3fwd"
+Thu 01:12: # cycles:       861184
+Thu 01:12: # ifmap stream: 200704
+Thu 01:12: # ofmap stream: 200704
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage2conv0fwd"
+Thu 01:12: # cycles:       1722368
+Thu 01:12: # ifmap stream: 200704
+Thu 01:12: # ofmap stream: 100352
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage2conv1fwd"
+Thu 01:12: # cycles:       921600
+Thu 01:12: # ifmap stream: 100352
+Thu 01:12: # ofmap stream: 100352
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage2conv3fwd"
+Thu 01:12: # cycles:       921600
+Thu 01:12: # ifmap stream: 100352
+Thu 01:12: # ofmap stream: 100352
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage2conv4fwd"
+Thu 01:12: # cycles:       921600
+Thu 01:12: # ifmap stream: 100352
+Thu 01:12: # ofmap stream: 100352
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage3conv0fwd"
+Thu 01:12: # cycles:       1843200
+Thu 01:12: # ifmap stream: 100352
+Thu 01:12: # ofmap stream: 50176
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage3conv1fwd"
+Thu 01:12: # cycles:       1048576
+Thu 01:12: # ifmap stream: 50176
+Thu 01:12: # ofmap stream: 50176
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage3conv3fwd"
+Thu 01:12: # cycles:       1048576
+Thu 01:12: # ifmap stream: 50176
+Thu 01:12: # ofmap stream: 50176
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage3conv4fwd"
+Thu 01:12: # cycles:       1048576
+Thu 01:12: # ifmap stream: 50176
+Thu 01:12: # ofmap stream: 50176
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage4conv0fwd"
+Thu 01:12: # cycles:       2097152
+Thu 01:12: # ifmap stream: 50176
+Thu 01:12: # ofmap stream: 25088
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage4conv1fwd"
+Thu 01:12: # cycles:       1327104
+Thu 01:12: # ifmap stream: 25088
+Thu 01:12: # ofmap stream: 25088
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage4conv3fwd"
+Thu 01:12: # cycles:       1327104
+Thu 01:12: # ifmap stream: 25088
+Thu 01:12: # ofmap stream: 25088
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:12: Setup streams for kernel "resnetv15stage4conv4fwd"
+Thu 01:12: # cycles:       1327104
+Thu 01:12: # ifmap stream: 25088
+Thu 01:12: # ofmap stream: 25088
+Thu 01:12: coeff vec size: 144
+Thu 01:12: coeff stream bit width: 1152
+Thu 01:12: coeff stream chunk size: 9
+Thu 01:14: Generating input files (VHDL, netlists, vendor specific IP cores)
+Thu 02:59: Running back-end  build (15 phases)
+Thu 02:59: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 02:59: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Thu 02:59: Executing Synthesis Strategy VIVADO_DEFAULT
+Thu 03:40: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 03:40: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 03:41: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Thu 03:41: 
+Thu 03:41: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Thu 03:41: For this compile, we estimate this process may take longer than 1 hour.
+Thu 03:41: We recommend running in simulation to verify correctness before building hardware.
+Thu 03:41: 
+Thu 03:41: PRELIMINARY RESOURCE USAGE
+Thu 03:41: FPGA: xcVU9P-FLGB2104-2-E
+Thu 03:41: Logic utilization:      413309 / 3546720 (11.65%)
+Thu 03:41:   LUTs:                 109968 / 1182240 (9.30%)
+Thu 03:41:   Primary FFs:          303341 / 2364480 (12.83%)
+Thu 03:41: DSP blocks:               2601 / 6840    (38.03%)
+Thu 03:41: Block memory (BRAM18):    2607 / 4320    (60.35%)
+Thu 03:41: Block memory (URAM):       310 / 960     (32.29%)
+Thu 03:41: 
+Thu 03:41: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Thu 03:41: 
+Thu 03:41: PRELIMINARY POWER REPORT
+Thu 03:41: Total On-Chip Power (W) 12.04 (budget: 91.80) 
+Thu 03:41: Dynamic Power (W)        9.30 
+Thu 03:41: Device Static Power(W)   2.74 
+Thu 03:41: 
+Thu 03:41: (7/15) - Place DFE (VivadoImplementation)
+Thu 03:41: Executing the following 10 Implementation Strategies in 4 threads:
+Thu 03:41:  - VIVADO_DEFAULT
+Thu 03:41:  - MAXELER1
+Thu 03:41:  - MAXELER2
+Thu 03:41:  - MAXELER3
+Thu 03:41:  - MAXELER4
+Thu 03:41:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Thu 03:41:  - PERFORMANCE_EXPLORE
+Thu 03:41:  - PERFORMANCE_EXTRA_TIMING_OPT
+Thu 03:41:  - PERFORMANCE_NET_DELAY_HIGH
+Thu 03:41:  - PERFORMANCE_REFINE_PLACEMENT
+Thu 06:16: Implementation: Strategy "VIVADO_DEFAULT" met timing with score 0 (best score 0)
+Thu 06:16: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Thu 06:16: Implementation: Strategy "MAXELER2" was cancelled (no timing score)
+Thu 06:16: Implementation: Strategy "MAXELER1" was cancelled (no timing score)
+Thu 06:16: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 06:16: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 06:17: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Thu 06:17: 
+Thu 06:17: FINAL POWER REPORT
+Thu 06:17: Total On-Chip Power (W) 13.46 (budget: 91.80) 
+Thu 06:17: Dynamic Power (W)       10.69 
+Thu 06:17: Device Static Power(W)   2.77 
+Thu 06:17: 
+Thu 06:17: (11/15) - Generate Configuration (VivadoBitgen)
+Thu 06:33: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Thu 06:38: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Thu 06:39: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Thu 06:39: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Thu 06:39: 
+Thu 06:39: FINAL RESOURCE USAGE
+Thu 06:39: FPGA: xcVU9P-FLGB2104-2-E
+Thu 06:39: Logic utilization:      347131 / 3546720 (9.79%)
+Thu 06:39:   LUTs:                  97969 / 1182240 (8.29%)
+Thu 06:39:   Primary FFs:          249162 / 2364480 (10.54%)
+Thu 06:39: DSP blocks:               2572 / 6840    (37.60%)
+Thu 06:39: Block memory (BRAM18):    2607 / 4320    (60.35%)
+Thu 06:39: Block memory (URAM):       310 / 960     (32.29%)
+Thu 06:39: 
+Thu 06:39: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max (MD5Sum: 99e70d9eb2a0b719b82a8635d7bb9451)
+Thu 06:39: Build completed: Thu Dec 30 06:39:30 GMT 2021 (took 5 hours, 29 mins, 31 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/../scratch/Resnet18OnnxB8S4.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/../scratch/Resnet18OnnxB8S4.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max Resnet18OnnxB8S4_FREQ_200_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_3745063340921311705/cobject/max_9006163290721292948.c -o /tmp/sliccompile_3745063340921311705/cobject/max_9006163290721292948.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S4.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_6653166929137725573.o 
+ld -r /tmp/sliccompile_3745063340921311705/cobject/max_9006163290721292948.c.o max_6653166929137725573.o -o Resnet18OnnxB8S4_FREQ_200_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/resnet_18_onnx_b8_s4'
+g++ ../../src/resnet_18_onnx_b8_s4/Resnet18OnnxB8S4CpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S4_MAIA_DFE_FREQ_200/results -DDESIGN_NAME=Resnet18OnnxB8S4 -c -o Resnet18OnnxB8S4_FREQ_200_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o Resnet18OnnxB8S4_FREQ_200_dfe Resnet18OnnxB8S4_FREQ_200_dfe.o Resnet18OnnxB8S4_FREQ_200_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

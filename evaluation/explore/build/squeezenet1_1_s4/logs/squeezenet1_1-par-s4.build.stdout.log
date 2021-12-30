@@ -1,0 +1,1542 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=squeezenet1_1_s4 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 32768 Squeezenet11S4Manager \
+	DFEModel=MAIA maxFileName=Squeezenet11S4 target='DFE' enableMPCX=false \
+	FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/squeezenet1_1_s4/data/data-squeezenet1_1-par-s4.txt 
+]0; maxJavaRun: Squeezenet11S4Manager DFEModel=MAIA maxFileName=Squeezenet11S4 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/squeezenet1_1_s4/data/data-squeezenet1_1-par-s4.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : squeezenet1_1_s4
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : squeezenet1_1_s4.Squeezenet11S4Manager
+Class arguments     : DFEModel=MAIA maxFileName=Squeezenet11S4 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/squeezenet1_1_s4/data/data-squeezenet1_1-par-s4.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 32768 MB
+----------------------------------------------------------
+
+Wed 21:34: MaxCompiler version: 2021.1
+Wed 21:34: Build "Squeezenet11S4" start time: Wed Dec 29 21:34:37 GMT 2021
+Wed 21:34: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Wed 21:34: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200
+Wed 21:34: Detailed build log available in "_build.log"
+Wed 21:34: 
+Wed 21:34: ENGINE BUILD PARAMETERS
+Wed 21:34: 	              Build name: Squeezenet11S4_MAIA_DFE_FREQ_200                                                                                   
+Wed 21:34: 	             maxFileName: Squeezenet11S4                                                                                                     
+Wed 21:34: 	                  target: DFE                                                                                                                
+Wed 21:34: 	                DFEModel: MAIA                                                                                                               
+Wed 21:34: 	              enableMPCX: false                                                                                                              
+Wed 21:34: 	                bitWidth: 32                                                                                                                 
+Wed 21:34: 	                     WBW: 32                                                                                                                 
+Wed 21:34: 	                   DTYPE: fixed                                                                                                              
+Wed 21:34: 	           NUM_FRAC_BITS: 8                                                                                                                  
+Wed 21:34: 	                      PF: 1                                                                                                                  
+Wed 21:34: 	                      PC: 1                                                                                                                  
+Wed 21:34: 	                      PK: 1                                                                                                                  
+Wed 21:34: 	                       H: 1                                                                                                                  
+Wed 21:34: 	                       W: 1                                                                                                                  
+Wed 21:34: 	                       C: 1                                                                                                                  
+Wed 21:34: 	                       F: 1                                                                                                                  
+Wed 21:34: 	                       K: 1                                                                                                                  
+Wed 21:34: 	                     PAD: 0                                                                                                                  
+Wed 21:34: 	                       S: 1                                                                                                                  
+Wed 21:34: 	                     SEQ: 0                                                                                                                  
+Wed 21:34: 	                    FREQ: 200                                                                                                                
+Wed 21:34: 	                USE_DRAM: false                                                                                                              
+Wed 21:34: 	                 USE_BNN: false                                                                                                              
+Wed 21:34: 	            USE_WINOGRAD: false                                                                                                              
+Wed 21:34: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                              
+Wed 21:34: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                  
+Wed 21:34: 	                   DEBUG: false                                                                                                              
+Wed 21:34: 	           COEFF_ON_CHIP: false                                                                                                              
+Wed 21:34: 	              INIT_COEFF: false                                                                                                              
+Wed 21:34: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/squeezenet1_1_s4/data/data-squeezenet1_1-par-s4.txt
+Wed 21:35: Generating kernel squeezenet0conv0fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv0fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 223, output height = 223, pad = 0
+Wed 21:35: Counter H = 223 W = 223
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 262144 x 1
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv0fwd" ...
+Wed 21:35: Line buffer shape 3 x 223, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 1, output vector size: 9.
+Wed 21:35: Number of separated line buffers: 1
+Wed 21:35: Initialising line buffer kernel with 3 x 223 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv0fwd of depth 48 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4470f8a6
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv0fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 9
+Wed 21:35: CORE coefficient vector size: 36
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv0fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0pool0fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0pool0fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 111, output height = 111, pad = 0
+Wed 21:35: Counter H = 111 W = 111
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Building line buffer for "squeezenet0pool0fwd" ...
+Wed 21:35: Line buffer shape 3 x 111, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 111 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 111 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 111 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 111 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0pool0fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv1fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv1fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 0
+Wed 21:35: Counter H = 55 W = 55
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 65536 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv1fwd of depth 64 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1813f3e9
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv1fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv1fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv2fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv2fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 0
+Wed 21:35: Counter H = 55 W = 55
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv2fwd of depth 64 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@37303f12
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv2fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv2fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv3fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv3fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 1
+Wed 21:35: Counter H = 57 W = 57
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv3fwd" ...
+Wed 21:35: Line buffer shape 3 x 55, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv3fwd of depth 64 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5478ce1e
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv3fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv3fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat0 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat0"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat0"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv4fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv4fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 0
+Wed 21:35: Counter H = 55 W = 55
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv4fwd of depth 64 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7b4b8199
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv4fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv4fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv5fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv5fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 0
+Wed 21:35: Counter H = 55 W = 55
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 16384 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv5fwd of depth 64 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7a34c1f6
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv5fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv5fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv6fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv6fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 1
+Wed 21:35: Counter H = 57 W = 57
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 16384 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv6fwd" ...
+Wed 21:35: Line buffer shape 3 x 55, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 57 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv6fwd of depth 64 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1b556a88
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv6fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv6fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat1 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat1"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat1"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0pool1fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0pool1fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 55, output height = 55, pad = 0
+Wed 21:35: Counter H = 55 W = 55
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Building line buffer for "squeezenet0pool1fwd" ...
+Wed 21:35: Line buffer shape 3 x 55, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 8, output vector size: 72.
+Wed 21:35: Number of separated line buffers: 8
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 55 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0pool1fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv7fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv7fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 0
+Wed 21:35: Counter H = 27 W = 27
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 1024 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv7fwd of depth 128 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5f59b6c5
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv7fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv7fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv8fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv8fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 0
+Wed 21:35: Counter H = 27 W = 27
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 8192 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv8fwd of depth 256 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4a6dd88e
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv8fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv8fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv9fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv9fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 1
+Wed 21:35: Counter H = 29 W = 29
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 8192 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv9fwd" ...
+Wed 21:35: Line buffer shape 3 x 27, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv9fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@9d10078
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv9fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv9fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat2 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat2"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat2"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv10fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv10fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 0
+Wed 21:35: Counter H = 27 W = 27
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 32768 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv10fwd of depth 256 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1919b5b0
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv10fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv10fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv11fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv11fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 0
+Wed 21:35: Counter H = 27 W = 27
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 1024 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv11fwd of depth 256 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20fa20d5
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv11fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv11fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv12fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv12fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 1
+Wed 21:35: Counter H = 29 W = 29
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 1024 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv12fwd" ...
+Wed 21:35: Line buffer shape 3 x 27, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 29 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv12fwd of depth 256 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4d026a3a
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv12fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv12fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat3 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat3"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat3"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0pool2fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0pool2fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 27, output height = 27, pad = 0
+Wed 21:35: Counter H = 27 W = 27
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Building line buffer for "squeezenet0pool2fwd" ...
+Wed 21:35: Line buffer shape 3 x 27, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 8, output vector size: 72.
+Wed 21:35: Number of separated line buffers: 8
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 27 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0pool2fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv13fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv13fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 8192 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv13fwd of depth 384 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75ba60cc
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv13fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv13fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv14fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv14fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv14fwd of depth 576 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@141b6877
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv14fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv14fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv15fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv15fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 1
+Wed 21:35: Counter H = 15 W = 15
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv15fwd" ...
+Wed 21:35: Line buffer shape 3 x 13, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv15fwd of depth 576 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56e18141
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv15fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv15fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat4 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat4"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat4"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv16fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv16fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv16fwd of depth 576 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@721b941b
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv16fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  2048 addr_bits =    11
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv16fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv17fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv17fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 2048 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv17fwd of depth 576 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5b45f44
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv17fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv17fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv18fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv18fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 1
+Wed 21:35: Counter H = 15 W = 15
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv18fwd" ...
+Wed 21:35: Line buffer shape 3 x 13, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv18fwd of depth 576 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1a4db85
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv18fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv18fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat5 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat5"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat5"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv19fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv19fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 8192 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv19fwd of depth 768 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4f60f451
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv19fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv19fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv20fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv20fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv20fwd of depth 1024 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@737a2afb
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv20fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv20fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv21fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv21fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 1
+Wed 21:35: Counter H = 15 W = 15
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv21fwd" ...
+Wed 21:35: Line buffer shape 3 x 13, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv21fwd of depth 1024 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@41af75e1
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv21fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv21fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat6 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat6"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat6"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv22fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv22fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 256 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv22fwd of depth 1024 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c71d335
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv22fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Connecting to output: ofmap_1
+Wed 21:35: Compiling kernel "squeezenet0conv22fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv23fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv23fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 4
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv23fwd of depth 1024 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1503a120
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv23fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 4
+Wed 21:35: CORE coefficient vector size: 16
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv23fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv24fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv24fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 1
+Wed 21:35: Counter H = 15 W = 15
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 4096 x 4
+Wed 21:35: loop = false
+Wed 21:35: Building line buffer for "squeezenet0conv24fwd" ...
+Wed 21:35: Line buffer shape 3 x 13, produces 1 number of 3 x 3 tiles per cycle
+Wed 21:35: Line buffer input vector size: 4, output vector size: 36.
+Wed 21:35: Number of separated line buffers: 4
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: Initialising line buffer kernel with 3 x 15 x 1
+Wed 21:35: Size of line buffer output: 3
+Wed 21:35: Number of line buffer output chunks: 3
+Wed 21:35: Connecting outputs from chunk (#000) ...
+Wed 21:35: Connecting outputs from chunk (#001) ...
+Wed 21:35: Connecting outputs from chunk (#002) ...
+Wed 21:35: ROM created for squeezenet0conv24fwd of depth 1024 and type {DFEVectorType: 144 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@76567d68
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv24fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 36
+Wed 21:35: CORE coefficient vector size: 144
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv24fwd"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0concat7 ...
+Wed 21:35: Instantiating kernel "squeezenet0concat7"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: Compiling kernel "squeezenet0concat7"
+Wed 21:35: 
+Wed 21:35: Generating kernel squeezenet0conv25fwd ...
+Wed 21:35: Instantiating kernel "squeezenet0conv25fwd"
+Wed 21:35: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: coeffOnChip = true
+Wed 21:35: Input height = 13, output height = 13, pad = 0
+Wed 21:35: Counter H = 13 W = 13
+Wed 21:35: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Wed 21:35: Ifmap buffer configuration 16384 x 8
+Wed 21:35: loop = false
+Wed 21:35: ROM created for squeezenet0conv25fwd of depth 16000 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2594c874
+Wed 21:35: Building the CORE arithmetic unit for "squeezenet0conv25fwd" ...
+Wed 21:35: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Wed 21:35: CORE ifmap vector size: 8
+Wed 21:35: CORE coefficient vector size: 32
+Wed 21:35: CORE ofmap vector size: 4
+Wed 21:35: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Wed 21:35: Connecting to output: ofmap
+Wed 21:35: Compiling kernel "squeezenet0conv25fwd"
+Wed 21:35: 
+Wed 21:35: Generating padding kernels for DRAM access
+Wed 21:35: Instantiating kernel "ifmap_unpad"
+Wed 21:35: Compiling kernel "ifmap_unpad"
+Wed 21:35: 
+Wed 21:35: Instantiating kernel "ofmap_pad"
+Wed 21:35: Compiling kernel "ofmap_pad"
+Wed 21:35: 
+Wed 21:35: Setting up stream connections for squeezenet0conv0fwd
+Wed 21:35: Setting up stream connections for squeezenet0pool0fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv0fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv1fwd
+Wed 21:35: Connecting ifmap <== squeezenet0pool0fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv2fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv1fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv3fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv1fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat0
+Wed 21:35: Connecting ifmap <== squeezenet0conv2fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv3fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv4fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat0: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv5fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv4fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv6fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv4fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat1
+Wed 21:35: Connecting ifmap <== squeezenet0conv5fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv6fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0pool1fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat1: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv7fwd
+Wed 21:35: Connecting ifmap <== squeezenet0pool1fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv8fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv7fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv9fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv7fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat2
+Wed 21:35: Connecting ifmap <== squeezenet0conv8fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv9fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv10fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat2: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv11fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv10fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv12fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv10fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat3
+Wed 21:35: Connecting ifmap <== squeezenet0conv11fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv12fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0pool2fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat3: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv13fwd
+Wed 21:35: Connecting ifmap <== squeezenet0pool2fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv14fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv13fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv15fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv13fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat4
+Wed 21:35: Connecting ifmap <== squeezenet0conv14fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv15fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv16fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat4: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv17fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv16fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv18fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv16fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat5
+Wed 21:35: Connecting ifmap <== squeezenet0conv17fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv18fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv19fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat5: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv20fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv19fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv21fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv19fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat6
+Wed 21:35: Connecting ifmap <== squeezenet0conv20fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv21fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv22fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat6: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv23fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv22fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv24fwd
+Wed 21:35: Connecting ifmap <== squeezenet0conv22fwd: ofmap_1
+Wed 21:35: Setting up stream connections for squeezenet0concat7
+Wed 21:35: Connecting ifmap <== squeezenet0conv23fwd: ofmap
+Wed 21:35: Connecting ifmap_1 <== squeezenet0conv24fwd: ofmap
+Wed 21:35: Setting up stream connections for squeezenet0conv25fwd
+Wed 21:35: Connecting ifmap <== squeezenet0concat7: ofmap
+Wed 21:35: DRAM will be used to build the design
+Wed 21:35: Setup streams for kernel "squeezenet0conv0fwd"
+Wed 21:35: # cycles:       2386992
+Wed 21:35: # ifmap stream: 149187
+Wed 21:35: # ofmap stream: 788544
+Wed 21:35: coeff vec size: 36
+Wed 21:35: coeff stream bit width: 576
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0pool0fwd"
+Wed 21:35: # cycles:       197136
+Wed 21:35: # ifmap stream: 788544
+Wed 21:35: # ofmap stream: 193600
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv1fwd"
+Wed 21:35: # cycles:       193600
+Wed 21:35: # ifmap stream: 193600
+Wed 21:35: # ofmap stream: 48400
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv2fwd"
+Wed 21:35: # cycles:       193600
+Wed 21:35: # ifmap stream: 48400
+Wed 21:35: # ofmap stream: 193600
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv3fwd"
+Wed 21:35: # cycles:       207936
+Wed 21:35: # ifmap stream: 48400
+Wed 21:35: # ofmap stream: 193600
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat0"
+Wed 21:35: # cycles:       48400
+Wed 21:35: # ifmap stream: 193600
+Wed 21:35: # ofmap stream: 387200
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv4fwd"
+Wed 21:35: # cycles:       193600
+Wed 21:35: # ifmap stream: 387200
+Wed 21:35: # ofmap stream: 48400
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv5fwd"
+Wed 21:35: # cycles:       193600
+Wed 21:35: # ifmap stream: 48400
+Wed 21:35: # ofmap stream: 193600
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv6fwd"
+Wed 21:35: # cycles:       207936
+Wed 21:35: # ifmap stream: 48400
+Wed 21:35: # ofmap stream: 193600
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat1"
+Wed 21:35: # cycles:       48400
+Wed 21:35: # ifmap stream: 193600
+Wed 21:35: # ofmap stream: 387200
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0pool1fwd"
+Wed 21:35: # cycles:       48400
+Wed 21:35: # ifmap stream: 387200
+Wed 21:35: # ofmap stream: 93312
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv7fwd"
+Wed 21:35: # cycles:       93312
+Wed 21:35: # ifmap stream: 93312
+Wed 21:35: # ofmap stream: 23328
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv8fwd"
+Wed 21:35: # cycles:       186624
+Wed 21:35: # ifmap stream: 23328
+Wed 21:35: # ofmap stream: 93312
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv9fwd"
+Wed 21:35: # cycles:       215296
+Wed 21:35: # ifmap stream: 23328
+Wed 21:35: # ofmap stream: 93312
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat2"
+Wed 21:35: # cycles:       23328
+Wed 21:35: # ifmap stream: 93312
+Wed 21:35: # ofmap stream: 186624
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv10fwd"
+Wed 21:35: # cycles:       186624
+Wed 21:35: # ifmap stream: 186624
+Wed 21:35: # ofmap stream: 23328
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv11fwd"
+Wed 21:35: # cycles:       186624
+Wed 21:35: # ifmap stream: 23328
+Wed 21:35: # ofmap stream: 93312
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv12fwd"
+Wed 21:35: # cycles:       215296
+Wed 21:35: # ifmap stream: 23328
+Wed 21:35: # ofmap stream: 93312
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat3"
+Wed 21:35: # cycles:       23328
+Wed 21:35: # ifmap stream: 93312
+Wed 21:35: # ofmap stream: 186624
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0pool2fwd"
+Wed 21:35: # cycles:       23328
+Wed 21:35: # ifmap stream: 186624
+Wed 21:35: # ofmap stream: 43264
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv13fwd"
+Wed 21:35: # cycles:       64896
+Wed 21:35: # ifmap stream: 43264
+Wed 21:35: # ofmap stream: 8112
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv14fwd"
+Wed 21:35: # cycles:       97344
+Wed 21:35: # ifmap stream: 8112
+Wed 21:35: # ofmap stream: 32448
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv15fwd"
+Wed 21:35: # cycles:       129600
+Wed 21:35: # ifmap stream: 8112
+Wed 21:35: # ofmap stream: 32448
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat4"
+Wed 21:35: # cycles:       8112
+Wed 21:35: # ifmap stream: 32448
+Wed 21:35: # ofmap stream: 64896
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv16fwd"
+Wed 21:35: # cycles:       97344
+Wed 21:35: # ifmap stream: 64896
+Wed 21:35: # ofmap stream: 8112
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv17fwd"
+Wed 21:35: # cycles:       97344
+Wed 21:35: # ifmap stream: 8112
+Wed 21:35: # ofmap stream: 32448
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv18fwd"
+Wed 21:35: # cycles:       129600
+Wed 21:35: # ifmap stream: 8112
+Wed 21:35: # ofmap stream: 32448
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat5"
+Wed 21:35: # cycles:       8112
+Wed 21:35: # ifmap stream: 32448
+Wed 21:35: # ofmap stream: 64896
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv19fwd"
+Wed 21:35: # cycles:       129792
+Wed 21:35: # ifmap stream: 64896
+Wed 21:35: # ofmap stream: 10816
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv20fwd"
+Wed 21:35: # cycles:       173056
+Wed 21:35: # ifmap stream: 10816
+Wed 21:35: # ofmap stream: 43264
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv21fwd"
+Wed 21:35: # cycles:       230400
+Wed 21:35: # ifmap stream: 10816
+Wed 21:35: # ofmap stream: 43264
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat6"
+Wed 21:35: # cycles:       10816
+Wed 21:35: # ifmap stream: 43264
+Wed 21:35: # ofmap stream: 86528
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv22fwd"
+Wed 21:35: # cycles:       173056
+Wed 21:35: # ifmap stream: 86528
+Wed 21:35: # ofmap stream: 10816
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv23fwd"
+Wed 21:35: # cycles:       173056
+Wed 21:35: # ifmap stream: 10816
+Wed 21:35: # ofmap stream: 43264
+Wed 21:35: coeff vec size: 16
+Wed 21:35: coeff stream bit width: 256
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:35: Setup streams for kernel "squeezenet0conv24fwd"
+Wed 21:35: # cycles:       230400
+Wed 21:35: # ifmap stream: 10816
+Wed 21:35: # ofmap stream: 43264
+Wed 21:35: coeff vec size: 144
+Wed 21:35: coeff stream bit width: 2304
+Wed 21:35: coeff stream chunk size: 9
+Wed 21:35: Setup streams for kernel "squeezenet0concat7"
+Wed 21:35: # cycles:       10816
+Wed 21:35: # ifmap stream: 43264
+Wed 21:35: # ofmap stream: 86528
+Wed 21:35: coeff vec size: 0
+Wed 21:35: coeff stream bit width: 0
+Wed 21:35: coeff stream chunk size: 0
+Wed 21:35: Setup streams for kernel "squeezenet0conv25fwd"
+Wed 21:35: # cycles:       2704000
+Wed 21:35: # ifmap stream: 86528
+Wed 21:35: # ofmap stream: 169000
+Wed 21:35: coeff vec size: 32
+Wed 21:35: coeff stream bit width: 512
+Wed 21:35: coeff stream chunk size: 1
+Wed 21:36: Generating input files (VHDL, netlists, vendor specific IP cores)
+Wed 23:16: Running back-end  build (15 phases)
+Wed 23:16: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Wed 23:16: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Wed 23:16: Executing Synthesis Strategy VIVADO_DEFAULT
+Wed 23:51: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Wed 23:51: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Wed 23:52: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Wed 23:52: 
+Wed 23:52: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Wed 23:52: For this compile, we estimate this process may take longer than 1 hour.
+Wed 23:52: We recommend running in simulation to verify correctness before building hardware.
+Wed 23:52: 
+Wed 23:52: PRELIMINARY RESOURCE USAGE
+Wed 23:52: FPGA: xcVU9P-FLGB2104-2-E
+Wed 23:52: Logic utilization:      471793 / 3546720 (13.30%)
+Wed 23:52:   LUTs:                 126047 / 1182240 (10.66%)
+Wed 23:52:   Primary FFs:          345746 / 2364480 (14.62%)
+Wed 23:52: DSP blocks:               1797 / 6840    (26.27%)
+Wed 23:52: Block memory (BRAM18):    2097 / 4320    (48.54%)
+Wed 23:52: Block memory (URAM):       177 / 960     (18.44%)
+Wed 23:52: 
+Wed 23:52: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Wed 23:52: 
+Wed 23:52: PRELIMINARY POWER REPORT
+Wed 23:52: Total On-Chip Power (W) 11.51 (budget: 91.80) 
+Wed 23:52: Dynamic Power (W)        8.79 
+Wed 23:52: Device Static Power(W)   2.71 
+Wed 23:52: 
+Wed 23:52: (7/15) - Place DFE (VivadoImplementation)
+Wed 23:52: Executing the following 10 Implementation Strategies in 4 threads:
+Wed 23:52:  - VIVADO_DEFAULT
+Wed 23:52:  - MAXELER1
+Wed 23:52:  - MAXELER2
+Wed 23:52:  - MAXELER3
+Wed 23:52:  - MAXELER4
+Wed 23:52:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Wed 23:52:  - PERFORMANCE_EXPLORE
+Wed 23:52:  - PERFORMANCE_EXTRA_TIMING_OPT
+Wed 23:52:  - PERFORMANCE_NET_DELAY_HIGH
+Wed 23:52:  - PERFORMANCE_REFINE_PLACEMENT
+Thu 02:18: Implementation: Strategy "MAXELER1" met timing with score 0 (best score 0)
+Thu 02:18: Implementation: Strategy "VIVADO_DEFAULT" was cancelled (no timing score)
+Thu 02:18: Implementation: Strategy "MAXELER2" was cancelled (no timing score)
+Thu 02:18: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 02:19: Implementation: Strategy "MAXELER3" was cancelled (no timing score)
+Thu 02:19: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 02:19: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Thu 02:19: 
+Thu 02:19: FINAL POWER REPORT
+Thu 02:19: Total On-Chip Power (W) 12.83 (budget: 91.80) 
+Thu 02:19: Dynamic Power (W)       10.09 
+Thu 02:19: Device Static Power(W)   2.74 
+Thu 02:19: 
+Thu 02:19: (11/15) - Generate Configuration (VivadoBitgen)
+Thu 02:33: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Thu 02:37: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Thu 02:37: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Thu 02:38: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Thu 02:38: 
+Thu 02:38: FINAL RESOURCE USAGE
+Thu 02:38: FPGA: xcVU9P-FLGB2104-2-E
+Thu 02:38: Logic utilization:      408157 / 3546720 (11.51%)
+Thu 02:38:   LUTs:                 111729 / 1182240 (9.45%)
+Thu 02:38:   Primary FFs:          296428 / 2364480 (12.54%)
+Thu 02:38: DSP blocks:               1651 / 6840    (24.14%)
+Thu 02:38: Block memory (BRAM18):    2097 / 4320    (48.54%)
+Thu 02:38: Block memory (URAM):       177 / 960     (18.44%)
+Thu 02:38: 
+Thu 02:38: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max (MD5Sum: 0f43f954ccc04131aa900d929dda8ebf)
+Thu 02:38: Build completed: Thu Dec 30 02:38:15 GMT 2021 (took 5 hours, 3 mins, 37 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/../scratch/Squeezenet11S4.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/../scratch/Squeezenet11S4.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max Squeezenet11S4_FREQ_200_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_6800498667254512504/cobject/max_3190175725731802744.c -o /tmp/sliccompile_6800498667254512504/cobject/max_3190175725731802744.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results/Squeezenet11S4.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_5422412981023216147.o 
+ld -r /tmp/sliccompile_6800498667254512504/cobject/max_3190175725731802744.c.o max_5422412981023216147.o -o Squeezenet11S4_FREQ_200_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/squeezenet1_1_s4'
+g++ ../../src/squeezenet1_1_s4/Squeezenet11S4CpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11S4_MAIA_DFE_FREQ_200/results -DDESIGN_NAME=Squeezenet11S4 -c -o Squeezenet11S4_FREQ_200_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o Squeezenet11S4_FREQ_200_dfe Squeezenet11S4_FREQ_200_dfe.o Squeezenet11S4_FREQ_200_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

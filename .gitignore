@@ -58,3 +58,6 @@ venv
 data/
 
 *.onnx
+
+__pycache__/
+*.pyc

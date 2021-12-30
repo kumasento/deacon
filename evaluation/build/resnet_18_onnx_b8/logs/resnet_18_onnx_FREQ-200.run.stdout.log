@@ -1,0 +1,69 @@
+
+##################################
+#
+# Welcome to lima01.doc.ic.ac.uk
+# This system is running CentOS Linux release 7.4.1708 (Core) 
+# kernel is 3.10.0-693.el7.x86_64
+#
+# You are logged in as rz3515
+#
+#
+# To interrogate the DFE system type:
+#
+# > maxtop
+#
+# As the FPGA is shared by everyone in the Custom Computing Research Group, please unload the design from the FPGA when your run is finished.
+
+##################################
+
+You're on a LIMA instance: lima01.doc.ic.ac.uk
+>>> NAS has been successfully mounted: /mnt/ccnas2/bdp/rz3515
+
+
+Welcome, rz3515!
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=/opt/maxeler/maxeleros/lib/libmaxeleros.so ./Resnet18OnnxB8_FREQ_200_dfe -n 100
+I1230 12:50:50.283053 23660 Resnet18OnnxB8CpuCode.cpp:87] num frac bits: 0
+I1230 12:50:50.398977 23660 Resnet18OnnxB8CpuCode.cpp:91] input[0] = -1.95943  dfe = -2
+I1230 12:50:50.399065 23660 Resnet18OnnxB8CpuCode.cpp:91] input[1] = -0.71415  dfe = -1
+I1230 12:50:50.399071 23660 Resnet18OnnxB8CpuCode.cpp:91] input[2] = 0.80067  dfe = 1
+I1230 12:50:50.406749 23660 utils.h:383] Burst aligning input array of size: 15052800 to 15052800
+I1230 12:50:50.406771 23660 Resnet18OnnxB8CpuCode.cpp:112] Tiled input size (burst aligned): 15052800
+I1230 12:50:50.406778 23660 utils.h:383] Burst aligning input array of size: 2508800 to 2509056
+I1230 12:50:50.407384 23660 Resnet18OnnxB8CpuCode.cpp:115] Tiled output size (burst aligned): 2509056
+I1230 12:50:50.407395 23660 layers.h:775] Writing DRAM to 0 with size 0xe5b000
+I1230 12:50:50.430980 23660 Resnet18OnnxB8CpuCode.cpp:123] Running ...
+I1230 12:51:01.633913 23660 Resnet18OnnxB8CpuCode.cpp:128] Done
+I1230 12:51:01.633975 23660 layers.h:792] Reading DRAM from 0xe5b000 with size 0x264900
+I1230 12:51:01.650161 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[0] = 8
+I1230 12:51:01.650214 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[1] = -5
+I1230 12:51:01.650230 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[2] = -4
+I1230 12:51:01.650245 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[3] = -107
+I1230 12:51:01.650315 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[4] = -83
+I1230 12:51:01.650331 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[5] = -98
+I1230 12:51:01.650357 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[6] = 85
+I1230 12:51:01.650382 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[7] = 74
+I1230 12:51:01.650403 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[8] = 91
+I1230 12:51:01.650415 23660 Resnet18OnnxB8CpuCode.cpp:135] output_dfe[9] = -97
+I1230 12:51:01.650429 23660 Resnet18OnnxB8CpuCode.cpp:141] elapsed time: 11.2029s
+I1230 12:51:01.650458 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer              resnetv15conv0fwd = 236.028 M
+I1230 12:51:01.650490 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer              resnetv15pool0fwd = 0 M
+I1230 12:51:01.650537 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage1conv0fwd = 231.211 M
+I1230 12:51:01.650569 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage1conv1fwd = 231.211 M
+I1230 12:51:01.650593 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage1conv2fwd = 231.211 M
+I1230 12:51:01.650607 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage1conv3fwd = 231.211 M
+I1230 12:51:01.650635 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage2conv0fwd = 115.606 M
+I1230 12:51:01.650660 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage2conv1fwd = 231.211 M
+I1230 12:51:01.650677 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage2conv3fwd = 231.211 M
+I1230 12:51:01.650700 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage2conv4fwd = 231.211 M
+I1230 12:51:01.650714 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage3conv0fwd = 115.606 M
+I1230 12:51:01.650730 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage3conv1fwd = 231.211 M
+I1230 12:51:01.650745 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage3conv3fwd = 231.211 M
+I1230 12:51:01.650775 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage3conv4fwd = 231.211 M
+I1230 12:51:01.650812 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage4conv0fwd = 115.606 M
+I1230 12:51:01.650831 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage4conv1fwd = 231.211 M
+I1230 12:51:01.650874 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage4conv3fwd = 231.211 M
+I1230 12:51:01.650902 23660 Resnet18OnnxB8CpuCode.cpp:155] [Ops] layer        resnetv15stage4conv4fwd = 231.211 M
+I1230 12:51:01.650918 23660 Resnet18OnnxB8CpuCode.cpp:159] OPS:    358.859 G
+I1230 12:51:01.650965 23660 Resnet18OnnxB8CpuCode.cpp:160] FPS:    8.92629
+I1230 12:51:01.650995 23660 Resnet18OnnxB8CpuCode.cpp:163] GFLOPs: 32.0328

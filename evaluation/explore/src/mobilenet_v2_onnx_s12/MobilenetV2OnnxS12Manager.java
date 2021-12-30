@@ -870,7 +870,7 @@ public class MobilenetV2OnnxS12Manager extends Max5LMemManager implements Manage
                 .coeffOnChip(true)
                 .coeffFile(params.getCoeffFile())
                 .residual("")
-                .PF(12)
+                .PF(8)
                 .PC(12)
                 .PK(1)
                 .namedRegion("")

@@ -21,6 +21,7 @@ from pydeacon.graph import (
     Node,
     Output,
     OutputType,
+    Parallelism,
     Seq,
     Shape,
 )
@@ -77,7 +78,7 @@ class ONNXConverter:
 
         return suffix
 
-    def convert(self, src_file: str, dst_file: str):
+    def convert(self, src_file: str, dst_file: str, init_seq: str):
         model = onnx.load(src_file)
         model = shape_inference.infer_shapes(model)
 
@@ -184,6 +185,8 @@ class ONNXConverter:
                     extra_input = f"{nc.name}_{len(nc.outputs)-1}"
                     nb.inputs.append(extra_input)
                     nb.residual = extra_input
+                    nc.par = Parallelism(P_F=[nc.shape.F // nc.shape.C, 1], P_C=[1])
+                    nb.par = Parallelism(P_C=[nc.shape.F // nc.shape.C, 1], P_F=[1])
 
                     # make sure the first output is taken by nc.
                     if "_" in nc.inputs[0]:
@@ -299,9 +302,17 @@ class ONNXConverter:
             vis.add(d_node.name)
             G.initialize_parallelism(d_node)
 
-        G.initialize_seq()
+        G.initialize_seq(
+            start=Seq.FILTER_MAJOR if init_seq == "FM" else Seq.CHANNEL_MAJOR
+        )
         G.sanity_check()
         G.dump(dst_file)
+        G.dump_spreadsheet(
+            os.path.join(
+                os.path.dirname(dst_file),
+                os.path.basename(dst_file).split(".")[0] + ".csv",
+            )
+        )
 
 
 def main():
@@ -315,11 +326,12 @@ def main():
         action="store_true",
         help="Whether to pad the last layer to power of 2",
     )
+    parser.add_argument("--init-seq", type=str, default="FM", help="Initial seq")
     parser.add_argument("--bw", type=int, default=8, help="Bit width")
     args = parser.parse_args()
 
     ONNXConverter(last_padded=args.last_padded, bit_width=args.bw).convert(
-        args.model_file, args.config_file
+        args.model_file, args.config_file, init_seq=args.init_seq
     )
 
 

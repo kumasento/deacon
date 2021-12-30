@@ -1,0 +1,88 @@
+
+##################################
+#
+# Welcome to lima01.doc.ic.ac.uk
+# This system is running CentOS Linux release 7.4.1708 (Core) 
+# kernel is 3.10.0-693.el7.x86_64
+#
+# You are logged in as rz3515
+#
+#
+# To interrogate the DFE system type:
+#
+# > maxtop
+#
+# As the FPGA is shared by everyone in the Custom Computing Research Group, please unload the design from the FPGA when your run is finished.
+
+##################################
+
+You're on a LIMA instance: lima01.doc.ic.ac.uk
+>>> NAS has been successfully mounted: /mnt/ccnas2/bdp/rz3515
+
+
+Welcome, rz3515!
+
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=/opt/maxeler/maxeleros/lib/libmaxeleros.so ./MobilenetV2OnnxS12_FREQ_200_dfe -n 100
+I1230 08:49:27.391207 22722 MobilenetV2OnnxS12CpuCode.cpp:104] num frac bits: 8
+I1230 08:49:27.447757 22722 MobilenetV2OnnxS12CpuCode.cpp:108] input[0] = -1.95943  dfe = -1.96094
+I1230 08:49:27.447857 22722 MobilenetV2OnnxS12CpuCode.cpp:108] input[1] = -0.71415  dfe = -0.714844
+I1230 08:49:27.447865 22722 MobilenetV2OnnxS12CpuCode.cpp:108] input[2] = 0.80067  dfe = 0.800781
+I1230 08:49:27.465106 22722 utils.h:383] Burst aligning input array of size: 15052800 to 15052800
+I1230 08:49:27.465137 22722 MobilenetV2OnnxS12CpuCode.cpp:129] Tiled input size (burst aligned): 15052800
+I1230 08:49:27.465142 22722 utils.h:383] Burst aligning input array of size: 6272000 to 6273024
+I1230 08:49:27.469743 22722 MobilenetV2OnnxS12CpuCode.cpp:132] Tiled output size (burst aligned): 6273024
+I1230 08:49:27.469753 22722 layers.h:775] Writing DRAM to 0 with size 0x1cb6000
+I1230 08:49:27.500814 22722 MobilenetV2OnnxS12CpuCode.cpp:140] Running ...
+I1230 08:49:27.759958 22722 MobilenetV2OnnxS12CpuCode.cpp:146] Done
+I1230 08:49:27.759994 22722 layers.h:792] Reading DRAM from 0x1cb6000 with size 0xbf7000
+I1230 08:49:27.780544 22722 layers.h:374] Reordering output for PF = 8 TOH = 7 TOW = 7
+I1230 08:49:27.790717 22722 layers.h:399] Done
+I1230 08:49:27.790750 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[0] = 99.0742
+I1230 08:49:27.790781 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[1] = -115.539
+I1230 08:49:27.790789 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[2] = -90.9648
+I1230 08:49:27.790796 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[3] = 104.094
+I1230 08:49:27.790802 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[4] = 111.82
+I1230 08:49:27.790809 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[5] = -81.0508
+I1230 08:49:27.790815 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[6] = 98.9648
+I1230 08:49:27.790822 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[7] = -101.109
+I1230 08:49:27.790827 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[8] = 1.77344
+I1230 08:49:27.790832 22722 MobilenetV2OnnxS12CpuCode.cpp:153] output_dfe[9] = 108.492
+I1230 08:49:27.790838 22722 MobilenetV2OnnxS12CpuCode.cpp:159] elapsed time: 0.259059s
+I1230 08:49:27.790858 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                          conv0 = 21.676 M
+I1230 08:49:27.790869 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                          conv2 = 20.0704 M
+I1230 08:49:27.790875 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                          conv5 = 38.5352 M
+I1230 08:49:27.790882 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                          conv7 = 19.8697 M
+I1230 08:49:27.790889 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv10 = 21.676 M
+I1230 08:49:27.790894 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv12 = 29.8045 M
+I1230 08:49:27.790901 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv16 = 21.676 M
+I1230 08:49:27.790908 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv18 = 9.25747 M
+I1230 08:49:27.790916 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv21 = 9.63379 M
+I1230 08:49:27.790979 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv23 = 12.3433 M
+I1230 08:49:27.790985 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv27 = 9.63379 M
+I1230 08:49:27.790992 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv29 = 12.3433 M
+I1230 08:49:27.790998 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv33 = 9.63379 M
+I1230 08:49:27.791004 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv35 = 5.49427 M
+I1230 08:49:27.791010 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv38 = 9.63379 M
+I1230 08:49:27.791015 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv40 = 10.9885 M
+I1230 08:49:27.791023 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv44 = 9.63379 M
+I1230 08:49:27.791028 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv46 = 10.9885 M
+I1230 08:49:27.791033 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv50 = 9.63379 M
+I1230 08:49:27.791039 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv52 = 10.9885 M
+I1230 08:49:27.791045 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv56 = 9.63379 M
+I1230 08:49:27.791051 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv58 = 15.8054 M
+I1230 08:49:27.791057 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv61 = 21.676 M
+I1230 08:49:27.791062 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv63 = 23.7082 M
+I1230 08:49:27.791069 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv67 = 21.676 M
+I1230 08:49:27.791074 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv69 = 23.7082 M
+I1230 08:49:27.791082 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv73 = 21.676 M
+I1230 08:49:27.791088 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv75 = 9.53971 M
+I1230 08:49:27.791093 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv78 = 15.0528 M
+I1230 08:49:27.791100 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv80 = 15.8995 M
+I1230 08:49:27.791105 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv84 = 15.0528 M
+I1230 08:49:27.791111 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv86 = 15.8995 M
+I1230 08:49:27.791119 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv90 = 15.0528 M
+I1230 08:49:27.791126 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv92 = 30.9523 M
+I1230 08:49:27.791131 22722 MobilenetV2OnnxS12CpuCode.cpp:173] [Ops] layer                         conv95 = 40.1408 M
+I1230 08:49:27.791136 22722 MobilenetV2OnnxS12CpuCode.cpp:177] OPS:    59.8989 G
+I1230 08:49:27.791142 22722 MobilenetV2OnnxS12CpuCode.cpp:178] FPS:    386.013
+I1230 08:49:27.791148 22722 MobilenetV2OnnxS12CpuCode.cpp:181] GFLOPs: 231.217

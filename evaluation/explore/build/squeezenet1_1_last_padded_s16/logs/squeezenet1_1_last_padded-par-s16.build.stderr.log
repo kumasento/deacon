@@ -137,3 +137,5 @@ Tue 16:31: WARNING: MaxCompiler has detected and optimized one or more multiply 
 Tue 16:31: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
 Tue 16:31: WARNING: precision but may mean that the output of this bitstream is not bit-identical
 Tue 16:31: WARNING: to that of a similar bitstream.
+Wed 21:33: ERROR: Prematurely halting process: ulimit -v 110729625;export XILINX_LOCAL_USER_DATA=no; vivado  -mode batch -source runSynth.tcl -log runSynth.log
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Squeezenet11LastPaddedS16_MAIA_DFE_FREQ_200/results/Squeezenet11LastPaddedS16.max] Error 130

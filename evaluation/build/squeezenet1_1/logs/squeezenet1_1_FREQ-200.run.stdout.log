@@ -22,67 +22,67 @@ You're on a LIMA instance: lima01.doc.ic.ac.uk
 
 Welcome, rz3515!
 
-SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=/opt/maxeler/maxeleros/lib/libmaxeleros.so ./Squeezenet11_FREQ_200_dfe -n 20
-I1228 18:45:59.809353 13776 Squeezenet11CpuCode.cpp:106] num frac bits: 8
-I1228 18:45:59.824188 13776 Squeezenet11CpuCode.cpp:110] input[0] = -1.95943  dfe = -1.96094
-I1228 18:45:59.824249 13776 Squeezenet11CpuCode.cpp:110] input[1] = -0.71415  dfe = -0.714844
-I1228 18:45:59.824257 13776 Squeezenet11CpuCode.cpp:110] input[2] = 0.80067  dfe = 0.800781
-I1228 18:45:59.830381 13776 utils.h:383] Burst aligning input array of size: 2983740 to 2983872
-I1228 18:45:59.833062 13776 Squeezenet11CpuCode.cpp:131] Tiled input size (burst aligned): 2983872
-I1228 18:45:59.833074 13776 utils.h:383] Burst aligning input array of size: 3380000 to 3380160
-I1228 18:45:59.835470 13776 Squeezenet11CpuCode.cpp:134] Tiled output size (burst aligned): 3380160
-I1228 18:45:59.835482 13776 layers.h:758] Writing DRAM to 0 with size 0x5b0f80
-I1228 18:45:59.856122 13776 Squeezenet11CpuCode.cpp:142] Running ...
-I1228 18:46:05.155130 13776 Squeezenet11CpuCode.cpp:147] Done
-I1228 18:46:05.155174 13776 layers.h:775] Reading DRAM from 0x5b0f80 with size 0x672780
-I1228 18:46:05.178779 13776 Squeezenet11CpuCode.cpp:154] output_dfe[0] = -28.3633
-I1228 18:46:05.178813 13776 Squeezenet11CpuCode.cpp:154] output_dfe[1] = 115.898
-I1228 18:46:05.178822 13776 Squeezenet11CpuCode.cpp:154] output_dfe[2] = 82.3711
-I1228 18:46:05.178829 13776 Squeezenet11CpuCode.cpp:154] output_dfe[3] = -53.3359
-I1228 18:46:05.178835 13776 Squeezenet11CpuCode.cpp:154] output_dfe[4] = 10.0508
-I1228 18:46:05.178843 13776 Squeezenet11CpuCode.cpp:154] output_dfe[5] = -70.0781
-I1228 18:46:05.178849 13776 Squeezenet11CpuCode.cpp:154] output_dfe[6] = 30.1484
-I1228 18:46:05.178855 13776 Squeezenet11CpuCode.cpp:154] output_dfe[7] = -34.2227
-I1228 18:46:05.178861 13776 Squeezenet11CpuCode.cpp:154] output_dfe[8] = 21.7734
-I1228 18:46:05.178867 13776 Squeezenet11CpuCode.cpp:154] output_dfe[9] = -66.7383
-I1228 18:46:05.178874 13776 Squeezenet11CpuCode.cpp:160] elapsed time: 5.29894s
-I1228 18:46:05.178886 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv0fwd = 42.5814 M
-I1228 18:46:05.178895 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool0fwd = 0 M
-I1228 18:46:05.178903 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv1fwd = 6.1952 M
-I1228 18:46:05.178910 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv2fwd = 6.1952 M
-I1228 18:46:05.178915 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv3fwd = 55.7568 M
-I1228 18:46:05.178922 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat0 = 0 M
-I1228 18:46:05.178956 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv4fwd = 12.3904 M
-I1228 18:46:05.178963 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv5fwd = 6.1952 M
-I1228 18:46:05.178969 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv6fwd = 55.7568 M
-I1228 18:46:05.178977 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat1 = 0 M
-I1228 18:46:05.178983 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool1fwd = 0 M
-I1228 18:46:05.178989 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv7fwd = 5.97197 M
-I1228 18:46:05.178997 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv8fwd = 5.97197 M
-I1228 18:46:05.179004 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv9fwd = 53.7477 M
-I1228 18:46:05.179013 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat2 = 0 M
-I1228 18:46:05.179019 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv10fwd = 11.9439 M
-I1228 18:46:05.179026 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv11fwd = 5.97197 M
-I1228 18:46:05.179049 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv12fwd = 53.7477 M
-I1228 18:46:05.179060 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat3 = 0 M
-I1228 18:46:05.179075 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool2fwd = 0 M
-I1228 18:46:05.179082 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv13fwd = 4.15334 M
-I1228 18:46:05.179088 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv14fwd = 3.11501 M
-I1228 18:46:05.179101 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv15fwd = 28.0351 M
-I1228 18:46:05.179111 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat4 = 0 M
-I1228 18:46:05.179117 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv16fwd = 6.23002 M
-I1228 18:46:05.179124 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv17fwd = 3.11501 M
-I1228 18:46:05.179131 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv18fwd = 28.0351 M
-I1228 18:46:05.179137 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat5 = 0 M
-I1228 18:46:05.179143 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv19fwd = 8.30669 M
-I1228 18:46:05.179150 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv20fwd = 5.53779 M
-I1228 18:46:05.179157 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv21fwd = 49.8401 M
-I1228 18:46:05.179163 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat6 = 0 M
-I1228 18:46:05.179169 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv22fwd = 11.0756 M
-I1228 18:46:05.179175 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv23fwd = 5.53779 M
-I1228 18:46:05.179181 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv24fwd = 49.8401 M
-I1228 18:46:05.179189 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat7 = 0 M
-I1228 18:46:05.179195 13776 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv25fwd = 173.056 M
-I1228 18:46:05.179210 13776 Squeezenet11CpuCode.cpp:178] OPS:    13.9661 G
-I1228 18:46:05.179219 13776 Squeezenet11CpuCode.cpp:179] FPS:    3.77434
-I1228 18:46:05.179224 13776 Squeezenet11CpuCode.cpp:182] GFLOPs: 2.63564
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" LD_PRELOAD=/opt/maxeler/maxeleros/lib/libmaxeleros.so ./Squeezenet11_FREQ_200_dfe -n 100
+I1230 10:46:25.598716  6726 Squeezenet11CpuCode.cpp:106] num frac bits: 8
+I1230 10:46:25.653365  6726 Squeezenet11CpuCode.cpp:110] input[0] = -1.95943  dfe = -1.96094
+I1230 10:46:25.653466  6726 Squeezenet11CpuCode.cpp:110] input[1] = -0.71415  dfe = -0.714844
+I1230 10:46:25.653474  6726 Squeezenet11CpuCode.cpp:110] input[2] = 0.80067  dfe = 0.800781
+I1230 10:46:25.676792  6726 utils.h:383] Burst aligning input array of size: 14918700 to 14918784
+I1230 10:46:25.688469  6726 Squeezenet11CpuCode.cpp:131] Tiled input size (burst aligned): 14918784
+I1230 10:46:25.688503  6726 utils.h:383] Burst aligning input array of size: 16900000 to 16900032
+I1230 10:46:25.702353  6726 Squeezenet11CpuCode.cpp:134] Tiled output size (burst aligned): 16900032
+I1230 10:46:25.702385  6726 layers.h:758] Writing DRAM to 0 with size 0x1c74900
+I1230 10:46:25.736042  6726 Squeezenet11CpuCode.cpp:142] Running ...
+I1230 10:46:49.767570  6726 Squeezenet11CpuCode.cpp:147] Done
+I1230 10:46:49.767642  6726 layers.h:775] Reading DRAM from 0x1c74900 with size 0x203bf80
+I1230 10:46:49.822585  6726 Squeezenet11CpuCode.cpp:154] output_dfe[0] = -28.3633
+I1230 10:46:49.822677  6726 Squeezenet11CpuCode.cpp:154] output_dfe[1] = 115.898
+I1230 10:46:49.822690  6726 Squeezenet11CpuCode.cpp:154] output_dfe[2] = 82.3711
+I1230 10:46:49.822702  6726 Squeezenet11CpuCode.cpp:154] output_dfe[3] = -53.3359
+I1230 10:46:49.822715  6726 Squeezenet11CpuCode.cpp:154] output_dfe[4] = 10.0508
+I1230 10:46:49.822731  6726 Squeezenet11CpuCode.cpp:154] output_dfe[5] = -70.0781
+I1230 10:46:49.822741  6726 Squeezenet11CpuCode.cpp:154] output_dfe[6] = 30.1484
+I1230 10:46:49.822757  6726 Squeezenet11CpuCode.cpp:154] output_dfe[7] = -34.2227
+I1230 10:46:49.822767  6726 Squeezenet11CpuCode.cpp:154] output_dfe[8] = 21.7734
+I1230 10:46:49.822777  6726 Squeezenet11CpuCode.cpp:154] output_dfe[9] = -66.7383
+I1230 10:46:49.822786  6726 Squeezenet11CpuCode.cpp:160] elapsed time: 24.0314s
+I1230 10:46:49.822810  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv0fwd = 42.5814 M
+I1230 10:46:49.822860  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool0fwd = 0 M
+I1230 10:46:49.822942  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv1fwd = 6.1952 M
+I1230 10:46:49.822969  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv2fwd = 6.1952 M
+I1230 10:46:49.822981  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv3fwd = 55.7568 M
+I1230 10:46:49.823012  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat0 = 0 M
+I1230 10:46:49.823030  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv4fwd = 12.3904 M
+I1230 10:46:49.823047  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv5fwd = 6.1952 M
+I1230 10:46:49.823058  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv6fwd = 55.7568 M
+I1230 10:46:49.823079  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat1 = 0 M
+I1230 10:46:49.823094  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool1fwd = 0 M
+I1230 10:46:49.823104  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv7fwd = 5.97197 M
+I1230 10:46:49.823127  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv8fwd = 5.97197 M
+I1230 10:46:49.823141  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0conv9fwd = 53.7477 M
+I1230 10:46:49.823151  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat2 = 0 M
+I1230 10:46:49.823168  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv10fwd = 11.9439 M
+I1230 10:46:49.823184  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv11fwd = 5.97197 M
+I1230 10:46:49.823196  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv12fwd = 53.7477 M
+I1230 10:46:49.823213  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat3 = 0 M
+I1230 10:46:49.823225  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer            squeezenet0pool2fwd = 0 M
+I1230 10:46:49.823238  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv13fwd = 4.15334 M
+I1230 10:46:49.823254  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv14fwd = 3.11501 M
+I1230 10:46:49.823266  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv15fwd = 28.0351 M
+I1230 10:46:49.823280  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat4 = 0 M
+I1230 10:46:49.823295  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv16fwd = 6.23002 M
+I1230 10:46:49.823307  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv17fwd = 3.11501 M
+I1230 10:46:49.823323  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv18fwd = 28.0351 M
+I1230 10:46:49.823338  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat5 = 0 M
+I1230 10:46:49.823349  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv19fwd = 8.30669 M
+I1230 10:46:49.823361  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv20fwd = 5.53779 M
+I1230 10:46:49.823379  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv21fwd = 49.8401 M
+I1230 10:46:49.823400  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat6 = 0 M
+I1230 10:46:49.823410  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv22fwd = 11.0756 M
+I1230 10:46:49.823426  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv23fwd = 5.53779 M
+I1230 10:46:49.823451  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv24fwd = 49.8401 M
+I1230 10:46:49.823462  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer             squeezenet0concat7 = 0 M
+I1230 10:46:49.823472  6726 Squeezenet11CpuCode.cpp:174] [Ops] layer           squeezenet0conv25fwd = 173.056 M
+I1230 10:46:49.823484  6726 Squeezenet11CpuCode.cpp:178] OPS:    69.8304 G
+I1230 10:46:49.823500  6726 Squeezenet11CpuCode.cpp:179] FPS:    4.16122
+I1230 10:46:49.823510  6726 Squeezenet11CpuCode.cpp:182] GFLOPs: 2.90579

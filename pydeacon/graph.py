@@ -6,6 +6,7 @@ from enum import Enum
 from typing import DefaultDict, Dict, List, Optional, Tuple
 
 import numpy as np
+import pandas as pd
 import toml
 
 
@@ -65,9 +66,41 @@ class Node:
     seq: Seq  # compute sequence
     par: Parallelism = None  # parallelism
     inputs: List[str] = field(default_factory=list)
-    outputs: List[str] = field(default_factory=list)
+    outputs: List[Output] = field(default_factory=list)
     output_nodes: List[str] = field(default_factory=list)
     residual: Optional[str] = None
+
+    @property
+    def ops(self):
+        """Mult-add is counted as two ops."""
+        if self.layer_type == LayerType.STANDARD:
+            ops = (
+                self.shape.H
+                * self.shape.W
+                * self.shape.C
+                * self.shape.F
+                * self.K
+                * self.K
+                * 2
+            )
+            if self.residual in self.inputs:
+                assert self.inputs.index(self.residual) == 1
+                ops += (
+                    self.shape.H
+                    * self.shape.W
+                    * (self.shape.C / (self.par.P_C[1] / self.par.P_C[0]))
+                    * self.shape.F
+                    * 2
+                )
+            return ops
+        if self.layer_type == LayerType.DEPTHWISE_SEPARABLE:
+            return (
+                self.shape.H
+                * self.shape.W
+                * (self.shape.C * self.shape.F + self.shape.C * self.K * self.K)
+                * 2
+            )
+        return 0
 
 
 @dataclass
@@ -151,14 +184,18 @@ class DeaconGraph:
 
             for i, input_name in enumerate(node.inputs):
                 output_node, j = self.get_output(input_name)
+                print(output_node)
                 assert node.par.P_C[i] == output_node.par.P_F[j]
 
-            if node.residual:
+            if node.residual and node.residual not in node.inputs:
                 output_node, j = self.get_output(node.residual)
                 # print(node.par.P_F[0], output_node.par.P_F[j])
                 assert node.par.P_F[0] == output_node.par.P_F[j]
 
-    def initialize_seq(self):
+    def node(self, name: str) -> Node:
+        return self.node_map[name]
+
+    def initialize_seq(self, start: Seq = Seq.FILTER_MAJOR):
         """Based on a simplest greedy algorithm. Still improving"""
         input_node = None
         for node in self.node_map.values():
@@ -166,7 +203,7 @@ class DeaconGraph:
                 input_node = node
                 break
 
-        input_node.seq = Seq.FILTER_MAJOR
+        input_node.seq = start
         vis = set()
         Q = [input_node]
         while Q:
@@ -178,11 +215,17 @@ class DeaconGraph:
                     assert self.node_map[output_node].seq != node.seq
                     continue
 
-                self.node_map[output_node].seq = (
-                    Seq.FILTER_MAJOR
-                    if node.seq == Seq.CHANNEL_MAJOR
-                    else Seq.CHANNEL_MAJOR
-                )
+                if self.node(output_node).layer_type in [
+                    LayerType.CONCAT,
+                    LayerType.POOLING,
+                ]:
+                    self.node(output_node).seq = node.seq
+                else:
+                    self.node_map[output_node].seq = (
+                        Seq.FILTER_MAJOR
+                        if node.seq == Seq.CHANNEL_MAJOR
+                        else Seq.CHANNEL_MAJOR
+                    )
                 Q.append(self.node_map[output_node])
 
     @property
@@ -199,6 +242,7 @@ class DeaconGraph:
         for node in self.node_map.values():
             if node.name in vis:
                 continue
+            vis.add(node.name)
             nodes.append(node)
         return nodes
 
@@ -283,4 +327,24 @@ class DeaconGraph:
         self.sanity_check()
         with open(cfg_file, "w") as f:
             toml.dump(cfg, f)
+
+    def dump_spreadsheet(self, out_file: str):
+        data = defaultdict(list)
+        for node in self.nodes:
+            data["name"].append(node.name)
+            data["type"].append(node.layer_type)
+            data["H"].append(node.shape.H)
+            data["W"].append(node.shape.W)
+            data["C"].append(node.shape.C)
+            data["F"].append(node.shape.F)
+            data["K"].append(node.K)
+            data["P"].append(node.P)
+            data["S"].append(node.S)
+            data["P_C"].append(node.par.P_C[0])
+            data["P_F"].append(node.par.P_F[0])
+            data["residual"].append(node.residual)
+
+        df = pd.DataFrame(data, index=None)
+        df = df.set_index("name")
+        df.to_csv(out_file)
 

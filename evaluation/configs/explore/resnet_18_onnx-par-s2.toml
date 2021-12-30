@@ -1,0 +1,287 @@
+NAME = "resnet_18_onnx_b8_s2"
+
+[global]
+BW = 8
+WBW = 8
+FREQ = 200
+NUM_FRAC_BITS = 0
+COEFF_ON_CHIP = true
+USE_DRAM = true
+
+[layers.resnetv15conv0fwd]
+H = 112
+W = 112
+C = 3
+F = 64
+K = 7
+S = 2
+P = 3
+P_C = [ 1,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = []
+OUTPUT = [ "OFMAP",]
+
+[layers.resnetv15pool0fwd]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+S = 2
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "POOLING"
+INPUT = [ "resnetv15conv0fwd",]
+OUTPUT = [ "OFMAP",]
+
+[layers.resnetv15stage1conv0fwd]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15pool0fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage1conv1fwd]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage1conv0fwd",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage1conv0fwd_1"
+
+[layers.resnetv15stage1conv2fwd]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage1conv1fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage1conv3fwd]
+H = 56
+W = 56
+C = 64
+F = 64
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage1conv2fwd",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage1conv2fwd_1"
+
+[layers.resnetv15stage2conv0fwd]
+H = 28
+W = 28
+C = 64
+F = 128
+K = 3
+S = 2
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage1conv3fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage2conv1fwd]
+H = 28
+W = 28
+C = 128
+F = 128
+K = 3
+S = 1
+P = 1
+P_C = [ 2, 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage2conv0fwd", "resnetv15stage2conv0fwd_1",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage2conv0fwd_1"
+
+[layers.resnetv15stage2conv3fwd]
+H = 28
+W = 28
+C = 128
+F = 128
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage2conv1fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage2conv4fwd]
+H = 28
+W = 28
+C = 128
+F = 128
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage2conv3fwd",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage2conv3fwd_1"
+
+[layers.resnetv15stage3conv0fwd]
+H = 14
+W = 14
+C = 128
+F = 256
+K = 3
+S = 2
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage2conv4fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage3conv1fwd]
+H = 14
+W = 14
+C = 256
+F = 256
+K = 3
+S = 1
+P = 1
+P_C = [ 2, 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage3conv0fwd", "resnetv15stage3conv0fwd_1",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage3conv0fwd_1"
+
+[layers.resnetv15stage3conv3fwd]
+H = 14
+W = 14
+C = 256
+F = 256
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage3conv1fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage3conv4fwd]
+H = 14
+W = 14
+C = 256
+F = 256
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage3conv3fwd",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage3conv3fwd_1"
+
+[layers.resnetv15stage4conv0fwd]
+H = 7
+W = 7
+C = 256
+F = 512
+K = 3
+S = 2
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage3conv4fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage4conv1fwd]
+H = 7
+W = 7
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+P_C = [ 2, 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage4conv0fwd", "resnetv15stage4conv0fwd_1",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage4conv0fwd_1"
+
+[layers.resnetv15stage4conv3fwd]
+H = 7
+W = 7
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2, 2,]
+SEQ = 0
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage4conv1fwd",]
+OUTPUT = [ "OFMAP", "IFMAP",]
+
+[layers.resnetv15stage4conv4fwd]
+H = 7
+W = 7
+C = 512
+F = 512
+K = 3
+S = 1
+P = 1
+P_C = [ 2,]
+P_F = [ 2,]
+SEQ = 1
+TYPE = "STANDARD"
+INPUT = [ "resnetv15stage4conv3fwd",]
+OUTPUT = [ "OFMAP",]
+RESIDUAL = "resnetv15stage4conv3fwd_1"

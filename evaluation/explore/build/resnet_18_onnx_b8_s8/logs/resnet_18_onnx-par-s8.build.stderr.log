@@ -1,0 +1,154 @@
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:10: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:10: WARNING: Unconnected elements in design 'resnetv15pool0fwd'
+Thu 01:10: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15pool0fwd_graph_warnings.txt
+Thu 01:10: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:10: WARNING: Unconnected elements in design 'resnetv15stage1conv0fwd'
+Thu 01:10: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage1conv0fwd_graph_warnings.txt
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:10: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:10: WARNING: Unconnected elements in design 'resnetv15stage1conv2fwd'
+Thu 01:10: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage1conv2fwd_graph_warnings.txt
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:10: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:10: WARNING: Unconnected elements in design 'resnetv15stage2conv0fwd'
+Thu 01:10: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage2conv0fwd_graph_warnings.txt
+Thu 01:10: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:10: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:10: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:10: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:10: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:11: WARNING: Unconnected elements in design 'resnetv15stage2conv3fwd'
+Thu 01:11: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage2conv3fwd_graph_warnings.txt
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:11: WARNING: Unconnected elements in design 'resnetv15stage3conv0fwd'
+Thu 01:11: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage3conv0fwd_graph_warnings.txt
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:11: WARNING: Unconnected elements in design 'resnetv15stage3conv3fwd'
+Thu 01:11: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage3conv3fwd_graph_warnings.txt
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:11: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:11: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:11: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:11: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:11: WARNING: to that of a similar bitstream.
+Thu 01:12: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:12: WARNING: Unconnected elements in design 'resnetv15stage4conv0fwd'
+Thu 01:12: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage4conv0fwd_graph_warnings.txt
+Thu 01:12: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:12: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:12: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:12: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:12: WARNING: to that of a similar bitstream.
+Thu 01:12: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:12: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:12: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:12: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:12: WARNING: to that of a similar bitstream.
+Thu 01:12: WARNING: Warning (UNCONNECTED_DESIGN_ELEMENT):
+Thu 01:12: WARNING: Unconnected elements in design 'resnetv15stage4conv3fwd'
+Thu 01:12: WARNING: details in : /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/scratch/resnetv15stage4conv3fwd_graph_warnings.txt
+Thu 01:12: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:12: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:12: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:12: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:12: WARNING: to that of a similar bitstream.
+Thu 01:13: WARNING: Warning (MULTIPLY_ADD_EXTRACTION):
+Thu 01:13: WARNING: MaxCompiler has detected and optimized one or more multiply add trees. These
+Thu 01:13: WARNING: optimizations reduce the amount of rounding that takes place. This will improve
+Thu 01:13: WARNING: precision but may mean that the output of this bitstream is not bit-identical
+Thu 01:13: WARNING: to that of a similar bitstream.
+Thu 08:56: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0 to clock mmcm_clkout6: Partial False Path
+Thu 08:56: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_1 to clock mmcm_clkout6_1: Partial False Path
+Thu 08:56: WARNING: Unsafe clock domain crossing from clock mmcm_clkout0_2 to clock mmcm_clkout6_2: Partial False Path
+Thu 09:50: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER2] Implementation strategy MAXELER2 Output log file created failed
+Thu 09:50: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER1] Implementation strategy MAXELER1 Output log file created failed
+Thu 09:51: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER3] Implementation strategy MAXELER3 Output log file created failed
+Thu 10:11: ERROR: Implementation: Failed run: [Implementation Strategy VIVADO_DEFAULT] Implementation strategy VIVADO_DEFAULT Output log file created failed
+Thu 10:41: ERROR: Implementation: Failed run: [Implementation Strategy MAXELER4] Implementation strategy MAXELER4 Output log file created failed
+Thu 10:43: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_EXPLORE] Implementation strategy PERFORMANCE_EXPLORE Output log file created failed
+Thu 11:07: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_EARLY_BLOCK_PLACEMENT] Implementation strategy PERFORMANCE_EARLY_BLOCK_PLACEMENT Output log file created failed
+Thu 11:26: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_EXTRA_TIMING_OPT] Implementation strategy PERFORMANCE_EXTRA_TIMING_OPT Output log file created failed
+Thu 11:56: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_NET_DELAY_HIGH] Implementation strategy PERFORMANCE_NET_DELAY_HIGH Output log file created failed
+Thu 11:59: ERROR: Implementation: Failed run: [Implementation Strategy PERFORMANCE_REFINE_PLACEMENT] Implementation strategy PERFORMANCE_REFINE_PLACEMENT Output log file created failed
+Thu 11:59: ERROR: Unable to generate resource usage information: Unable to find .rpt to derive resource annotation from
+Thu 11:59: ERROR: Build pass 'Generate Resource Report' failed.
+Thu 12:00: ERROR: Error annotating source files.
+Thu 12:00: ERROR: Build pass 'Generate Annotated Source Code' failed.
+Thu 12:00: ERROR: Unable find report with power info for stage FINAL
+Thu 12:00: ERROR: Build pass 'Analyse Power Usage' failed.
+Thu 12:00: ERROR: Could not find post route design checkpoint file.
+Thu 12:00: ERROR: Build pass 'Generate Configuration' failed.
+Thu 12:00: ERROR: Could not find post route design checkpoint file
+Thu 12:00: ERROR: Build pass 'Update Checksum' failed.
+Thu 12:00: ERROR: Could not find post route design checkpoint
+Thu 12:00: ERROR: Build pass 'Convert Programming File' failed.
+Thu 12:00: ERROR: Could not find bitstream checksum file.
+Thu 12:00: ERROR: Build pass 'Generate MaxFile' failed.
+Thu 12:01: ERROR: Terminating build as some build passes did not run successfully.
+Thu 12:01: ERROR: ----------------------------
+Thu 12:01: ERROR: Exception in thread "main":
+Thu 12:01: ERROR:  
+Thu 12:01: ERROR:   7 build passes failed.
+Thu 12:01: ERROR: 
+Thu 12:01: ERROR: Exception Stack Trace com.maxeler.maxdc.MaxDCException: 
+Thu 12:01: ERROR:    at com.maxeler.maxdc.BuildManager.finalizeBuild(BuildManager.java:1896)
+Thu 12:01: ERROR:    at com.maxeler.maxdc.BuildManager.build(BuildManager.java:1754)
+Thu 12:01: ERROR:    at com.maxeler.platform.max5.libs.manager.Max5ManagerBuildInternal.realBuild(Unknown Source)
+Thu 12:01: ERROR:    at com.maxeler.managers.ManagerBuildInternalBase.build(ManagerBuildInternalBase.java:78)
+Thu 12:01: ERROR:    at com.maxeler.platform.max5.manager.Max5ManagerBase.build(Unknown Source)
+Thu 12:01: ERROR:    at resnet_18_onnx_b8_s8.Resnet18OnnxB8S8Manager.main(Resnet18OnnxB8S8Manager.java:510)
+Thu 12:01: ERROR: ----------------------------
+make: *** [/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Resnet18OnnxB8S8_MAIA_DFE_FREQ_200/results/Resnet18OnnxB8S8.max] Error 1
