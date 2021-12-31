@@ -25,51 +25,51 @@ In file included from ../../src/bottleneck_shortcut/BottleneckShortcutCpuCode.cp
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1229 19:18:55.668540 447085 BottleneckShortcutCpuCode.cpp:72] num frac bits: 0
-I1229 19:18:55.668793 447085 BottleneckShortcutCpuCode.cpp:76] input[0] = -1.95943  dfe = -2
-I1229 19:18:55.669114 447085 BottleneckShortcutCpuCode.cpp:76] input[1] = -0.71415  dfe = -1
-I1229 19:18:55.669132 447085 BottleneckShortcutCpuCode.cpp:76] input[2] = 0.80067  dfe = 1
-I1229 19:18:55.669411 447085 layers.h:992] Running golden function ...
-I1229 19:18:55.669711 447085 layers.h:1001]        STANDARD 2 x 6 x 6 -> 2 x 3 x 3
-I1229 19:18:55.671075 447085 layers.h:1001]        STANDARD 2 x 3 x 3 -> 2 x 3 x 3
-I1229 19:18:55.673614 447085 layers.h:1001]        STANDARD 2 x 3 x 3 -> 4 x 3 x 3
-I1229 19:18:55.674667 447085 layers.h:1049] Shortcut is enabled for layer conv2
-I1229 19:18:55.675823 447085 utils.h:383] Burst aligning input array of size: 144 to 192
-I1229 19:18:55.675840 447085 BottleneckShortcutCpuCode.cpp:97] Tiled input size (burst aligned): 192
-I1229 19:18:55.675858 447085 utils.h:383] Burst aligning input array of size: 72 to 192
-I1229 19:18:55.675874 447085 BottleneckShortcutCpuCode.cpp:100] Tiled output size (burst aligned): 192
-I1229 19:18:55.676169 447085 layers.h:775] Writing DRAM to 0 with size 0x180
-I1229 19:18:55.680244 447085 BottleneckShortcutCpuCode.cpp:108] Running ...
-I1229 19:18:55.992323 447085 BottleneckShortcutCpuCode.cpp:114] Done
-I1229 19:18:55.992355 447085 layers.h:792] Reading DRAM from 0x180 with size 0x180
-I1229 19:18:55.994904 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[0] = 48
-I1229 19:18:55.994931 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[1] = 13
-I1229 19:18:55.994941 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[2] = 28
-I1229 19:18:55.994951 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[3] = 3
-I1229 19:18:55.994959 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[4] = 18
-I1229 19:18:55.994969 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[5] = 6
-I1229 19:18:55.994978 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[6] = 20
-I1229 19:18:55.994988 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[7] = 0
-I1229 19:18:55.994997 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[8] = -17
-I1229 19:18:55.995007 447085 BottleneckShortcutCpuCode.cpp:121] output_dfe[9] = 8
-I1229 19:18:55.995016 447085 BottleneckShortcutCpuCode.cpp:127] elapsed time: 0.312026s
-I1229 19:18:55.995026 447085 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv0 = 7.2e-05 M
-I1229 19:18:55.995035 447085 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv1 = 0.000648 M
-I1229 19:18:55.995045 447085 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv2 = 0.000144 M
-I1229 19:18:55.995064 447085 BottleneckShortcutCpuCode.cpp:145] OPS:    1.728e-06 G
-I1229 19:18:55.995075 447085 BottleneckShortcutCpuCode.cpp:146] FPS:    6.40973
-I1229 19:18:55.995085 447085 BottleneckShortcutCpuCode.cpp:149] GFLOPs: 5.53801e-06
-I1229 19:18:55.995093 447085 BottleneckShortcutCpuCode.cpp:156] Examine results ...
-I1229 19:18:55.995101 447085 BottleneckShortcutCpuCode.cpp:158] output_cpu[0] = 48
-I1229 19:18:55.995112 447085 BottleneckShortcutCpuCode.cpp:158] output_cpu[1] = 13
-I1229 19:18:55.995122 447085 BottleneckShortcutCpuCode.cpp:158] output_cpu[2] = 28
-I1229 19:18:55.995131 447085 BottleneckShortcutCpuCode.cpp:158] output_cpu[3] = 3
-I1229 19:18:55.995141 447085 BottleneckShortcutCpuCode.cpp:158] output_cpu[4] = 18
-I1229 19:18:55.995151 447085 BottleneckShortcutCpuCode.cpp:164] output_dfe[0] = 48
-I1229 19:18:55.995160 447085 BottleneckShortcutCpuCode.cpp:164] output_dfe[1] = 13
-I1229 19:18:55.995168 447085 BottleneckShortcutCpuCode.cpp:164] output_dfe[2] = 28
-I1229 19:18:55.995177 447085 BottleneckShortcutCpuCode.cpp:164] output_dfe[3] = 3
-I1229 19:18:55.995187 447085 BottleneckShortcutCpuCode.cpp:164] output_dfe[4] = 18
-I1229 19:18:55.995196 447085 BottleneckShortcutCpuCode.cpp:175] Evaluating difference ...
-I1229 19:18:55.995203 447085 BottleneckShortcutCpuCode.cpp:176] Mask: 00000000
-I1229 19:18:55.995229 447085 BottleneckShortcutCpuCode.cpp:204] num_failed: 0 total: 72 avg_diff: 0 min_diff: 0 max_diff: 0
+I1231 20:48:45.363865 38934 BottleneckShortcutCpuCode.cpp:72] num frac bits: 0
+I1231 20:48:45.364164 38934 BottleneckShortcutCpuCode.cpp:76] input[0] = -1.95943  dfe = -2
+I1231 20:48:45.364239 38934 BottleneckShortcutCpuCode.cpp:76] input[1] = -0.71415  dfe = -1
+I1231 20:48:45.364254 38934 BottleneckShortcutCpuCode.cpp:76] input[2] = 0.80067  dfe = 1
+I1231 20:48:45.364271 38934 layers.h:992] Running golden function ...
+I1231 20:48:45.364288 38934 layers.h:1001]        STANDARD 2 x 6 x 6 -> 2 x 3 x 3
+I1231 20:48:45.365211 38934 layers.h:1001]        STANDARD 2 x 3 x 3 -> 2 x 3 x 3
+I1231 20:48:45.367583 38934 layers.h:1001]        STANDARD 2 x 3 x 3 -> 4 x 3 x 3
+I1231 20:48:45.368676 38934 layers.h:1049] Shortcut is enabled for layer conv2
+I1231 20:48:45.369737 38934 utils.h:383] Burst aligning input array of size: 144 to 192
+I1231 20:48:45.369756 38934 BottleneckShortcutCpuCode.cpp:97] Tiled input size (burst aligned): 192
+I1231 20:48:45.369777 38934 utils.h:383] Burst aligning input array of size: 72 to 192
+I1231 20:48:45.369805 38934 BottleneckShortcutCpuCode.cpp:100] Tiled output size (burst aligned): 192
+I1231 20:48:45.369817 38934 layers.h:775] Writing DRAM to 0 with size 0x180
+I1231 20:48:45.374186 38934 BottleneckShortcutCpuCode.cpp:108] Running ...
+I1231 20:48:45.714458 38934 BottleneckShortcutCpuCode.cpp:114] Done
+I1231 20:48:45.714499 38934 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1231 20:48:45.717211 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[0] = 48
+I1231 20:48:45.717242 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[1] = 13
+I1231 20:48:45.717252 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[2] = 28
+I1231 20:48:45.717259 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[3] = 3
+I1231 20:48:45.717500 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[4] = 18
+I1231 20:48:45.717509 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[5] = 6
+I1231 20:48:45.717515 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[6] = 20
+I1231 20:48:45.717747 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[7] = 0
+I1231 20:48:45.717952 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[8] = -17
+I1231 20:48:45.718169 38934 BottleneckShortcutCpuCode.cpp:121] output_dfe[9] = 8
+I1231 20:48:45.718401 38934 BottleneckShortcutCpuCode.cpp:127] elapsed time: 0.340206s
+I1231 20:48:45.718650 38934 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv0 = 7.2e-05 M
+I1231 20:48:45.718861 38934 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv1 = 0.000648 M
+I1231 20:48:45.719110 38934 BottleneckShortcutCpuCode.cpp:141] [Ops] layer                          conv2 = 0.000144 M
+I1231 20:48:45.719344 38934 BottleneckShortcutCpuCode.cpp:145] OPS:    1.728e-06 G
+I1231 20:48:45.719578 38934 BottleneckShortcutCpuCode.cpp:146] FPS:    5.87878
+I1231 20:48:45.719820 38934 BottleneckShortcutCpuCode.cpp:149] GFLOPs: 5.07927e-06
+I1231 20:48:45.720046 38934 BottleneckShortcutCpuCode.cpp:156] Examine results ...
+I1231 20:48:45.720283 38934 BottleneckShortcutCpuCode.cpp:158] output_cpu[0] = 48
+I1231 20:48:45.720522 38934 BottleneckShortcutCpuCode.cpp:158] output_cpu[1] = 13
+I1231 20:48:45.720750 38934 BottleneckShortcutCpuCode.cpp:158] output_cpu[2] = 28
+I1231 20:48:45.720986 38934 BottleneckShortcutCpuCode.cpp:158] output_cpu[3] = 3
+I1231 20:48:45.721196 38934 BottleneckShortcutCpuCode.cpp:158] output_cpu[4] = 18
+I1231 20:48:45.721401 38934 BottleneckShortcutCpuCode.cpp:164] output_dfe[0] = 48
+I1231 20:48:45.721657 38934 BottleneckShortcutCpuCode.cpp:164] output_dfe[1] = 13
+I1231 20:48:45.721897 38934 BottleneckShortcutCpuCode.cpp:164] output_dfe[2] = 28
+I1231 20:48:45.722137 38934 BottleneckShortcutCpuCode.cpp:164] output_dfe[3] = 3
+I1231 20:48:45.722352 38934 BottleneckShortcutCpuCode.cpp:164] output_dfe[4] = 18
+I1231 20:48:45.722599 38934 BottleneckShortcutCpuCode.cpp:175] Evaluating difference ...
+I1231 20:48:45.722813 38934 BottleneckShortcutCpuCode.cpp:176] Mask: 00000000
+I1231 20:48:45.723037 38934 BottleneckShortcutCpuCode.cpp:204] num_failed: 0 total: 72 avg_diff: 0 min_diff: 0 max_diff: 0

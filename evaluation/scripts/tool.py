@@ -172,8 +172,9 @@ class CommandRunner:
 
         self.cfg = toml.load(args.cfg)
         self.logger.info(f"Loaded config: {self.cfg}")
-        self.G = DeaconGraph()
-        self.G.load(args.cfg)
+        if self.cmd != "runsim":
+            self.G = DeaconGraph()
+            self.G.load(args.cfg)
 
         self.root_dir = get_root_dir(args.cfg, self.cfg, parent_dir=args.root_dir)
         self.log_dir = os.path.join(self.root_dir, "logs")
@@ -613,10 +614,14 @@ def main():
 
     run_parser = subparsers.add_parser("run", help="Run build")
     run_parser.add_argument(
-        "--freq", type=int, default=0, help="Overwrite clock frequency"
+        "--freq", type=int, default=200, help="Overwrite clock frequency"
     )
     run_parser.add_argument(
-        "-n", "--num-iters", type=int, default=100, help="How many cycles should it run"
+        "-n",
+        "--num-iters",
+        type=int,
+        default=1000,
+        help="How many cycles should it run",
     )
     run_parser.set_defaults(func=run)
 

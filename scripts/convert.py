@@ -114,6 +114,7 @@ class ONNXConverter:
                 "Clip",
                 "Add",
                 "BatchNormalization",
+                "Cast",
             ]:
                 print(node.op_type + " not supported. Break.")
                 break
@@ -121,7 +122,7 @@ class ONNXConverter:
             out_shape = self.get_shape(node.output[0], value_info)
             in_shape = self.get_shape(node.input[0], value_info)
             attrs = self.parse_attrs(node)
-            print(node.name, in_shape, " -> ", out_shape)
+            print(node.name, node.op_type, in_shape, " -> ", out_shape)
 
             new_node = True
             if node.op_type == "Conv":
@@ -228,7 +229,13 @@ class ONNXConverter:
                     layer_type=LayerType.POOLING,
                 )
 
-            elif node.op_type in ["Relu", "Dropout", "Clip", "BatchNormalization"]:
+            elif node.op_type in [
+                "Relu",
+                "Dropout",
+                "Clip",
+                "BatchNormalization",
+                "Cast",
+            ]:
                 assert prev_d_node
                 d_node = prev_d_node
                 new_node = False

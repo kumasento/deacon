@@ -132,6 +132,72 @@ public class Conv2DKernel extends KernelComponent {
     return T;
   }
 
+  private void processFilter(int pf, int PC, int PK, int ci) {
+    List<DFEVar> tmpResults = new ArrayList<DFEVar>(PK * PC);
+    // TODO: initialise an ArrayList in this way might be silly
+    for (int i = 0; i < PC * PK; i++) tmpResults.add(null);
+
+    for (int pc = 0; pc < PC; pc++) {
+      // create a new vector instance
+      List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc, ci);
+
+      // coefficient chunk
+      DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc, ci);
+
+      for (int pk = 0; pk < PK; pk++) {
+        DFEVector<DFEVar> ifmapChunk = ifmapChunks.get(pk);
+
+        tmpResults.set(pk * PC + pc, dotprod(ifmapChunk, coeffChunk));
+      }
+    }
+
+    for (int pk = 0; pk < PK; pk++)
+      ofmap.get(pf * PK + pk).connect(AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) * PC)));
+  }
+
+  private void processPackedFilter(int pf, int PC, int ci) {
+    List<DFEVar> tmpResults = new ArrayList<DFEVar>(PC);
+    for (int pc = 0; pc < PC; ++pc) {
+      DFEVector<DFEVar> coeffChunkA = getCoeffChunkAt(pf, pc, ci);
+      DFEVector<DFEVar> coeffChunkB = getCoeffChunkAt(pf + 1, pc, ci);
+
+      DFEVectorType<DFEVar> T = new DFEVectorType<DFEVar>(dfeInt(27), coeffChunkA.getSize());
+      // (A << 18) + B
+      DFEVector<DFEVar> coeffChunk = coeffChunkA.cast(T).shiftLeft(18).add(coeffChunkB.cast(T));
+
+      // create a new vector instance
+      DFEVector<DFEVar> ifmapChunk = getIfmapChunksAt(pc, ci).get(0);
+
+      DFEVar tmp = dotprod(ifmapChunk, coeffChunk, this.T, dfeInt(27));
+      if (cp.dbg) {
+        debug.simPrintf("coeffChunkA = %KObj%\n", coeffChunkA);
+        debug.simPrintf("coeffChunkB = %KObj%\n", coeffChunkB);
+        debug.simPrintf("coeffChunk  = %KObj%\n", coeffChunk);
+        debug.simPrintf("ifmapChunk  = %KObj%\n", ifmapChunk);
+        debug.simPrintf("tmp         = %KObj%\n", tmp);
+      }
+      tmpResults.add(pc, tmp);
+    }
+
+    DFEVar acc = AdderTree.reduce(tmpResults);
+    DFEType T = dfeInt(8);
+    optimization.pushDSPFactor(0);
+    DFEVar accB = acc.and(constant.var(255).cast(acc.getType())).cast(T);
+    DFEVar accA =
+        (acc.shiftRight(18))
+            .cast(T)
+            .add(acc.get(15).cast(dfeBool()) ? constant.var(1).cast(T) : constant.var(0).cast(T));
+    optimization.popDSPFactor();
+    if (cp.dbg) {
+      debug.simPrintf("acc  = %KObj%\n", acc);
+      debug.simPrintf("accA = %KObj% acc >> 18 = %KObj% acc.slice() = %KObj%\n", accA,
+          acc.shiftRight(18), acc.slice(18, 8));
+      debug.simPrintf("accB = %KObj%\n", accB);
+    }
+    ofmap.get(pf + 1).connect(accB);
+    ofmap.get(pf).connect(accA);
+  }
+
   /**
    * core computation, based on dot-product.
    *
@@ -166,28 +232,18 @@ public class Conv2DKernel extends KernelComponent {
       //   ofmap[pf * PK + pk].connect(AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) *
       //   PC)));
     } else {
-      for (int pf = 0; pf < PF; pf++) {
-        List<DFEVar> tmpResults = new ArrayList<DFEVar>(PK * PC);
-        // TODO: initialise an ArrayList in this way might be silly
-        for (int i = 0; i < PC * PK; i++) tmpResults.add(null);
+      if (PK == 1 && cp.BW == 8 && cp.WBW == 8) {
+        getOwner().getManager().logMsg("Enabled DSP optimisation for MACC.");
 
-        for (int pc = 0; pc < PC; pc++) {
-          // create a new vector instance
-          List<DFEVector<DFEVar>> ifmapChunks = getIfmapChunksAt(pc, index);
-
-          // coefficient chunk
-          DFEVector<DFEVar> coeffChunk = getCoeffChunkAt(pf, pc, index);
-
-          for (int pk = 0; pk < PK; pk++) {
-            DFEVector<DFEVar> ifmapChunk = ifmapChunks.get(pk);
-
-            tmpResults.set(pk * PC + pc, dotprod(ifmapChunk, coeffChunk));
-          }
+        for (int pf = 0; pf < PF; pf += 2) {
+          if (pf + 1 == PF)
+            processFilter(pf, PC, PK, index);
+          else
+            processPackedFilter(pf, PC, index);
         }
 
-        for (int pk = 0; pk < PK; pk++)
-          ofmap.get(pf * PK + pk)
-              .connect(AdderTree.reduce(tmpResults.subList(pk * PC, (pk + 1) * PC)));
+      } else {
+        for (int pf = 0; pf < PF; pf++) processFilter(pf, PC, PK, index);
       }
     }
     getOwner().optimization.popDSPFactor();
@@ -328,6 +384,10 @@ public class Conv2DKernel extends KernelComponent {
   }
 
   public DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff) {
+    return dotprod(ifmap, coeff, T, WT);
+  }
+
+  public DFEVar dotprod(DFEVector<DFEVar> ifmap, DFEVector<DFEVar> coeff, DFEType T, DFEType WT) {
     DotProductKernel dp = new DotProductKernel(this.getOwner(), cp.K * cp.K, T, WT, cp.dbg);
     dp.setInputs(ifmap, coeff);
 

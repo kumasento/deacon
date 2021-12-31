@@ -1,0 +1,1858 @@
+Running maxjc ...
+Using maxj batch compiler.
+jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
+MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
+	MAXAPPPKG=mobilenet_v2_onnx_manual_1_1 MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
+	maxJavaRun -v -m 32768 MobilenetV2OnnxManual11Manager \
+	DFEModel=MAIA maxFileName=MobilenetV2OnnxManual11 target='DFE' enableMPCX=false \
+	FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v2_onnx_manual_1_1/data/data-mobilenet_v2_onnx-manual_1_1.txt 
+]0; maxJavaRun: MobilenetV2OnnxManual11Manager DFEModel=MAIA maxFileName=MobilenetV2OnnxManual11 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v2_onnx_manual_1_1/data/data-mobilenet_v2_onnx-manual_1_1.txt maxJavaRun : Execute Java program with Maxeler environment
+
+Input classpath     : 
+MaxCompiler JAR     : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
+                      (from MAXCOMPILERDIR)
+MAXAPPJCP           : .:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+MAXSOURCEDIRS       : ../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src
+
+.maxJavaRun present : No
+Custom Param file   : None
+MAXAPPPKG           : mobilenet_v2_onnx_manual_1_1
+MAXJVMMEM           : 
+MAXEMMAJCP          : 
+MAXEMMARUN          : 
+JACOCO_AGENT        : 
+JACOCO_AGENT_OPTIONS: 
+
+----------------------------------------------------------
+Java class to run   : mobilenet_v2_onnx_manual_1_1.MobilenetV2OnnxManual11Manager
+Class arguments     : DFEModel=MAIA maxFileName=MobilenetV2OnnxManual11 target=DFE enableMPCX=false FREQ=200 DEBUG=false COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v2_onnx_manual_1_1/data/data-mobilenet_v2_onnx-manual_1_1.txt
+Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar:
+                      .:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/src:
+                      /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
+                      /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
+JVM memory limit    : 32768 MB
+----------------------------------------------------------
+
+Thu 18:07: MaxCompiler version: 2021.1
+Thu 18:07: Build "MobilenetV2OnnxManual11" start time: Thu Dec 30 18:07:46 GMT 2021
+Thu 18:07: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Thu 18:07: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200
+Thu 18:07: Detailed build log available in "_build.log"
+Thu 18:07: 
+Thu 18:07: ENGINE BUILD PARAMETERS
+Thu 18:07: 	              Build name: MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200                                                                                              
+Thu 18:07: 	             maxFileName: MobilenetV2OnnxManual11                                                                                                                
+Thu 18:07: 	                  target: DFE                                                                                                                                    
+Thu 18:07: 	                DFEModel: MAIA                                                                                                                                   
+Thu 18:07: 	              enableMPCX: false                                                                                                                                  
+Thu 18:07: 	                bitWidth: 32                                                                                                                                     
+Thu 18:07: 	                     WBW: 32                                                                                                                                     
+Thu 18:07: 	                   DTYPE: fixed                                                                                                                                  
+Thu 18:07: 	           NUM_FRAC_BITS: 8                                                                                                                                      
+Thu 18:07: 	                      PF: 1                                                                                                                                      
+Thu 18:07: 	                      PC: 1                                                                                                                                      
+Thu 18:07: 	                      PK: 1                                                                                                                                      
+Thu 18:07: 	                       H: 1                                                                                                                                      
+Thu 18:07: 	                       W: 1                                                                                                                                      
+Thu 18:07: 	                       C: 1                                                                                                                                      
+Thu 18:07: 	                       F: 1                                                                                                                                      
+Thu 18:07: 	                       K: 1                                                                                                                                      
+Thu 18:07: 	                     PAD: 0                                                                                                                                      
+Thu 18:07: 	                       S: 1                                                                                                                                      
+Thu 18:07: 	                     SEQ: 0                                                                                                                                      
+Thu 18:07: 	                    FREQ: 200                                                                                                                                    
+Thu 18:07: 	                USE_DRAM: false                                                                                                                                  
+Thu 18:07: 	                 USE_BNN: false                                                                                                                                  
+Thu 18:07: 	            USE_WINOGRAD: false                                                                                                                                  
+Thu 18:07: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                                  
+Thu 18:07: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                                      
+Thu 18:07: 	                   DEBUG: false                                                                                                                                  
+Thu 18:07: 	           COEFF_ON_CHIP: false                                                                                                                                  
+Thu 18:07: 	              INIT_COEFF: false                                                                                                                                  
+Thu 18:07: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v2_onnx_manual_1_1/data/data-mobilenet_v2_onnx-manual_1_1.txt
+Thu 18:08: Generating kernel conv0 ...
+Thu 18:08: Instantiating kernel "conv0"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 224, output height = 224, pad = 1
+Thu 18:08: Counter H = 226 W = 226
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 262144 x 1
+Thu 18:08: loop = false
+Thu 18:08: Building line buffer for "conv0" ...
+Thu 18:08: Line buffer shape 3 x 224, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 1, output vector size: 9.
+Thu 18:08: Number of separated line buffers: 1
+Thu 18:08: Initialising line buffer kernel with 3 x 226 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: ROM created for conv0 of depth 12 and type {DFEVectorType: 72 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4470f8a6
+Thu 18:08: Building the CORE arithmetic unit for "conv0" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 9
+Thu 18:08: CORE coefficient vector size: 72
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv0"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv2 ...
+Thu 18:08: Instantiating kernel "conv2"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 112, output height = 112, pad = 1
+Thu 18:08: Counter H = 114 W = 114
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv2" ...
+Thu 18:08: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 8, output vector size: 72.
+Thu 18:08: Number of separated line buffers: 8
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 4
+Thu 18:08: ROM created for conv2_dw of depth 4 and type {DFEVectorType: 72 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2b87581
+Thu 18:08: Building the CORE arithmetic unit for "conv2_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 72
+Thu 18:08: CORE coefficient vector size: 72
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: Ifmap buffer configuration 16384 x 8
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 16
+Thu 18:08: ROM created for conv2_pw of depth 16 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@21325036
+Thu 18:08: Building the CORE arithmetic unit for "conv2_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 8
+Thu 18:08: CORE coefficient vector size: 32
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth = 65536 addr_bits =    16
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv2"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv5 ...
+Thu 18:08: Instantiating kernel "conv5"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 112, output height = 112, pad = 0
+Thu 18:08: Counter H = 112 W = 112
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 65536 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv5 of depth 48 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3e377967
+Thu 18:08: Building the CORE arithmetic unit for "conv5" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 32
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: [ConvLayerOfmapBuffer] depth = 16384 addr_bits =    14
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv5"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv7 ...
+Thu 18:08: Instantiating kernel "conv7"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 112, output height = 112, pad = 1
+Thu 18:08: Counter H = 114 W = 114
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv7" ...
+Thu 18:08: Line buffer shape 3 x 112, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 8, output vector size: 72.
+Thu 18:08: Number of separated line buffers: 8
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 114 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 12
+Thu 18:08: ROM created for conv7_dw of depth 12 and type {DFEVectorType: 72 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@720f56e2
+Thu 18:08: Building the CORE arithmetic unit for "conv7_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 72
+Thu 18:08: CORE coefficient vector size: 72
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: Ifmap buffer configuration 16384 x 8
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 72
+Thu 18:08: ROM created for conv7_pw of depth 72 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56c0a61e
+Thu 18:08: Building the CORE arithmetic unit for "conv7_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 8
+Thu 18:08: CORE coefficient vector size: 32
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv7"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv10 ...
+Thu 18:08: Instantiating kernel "conv10"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 56, output height = 56, pad = 0
+Thu 18:08: Counter H = 56 W = 56
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 32768 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv10 of depth 216 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3b8b4846
+Thu 18:08: Building the CORE arithmetic unit for "conv10" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv10"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv12 ...
+Thu 18:08: Instantiating kernel "conv12"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 56, output height = 56, pad = 1
+Thu 18:08: Counter H = 58 W = 58
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv12" ...
+Thu 18:08: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 36
+Thu 18:08: ROM created for conv12_dw of depth 36 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@19e5e110
+Thu 18:08: Building the CORE arithmetic unit for "conv12_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 216
+Thu 18:08: ROM created for conv12_pw of depth 216 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5a3be84
+Thu 18:08: Building the CORE arithmetic unit for "conv12_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 4096
+Thu 18:08: [ConvLayerOfmapBuffer] depth = 32768 addr_bits =    15
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv12"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv16 ...
+Thu 18:08: Instantiating kernel "conv16"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 56, output height = 56, pad = 0
+Thu 18:08: Counter H = 56 W = 56
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 32768 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv16 of depth 216 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@355b4c34
+Thu 18:08: Building the CORE arithmetic unit for "conv16" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv16"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv18 ...
+Thu 18:08: Instantiating kernel "conv18"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 56, output height = 56, pad = 1
+Thu 18:08: Counter H = 58 W = 58
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv18" ...
+Thu 18:08: Line buffer shape 3 x 56, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 58 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 36
+Thu 18:08: ROM created for conv18_dw of depth 36 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@c0cb9c2
+Thu 18:08: Building the CORE arithmetic unit for "conv18_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 288
+Thu 18:08: ROM created for conv18_pw of depth 288 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@90b9695
+Thu 18:08: Building the CORE arithmetic unit for "conv18_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv18"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv21 ...
+Thu 18:08: Instantiating kernel "conv21"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 0
+Thu 18:08: Counter H = 28 W = 28
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv21 of depth 768 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6426ad0b
+Thu 18:08: Building the CORE arithmetic unit for "conv21" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv21"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv23 ...
+Thu 18:08: Instantiating kernel "conv23"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 1
+Thu 18:08: Counter H = 30 W = 30
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv23" ...
+Thu 18:08: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 96
+Thu 18:08: ROM created for conv23_dw of depth 96 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7e3062f0
+Thu 18:08: Building the CORE arithmetic unit for "conv23_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 1024 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 768
+Thu 18:08: ROM created for conv23_pw of depth 768 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@78395e28
+Thu 18:08: Building the CORE arithmetic unit for "conv23_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 1024
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv23"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv27 ...
+Thu 18:08: Instantiating kernel "conv27"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 0
+Thu 18:08: Counter H = 28 W = 28
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv27 of depth 768 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56ed6e17
+Thu 18:08: Building the CORE arithmetic unit for "conv27" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv27"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv29 ...
+Thu 18:08: Instantiating kernel "conv29"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 1
+Thu 18:08: Counter H = 30 W = 30
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv29" ...
+Thu 18:08: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 96
+Thu 18:08: ROM created for conv29_dw of depth 96 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2caf6813
+Thu 18:08: Building the CORE arithmetic unit for "conv29_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 1024 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 768
+Thu 18:08: ROM created for conv29_pw of depth 768 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5b6b5888
+Thu 18:08: Building the CORE arithmetic unit for "conv29_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 1024
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv29"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv33 ...
+Thu 18:08: Instantiating kernel "conv33"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 0
+Thu 18:08: Counter H = 28 W = 28
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv33 of depth 384 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@24537e30
+Thu 18:08: Building the CORE arithmetic unit for "conv33" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv33"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv35 ...
+Thu 18:08: Instantiating kernel "conv35"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 28, output height = 28, pad = 1
+Thu 18:08: Counter H = 30 W = 30
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv35" ...
+Thu 18:08: Line buffer shape 3 x 28, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 30 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 48
+Thu 18:08: ROM created for conv35_dw of depth 48 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@66741691
+Thu 18:08: Building the CORE arithmetic unit for "conv35_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 1024 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 768
+Thu 18:08: ROM created for conv35_pw of depth 768 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@13a0f230
+Thu 18:08: Building the CORE arithmetic unit for "conv35_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv35"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv38 ...
+Thu 18:08: Instantiating kernel "conv38"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv38 of depth 1536 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@17958999
+Thu 18:08: Building the CORE arithmetic unit for "conv38" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv38"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv40 ...
+Thu 18:08: Instantiating kernel "conv40"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv40" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 96
+Thu 18:08: ROM created for conv40_dw of depth 96 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7b84d8ef
+Thu 18:08: Building the CORE arithmetic unit for "conv40_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 256 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 1536
+Thu 18:08: ROM created for conv40_pw of depth 1536 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@29abba49
+Thu 18:08: Building the CORE arithmetic unit for "conv40_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 256
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv40"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv44 ...
+Thu 18:08: Instantiating kernel "conv44"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv44 of depth 3072 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@35cefec6
+Thu 18:08: Building the CORE arithmetic unit for "conv44" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv44"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv46 ...
+Thu 18:08: Instantiating kernel "conv46"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv46" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 192
+Thu 18:08: ROM created for conv46_dw of depth 192 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@318d491
+Thu 18:08: Building the CORE arithmetic unit for "conv46_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 256 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 3072
+Thu 18:08: ROM created for conv46_pw of depth 3072 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2df2d46d
+Thu 18:08: Building the CORE arithmetic unit for "conv46_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 256
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv46"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv50 ...
+Thu 18:08: Instantiating kernel "conv50"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv50 of depth 3072 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@35c3bf1c
+Thu 18:08: Building the CORE arithmetic unit for "conv50" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv50"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv52 ...
+Thu 18:08: Instantiating kernel "conv52"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv52" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 192
+Thu 18:08: ROM created for conv52_dw of depth 192 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5b0d50a7
+Thu 18:08: Building the CORE arithmetic unit for "conv52_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 256 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 3072
+Thu 18:08: ROM created for conv52_pw of depth 3072 and type {DFEVectorType: 8 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7bd276f2
+Thu 18:08: Building the CORE arithmetic unit for "conv52_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 8
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 256
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  4096 addr_bits =    12
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv52"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv56 ...
+Thu 18:08: Instantiating kernel "conv56"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 4096 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv56 of depth 1536 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4f53f1b1
+Thu 18:08: Building the CORE arithmetic unit for "conv56" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv56"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv58 ...
+Thu 18:08: Instantiating kernel "conv58"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv58" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 96
+Thu 18:08: ROM created for conv58_dw of depth 96 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@1dcc501f
+Thu 18:08: Building the CORE arithmetic unit for "conv58_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 256 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 2304
+Thu 18:08: ROM created for conv58_pw of depth 2304 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5d9c7ce4
+Thu 18:08: Building the CORE arithmetic unit for "conv58_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv58"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv61 ...
+Thu 18:08: Instantiating kernel "conv61"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv61 of depth 3456 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@56a11071
+Thu 18:08: Building the CORE arithmetic unit for "conv61" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv61"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv63 ...
+Thu 18:08: Instantiating kernel "conv63"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv63" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 144
+Thu 18:08: ROM created for conv63_dw of depth 144 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@348e200e
+Thu 18:08: Building the CORE arithmetic unit for "conv63_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 256 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 3456
+Thu 18:08: ROM created for conv63_pw of depth 3456 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4654aab6
+Thu 18:08: Building the CORE arithmetic unit for "conv63_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 256
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv63"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv67 ...
+Thu 18:08: Instantiating kernel "conv67"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv67 of depth 3456 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6325b0c1
+Thu 18:08: Building the CORE arithmetic unit for "conv67" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv67"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv69 ...
+Thu 18:08: Instantiating kernel "conv69"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv69" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 144
+Thu 18:08: ROM created for conv69_dw of depth 144 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@61b0b203
+Thu 18:08: Building the CORE arithmetic unit for "conv69_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 256 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 3456
+Thu 18:08: ROM created for conv69_pw of depth 3456 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@61d4838d
+Thu 18:08: Building the CORE arithmetic unit for "conv69_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Residual buffer depth = 256
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  8192 addr_bits =    13
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv69"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv73 ...
+Thu 18:08: Instantiating kernel "conv73"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 0
+Thu 18:08: Counter H = 14 W = 14
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 8192 x 4
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv73 of depth 3456 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@152c82ca
+Thu 18:08: Building the CORE arithmetic unit for "conv73" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: [ConvLayerOfmapBuffer] depth =   256 addr_bits =     8
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv73"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv75 ...
+Thu 18:08: Instantiating kernel "conv75"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 14, output height = 14, pad = 1
+Thu 18:08: Counter H = 16 W = 16
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv75" ...
+Thu 18:08: Line buffer shape 3 x 14, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 4, output vector size: 36.
+Thu 18:08: Number of separated line buffers: 4
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 16 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 144
+Thu 18:08: ROM created for conv75_dw of depth 144 and type {DFEVectorType: 36 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@5c0d2c53
+Thu 18:08: Building the CORE arithmetic unit for "conv75_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 36
+Thu 18:08: CORE coefficient vector size: 36
+Thu 18:08: CORE ofmap vector size: 4
+Thu 18:08: Ifmap buffer configuration 256 x 4
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 2880
+Thu 18:08: ROM created for conv75_pw of depth 2880 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@21d39bcf
+Thu 18:08: Building the CORE arithmetic unit for "conv75_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 4
+Thu 18:08: CORE coefficient vector size: 32
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv75"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv78 ...
+Thu 18:08: Instantiating kernel "conv78"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 0
+Thu 18:08: Counter H = 7 W = 7
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 1024 x 8
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv78 of depth 9600 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@20c2da14
+Thu 18:08: Building the CORE arithmetic unit for "conv78" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 8
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv78"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv80 ...
+Thu 18:08: Instantiating kernel "conv80"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 1
+Thu 18:08: Counter H = 9 W = 9
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv80" ...
+Thu 18:08: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 480
+Thu 18:08: ROM created for conv80_dw of depth 480 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@75b5809b
+Thu 18:08: Building the CORE arithmetic unit for "conv80_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 128 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 9600
+Thu 18:08: ROM created for conv80_pw of depth 9600 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2c032ec6
+Thu 18:08: Building the CORE arithmetic unit for "conv80_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: Residual buffer depth = 64
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv80"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv84 ...
+Thu 18:08: Instantiating kernel "conv84"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 0
+Thu 18:08: Counter H = 7 W = 7
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 1024 x 8
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv84 of depth 9600 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@51d4f2c7
+Thu 18:08: Building the CORE arithmetic unit for "conv84" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 8
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Connecting to output: ofmap_1
+Thu 18:08: Compiling kernel "conv84"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv86 ...
+Thu 18:08: Instantiating kernel "conv86"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 1
+Thu 18:08: Counter H = 9 W = 9
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv86" ...
+Thu 18:08: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 480
+Thu 18:08: ROM created for conv86_dw of depth 480 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6672e7fc
+Thu 18:08: Building the CORE arithmetic unit for "conv86_dw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 18
+Thu 18:08: CORE coefficient vector size: 18
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: Ifmap buffer configuration 128 x 2
+Thu 18:08: loop = false
+Thu 18:08: Pointwise coeff ROM depth = 9600
+Thu 18:08: ROM created for conv86_pw of depth 9600 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7bfc484c
+Thu 18:08: Building the CORE arithmetic unit for "conv86_pw" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 2
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 8
+Thu 18:08: Residual buffer depth = 64
+Thu 18:08: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv86"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv90 ...
+Thu 18:08: Instantiating kernel "conv90"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 0
+Thu 18:08: Counter H = 7 W = 7
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Ifmap buffer configuration 1024 x 8
+Thu 18:08: loop = false
+Thu 18:08: ROM created for conv90 of depth 9600 and type {DFEVectorType: 16 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@17f8ae0
+Thu 18:08: Building the CORE arithmetic unit for "conv90" ...
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: CORE ifmap vector size: 8
+Thu 18:08: CORE coefficient vector size: 16
+Thu 18:08: CORE ofmap vector size: 2
+Thu 18:08: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:08: Connecting to output: ofmap
+Thu 18:08: Compiling kernel "conv90"
+Thu 18:08: 
+Thu 18:08: Generating kernel conv92 ...
+Thu 18:08: Instantiating kernel "conv92"
+Thu 18:08: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:08: coeffOnChip = true
+Thu 18:08: Input height = 7, output height = 7, pad = 1
+Thu 18:08: Counter H = 9 W = 9
+Thu 18:08: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:08: Building line buffer for "conv92" ...
+Thu 18:08: Line buffer shape 3 x 7, produces 1 number of 3 x 3 tiles per cycle
+Thu 18:08: Line buffer input vector size: 2, output vector size: 18.
+Thu 18:08: Number of separated line buffers: 2
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Initialising line buffer kernel with 3 x 9 x 1
+Thu 18:08: Size of line buffer output: 3
+Thu 18:08: Number of line buffer output chunks: 3
+Thu 18:08: Connecting outputs from chunk (#000) ...
+Thu 18:08: Connecting outputs from chunk (#001) ...
+Thu 18:08: Connecting outputs from chunk (#002) ...
+Thu 18:08: Depthwise coeff ROM depth = 480
+Thu 18:09: ROM created for conv92_dw of depth 480 and type {DFEVectorType: 18 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7fc1702a
+Thu 18:09: Building the CORE arithmetic unit for "conv92_dw" ...
+Thu 18:09: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: CORE ifmap vector size: 18
+Thu 18:09: CORE coefficient vector size: 18
+Thu 18:09: CORE ofmap vector size: 2
+Thu 18:09: Ifmap buffer configuration 128 x 2
+Thu 18:09: loop = false
+Thu 18:09: Pointwise coeff ROM depth = 9600
+Thu 18:09: ROM created for conv92_pw of depth 9600 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@6d88b358
+Thu 18:09: Building the CORE arithmetic unit for "conv92_pw" ...
+Thu 18:09: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: CORE ifmap vector size: 2
+Thu 18:09: CORE coefficient vector size: 32
+Thu 18:09: CORE ofmap vector size: 16
+Thu 18:09: [ConvLayerOfmapBuffer] depth =  1024 addr_bits =    10
+Thu 18:09: Connecting to output: ofmap
+Thu 18:09: Compiling kernel "conv92"
+Thu 18:09: 
+Thu 18:09: Generating kernel conv95 ...
+Thu 18:09: Instantiating kernel "conv95"
+Thu 18:09: T = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: coeffOnChip = true
+Thu 18:09: Input height = 7, output height = 7, pad = 0
+Thu 18:09: Counter H = 7 W = 7
+Thu 18:09: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:09: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Thu 18:09: Ifmap buffer configuration 1024 x 16
+Thu 18:09: loop = false
+Thu 18:09: ROM created for conv95 of depth 12800 and type {DFEVectorType: 32 x dfeFix(8, 8, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7a0f88c9
+Thu 18:09: Building the CORE arithmetic unit for "conv95" ...
+Thu 18:09: WT = dfeFix(8, 8, TWOSCOMPLEMENT)
+Thu 18:09: CORE ifmap vector size: 16
+Thu 18:09: CORE coefficient vector size: 32
+Thu 18:09: CORE ofmap vector size: 2
+Thu 18:09: [ConvLayerOfmapBuffer] depth =    64 addr_bits =     6
+Thu 18:09: Connecting to output: ofmap
+Thu 18:09: Compiling kernel "conv95"
+Thu 18:09: 
+Thu 18:09: Generating padding kernels for DRAM access
+Thu 18:09: Instantiating kernel "ifmap_unpad"
+Thu 18:09: Compiling kernel "ifmap_unpad"
+Thu 18:09: 
+Thu 18:09: Instantiating kernel "ofmap_pad"
+Thu 18:09: Compiling kernel "ofmap_pad"
+Thu 18:09: 
+Thu 18:09: Setting up stream connections for conv0
+Thu 18:09: Setting up stream connections for conv2
+Thu 18:09: Connecting ifmap <== conv0: ofmap
+Thu 18:09: Setting up stream connections for conv5
+Thu 18:09: Connecting ifmap <== conv2: ofmap
+Thu 18:09: Setting up stream connections for conv7
+Thu 18:09: Connecting ifmap <== conv5: ofmap
+Thu 18:09: Setting up stream connections for conv10
+Thu 18:09: Connecting ifmap <== conv7: ofmap
+Thu 18:09: Setting up stream connections for conv12
+Thu 18:09: Connecting ifmap <== conv10: ofmap
+Thu 18:09: Setting up stream connections for conv16
+Thu 18:09: Connecting ifmap <== conv12: ofmap
+Thu 18:09: Setting up stream connections for conv18
+Thu 18:09: Connecting ifmap <== conv16: ofmap
+Thu 18:09: Setting up stream connections for conv21
+Thu 18:09: Connecting ifmap <== conv18: ofmap
+Thu 18:09: Setting up stream connections for conv23
+Thu 18:09: Connecting ifmap <== conv21: ofmap
+Thu 18:09: Setting up stream connections for conv27
+Thu 18:09: Connecting ifmap <== conv23: ofmap
+Thu 18:09: Setting up stream connections for conv29
+Thu 18:09: Connecting ifmap <== conv27: ofmap
+Thu 18:09: Setting up stream connections for conv33
+Thu 18:09: Connecting ifmap <== conv29: ofmap
+Thu 18:09: Setting up stream connections for conv35
+Thu 18:09: Connecting ifmap <== conv33: ofmap
+Thu 18:09: Setting up stream connections for conv38
+Thu 18:09: Connecting ifmap <== conv35: ofmap
+Thu 18:09: Setting up stream connections for conv40
+Thu 18:09: Connecting ifmap <== conv38: ofmap
+Thu 18:09: Setting up stream connections for conv44
+Thu 18:09: Connecting ifmap <== conv40: ofmap
+Thu 18:09: Setting up stream connections for conv46
+Thu 18:09: Connecting ifmap <== conv44: ofmap
+Thu 18:09: Setting up stream connections for conv50
+Thu 18:09: Connecting ifmap <== conv46: ofmap
+Thu 18:09: Setting up stream connections for conv52
+Thu 18:09: Connecting ifmap <== conv50: ofmap
+Thu 18:09: Setting up stream connections for conv56
+Thu 18:09: Connecting ifmap <== conv52: ofmap
+Thu 18:09: Setting up stream connections for conv58
+Thu 18:09: Connecting ifmap <== conv56: ofmap
+Thu 18:09: Setting up stream connections for conv61
+Thu 18:09: Connecting ifmap <== conv58: ofmap
+Thu 18:09: Setting up stream connections for conv63
+Thu 18:09: Connecting ifmap <== conv61: ofmap
+Thu 18:09: Setting up stream connections for conv67
+Thu 18:09: Connecting ifmap <== conv63: ofmap
+Thu 18:09: Setting up stream connections for conv69
+Thu 18:09: Connecting ifmap <== conv67: ofmap
+Thu 18:09: Setting up stream connections for conv73
+Thu 18:09: Connecting ifmap <== conv69: ofmap
+Thu 18:09: Setting up stream connections for conv75
+Thu 18:09: Connecting ifmap <== conv73: ofmap
+Thu 18:09: Setting up stream connections for conv78
+Thu 18:09: Connecting ifmap <== conv75: ofmap
+Thu 18:09: Setting up stream connections for conv80
+Thu 18:09: Connecting ifmap <== conv78: ofmap
+Thu 18:09: Setting up stream connections for conv84
+Thu 18:09: Connecting ifmap <== conv80: ofmap
+Thu 18:09: Setting up stream connections for conv86
+Thu 18:09: Connecting ifmap <== conv84: ofmap
+Thu 18:09: Setting up stream connections for conv90
+Thu 18:09: Connecting ifmap <== conv86: ofmap
+Thu 18:09: Setting up stream connections for conv92
+Thu 18:09: Connecting ifmap <== conv90: ofmap
+Thu 18:09: Setting up stream connections for conv95
+Thu 18:09: Connecting ifmap <== conv92: ofmap
+Thu 18:09: DRAM will be used to build the design
+Thu 18:09: Setup streams for kernel "conv0"
+Thu 18:09: # cycles:       612912
+Thu 18:09: # ifmap stream: 150528
+Thu 18:09: # ofmap stream: 401408
+Thu 18:09: coeff vec size: 72
+Thu 18:09: coeff stream bit width: 1152
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv2"
+Thu 18:09: # cycles:       207936
+Thu 18:09: # ifmap stream: 401408
+Thu 18:09: # ofmap stream: 200704
+Thu 18:09: coeff vec size: 288
+Thu 18:09: coeff stream bit width: 4608
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv5"
+Thu 18:09: # cycles:       602112
+Thu 18:09: # ifmap stream: 200704
+Thu 18:09: # ofmap stream: 1204224
+Thu 18:09: coeff vec size: 32
+Thu 18:09: coeff stream bit width: 512
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv7"
+Thu 18:09: # cycles:       935712
+Thu 18:09: # ifmap stream: 1204224
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 288
+Thu 18:09: coeff stream bit width: 4608
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv10"
+Thu 18:09: # cycles:       677376
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 451584
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv12"
+Thu 18:09: # cycles:       726624
+Thu 18:09: # ifmap stream: 451584
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv16"
+Thu 18:09: # cycles:       677376
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 451584
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv18"
+Thu 18:09: # cycles:       968832
+Thu 18:09: # ifmap stream: 451584
+Thu 18:09: # ofmap stream: 25088
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv21"
+Thu 18:09: # cycles:       602112
+Thu 18:09: # ifmap stream: 25088
+Thu 18:09: # ofmap stream: 150528
+Thu 18:09: coeff vec size: 8
+Thu 18:09: coeff stream bit width: 128
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv23"
+Thu 18:09: # cycles:       691200
+Thu 18:09: # ifmap stream: 150528
+Thu 18:09: # ofmap stream: 25088
+Thu 18:09: coeff vec size: 72
+Thu 18:09: coeff stream bit width: 1152
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv27"
+Thu 18:09: # cycles:       602112
+Thu 18:09: # ifmap stream: 25088
+Thu 18:09: # ofmap stream: 150528
+Thu 18:09: coeff vec size: 8
+Thu 18:09: coeff stream bit width: 128
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv29"
+Thu 18:09: # cycles:       691200
+Thu 18:09: # ifmap stream: 150528
+Thu 18:09: # ofmap stream: 25088
+Thu 18:09: coeff vec size: 72
+Thu 18:09: coeff stream bit width: 1152
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv33"
+Thu 18:09: # cycles:       301056
+Thu 18:09: # ifmap stream: 25088
+Thu 18:09: # ofmap stream: 150528
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv35"
+Thu 18:09: # cycles:       691200
+Thu 18:09: # ifmap stream: 150528
+Thu 18:09: # ofmap stream: 12544
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv38"
+Thu 18:09: # cycles:       301056
+Thu 18:09: # ifmap stream: 12544
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv40"
+Thu 18:09: # cycles:       393216
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 12544
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv44"
+Thu 18:09: # cycles:       602112
+Thu 18:09: # ifmap stream: 12544
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 8
+Thu 18:09: coeff stream bit width: 128
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv46"
+Thu 18:09: # cycles:       786432
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 12544
+Thu 18:09: coeff vec size: 72
+Thu 18:09: coeff stream bit width: 1152
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv50"
+Thu 18:09: # cycles:       602112
+Thu 18:09: # ifmap stream: 12544
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 8
+Thu 18:09: coeff stream bit width: 128
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv52"
+Thu 18:09: # cycles:       786432
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 12544
+Thu 18:09: coeff vec size: 72
+Thu 18:09: coeff stream bit width: 1152
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv56"
+Thu 18:09: # cycles:       301056
+Thu 18:09: # ifmap stream: 12544
+Thu 18:09: # ofmap stream: 75264
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv58"
+Thu 18:09: # cycles:       589824
+Thu 18:09: # ifmap stream: 75264
+Thu 18:09: # ofmap stream: 18816
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv61"
+Thu 18:09: # cycles:       677376
+Thu 18:09: # ifmap stream: 18816
+Thu 18:09: # ofmap stream: 112896
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv63"
+Thu 18:09: # cycles:       884736
+Thu 18:09: # ifmap stream: 112896
+Thu 18:09: # ofmap stream: 18816
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv67"
+Thu 18:09: # cycles:       677376
+Thu 18:09: # ifmap stream: 18816
+Thu 18:09: # ofmap stream: 112896
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv69"
+Thu 18:09: # cycles:       884736
+Thu 18:09: # ifmap stream: 112896
+Thu 18:09: # ofmap stream: 18816
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv73"
+Thu 18:09: # cycles:       677376
+Thu 18:09: # ifmap stream: 18816
+Thu 18:09: # ofmap stream: 112896
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv75"
+Thu 18:09: # cycles:       737280
+Thu 18:09: # ifmap stream: 112896
+Thu 18:09: # ofmap stream: 7840
+Thu 18:09: coeff vec size: 288
+Thu 18:09: coeff stream bit width: 4608
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv78"
+Thu 18:09: # cycles:       470400
+Thu 18:09: # ifmap stream: 7840
+Thu 18:09: # ofmap stream: 47040
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv80"
+Thu 18:09: # cycles:       777600
+Thu 18:09: # ifmap stream: 47040
+Thu 18:09: # ofmap stream: 7840
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv84"
+Thu 18:09: # cycles:       470400
+Thu 18:09: # ifmap stream: 7840
+Thu 18:09: # ofmap stream: 47040
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv86"
+Thu 18:09: # cycles:       777600
+Thu 18:09: # ifmap stream: 47040
+Thu 18:09: # ofmap stream: 7840
+Thu 18:09: coeff vec size: 144
+Thu 18:09: coeff stream bit width: 2304
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv90"
+Thu 18:09: # cycles:       470400
+Thu 18:09: # ifmap stream: 7840
+Thu 18:09: # ofmap stream: 47040
+Thu 18:09: coeff vec size: 16
+Thu 18:09: coeff stream bit width: 256
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:09: Setup streams for kernel "conv92"
+Thu 18:09: # cycles:       777600
+Thu 18:09: # ifmap stream: 47040
+Thu 18:09: # ofmap stream: 15680
+Thu 18:09: coeff vec size: 288
+Thu 18:09: coeff stream bit width: 4608
+Thu 18:09: coeff stream chunk size: 9
+Thu 18:09: Setup streams for kernel "conv95"
+Thu 18:09: # cycles:       627200
+Thu 18:09: # ifmap stream: 15680
+Thu 18:09: # ofmap stream: 62720
+Thu 18:09: coeff vec size: 32
+Thu 18:09: coeff stream bit width: 512
+Thu 18:09: coeff stream chunk size: 1
+Thu 18:10: Generating input files (VHDL, netlists, vendor specific IP cores)
+Thu 19:48: Running back-end  build (15 phases)
+Thu 19:48: (1/15) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Thu 19:48: (2/15) - Synthesize DFE Modules (VivadoSynth)
+Thu 19:48: Executing Synthesis Strategy VIVADO_DEFAULT
+Thu 20:19: (3/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 20:19: (4/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 20:20: (5/15) - Analyse Resource Usage (VivadoResourceCounter)
+Thu 20:20: 
+Thu 20:20: About to start chip vendor Map/Place/Route toolflow. This will take some time.
+Thu 20:20: For this compile, we estimate this process may take longer than 1 hour.
+Thu 20:20: We recommend running in simulation to verify correctness before building hardware.
+Thu 20:20: 
+Thu 20:20: PRELIMINARY RESOURCE USAGE
+Thu 20:20: FPGA: xcVU9P-FLGB2104-2-E
+Thu 20:20: Logic utilization:      382834 / 3546720 (10.79%)
+Thu 20:20:   LUTs:                 123896 / 1182240 (10.48%)
+Thu 20:20:   Primary FFs:          258938 / 2364480 (10.95%)
+Thu 20:20: DSP blocks:               1223 / 6840    (17.88%)
+Thu 20:20: Block memory (BRAM18):    3424 / 4320    (79.26%)
+Thu 20:20: Block memory (URAM):       197 / 960     (20.52%)
+Thu 20:20: 
+Thu 20:20: (6/15) - Analyse Power Usage (PreliminaryVivadoReportPower)
+Thu 20:20: 
+Thu 20:20: PRELIMINARY POWER REPORT
+Thu 20:20: Total On-Chip Power (W) 11.33 (budget: 91.80) 
+Thu 20:20: Dynamic Power (W)        8.60 
+Thu 20:20: Device Static Power(W)   2.72 
+Thu 20:20: 
+Thu 20:20: (7/15) - Place DFE (VivadoImplementation)
+Thu 20:20: Executing the following 10 Implementation Strategies in 4 threads:
+Thu 20:20:  - VIVADO_DEFAULT
+Thu 20:20:  - MAXELER1
+Thu 20:20:  - MAXELER2
+Thu 20:20:  - MAXELER3
+Thu 20:20:  - MAXELER4
+Thu 20:20:  - PERFORMANCE_EARLY_BLOCK_PLACEMENT
+Thu 20:20:  - PERFORMANCE_EXPLORE
+Thu 20:20:  - PERFORMANCE_EXTRA_TIMING_OPT
+Thu 20:20:  - PERFORMANCE_NET_DELAY_HIGH
+Thu 20:20:  - PERFORMANCE_REFINE_PLACEMENT
+Thu 22:30: Implementation: Strategy "MAXELER3" met timing with score 0 (best score 0)
+Thu 22:30: Implementation: Strategy "MAXELER2" was cancelled (no timing score)
+Thu 22:30: Implementation: Strategy "VIVADO_DEFAULT" was cancelled (no timing score)
+Thu 22:30: (8/15) - Generate Resource Report (VivadoResourceUsage)
+Thu 22:30: (9/15) - Generate Annotated Source Code (VivadoResourceAnnotation)
+Thu 22:30: (10/15) - Analyse Power Usage (FinalVivadoReportPower)
+Thu 22:30: 
+Thu 22:30: FINAL POWER REPORT
+Thu 22:30: Total On-Chip Power (W) 13.01 (budget: 91.80) 
+Thu 22:30: Dynamic Power (W)       10.26 
+Thu 22:30: Device Static Power(W)   2.75 
+Thu 22:30: 
+Thu 22:30: (11/15) - Generate Configuration (VivadoBitgen)
+Thu 22:44: (12/15) - Update Checksum (VivadoUpdateChecksum)
+Thu 22:49: (13/15) - Convert Programming File (VivadoCfgfileGen)
+Thu 22:49: (14/15) - Generate MaxFile (VivadoGenerateMaxFile)
+Thu 22:50: (15/15) - Clean Build Directory (VivadoCleanBuildDirectory)
+Thu 22:50: 
+Thu 22:50: FINAL RESOURCE USAGE
+Thu 22:50: FPGA: xcVU9P-FLGB2104-2-E
+Thu 22:50: Logic utilization:      354402 / 3546720 (9.99%)
+Thu 22:50:   LUTs:                 110990 / 1182240 (9.39%)
+Thu 22:50:   Primary FFs:          243412 / 2364480 (10.29%)
+Thu 22:50: DSP blocks:               1221 / 6840    (17.85%)
+Thu 22:50: Block memory (BRAM18):    3424 / 4320    (79.26%)
+Thu 22:50: Block memory (URAM):       197 / 960     (20.52%)
+Thu 22:50: 
+Thu 22:50: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max (MD5Sum: 2bab92b0f65daf19ccff7e083aeaedcc)
+Thu 22:50: Build completed: Thu Dec 30 22:50:13 GMT 2021 (took 4 hours, 42 mins, 26 secs)
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/Maxfiles.h
+cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11_backup.max
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.h
+rm /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max
+mv /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11_backup.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/../scratch/MobilenetV2OnnxManual11.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.h
+# cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/../scratch/MobilenetV2OnnxManual11.max /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max
+# rm -rf /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/../scratch
+sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max MobilenetV2OnnxManual11_FREQ_200_dfe.o
+Processing maxfile for MAX5_LIMA from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max'.
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_2883272252319947240/cobject/max_2585024410246422482.c -o /tmp/sliccompile_2883272252319947240/cobject/max_2585024410246422482.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results/MobilenetV2OnnxManual11.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_1552496691148863502.o 
+ld -r /tmp/sliccompile_2883272252319947240/cobject/max_2585024410246422482.c.o max_1552496691148863502.o -o MobilenetV2OnnxManual11_FREQ_200_dfe.o 
+Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/explore/build/mobilenet_v2_onnx_manual_1_1'
+g++ ../../src/mobilenet_v2_onnx_manual_1_1/MobilenetV2OnnxManual11CpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/MobilenetV2OnnxManual11_MAIA_DFE_FREQ_200/results -DDESIGN_NAME=MobilenetV2OnnxManual11 -c -o MobilenetV2OnnxManual11_FREQ_200_dfec.o
+g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_   -o MobilenetV2OnnxManual11_FREQ_200_dfe MobilenetV2OnnxManual11_FREQ_200_dfe.o MobilenetV2OnnxManual11_FREQ_200_dfec.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl

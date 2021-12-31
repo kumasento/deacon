@@ -25,49 +25,49 @@ In file included from ../../src/single_dws_conv_non_divisible/SingleDwsConvNonDi
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1229 19:18:50.359814 445227 SingleDwsConvNonDivisibleCpuCode.cpp:70] num frac bits: 0
-I1229 19:18:50.360132 445227 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
-I1229 19:18:50.360211 445227 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
-I1229 19:18:50.360225 445227 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
-I1229 19:18:50.360239 445227 layers.h:992] Running golden function ...
-I1229 19:18:50.360270 445227 layers.h:1001] DEPTHWISE_SEPARABLE 3 x 2 x 2 -> 3 x 2 x 2
-I1229 19:18:50.362952 445227 layers.h:340] Reordering input for PC = 2
-I1229 19:18:50.362977 445227 utils.h:383] Burst aligning input array of size: 32 to 384
-I1229 19:18:50.362989 445227 SingleDwsConvNonDivisibleCpuCode.cpp:95] Tiled input size (burst aligned): 384
-I1229 19:18:50.363001 445227 utils.h:383] Burst aligning input array of size: 24 to 384
-I1229 19:18:50.363018 445227 SingleDwsConvNonDivisibleCpuCode.cpp:98] Tiled output size (burst aligned): 384
-I1229 19:18:50.363029 445227 layers.h:775] Writing DRAM to 0 with size 0x300
-I1229 19:18:50.368026 445227 SingleDwsConvNonDivisibleCpuCode.cpp:106] Running ...
-I1229 19:18:50.480391 445227 SingleDwsConvNonDivisibleCpuCode.cpp:112] Done
-I1229 19:18:50.480432 445227 layers.h:792] Reading DRAM from 0x300 with size 0x300
-I1229 19:18:50.483641 445227 layers.h:374] Reordering output for PF = 2 TOH = 2 TOW = 2
-I1229 19:18:50.483676 445227 layers.h:399] Done
-I1229 19:18:50.483691 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[0] = -2
-I1229 19:18:50.483713 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[1] = -10
-I1229 19:18:50.483727 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[2] = -2
-I1229 19:18:50.483739 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[3] = -6
-I1229 19:18:50.483750 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[4] = -3
-I1229 19:18:50.483762 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[5] = -7
-I1229 19:18:50.483773 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[6] = 1
-I1229 19:18:50.483784 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[7] = -6
-I1229 19:18:50.483795 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[8] = 13
-I1229 19:18:50.483808 445227 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[9] = -3
-I1229 19:18:50.483819 445227 SingleDwsConvNonDivisibleCpuCode.cpp:125] elapsed time: 0.112289s
-I1229 19:18:50.483834 445227 SingleDwsConvNonDivisibleCpuCode.cpp:139] [Ops] layer                          conv0 = 0.000288 M
-I1229 19:18:50.483847 445227 SingleDwsConvNonDivisibleCpuCode.cpp:143] OPS:    5.76e-07 G
-I1229 19:18:50.483860 445227 SingleDwsConvNonDivisibleCpuCode.cpp:144] FPS:    17.8112
-I1229 19:18:50.483873 445227 SingleDwsConvNonDivisibleCpuCode.cpp:147] GFLOPs: 5.12962e-06
-I1229 19:18:50.483886 445227 SingleDwsConvNonDivisibleCpuCode.cpp:154] Examine results ...
-I1229 19:18:50.483896 445227 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[0] = -2
-I1229 19:18:50.483907 445227 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[1] = -10
-I1229 19:18:50.483919 445227 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[2] = -2
-I1229 19:18:50.483930 445227 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[3] = -6
-I1229 19:18:50.483942 445227 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[4] = -3
-I1229 19:18:50.483953 445227 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[0] = -2
-I1229 19:18:50.483965 445227 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[1] = -10
-I1229 19:18:50.483976 445227 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[2] = -2
-I1229 19:18:50.483989 445227 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[3] = -6
-I1229 19:18:50.483999 445227 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[4] = -3
-I1229 19:18:50.484012 445227 SingleDwsConvNonDivisibleCpuCode.cpp:173] Evaluating difference ...
-I1229 19:18:50.484022 445227 SingleDwsConvNonDivisibleCpuCode.cpp:174] Mask: 00000000
-I1229 19:18:50.484082 445227 SingleDwsConvNonDivisibleCpuCode.cpp:202] num_failed: 0 total: 24 avg_diff: 0 min_diff: 0 max_diff: 0
+I1231 20:48:43.392220 37678 SingleDwsConvNonDivisibleCpuCode.cpp:70] num frac bits: 0
+I1231 20:48:43.392391 37678 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[0] = -1.95943  dfe = -2
+I1231 20:48:43.392433 37678 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[1] = -0.71415  dfe = -1
+I1231 20:48:43.392441 37678 SingleDwsConvNonDivisibleCpuCode.cpp:74] input[2] = 0.80067  dfe = 1
+I1231 20:48:43.392448 37678 layers.h:992] Running golden function ...
+I1231 20:48:43.392463 37678 layers.h:1001] DEPTHWISE_SEPARABLE 3 x 2 x 2 -> 3 x 2 x 2
+I1231 20:48:43.394119 37678 layers.h:340] Reordering input for PC = 2
+I1231 20:48:43.394129 37678 utils.h:383] Burst aligning input array of size: 32 to 384
+I1231 20:48:43.394136 37678 SingleDwsConvNonDivisibleCpuCode.cpp:95] Tiled input size (burst aligned): 384
+I1231 20:48:43.394141 37678 utils.h:383] Burst aligning input array of size: 24 to 384
+I1231 20:48:43.394150 37678 SingleDwsConvNonDivisibleCpuCode.cpp:98] Tiled output size (burst aligned): 384
+I1231 20:48:43.394155 37678 layers.h:775] Writing DRAM to 0 with size 0x300
+I1231 20:48:43.401600 37678 SingleDwsConvNonDivisibleCpuCode.cpp:106] Running ...
+I1231 20:48:43.509797 37678 SingleDwsConvNonDivisibleCpuCode.cpp:112] Done
+I1231 20:48:43.509836 37678 layers.h:792] Reading DRAM from 0x300 with size 0x300
+I1231 20:48:43.512833 37678 layers.h:374] Reordering output for PF = 2 TOH = 2 TOW = 2
+I1231 20:48:43.512867 37678 layers.h:399] Done
+I1231 20:48:43.512881 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[0] = -2
+I1231 20:48:43.512902 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[1] = -10
+I1231 20:48:43.512917 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[2] = -2
+I1231 20:48:43.512953 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[3] = -6
+I1231 20:48:43.512982 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[4] = -3
+I1231 20:48:43.513010 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[5] = -7
+I1231 20:48:43.513037 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[6] = 1
+I1231 20:48:43.513077 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[7] = -6
+I1231 20:48:43.513103 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[8] = 13
+I1231 20:48:43.513132 37678 SingleDwsConvNonDivisibleCpuCode.cpp:119] output_dfe[9] = -3
+I1231 20:48:43.513159 37678 SingleDwsConvNonDivisibleCpuCode.cpp:125] elapsed time: 0.108156s
+I1231 20:48:43.513197 37678 SingleDwsConvNonDivisibleCpuCode.cpp:139] [Ops] layer                          conv0 = 0.000288 M
+I1231 20:48:43.513227 37678 SingleDwsConvNonDivisibleCpuCode.cpp:143] OPS:    5.76e-07 G
+I1231 20:48:43.513254 37678 SingleDwsConvNonDivisibleCpuCode.cpp:144] FPS:    18.4918
+I1231 20:48:43.513271 37678 SingleDwsConvNonDivisibleCpuCode.cpp:147] GFLOPs: 5.32563e-06
+I1231 20:48:43.513283 37678 SingleDwsConvNonDivisibleCpuCode.cpp:154] Examine results ...
+I1231 20:48:43.513293 37678 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[0] = -2
+I1231 20:48:43.513305 37678 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[1] = -10
+I1231 20:48:43.513316 37678 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[2] = -2
+I1231 20:48:43.513327 37678 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[3] = -6
+I1231 20:48:43.513339 37678 SingleDwsConvNonDivisibleCpuCode.cpp:156] output_cpu[4] = -3
+I1231 20:48:43.513365 37678 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[0] = -2
+I1231 20:48:43.513383 37678 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[1] = -10
+I1231 20:48:43.513394 37678 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[2] = -2
+I1231 20:48:43.513406 37678 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[3] = -6
+I1231 20:48:43.513417 37678 SingleDwsConvNonDivisibleCpuCode.cpp:162] output_dfe[4] = -3
+I1231 20:48:43.513428 37678 SingleDwsConvNonDivisibleCpuCode.cpp:173] Evaluating difference ...
+I1231 20:48:43.513443 37678 SingleDwsConvNonDivisibleCpuCode.cpp:174] Mask: 00000000
+I1231 20:48:43.513499 37678 SingleDwsConvNonDivisibleCpuCode.cpp:202] num_failed: 0 total: 24 avg_diff: 0 min_diff: 0 max_diff: 0

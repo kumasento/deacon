@@ -25,49 +25,49 @@ In file included from ../../src/stack_shortcut/StackShortcutCpuCode.cpp:11:
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1229 19:18:54.868693 446759 StackShortcutCpuCode.cpp:71] num frac bits: 0
-I1229 19:18:54.868954 446759 StackShortcutCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1229 19:18:54.869027 446759 StackShortcutCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1229 19:18:54.869042 446759 StackShortcutCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1229 19:18:54.869073 446759 layers.h:992] Running golden function ...
-I1229 19:18:54.869091 446759 layers.h:1001]        STANDARD 2 x 4 x 4 -> 4 x 2 x 2
-I1229 19:18:54.871331 446759 layers.h:1001]        STANDARD 4 x 2 x 2 -> 4 x 2 x 2
-I1229 19:18:54.874431 446759 layers.h:1049] Shortcut is enabled for layer resnetv15stage2conv1fwd
-I1229 19:18:54.875219 446759 utils.h:383] Burst aligning input array of size: 64 to 192
-I1229 19:18:54.875241 446759 StackShortcutCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1229 19:18:54.875253 446759 utils.h:383] Burst aligning input array of size: 32 to 192
-I1229 19:18:54.875269 446759 StackShortcutCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1229 19:18:54.875280 446759 layers.h:775] Writing DRAM to 0 with size 0x180
-I1229 19:18:54.880182 446759 StackShortcutCpuCode.cpp:107] Running ...
-I1229 19:18:55.277844 446759 StackShortcutCpuCode.cpp:112] Done
-I1229 19:18:55.277882 446759 layers.h:792] Reading DRAM from 0x180 with size 0x180
-I1229 19:18:55.280544 446759 StackShortcutCpuCode.cpp:119] output_dfe[0] = 22
-I1229 19:18:55.280581 446759 StackShortcutCpuCode.cpp:119] output_dfe[1] = -4
-I1229 19:18:55.280596 446759 StackShortcutCpuCode.cpp:119] output_dfe[2] = -24
-I1229 19:18:55.280609 446759 StackShortcutCpuCode.cpp:119] output_dfe[3] = -13
-I1229 19:18:55.280623 446759 StackShortcutCpuCode.cpp:119] output_dfe[4] = -1
-I1229 19:18:55.280637 446759 StackShortcutCpuCode.cpp:119] output_dfe[5] = -35
-I1229 19:18:55.280649 446759 StackShortcutCpuCode.cpp:119] output_dfe[6] = 31
-I1229 19:18:55.280663 446759 StackShortcutCpuCode.cpp:119] output_dfe[7] = -2
-I1229 19:18:55.280676 446759 StackShortcutCpuCode.cpp:119] output_dfe[8] = -18
-I1229 19:18:55.280689 446759 StackShortcutCpuCode.cpp:119] output_dfe[9] = 5
-I1229 19:18:55.280704 446759 StackShortcutCpuCode.cpp:125] elapsed time: 0.397607s
-I1229 19:18:55.280720 446759 StackShortcutCpuCode.cpp:139] [Ops] layer        resnetv15stage2conv0fwd = 0.000576 M
-I1229 19:18:55.280736 446759 StackShortcutCpuCode.cpp:139] [Ops] layer        resnetv15stage2conv1fwd = 0.001152 M
-I1229 19:18:55.280750 446759 StackShortcutCpuCode.cpp:143] OPS:    3.456e-06 G
-I1229 19:18:55.280764 446759 StackShortcutCpuCode.cpp:144] FPS:    5.0301
-I1229 19:18:55.280777 446759 StackShortcutCpuCode.cpp:147] GFLOPs: 8.69201e-06
-I1229 19:18:55.280791 446759 StackShortcutCpuCode.cpp:154] Examine results ...
-I1229 19:18:55.280802 446759 StackShortcutCpuCode.cpp:156] output_cpu[0] = 22
-I1229 19:18:55.280817 446759 StackShortcutCpuCode.cpp:156] output_cpu[1] = -4
-I1229 19:18:55.280829 446759 StackShortcutCpuCode.cpp:156] output_cpu[2] = -24
-I1229 19:18:55.280844 446759 StackShortcutCpuCode.cpp:156] output_cpu[3] = -13
-I1229 19:18:55.280858 446759 StackShortcutCpuCode.cpp:156] output_cpu[4] = -1
-I1229 19:18:55.280871 446759 StackShortcutCpuCode.cpp:162] output_dfe[0] = 22
-I1229 19:18:55.280885 446759 StackShortcutCpuCode.cpp:162] output_dfe[1] = -4
-I1229 19:18:55.280897 446759 StackShortcutCpuCode.cpp:162] output_dfe[2] = -24
-I1229 19:18:55.280911 446759 StackShortcutCpuCode.cpp:162] output_dfe[3] = -13
-I1229 19:18:55.280925 446759 StackShortcutCpuCode.cpp:162] output_dfe[4] = -1
-I1229 19:18:55.280938 446759 StackShortcutCpuCode.cpp:173] Evaluating difference ...
-I1229 19:18:55.280951 446759 StackShortcutCpuCode.cpp:174] Mask: 00000000
-I1229 19:18:55.280983 446759 StackShortcutCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0
+I1231 20:48:44.866164 38526 StackShortcutCpuCode.cpp:71] num frac bits: 0
+I1231 20:48:44.866437 38526 StackShortcutCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1231 20:48:44.866510 38526 StackShortcutCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1231 20:48:44.866524 38526 StackShortcutCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1231 20:48:44.866542 38526 layers.h:992] Running golden function ...
+I1231 20:48:44.866559 38526 layers.h:1001]        STANDARD 2 x 4 x 4 -> 4 x 2 x 2
+I1231 20:48:44.872016 38526 layers.h:1001]        STANDARD 4 x 2 x 2 -> 4 x 2 x 2
+I1231 20:48:44.874735 38526 layers.h:1049] Shortcut is enabled for layer resnetv15stage2conv1fwd
+I1231 20:48:44.875373 38526 utils.h:383] Burst aligning input array of size: 64 to 192
+I1231 20:48:44.875393 38526 StackShortcutCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1231 20:48:44.875404 38526 utils.h:383] Burst aligning input array of size: 32 to 192
+I1231 20:48:44.875419 38526 StackShortcutCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1231 20:48:44.875430 38526 layers.h:775] Writing DRAM to 0 with size 0x180
+I1231 20:48:44.883687 38526 StackShortcutCpuCode.cpp:107] Running ...
+I1231 20:48:45.207823 38526 StackShortcutCpuCode.cpp:112] Done
+I1231 20:48:45.207844 38526 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1231 20:48:45.210675 38526 StackShortcutCpuCode.cpp:119] output_dfe[0] = 22
+I1231 20:48:45.210690 38526 StackShortcutCpuCode.cpp:119] output_dfe[1] = -4
+I1231 20:48:45.210696 38526 StackShortcutCpuCode.cpp:119] output_dfe[2] = -24
+I1231 20:48:45.210701 38526 StackShortcutCpuCode.cpp:119] output_dfe[3] = -13
+I1231 20:48:45.210706 38526 StackShortcutCpuCode.cpp:119] output_dfe[4] = -1
+I1231 20:48:45.210711 38526 StackShortcutCpuCode.cpp:119] output_dfe[5] = -35
+I1231 20:48:45.210716 38526 StackShortcutCpuCode.cpp:119] output_dfe[6] = 31
+I1231 20:48:45.210721 38526 StackShortcutCpuCode.cpp:119] output_dfe[7] = -2
+I1231 20:48:45.210726 38526 StackShortcutCpuCode.cpp:119] output_dfe[8] = -18
+I1231 20:48:45.210731 38526 StackShortcutCpuCode.cpp:119] output_dfe[9] = 5
+I1231 20:48:45.210736 38526 StackShortcutCpuCode.cpp:125] elapsed time: 0.324084s
+I1231 20:48:45.210744 38526 StackShortcutCpuCode.cpp:139] [Ops] layer        resnetv15stage2conv0fwd = 0.000576 M
+I1231 20:48:45.210749 38526 StackShortcutCpuCode.cpp:139] [Ops] layer        resnetv15stage2conv1fwd = 0.001152 M
+I1231 20:48:45.210754 38526 StackShortcutCpuCode.cpp:143] OPS:    3.456e-06 G
+I1231 20:48:45.210760 38526 StackShortcutCpuCode.cpp:144] FPS:    6.17125
+I1231 20:48:45.210765 38526 StackShortcutCpuCode.cpp:147] GFLOPs: 1.06639e-05
+I1231 20:48:45.210770 38526 StackShortcutCpuCode.cpp:154] Examine results ...
+I1231 20:48:45.210774 38526 StackShortcutCpuCode.cpp:156] output_cpu[0] = 22
+I1231 20:48:45.210779 38526 StackShortcutCpuCode.cpp:156] output_cpu[1] = -4
+I1231 20:48:45.210784 38526 StackShortcutCpuCode.cpp:156] output_cpu[2] = -24
+I1231 20:48:45.210789 38526 StackShortcutCpuCode.cpp:156] output_cpu[3] = -13
+I1231 20:48:45.210794 38526 StackShortcutCpuCode.cpp:156] output_cpu[4] = -1
+I1231 20:48:45.210799 38526 StackShortcutCpuCode.cpp:162] output_dfe[0] = 22
+I1231 20:48:45.210804 38526 StackShortcutCpuCode.cpp:162] output_dfe[1] = -4
+I1231 20:48:45.210808 38526 StackShortcutCpuCode.cpp:162] output_dfe[2] = -24
+I1231 20:48:45.210813 38526 StackShortcutCpuCode.cpp:162] output_dfe[3] = -13
+I1231 20:48:45.210819 38526 StackShortcutCpuCode.cpp:162] output_dfe[4] = -1
+I1231 20:48:45.210824 38526 StackShortcutCpuCode.cpp:173] Evaluating difference ...
+I1231 20:48:45.210829 38526 StackShortcutCpuCode.cpp:174] Mask: 00000000
+I1231 20:48:45.210844 38526 StackShortcutCpuCode.cpp:202] num_failed: 0 total: 32 avg_diff: 0 min_diff: 0 max_diff: 0

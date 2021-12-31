@@ -179,6 +179,7 @@ class DeaconGraph:
         # check parallelism
         for node in self.nodes:
             if node.layer_type == LayerType.CONCAT:
+                print(node)
                 assert len(np.unique(node.par.P_C)) == 1
                 assert all([pf == sum(node.par.P_C) for pf in node.par.P_F])
 

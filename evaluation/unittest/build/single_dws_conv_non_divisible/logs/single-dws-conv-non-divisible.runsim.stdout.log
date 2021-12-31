@@ -4,7 +4,7 @@ Using maxj batch compiler.
 jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
 MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
 	MAXAPPPKG=single_dws_conv_non_divisible MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
-	maxJavaRun -v -m 16384 SingleDwsConvNonDivisibleManager \
+	maxJavaRun -v -m 8192 SingleDwsConvNonDivisibleManager \
 	DFEModel=MAIA maxFileName=SingleDwsConvNonDivisible target='DFE_SIM' enableMPCX=false \
 	FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible/data/data-single-dws-conv-non-divisible.txt 
 ]0; maxJavaRun: SingleDwsConvNonDivisibleManager DFEModel=MAIA maxFileName=SingleDwsConvNonDivisible target=DFE_SIM enableMPCX=false FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible/data/data-single-dws-conv-non-divisible.txt maxJavaRun : Execute Java program with Maxeler environment
@@ -33,120 +33,120 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
                       /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
-JVM memory limit    : 16384 MB
+JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Wed 19:18: MaxCompiler version: 2021.1
-Wed 19:18: Build "SingleDwsConvNonDivisible" start time: Wed Dec 29 19:18:27 GMT 2021
-Wed 19:18: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Wed 19:18: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG
-Wed 19:18: Detailed build log available in "_build.log"
-Wed 19:18: 
-Wed 19:18: ENGINE BUILD PARAMETERS
-Wed 19:18: 	              Build name: SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG                                                                                       
-Wed 19:18: 	             maxFileName: SingleDwsConvNonDivisible                                                                                                                 
-Wed 19:18: 	                  target: DFE_SIM                                                                                                                                   
-Wed 19:18: 	                DFEModel: MAIA                                                                                                                                      
-Wed 19:18: 	              enableMPCX: false                                                                                                                                     
-Wed 19:18: 	                bitWidth: 32                                                                                                                                        
-Wed 19:18: 	                     WBW: 32                                                                                                                                        
-Wed 19:18: 	                   DTYPE: fixed                                                                                                                                     
-Wed 19:18: 	           NUM_FRAC_BITS: 8                                                                                                                                         
-Wed 19:18: 	                      PF: 1                                                                                                                                         
-Wed 19:18: 	                      PC: 1                                                                                                                                         
-Wed 19:18: 	                      PK: 1                                                                                                                                         
-Wed 19:18: 	                       H: 1                                                                                                                                         
-Wed 19:18: 	                       W: 1                                                                                                                                         
-Wed 19:18: 	                       C: 1                                                                                                                                         
-Wed 19:18: 	                       F: 1                                                                                                                                         
-Wed 19:18: 	                       K: 1                                                                                                                                         
-Wed 19:18: 	                     PAD: 0                                                                                                                                         
-Wed 19:18: 	                       S: 1                                                                                                                                         
-Wed 19:18: 	                     SEQ: 0                                                                                                                                         
-Wed 19:18: 	                    FREQ: 200                                                                                                                                       
-Wed 19:18: 	                USE_DRAM: false                                                                                                                                     
-Wed 19:18: 	                 USE_BNN: false                                                                                                                                     
-Wed 19:18: 	            USE_WINOGRAD: false                                                                                                                                     
-Wed 19:18: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                                     
-Wed 19:18: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                                         
-Wed 19:18: 	                   DEBUG: true                                                                                                                                      
-Wed 19:18: 	           COEFF_ON_CHIP: false                                                                                                                                     
-Wed 19:18: 	              INIT_COEFF: false                                                                                                                                     
-Wed 19:18: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible/data/data-single-dws-conv-non-divisible.txt
-Wed 19:18: Generating kernel conv0 ...
-Wed 19:18: Instantiating kernel "conv0"
-Wed 19:18: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: coeffOnChip = true
-Wed 19:18: Input height = 2, output height = 2, pad = 1
-Wed 19:18: Counter H = 4 W = 4
-Wed 19:18: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: Building line buffer for "conv0" ...
-Wed 19:18: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Wed 19:18: Line buffer input vector size: 2, output vector size: 18.
-Wed 19:18: Number of separated line buffers: 2
-Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
-Wed 19:18: Size of line buffer output: 3
-Wed 19:18: Number of line buffer output chunks: 3
-Wed 19:18: Connecting outputs from chunk (#000) ...
-Wed 19:18: Connecting outputs from chunk (#001) ...
-Wed 19:18: Connecting outputs from chunk (#002) ...
-Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
-Wed 19:18: Size of line buffer output: 3
-Wed 19:18: Number of line buffer output chunks: 3
-Wed 19:18: Connecting outputs from chunk (#000) ...
-Wed 19:18: Connecting outputs from chunk (#001) ...
-Wed 19:18: Connecting outputs from chunk (#002) ...
-Wed 19:18: Depthwise coeff ROM depth = 2
-Wed 19:18: ROM created for conv0_dw of depth 2 and type {DFEVectorType: 18 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3943a2be
-Wed 19:18: Building the CORE arithmetic unit for "conv0_dw" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 18
-Wed 19:18: CORE coefficient vector size: 18
-Wed 19:18: CORE ofmap vector size: 2
-Wed 19:18: Ifmap buffer configuration 32 x 2
-Wed 19:18: loop = false
-Wed 19:18: Pointwise coeff ROM depth = 4
-Wed 19:18: ROM created for conv0_pw of depth 4 and type {DFEVectorType: 4 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@71def8f8
-Wed 19:18: Building the CORE arithmetic unit for "conv0_pw" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 2
-Wed 19:18: CORE coefficient vector size: 4
-Wed 19:18: CORE ofmap vector size: 2
-Wed 19:18: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Wed 19:18: Connecting to output: ofmap
-Wed 19:18: Compiling kernel "conv0"
-Wed 19:18: 
-Wed 19:18: Generating padding kernels for DRAM access
-Wed 19:18: Instantiating kernel "ifmap_unpad"
-Wed 19:18: Compiling kernel "ifmap_unpad"
-Wed 19:18: 
-Wed 19:18: Instantiating kernel "ofmap_pad"
-Wed 19:18: Compiling kernel "ofmap_pad"
-Wed 19:18: 
-Wed 19:18: Setting up stream connections for conv0
-Wed 19:18: DRAM will be used to build the design
-Wed 19:18: Setup streams for kernel "conv0"
-Wed 19:18: # cycles:       64
-Wed 19:18: # ifmap stream: 16
-Wed 19:18: # ofmap stream: 16
-Wed 19:18: coeff vec size: 36
-Wed 19:18: coeff stream bit width: 576
-Wed 19:18: coeff stream chunk size: 9
-Wed 19:18: Running back-end simulation build (3 phases)
-Wed 19:18: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Wed 19:18: (2/3) - Compile Simulation Modules (SimCompilePass)
-Wed 19:18: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Wed 19:18: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max (MD5Sum: f002311d8c010724452c439225c828d7)
-Wed 19:18: Build completed: Wed Dec 29 19:18:44 GMT 2021 (took 17 secs)
+Fri 20:48: MaxCompiler version: 2021.1
+Fri 20:48: Build "SingleDwsConvNonDivisible" start time: Fri Dec 31 20:48:27 GMT 2021
+Fri 20:48: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 20:48: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG
+Fri 20:48: Detailed build log available in "_build.log"
+Fri 20:48: 
+Fri 20:48: ENGINE BUILD PARAMETERS
+Fri 20:48: 	              Build name: SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG                                                                                       
+Fri 20:48: 	             maxFileName: SingleDwsConvNonDivisible                                                                                                                 
+Fri 20:48: 	                  target: DFE_SIM                                                                                                                                   
+Fri 20:48: 	                DFEModel: MAIA                                                                                                                                      
+Fri 20:48: 	              enableMPCX: false                                                                                                                                     
+Fri 20:48: 	                bitWidth: 32                                                                                                                                        
+Fri 20:48: 	                     WBW: 32                                                                                                                                        
+Fri 20:48: 	                   DTYPE: fixed                                                                                                                                     
+Fri 20:48: 	           NUM_FRAC_BITS: 8                                                                                                                                         
+Fri 20:48: 	                      PF: 1                                                                                                                                         
+Fri 20:48: 	                      PC: 1                                                                                                                                         
+Fri 20:48: 	                      PK: 1                                                                                                                                         
+Fri 20:48: 	                       H: 1                                                                                                                                         
+Fri 20:48: 	                       W: 1                                                                                                                                         
+Fri 20:48: 	                       C: 1                                                                                                                                         
+Fri 20:48: 	                       F: 1                                                                                                                                         
+Fri 20:48: 	                       K: 1                                                                                                                                         
+Fri 20:48: 	                     PAD: 0                                                                                                                                         
+Fri 20:48: 	                       S: 1                                                                                                                                         
+Fri 20:48: 	                     SEQ: 0                                                                                                                                         
+Fri 20:48: 	                    FREQ: 200                                                                                                                                       
+Fri 20:48: 	                USE_DRAM: false                                                                                                                                     
+Fri 20:48: 	                 USE_BNN: false                                                                                                                                     
+Fri 20:48: 	            USE_WINOGRAD: false                                                                                                                                     
+Fri 20:48: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                                     
+Fri 20:48: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                                         
+Fri 20:48: 	                   DEBUG: true                                                                                                                                      
+Fri 20:48: 	           COEFF_ON_CHIP: false                                                                                                                                     
+Fri 20:48: 	              INIT_COEFF: false                                                                                                                                     
+Fri 20:48: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible/data/data-single-dws-conv-non-divisible.txt
+Fri 20:48: Generating kernel conv0 ...
+Fri 20:48: Instantiating kernel "conv0"
+Fri 20:48: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: coeffOnChip = true
+Fri 20:48: Input height = 2, output height = 2, pad = 1
+Fri 20:48: Counter H = 4 W = 4
+Fri 20:48: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: Building line buffer for "conv0" ...
+Fri 20:48: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Fri 20:48: Line buffer input vector size: 2, output vector size: 18.
+Fri 20:48: Number of separated line buffers: 2
+Fri 20:48: Initialising line buffer kernel with 3 x 4 x 1
+Fri 20:48: Size of line buffer output: 3
+Fri 20:48: Number of line buffer output chunks: 3
+Fri 20:48: Connecting outputs from chunk (#000) ...
+Fri 20:48: Connecting outputs from chunk (#001) ...
+Fri 20:48: Connecting outputs from chunk (#002) ...
+Fri 20:48: Initialising line buffer kernel with 3 x 4 x 1
+Fri 20:48: Size of line buffer output: 3
+Fri 20:48: Number of line buffer output chunks: 3
+Fri 20:48: Connecting outputs from chunk (#000) ...
+Fri 20:48: Connecting outputs from chunk (#001) ...
+Fri 20:48: Connecting outputs from chunk (#002) ...
+Fri 20:48: Depthwise coeff ROM depth = 2
+Fri 20:48: ROM created for conv0_dw of depth 2 and type {DFEVectorType: 18 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@3943a2be
+Fri 20:48: Building the CORE arithmetic unit for "conv0_dw" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 18
+Fri 20:48: CORE coefficient vector size: 18
+Fri 20:48: CORE ofmap vector size: 2
+Fri 20:48: Ifmap buffer configuration 32 x 2
+Fri 20:48: loop = false
+Fri 20:48: Pointwise coeff ROM depth = 4
+Fri 20:48: ROM created for conv0_pw of depth 4 and type {DFEVectorType: 4 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@71def8f8
+Fri 20:48: Building the CORE arithmetic unit for "conv0_pw" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 2
+Fri 20:48: CORE coefficient vector size: 4
+Fri 20:48: CORE ofmap vector size: 2
+Fri 20:48: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Fri 20:48: Connecting to output: ofmap
+Fri 20:48: Compiling kernel "conv0"
+Fri 20:48: 
+Fri 20:48: Generating padding kernels for DRAM access
+Fri 20:48: Instantiating kernel "ifmap_unpad"
+Fri 20:48: Compiling kernel "ifmap_unpad"
+Fri 20:48: 
+Fri 20:48: Instantiating kernel "ofmap_pad"
+Fri 20:48: Compiling kernel "ofmap_pad"
+Fri 20:48: 
+Fri 20:48: Setting up stream connections for conv0
+Fri 20:48: DRAM will be used to build the design
+Fri 20:48: Setup streams for kernel "conv0"
+Fri 20:48: # cycles:       64
+Fri 20:48: # ifmap stream: 16
+Fri 20:48: # ofmap stream: 16
+Fri 20:48: coeff vec size: 36
+Fri 20:48: coeff stream bit width: 576
+Fri 20:48: coeff stream chunk size: 9
+Fri 20:48: Running back-end simulation build (3 phases)
+Fri 20:48: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Fri 20:48: (2/3) - Compile Simulation Modules (SimCompilePass)
+Fri 20:48: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Fri 20:48: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max (MD5Sum: 1a99ceaeaf535fe36bff0977c7a237dc)
+Fri 20:48: Build completed: Fri Dec 31 20:48:38 GMT 2021 (took 10 secs)
 cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/Maxfiles.h
 sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max SingleDwsConvNonDivisible_FREQ_200_DBG_sim.o
 Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_1639986563844254703/cobject/max_1289835205773382066.c -o /tmp/sliccompile_1639986563844254703/cobject/max_1289835205773382066.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_7283758193396193680.o 
-ld -r /tmp/sliccompile_1639986563844254703/cobject/max_1289835205773382066.c.o max_7283758193396193680.o -o SingleDwsConvNonDivisible_FREQ_200_DBG_sim.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_8925202523951149041/cobject/max_8579118532441239386.c -o /tmp/sliccompile_8925202523951149041/cobject/max_8579118532441239386.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleDwsConvNonDivisible.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_9056755185793016137.o 
+ld -r /tmp/sliccompile_8925202523951149041/cobject/max_8579118532441239386.c.o max_9056755185793016137.o -o SingleDwsConvNonDivisible_FREQ_200_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible'
 g++ ../../src/single_dws_conv_non_divisible/SingleDwsConvNonDivisibleCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleDwsConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results -D__SIM__ -DDESIGN_NAME=SingleDwsConvNonDivisible -c -o SingleDwsConvNonDivisible_FREQ_200_DBG_simc.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -o SingleDwsConvNonDivisible_FREQ_200_DBG_sim SingleDwsConvNonDivisible_FREQ_200_DBG_sim.o SingleDwsConvNonDivisible_FREQ_200_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
@@ -2158,7 +2158,6 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: fffdfffe 0 (192) nInputs 16
 UNPADDING: 44 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 0
 ifmapEn = 0
@@ -2206,7 +2205,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: fff9fff6 1 (192) nInputs 16
+PADDING: fffdfffe 0 (192) nInputs 16
 UNPADDING: 45 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 1
 ifmapEn = 0
@@ -2254,6 +2253,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: fff9fff6 1 (192) nInputs 16
 UNPADDING: 46 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 2
 ifmapEn = 0
@@ -2348,7 +2348,6 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 1fffe 2 (192) nInputs 16
 UNPADDING: 48 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 0
 ifmapEn = 0
@@ -2396,7 +2395,7 @@ Line buffer outputVec = < -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: fffafffa 3 (192) nInputs 16
+PADDING: 1fffe 2 (192) nInputs 16
 UNPADDING: 49 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 1
 ifmapEn = 0
@@ -2444,6 +2443,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: fffafffa 3 (192) nInputs 16
 UNPADDING: 50 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 2
 ifmapEn = 0
@@ -3666,7 +3666,6 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 1 :: 1 :: 0 :: 1 :: 1 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: d 4 (192) nInputs 16
 UNPADDING: 76 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 0
 ifmapEn = 0
@@ -3714,7 +3713,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 1 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: fffd 5 (192) nInputs 16
+PADDING: d 4 (192) nInputs 16
 UNPADDING: 77 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 1
 ifmapEn = 0
@@ -3762,6 +3761,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: fffd 5 (192) nInputs 16
 UNPADDING: 78 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 2
 ifmapEn = 0
@@ -3856,7 +3856,6 @@ Line buffer outputVec = < 1 :: 1 :: 0 :: 1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: ffef 6 (192) nInputs 16
 UNPADDING: 80 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 0
 ifmapEn = 0
@@ -3904,7 +3903,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 3 7 (192) nInputs 16
+PADDING: ffef 6 (192) nInputs 16
 UNPADDING: 81 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 1
 ifmapEn = 0
@@ -3952,6 +3951,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: 3 7 (192) nInputs 16
 UNPADDING: 82 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 2
 ifmapEn = 0
@@ -5174,7 +5174,6 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 2 8 (192) nInputs 16
 UNPADDING: 108 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 0
 ifmapEn = 0
@@ -5222,7 +5221,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 90006 9 (192) nInputs 16
+PADDING: 2 8 (192) nInputs 16
 UNPADDING: 109 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 1
 ifmapEn = 0
@@ -5270,6 +5269,7 @@ Line buffer outputVec = < 0 :: 0 :: 2 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: 90006 9 (192) nInputs 16
 UNPADDING: 110 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 2
 ifmapEn = 0
@@ -5364,7 +5364,6 @@ Line buffer outputVec = < 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 10004 10 (192) nInputs 16
 UNPADDING: 112 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 0
 ifmapEn = 0
@@ -5412,7 +5411,7 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 1fffe 11 (192) nInputs 16
+PADDING: 10004 10 (192) nInputs 16
 UNPADDING: 113 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 1
 ifmapEn = 0
@@ -5460,6 +5459,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: 1fffe 11 (192) nInputs 16
 UNPADDING: 114 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 2
 ifmapEn = 0
@@ -6682,7 +6682,6 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 1 12 (192) nInputs 16
 UNPADDING: 140 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 0
 ifmapEn = 0
@@ -6730,7 +6729,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: 7 13 (192) nInputs 16
+PADDING: 1 12 (192) nInputs 16
 UNPADDING: 141 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 1
 ifmapEn = 0
@@ -6778,6 +6777,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
+PADDING: 7 13 (192) nInputs 16
 UNPADDING: 142 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 2
 ifmapEn = 0
@@ -6872,102 +6872,102 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-PADDING: fffe 14 (192) nInputs 16
 UNPADDING: 144 (192) nInputs 16
-PADDING: fff3 15 (192) nInputs 16
+PADDING: fffe 14 (192) nInputs 16
 UNPADDING: 145 (192) nInputs 16
-PADDING: fff3 16 (192) nInputs 16
+PADDING: fff3 15 (192) nInputs 16
 UNPADDING: 146 (192) nInputs 16
-PADDING: fff3 17 (192) nInputs 16
+PADDING: fff3 16 (192) nInputs 16
 UNPADDING: 147 (192) nInputs 16
-PADDING: fff3 18 (192) nInputs 16
+PADDING: fff3 17 (192) nInputs 16
 UNPADDING: 148 (192) nInputs 16
-PADDING: fff3 19 (192) nInputs 16
+PADDING: fff3 18 (192) nInputs 16
 UNPADDING: 149 (192) nInputs 16
-PADDING: fff3 20 (192) nInputs 16
+PADDING: fff3 19 (192) nInputs 16
 UNPADDING: 150 (192) nInputs 16
-PADDING: fff3 21 (192) nInputs 16
+PADDING: fff3 20 (192) nInputs 16
 UNPADDING: 151 (192) nInputs 16
-PADDING: fff3 22 (192) nInputs 16
+PADDING: fff3 21 (192) nInputs 16
 UNPADDING: 152 (192) nInputs 16
-PADDING: fff3 23 (192) nInputs 16
+PADDING: fff3 22 (192) nInputs 16
 UNPADDING: 153 (192) nInputs 16
-PADDING: fff3 24 (192) nInputs 16
+PADDING: fff3 23 (192) nInputs 16
 UNPADDING: 154 (192) nInputs 16
-PADDING: fff3 25 (192) nInputs 16
+PADDING: fff3 24 (192) nInputs 16
 UNPADDING: 155 (192) nInputs 16
-PADDING: fff3 26 (192) nInputs 16
+PADDING: fff3 25 (192) nInputs 16
 UNPADDING: 156 (192) nInputs 16
-PADDING: fff3 27 (192) nInputs 16
+PADDING: fff3 26 (192) nInputs 16
 UNPADDING: 157 (192) nInputs 16
-PADDING: fff3 28 (192) nInputs 16
+PADDING: fff3 27 (192) nInputs 16
 UNPADDING: 158 (192) nInputs 16
-PADDING: fff3 29 (192) nInputs 16
+PADDING: fff3 28 (192) nInputs 16
 UNPADDING: 159 (192) nInputs 16
-PADDING: fff3 30 (192) nInputs 16
+PADDING: fff3 29 (192) nInputs 16
 UNPADDING: 160 (192) nInputs 16
-PADDING: fff3 31 (192) nInputs 16
+PADDING: fff3 30 (192) nInputs 16
 UNPADDING: 161 (192) nInputs 16
-PADDING: fff3 32 (192) nInputs 16
+PADDING: fff3 31 (192) nInputs 16
 UNPADDING: 162 (192) nInputs 16
-PADDING: fff3 33 (192) nInputs 16
+PADDING: fff3 32 (192) nInputs 16
 UNPADDING: 163 (192) nInputs 16
-PADDING: fff3 34 (192) nInputs 16
+PADDING: fff3 33 (192) nInputs 16
 UNPADDING: 164 (192) nInputs 16
-PADDING: fff3 35 (192) nInputs 16
+PADDING: fff3 34 (192) nInputs 16
 UNPADDING: 165 (192) nInputs 16
-PADDING: fff3 36 (192) nInputs 16
+PADDING: fff3 35 (192) nInputs 16
 UNPADDING: 166 (192) nInputs 16
-PADDING: fff3 37 (192) nInputs 16
+PADDING: fff3 36 (192) nInputs 16
 UNPADDING: 167 (192) nInputs 16
-PADDING: fff3 38 (192) nInputs 16
+PADDING: fff3 37 (192) nInputs 16
 UNPADDING: 168 (192) nInputs 16
-PADDING: fff3 39 (192) nInputs 16
+PADDING: fff3 38 (192) nInputs 16
 UNPADDING: 169 (192) nInputs 16
-PADDING: fff3 40 (192) nInputs 16
+PADDING: fff3 39 (192) nInputs 16
 UNPADDING: 170 (192) nInputs 16
-PADDING: fff3 41 (192) nInputs 16
+PADDING: fff3 40 (192) nInputs 16
 UNPADDING: 171 (192) nInputs 16
-PADDING: fff3 42 (192) nInputs 16
+PADDING: fff3 41 (192) nInputs 16
 UNPADDING: 172 (192) nInputs 16
-PADDING: fff3 43 (192) nInputs 16
+PADDING: fff3 42 (192) nInputs 16
 UNPADDING: 173 (192) nInputs 16
-PADDING: fff3 44 (192) nInputs 16
+PADDING: fff3 43 (192) nInputs 16
 UNPADDING: 174 (192) nInputs 16
-PADDING: fff3 45 (192) nInputs 16
+PADDING: fff3 44 (192) nInputs 16
 UNPADDING: 175 (192) nInputs 16
-PADDING: fff3 46 (192) nInputs 16
+PADDING: fff3 45 (192) nInputs 16
 UNPADDING: 176 (192) nInputs 16
-PADDING: fff3 47 (192) nInputs 16
+PADDING: fff3 46 (192) nInputs 16
 UNPADDING: 177 (192) nInputs 16
-PADDING: fff3 48 (192) nInputs 16
+PADDING: fff3 47 (192) nInputs 16
 UNPADDING: 178 (192) nInputs 16
-PADDING: fff3 49 (192) nInputs 16
+PADDING: fff3 48 (192) nInputs 16
 UNPADDING: 179 (192) nInputs 16
-PADDING: fff3 50 (192) nInputs 16
+PADDING: fff3 49 (192) nInputs 16
 UNPADDING: 180 (192) nInputs 16
-PADDING: fff3 51 (192) nInputs 16
+PADDING: fff3 50 (192) nInputs 16
 UNPADDING: 181 (192) nInputs 16
-PADDING: fff3 52 (192) nInputs 16
+PADDING: fff3 51 (192) nInputs 16
 UNPADDING: 182 (192) nInputs 16
-PADDING: fff3 53 (192) nInputs 16
+PADDING: fff3 52 (192) nInputs 16
 UNPADDING: 183 (192) nInputs 16
-PADDING: fff3 54 (192) nInputs 16
+PADDING: fff3 53 (192) nInputs 16
 UNPADDING: 184 (192) nInputs 16
-PADDING: fff3 55 (192) nInputs 16
+PADDING: fff3 54 (192) nInputs 16
 UNPADDING: 185 (192) nInputs 16
-PADDING: fff3 56 (192) nInputs 16
+PADDING: fff3 55 (192) nInputs 16
 UNPADDING: 186 (192) nInputs 16
-PADDING: fff3 57 (192) nInputs 16
+PADDING: fff3 56 (192) nInputs 16
 UNPADDING: 187 (192) nInputs 16
-PADDING: fff3 58 (192) nInputs 16
+PADDING: fff3 57 (192) nInputs 16
 UNPADDING: 188 (192) nInputs 16
-PADDING: fff3 59 (192) nInputs 16
+PADDING: fff3 58 (192) nInputs 16
 UNPADDING: 189 (192) nInputs 16
-PADDING: fff3 60 (192) nInputs 16
+PADDING: fff3 59 (192) nInputs 16
 UNPADDING: 190 (192) nInputs 16
-PADDING: fff3 61 (192) nInputs 16
+PADDING: fff3 60 (192) nInputs 16
 UNPADDING: 191 (192) nInputs 16
+PADDING: fff3 61 (192) nInputs 16
 PADDING: fff3 62 (192) nInputs 16
 PADDING: fff3 63 (192) nInputs 16
 PADDING: fff3 64 (192) nInputs 16
@@ -7101,8 +7101,8 @@ PADDING: fff3 191 (192) nInputs 16
 make stopsim
 make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible'
 maxcompilersim -n rz3515a -cLIMA stop
-Terminating MaxelerOS daemon (PID 445216)...
+Terminating MaxelerOS daemon (PID 37672)...
 MaxelerOS daemon killed
-Terminating simulated system (PID 445181)...
+Terminating simulated system (PID 37665)...
 Simulated system killed
 make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_dws_conv_non_divisible'

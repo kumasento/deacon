@@ -6,6 +6,10 @@ package com.custom_computing_ic.maxdeep.lib;
 import com.custom_computing_ic.maxdeep.utils.AdderTree;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelBase;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelComponent;
+import com.maxeler.maxcompiler.v2.kernelcompiler.Optimization;
+import com.maxeler.maxcompiler.v2.kernelcompiler.op_management.FixOpBitSizeMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.op_management.MathOps;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
@@ -41,7 +45,8 @@ public class DotProductKernel extends KernelComponent {
    * @param vecSize size of the vectors to be computed
    * @param type    data type.s
    */
-  public DotProductKernel(KernelBase<?> owner, int vecSize, DFEType typeA, DFEType typeB, boolean dbg) {
+  public DotProductKernel(
+      KernelBase<?> owner, int vecSize, DFEType typeA, DFEType typeB, boolean dbg) {
     super(owner);
 
     if (vecSize <= 0)
@@ -49,10 +54,16 @@ public class DotProductKernel extends KernelComponent {
 
     vecAT = new DFEVectorType<DFEVar>(typeA, vecSize);
     vecBT = new DFEVectorType<DFEVar>(typeB, vecSize);
+    DFEVectorType<DFEVar> vecCT =
+        new DFEVectorType<DFEVar>((typeA.getTotalBits() == 8 && typeB.getTotalBits() == 27)
+                ? dfeFix(45, 0, SignMode.TWOSCOMPLEMENT)
+                : typeB,
+            vecSize);
 
     vecA = vecAT.newInstance(owner);
     vecB = vecBT.newInstance(owner);
-    DFEVector<DFEVar> vecC;
+
+    DFEVector<DFEVar> vecC = vecCT.newInstance(owner);
 
     // An array of multipliers will be initialized here.
     if (typeB.isUInt() && typeB.getTotalBits() == 2) {
@@ -62,7 +73,15 @@ public class DotProductKernel extends KernelComponent {
             constant.var(0).cast(typeA), vecA.get(i).neg()));
 
     } else {
-      vecC = vecA.mul(vecB);
+      if (typeA.getTotalBits() == 8 && typeB.getTotalBits() == 27) {
+        owner.optimization.pushFixOpMode(
+            Optimization.bitSizeExact(45), Optimization.offsetExact(0), MathOps.ALL);
+        for (int i = 0; i < vecSize; i++)
+          vecC.get(i).connect(vecA.get(i).cast(dfeInt(18)).mul(vecB.get(i).cast(dfeInt(27))));
+        owner.optimization.popFixOpMode(MathOps.ALL);
+      } else {
+        for (int i = 0; i < vecSize; i++) vecC.get(i).connect(vecA.get(i).mul(vecB.get(i)));
+      }
     }
 
     if (dbg) {

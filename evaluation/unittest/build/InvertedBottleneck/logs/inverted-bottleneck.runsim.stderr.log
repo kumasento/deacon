@@ -25,48 +25,48 @@ In file included from ../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp
       |                           %ld
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.so when searching for -lgomp
 /usr/bin/ld: skipping incompatible /mnt/ccnas2/bdp/rz3515/cccad/opt/lib/libgomp.a when searching for -lgomp
-I1229 19:18:50.813325 445606 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
-I1229 19:18:50.813551 445606 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
-I1229 19:18:50.813607 445606 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
-I1229 19:18:50.813617 445606 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
-I1229 19:18:50.813629 445606 layers.h:992] Running golden function ...
-I1229 19:18:50.813644 445606 layers.h:1001]        STANDARD 2 x 2 x 2 -> 4 x 2 x 2
-I1229 19:18:50.814357 445606 layers.h:1001] DEPTHWISE_SEPARABLE 4 x 2 x 2 -> 2 x 2 x 2
-I1229 19:18:50.816308 445606 utils.h:383] Burst aligning input array of size: 16 to 192
-I1229 19:18:50.816345 445606 InvertedbottleneckCpuCode.cpp:96] Tiled input size (burst aligned): 192
-I1229 19:18:50.816365 445606 utils.h:383] Burst aligning input array of size: 16 to 192
-I1229 19:18:50.816377 445606 InvertedbottleneckCpuCode.cpp:99] Tiled output size (burst aligned): 192
-I1229 19:18:50.816392 445606 layers.h:775] Writing DRAM to 0 with size 0x180
-I1229 19:18:50.822191 445606 InvertedbottleneckCpuCode.cpp:107] Running ...
-I1229 19:18:51.085191 445606 InvertedbottleneckCpuCode.cpp:113] Done
-I1229 19:18:51.085251 445606 layers.h:792] Reading DRAM from 0x180 with size 0x180
-I1229 19:18:51.087025 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[0] = 17
-I1229 19:18:51.087080 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[1] = 12
-I1229 19:18:51.087095 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[2] = -1
-I1229 19:18:51.087108 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[3] = -6
-I1229 19:18:51.087121 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[4] = -18
-I1229 19:18:51.087133 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[5] = -20
-I1229 19:18:51.087146 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[6] = -4
-I1229 19:18:51.087158 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[7] = 6
-I1229 19:18:51.087170 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[8] = 3
-I1229 19:18:51.087182 445606 InvertedbottleneckCpuCode.cpp:120] output_dfe[9] = 19
-I1229 19:18:51.087194 445606 InvertedbottleneckCpuCode.cpp:126] elapsed time: 0.262925s
-I1229 19:18:51.087210 445606 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv0 = 6.4e-05 M
-I1229 19:18:51.087225 445606 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv1 = 0.000352 M
-I1229 19:18:51.087239 445606 InvertedbottleneckCpuCode.cpp:144] OPS:    8.32e-07 G
-I1229 19:18:51.087253 445606 InvertedbottleneckCpuCode.cpp:145] FPS:    7.60673
-I1229 19:18:51.087265 445606 InvertedbottleneckCpuCode.cpp:148] GFLOPs: 3.1644e-06
-I1229 19:18:51.087278 445606 InvertedbottleneckCpuCode.cpp:155] Examine results ...
-I1229 19:18:51.087289 445606 InvertedbottleneckCpuCode.cpp:157] output_cpu[0] = 17
-I1229 19:18:51.087302 445606 InvertedbottleneckCpuCode.cpp:157] output_cpu[1] = 12
-I1229 19:18:51.087317 445606 InvertedbottleneckCpuCode.cpp:157] output_cpu[2] = -1
-I1229 19:18:51.087330 445606 InvertedbottleneckCpuCode.cpp:157] output_cpu[3] = -6
-I1229 19:18:51.087342 445606 InvertedbottleneckCpuCode.cpp:157] output_cpu[4] = -18
-I1229 19:18:51.087354 445606 InvertedbottleneckCpuCode.cpp:163] output_dfe[0] = 17
-I1229 19:18:51.087368 445606 InvertedbottleneckCpuCode.cpp:163] output_dfe[1] = 12
-I1229 19:18:51.087380 445606 InvertedbottleneckCpuCode.cpp:163] output_dfe[2] = -1
-I1229 19:18:51.087392 445606 InvertedbottleneckCpuCode.cpp:163] output_dfe[3] = -6
-I1229 19:18:51.087404 445606 InvertedbottleneckCpuCode.cpp:163] output_dfe[4] = -18
-I1229 19:18:51.087419 445606 InvertedbottleneckCpuCode.cpp:174] Evaluating difference ...
-I1229 19:18:51.087430 445606 InvertedbottleneckCpuCode.cpp:175] Mask: 00000000
-I1229 19:18:51.087452 445606 InvertedbottleneckCpuCode.cpp:203] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0
+I1231 20:48:44.356958 38189 InvertedbottleneckCpuCode.cpp:71] num frac bits: 0
+I1231 20:48:44.357092 38189 InvertedbottleneckCpuCode.cpp:75] input[0] = -1.95943  dfe = -2
+I1231 20:48:44.357125 38189 InvertedbottleneckCpuCode.cpp:75] input[1] = -0.71415  dfe = -1
+I1231 20:48:44.357129 38189 InvertedbottleneckCpuCode.cpp:75] input[2] = 0.80067  dfe = 1
+I1231 20:48:44.357136 38189 layers.h:992] Running golden function ...
+I1231 20:48:44.357142 38189 layers.h:1001]        STANDARD 2 x 2 x 2 -> 4 x 2 x 2
+I1231 20:48:44.358024 38189 layers.h:1001] DEPTHWISE_SEPARABLE 4 x 2 x 2 -> 2 x 2 x 2
+I1231 20:48:44.359371 38189 utils.h:383] Burst aligning input array of size: 16 to 192
+I1231 20:48:44.359377 38189 InvertedbottleneckCpuCode.cpp:96] Tiled input size (burst aligned): 192
+I1231 20:48:44.359380 38189 utils.h:383] Burst aligning input array of size: 16 to 192
+I1231 20:48:44.359385 38189 InvertedbottleneckCpuCode.cpp:99] Tiled output size (burst aligned): 192
+I1231 20:48:44.359390 38189 layers.h:775] Writing DRAM to 0 with size 0x180
+I1231 20:48:44.363343 38189 InvertedbottleneckCpuCode.cpp:107] Running ...
+I1231 20:48:44.539758 38189 InvertedbottleneckCpuCode.cpp:113] Done
+I1231 20:48:44.539798 38189 layers.h:792] Reading DRAM from 0x180 with size 0x180
+I1231 20:48:44.544514 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[0] = 17
+I1231 20:48:44.544535 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[1] = 12
+I1231 20:48:44.544540 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[2] = -1
+I1231 20:48:44.544544 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[3] = -6
+I1231 20:48:44.544548 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[4] = -18
+I1231 20:48:44.544553 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[5] = -20
+I1231 20:48:44.544556 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[6] = -4
+I1231 20:48:44.544560 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[7] = 6
+I1231 20:48:44.544564 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[8] = 3
+I1231 20:48:44.544567 38189 InvertedbottleneckCpuCode.cpp:120] output_dfe[9] = 19
+I1231 20:48:44.544571 38189 InvertedbottleneckCpuCode.cpp:126] elapsed time: 0.176373s
+I1231 20:48:44.544581 38189 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv0 = 6.4e-05 M
+I1231 20:48:44.544586 38189 InvertedbottleneckCpuCode.cpp:140] [Ops] layer                          conv1 = 0.000352 M
+I1231 20:48:44.544590 38189 InvertedbottleneckCpuCode.cpp:144] OPS:    8.32e-07 G
+I1231 20:48:44.544595 38189 InvertedbottleneckCpuCode.cpp:145] FPS:    11.3396
+I1231 20:48:44.544598 38189 InvertedbottleneckCpuCode.cpp:148] GFLOPs: 4.71727e-06
+I1231 20:48:44.544602 38189 InvertedbottleneckCpuCode.cpp:155] Examine results ...
+I1231 20:48:44.544605 38189 InvertedbottleneckCpuCode.cpp:157] output_cpu[0] = 17
+I1231 20:48:44.544610 38189 InvertedbottleneckCpuCode.cpp:157] output_cpu[1] = 12
+I1231 20:48:44.544613 38189 InvertedbottleneckCpuCode.cpp:157] output_cpu[2] = -1
+I1231 20:48:44.544616 38189 InvertedbottleneckCpuCode.cpp:157] output_cpu[3] = -6
+I1231 20:48:44.544620 38189 InvertedbottleneckCpuCode.cpp:157] output_cpu[4] = -18
+I1231 20:48:44.544625 38189 InvertedbottleneckCpuCode.cpp:163] output_dfe[0] = 17
+I1231 20:48:44.544627 38189 InvertedbottleneckCpuCode.cpp:163] output_dfe[1] = 12
+I1231 20:48:44.544631 38189 InvertedbottleneckCpuCode.cpp:163] output_dfe[2] = -1
+I1231 20:48:44.544636 38189 InvertedbottleneckCpuCode.cpp:163] output_dfe[3] = -6
+I1231 20:48:44.544638 38189 InvertedbottleneckCpuCode.cpp:163] output_dfe[4] = -18
+I1231 20:48:44.544643 38189 InvertedbottleneckCpuCode.cpp:174] Evaluating difference ...
+I1231 20:48:44.544646 38189 InvertedbottleneckCpuCode.cpp:175] Mask: 00000000
+I1231 20:48:44.544662 38189 InvertedbottleneckCpuCode.cpp:203] num_failed: 0 total: 16 avg_diff: 0 min_diff: 0 max_diff: 0

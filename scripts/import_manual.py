@@ -3,7 +3,7 @@ import argparse
 import os
 
 import pandas as pd
-from pydeacon.graph import DeaconGraph, OutputType
+from pydeacon.graph import DeaconGraph, LayerType, OutputType
 
 
 def main():
@@ -26,11 +26,15 @@ def main():
         node.par.P_C[0] = int(manual_cfg[node.name]["P_C"])
         node.par.P_F[0] = int(manual_cfg[node.name]["P_F"])
 
-        # NOTE: only workable for mobilenet-v2 for now
+        # NOTE: only workable for mobilenet-v2/squeezenet for now
         if len(node.outputs) == 1:
-            continue
-        if node.outputs[1].output_type == OutputType.IFMAP:
-            node.par.P_F[1] = node.par.P_C[0]
+            if node.layer_type == LayerType.CONCAT:
+                node.par.P_C[1] = node.par.P_C[0]
+        else:
+            if node.outputs[1].output_type == OutputType.IFMAP:
+                node.par.P_F[1] = node.par.P_C[0]
+            if node.outputs[1].output_type == OutputType.OFMAP:
+                node.par.P_F[1] = node.par.P_F[0]
 
     G.name += "_" + os.path.basename(args.import_file).split(".")[0].split("-")[1]
     G.dump(

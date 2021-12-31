@@ -4,7 +4,7 @@ Using maxj batch compiler.
 jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
 MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
 	MAXAPPPKG=single_conv_non_divisible MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
-	maxJavaRun -v -m 16384 SingleConvNonDivisibleManager \
+	maxJavaRun -v -m 8192 SingleConvNonDivisibleManager \
 	DFEModel=MAIA maxFileName=SingleConvNonDivisible target='DFE_SIM' enableMPCX=false \
 	FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt 
 ]0; maxJavaRun: SingleConvNonDivisibleManager DFEModel=MAIA maxFileName=SingleConvNonDivisible target=DFE_SIM enableMPCX=false FREQ=200 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt maxJavaRun : Execute Java program with Maxeler environment
@@ -33,143 +33,143 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
                       /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
-JVM memory limit    : 16384 MB
+JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Wed 19:18: MaxCompiler version: 2021.1
-Wed 19:18: Build "SingleConvNonDivisible" start time: Wed Dec 29 19:18:27 GMT 2021
-Wed 19:18: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Wed 19:18: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG
-Wed 19:18: Detailed build log available in "_build.log"
-Wed 19:18: 
-Wed 19:18: ENGINE BUILD PARAMETERS
-Wed 19:18: 	              Build name: SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG                                                                                  
-Wed 19:18: 	             maxFileName: SingleConvNonDivisible                                                                                                            
-Wed 19:18: 	                  target: DFE_SIM                                                                                                                           
-Wed 19:18: 	                DFEModel: MAIA                                                                                                                              
-Wed 19:18: 	              enableMPCX: false                                                                                                                             
-Wed 19:18: 	                bitWidth: 32                                                                                                                                
-Wed 19:18: 	                     WBW: 32                                                                                                                                
-Wed 19:18: 	                   DTYPE: fixed                                                                                                                             
-Wed 19:18: 	           NUM_FRAC_BITS: 8                                                                                                                                 
-Wed 19:18: 	                      PF: 1                                                                                                                                 
-Wed 19:18: 	                      PC: 1                                                                                                                                 
-Wed 19:18: 	                      PK: 1                                                                                                                                 
-Wed 19:18: 	                       H: 1                                                                                                                                 
-Wed 19:18: 	                       W: 1                                                                                                                                 
-Wed 19:18: 	                       C: 1                                                                                                                                 
-Wed 19:18: 	                       F: 1                                                                                                                                 
-Wed 19:18: 	                       K: 1                                                                                                                                 
-Wed 19:18: 	                     PAD: 0                                                                                                                                 
-Wed 19:18: 	                       S: 1                                                                                                                                 
-Wed 19:18: 	                     SEQ: 0                                                                                                                                 
-Wed 19:18: 	                    FREQ: 200                                                                                                                               
-Wed 19:18: 	                USE_DRAM: false                                                                                                                             
-Wed 19:18: 	                 USE_BNN: false                                                                                                                             
-Wed 19:18: 	            USE_WINOGRAD: false                                                                                                                             
-Wed 19:18: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                             
-Wed 19:18: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                                 
-Wed 19:18: 	                   DEBUG: true                                                                                                                              
-Wed 19:18: 	           COEFF_ON_CHIP: false                                                                                                                             
-Wed 19:18: 	              INIT_COEFF: false                                                                                                                             
-Wed 19:18: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt
-Wed 19:18: Generating kernel conv0 ...
-Wed 19:18: Instantiating kernel "conv0"
-Wed 19:18: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: coeffOnChip = true
-Wed 19:18: Input height = 2, output height = 2, pad = 1
-Wed 19:18: Counter H = 4 W = 4
-Wed 19:18: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: Ifmap buffer configuration 32 x 2
-Wed 19:18: loop = false
-Wed 19:18: Building line buffer for "conv0" ...
-Wed 19:18: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Wed 19:18: Line buffer input vector size: 2, output vector size: 18.
-Wed 19:18: Number of separated line buffers: 2
-Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
-Wed 19:18: Size of line buffer output: 3
-Wed 19:18: Number of line buffer output chunks: 3
-Wed 19:18: Connecting outputs from chunk (#000) ...
-Wed 19:18: Connecting outputs from chunk (#001) ...
-Wed 19:18: Connecting outputs from chunk (#002) ...
-Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
-Wed 19:18: Size of line buffer output: 3
-Wed 19:18: Number of line buffer output chunks: 3
-Wed 19:18: Connecting outputs from chunk (#000) ...
-Wed 19:18: Connecting outputs from chunk (#001) ...
-Wed 19:18: Connecting outputs from chunk (#002) ...
-Wed 19:18: ROM created for conv0 of depth 4 and type {DFEVectorType: 36 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@140c9f39
-Wed 19:18: Building the CORE arithmetic unit for "conv0" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 18
-Wed 19:18: CORE coefficient vector size: 36
-Wed 19:18: CORE ofmap vector size: 2
-Wed 19:18: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Wed 19:18: Connecting to output: ofmap
-Wed 19:18: Compiling kernel "conv0"
-Wed 19:18: 
-Wed 19:18: Generating padding kernels for DRAM access
-Wed 19:18: Instantiating kernel "ifmap_unpad"
-Wed 19:18: Compiling kernel "ifmap_unpad"
-Wed 19:18: 
-Wed 19:18: Instantiating kernel "ofmap_pad"
-Wed 19:18: Compiling kernel "ofmap_pad"
-Wed 19:18: 
-Wed 19:18: Setting up stream connections for conv0
-Wed 19:18: DRAM will be used to build the design
-Wed 19:18: Setup streams for kernel "conv0"
-Wed 19:18: # cycles:       64
-Wed 19:18: # ifmap stream: 16
-Wed 19:18: # ofmap stream: 16
-Wed 19:18: coeff vec size: 36
-Wed 19:18: coeff stream bit width: 576
-Wed 19:18: coeff stream chunk size: 9
-Wed 19:18: Running back-end simulation build (3 phases)
-Wed 19:18: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Wed 19:18: (2/3) - Compile Simulation Modules (SimCompilePass)
-Wed 19:18: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Wed 19:18: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max (MD5Sum: fcbafe4f2c7595252d2a9be9331c1a3b)
-Wed 19:18: Build completed: Wed Dec 29 19:18:42 GMT 2021 (took 15 secs)
+Fri 20:48: MaxCompiler version: 2021.1
+Fri 20:48: Build "SingleConvNonDivisible" start time: Fri Dec 31 20:48:27 GMT 2021
+Fri 20:48: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 20:48: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG
+Fri 20:48: Detailed build log available in "_build.log"
+Fri 20:48: 
+Fri 20:48: ENGINE BUILD PARAMETERS
+Fri 20:48: 	              Build name: SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG                                                                                  
+Fri 20:48: 	             maxFileName: SingleConvNonDivisible                                                                                                            
+Fri 20:48: 	                  target: DFE_SIM                                                                                                                           
+Fri 20:48: 	                DFEModel: MAIA                                                                                                                              
+Fri 20:48: 	              enableMPCX: false                                                                                                                             
+Fri 20:48: 	                bitWidth: 32                                                                                                                                
+Fri 20:48: 	                     WBW: 32                                                                                                                                
+Fri 20:48: 	                   DTYPE: fixed                                                                                                                             
+Fri 20:48: 	           NUM_FRAC_BITS: 8                                                                                                                                 
+Fri 20:48: 	                      PF: 1                                                                                                                                 
+Fri 20:48: 	                      PC: 1                                                                                                                                 
+Fri 20:48: 	                      PK: 1                                                                                                                                 
+Fri 20:48: 	                       H: 1                                                                                                                                 
+Fri 20:48: 	                       W: 1                                                                                                                                 
+Fri 20:48: 	                       C: 1                                                                                                                                 
+Fri 20:48: 	                       F: 1                                                                                                                                 
+Fri 20:48: 	                       K: 1                                                                                                                                 
+Fri 20:48: 	                     PAD: 0                                                                                                                                 
+Fri 20:48: 	                       S: 1                                                                                                                                 
+Fri 20:48: 	                     SEQ: 0                                                                                                                                 
+Fri 20:48: 	                    FREQ: 200                                                                                                                               
+Fri 20:48: 	                USE_DRAM: false                                                                                                                             
+Fri 20:48: 	                 USE_BNN: false                                                                                                                             
+Fri 20:48: 	            USE_WINOGRAD: false                                                                                                                             
+Fri 20:48: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                             
+Fri 20:48: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                                 
+Fri 20:48: 	                   DEBUG: true                                                                                                                              
+Fri 20:48: 	           COEFF_ON_CHIP: false                                                                                                                             
+Fri 20:48: 	              INIT_COEFF: false                                                                                                                             
+Fri 20:48: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt
+Fri 20:48: Generating kernel conv0 ...
+Fri 20:48: Instantiating kernel "conv0"
+Fri 20:48: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: coeffOnChip = true
+Fri 20:48: Input height = 2, output height = 2, pad = 1
+Fri 20:48: Counter H = 4 W = 4
+Fri 20:48: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: Ifmap buffer configuration 32 x 2
+Fri 20:48: loop = false
+Fri 20:48: Building line buffer for "conv0" ...
+Fri 20:48: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Fri 20:48: Line buffer input vector size: 2, output vector size: 18.
+Fri 20:48: Number of separated line buffers: 2
+Fri 20:48: Initialising line buffer kernel with 3 x 4 x 1
+Fri 20:48: Size of line buffer output: 3
+Fri 20:48: Number of line buffer output chunks: 3
+Fri 20:48: Connecting outputs from chunk (#000) ...
+Fri 20:48: Connecting outputs from chunk (#001) ...
+Fri 20:48: Connecting outputs from chunk (#002) ...
+Fri 20:48: Initialising line buffer kernel with 3 x 4 x 1
+Fri 20:48: Size of line buffer output: 3
+Fri 20:48: Number of line buffer output chunks: 3
+Fri 20:48: Connecting outputs from chunk (#000) ...
+Fri 20:48: Connecting outputs from chunk (#001) ...
+Fri 20:48: Connecting outputs from chunk (#002) ...
+Fri 20:48: ROM created for conv0 of depth 4 and type {DFEVectorType: 36 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@140c9f39
+Fri 20:48: Building the CORE arithmetic unit for "conv0" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 18
+Fri 20:48: CORE coefficient vector size: 36
+Fri 20:48: CORE ofmap vector size: 2
+Fri 20:48: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Fri 20:48: Connecting to output: ofmap
+Fri 20:48: Compiling kernel "conv0"
+Fri 20:48: 
+Fri 20:48: Generating padding kernels for DRAM access
+Fri 20:48: Instantiating kernel "ifmap_unpad"
+Fri 20:48: Compiling kernel "ifmap_unpad"
+Fri 20:48: 
+Fri 20:48: Instantiating kernel "ofmap_pad"
+Fri 20:48: Compiling kernel "ofmap_pad"
+Fri 20:48: 
+Fri 20:48: Setting up stream connections for conv0
+Fri 20:48: DRAM will be used to build the design
+Fri 20:48: Setup streams for kernel "conv0"
+Fri 20:48: # cycles:       64
+Fri 20:48: # ifmap stream: 16
+Fri 20:48: # ofmap stream: 16
+Fri 20:48: coeff vec size: 36
+Fri 20:48: coeff stream bit width: 576
+Fri 20:48: coeff stream chunk size: 9
+Fri 20:48: Running back-end simulation build (3 phases)
+Fri 20:48: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Fri 20:48: (2/3) - Compile Simulation Modules (SimCompilePass)
+Fri 20:48: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Fri 20:48: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max (MD5Sum: b57e9d827f197df9ecb1aea2898bee6b)
+Fri 20:48: Build completed: Fri Dec 31 20:48:37 GMT 2021 (took 9 secs)
 cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/Maxfiles.h
 sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max SingleConvNonDivisible_FREQ_200_DBG_sim.o
 Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_2412123608678121168/cobject/max_3738136343147726664.c -o /tmp/sliccompile_2412123608678121168/cobject/max_3738136343147726664.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_1125899371615910874.o 
-ld -r /tmp/sliccompile_2412123608678121168/cobject/max_3738136343147726664.c.o max_1125899371615910874.o -o SingleConvNonDivisible_FREQ_200_DBG_sim.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_4100556285285802529/cobject/max_3024793893941049215.c -o /tmp/sliccompile_4100556285285802529/cobject/max_3024793893941049215.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results/SingleConvNonDivisible.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_8697327261189050276.o 
+ld -r /tmp/sliccompile_4100556285285802529/cobject/max_3024793893941049215.c.o max_8697327261189050276.o -o SingleConvNonDivisible_FREQ_200_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible'
 g++ ../../src/single_conv_non_divisible/SingleConvNonDivisibleCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/SingleConvNonDivisible_MAIA_DFE_SIM_FREQ_200_DBG/results -D__SIM__ -DDESIGN_NAME=SingleConvNonDivisible -c -o SingleConvNonDivisible_FREQ_200_DBG_simc.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -o SingleConvNonDivisible_FREQ_200_DBG_sim SingleConvNonDivisible_FREQ_200_DBG_sim.o SingleConvNonDivisible_FREQ_200_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
-maxcompilersim -n rz3515l -cLIMA -d1 restart
+maxcompilersim -n rz3515m -cLIMA -d1 restart
 
-Simulated system 'rz3515l' started:
+Simulated system 'rz3515m' started:
     Board:                   MAX5C (default: 48GB RAM)
     RAM size for simulation: 51539607552 bytes.
     Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
-    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515l-cccad5.log
-    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515l-cccad5_daemon.log
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515m-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515m-cccad5_daemon.log
 
 Simulated devices available:
-    rz3515l0:rz3515l
+    rz3515m0:rz3515m
 
 To use simulated devices you need to set the environment variables
 LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
 you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
 tutorial for details).  Also, ensure that you add the correct simulated
-system name (namely "rz3515l") to your SLiC configuration. The following
+system name (namely "rz3515m") to your SLiC configuration. The following
 examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
 Example for BASH:
     export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
     export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515l"
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515m"
 Example for CSH:
     setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
     setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515l"
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515m"
 
-SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515l" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./SingleConvNonDivisible_FREQ_200_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt -g
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515m" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./SingleConvNonDivisible_FREQ_200_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible/data/data-single-conv-non-divisible.txt -g
 f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 1: input =  -2.000000 weight =  -1.000000
 output[0] =   0.000000 +   2.000000 =   2.000000
 f = 0 c = 0 oh = 0 ow = 0 kh = 1 kw = 2: input =  -1.000000 weight =  -1.000000
@@ -759,6 +759,7 @@ UNPADDING: 9 (192) nInputs 16
 UNPADDING: 10 (192) nInputs 16
 UNPADDING: 11 (192) nInputs 16
 UNPADDING: 12 (192) nInputs 16
+UNPADDING: 13 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -798,7 +799,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 13 (192) nInputs 16
+UNPADDING: 14 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -838,7 +839,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 14 (192) nInputs 16
+UNPADDING: 15 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -878,7 +879,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 15 (192) nInputs 16
+UNPADDING: 16 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -918,7 +919,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 16 (192) nInputs 16
+UNPADDING: 17 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -958,7 +959,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 17 (192) nInputs 16
+UNPADDING: 18 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -998,7 +999,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 18 (192) nInputs 16
+UNPADDING: 19 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -1038,7 +1039,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 19 (192) nInputs 16
+UNPADDING: 20 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1078,7 +1079,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 20 (192) nInputs 16
+UNPADDING: 21 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1118,7 +1119,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 21 (192) nInputs 16
+UNPADDING: 22 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -1158,7 +1159,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 22 (192) nInputs 16
+UNPADDING: 23 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -1198,7 +1199,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 23 (192) nInputs 16
+UNPADDING: 24 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1238,7 +1239,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 24 (192) nInputs 16
+UNPADDING: 25 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1278,7 +1279,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 25 (192) nInputs 16
+UNPADDING: 26 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1318,7 +1319,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 26 (192) nInputs 16
+UNPADDING: 27 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -1358,7 +1359,7 @@ Line buffer outputVec = < 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 27 (192) nInputs 16
+UNPADDING: 28 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1398,7 +1399,7 @@ Line buffer outputVec = < -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 28 (192) nInputs 16
+UNPADDING: 29 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1438,7 +1439,7 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 29 (192) nInputs 16
+UNPADDING: 30 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1478,7 +1479,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 30 (192) nInputs 16
+UNPADDING: 31 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -1518,7 +1519,7 @@ Line buffer outputVec = < 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 31 (192) nInputs 16
+UNPADDING: 32 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1558,7 +1559,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 2 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 32 (192) nInputs 16
+UNPADDING: 33 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1598,7 +1599,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 33 (192) nInputs 16
+UNPADDING: 34 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -1638,7 +1639,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 34 (192) nInputs 16
+UNPADDING: 35 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -1678,7 +1679,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 35 (192) nInputs 16
+UNPADDING: 36 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -1718,7 +1719,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 36 (192) nInputs 16
+UNPADDING: 37 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1758,7 +1759,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 37 (192) nInputs 16
+UNPADDING: 38 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -1798,7 +1799,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 38 (192) nInputs 16
+UNPADDING: 39 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 1
@@ -1838,7 +1839,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 39 (192) nInputs 16
+UNPADDING: 40 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -1878,7 +1879,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 40 (192) nInputs 16
+UNPADDING: 41 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -1919,7 +1920,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 50007 0 (192) nInputs 16
-UNPADDING: 41 (192) nInputs 16
+UNPADDING: 42 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -1960,7 +1961,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: a0001 1 (192) nInputs 16
-UNPADDING: 42 (192) nInputs 16
+UNPADDING: 43 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -2000,7 +2001,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 43 (192) nInputs 16
+UNPADDING: 44 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -2040,7 +2041,7 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 44 (192) nInputs 16
+UNPADDING: 45 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2081,7 +2082,7 @@ Line buffer outputVec = < -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 4fff8 2 (192) nInputs 16
-UNPADDING: 45 (192) nInputs 16
+UNPADDING: 46 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2122,7 +2123,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: ffff0003 3 (192) nInputs 16
-UNPADDING: 46 (192) nInputs 16
+UNPADDING: 47 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2162,7 +2163,7 @@ Line buffer outputVec = < 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 47 (192) nInputs 16
+UNPADDING: 48 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -2202,7 +2203,7 @@ Line buffer outputVec = < -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 48 (192) nInputs 16
+UNPADDING: 49 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2242,7 +2243,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 49 (192) nInputs 16
+UNPADDING: 50 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2282,7 +2283,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 50 (192) nInputs 16
+UNPADDING: 51 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2322,7 +2323,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 51 (192) nInputs 16
+UNPADDING: 52 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -2362,7 +2363,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 52 (192) nInputs 16
+UNPADDING: 53 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2402,7 +2403,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 53 (192) nInputs 16
+UNPADDING: 54 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2442,7 +2443,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 54 (192) nInputs 16
+UNPADDING: 55 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2482,7 +2483,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 55 (192) nInputs 16
+UNPADDING: 56 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -2522,7 +2523,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 56 (192) nInputs 16
+UNPADDING: 57 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2562,7 +2563,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 57 (192) nInputs 16
+UNPADDING: 58 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2602,7 +2603,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 58 (192) nInputs 16
+UNPADDING: 59 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2642,7 +2643,7 @@ Line buffer outputVec = < 0 :: -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 59 (192) nInputs 16
+UNPADDING: 60 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -2682,7 +2683,7 @@ Line buffer outputVec = < -2 :: -1 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 60 (192) nInputs 16
+UNPADDING: 61 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2722,7 +2723,7 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 61 (192) nInputs 16
+UNPADDING: 62 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2762,7 +2763,7 @@ Line buffer outputVec = < 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 62 (192) nInputs 16
+UNPADDING: 63 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2802,7 +2803,7 @@ Line buffer outputVec = < 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 63 (192) nInputs 16
+UNPADDING: 64 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -2842,7 +2843,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 2 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 64 (192) nInputs 16
+UNPADDING: 65 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -2882,7 +2883,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 65 (192) nInputs 16
+UNPADDING: 66 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -2922,7 +2923,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 66 (192) nInputs 16
+UNPADDING: 67 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -2962,7 +2963,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 67 (192) nInputs 16
+UNPADDING: 68 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -3002,7 +3003,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 68 (192) nInputs 16
+UNPADDING: 69 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3042,7 +3043,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 69 (192) nInputs 16
+UNPADDING: 70 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -3082,7 +3083,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 70 (192) nInputs 16
+UNPADDING: 71 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -3122,7 +3123,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 71 (192) nInputs 16
+UNPADDING: 72 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -3162,7 +3163,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 72 (192) nInputs 16
+UNPADDING: 73 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3203,7 +3204,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: b 4 (192) nInputs 16
-UNPADDING: 73 (192) nInputs 16
+UNPADDING: 74 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -3244,7 +3245,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 5 5 (192) nInputs 16
-UNPADDING: 74 (192) nInputs 16
+UNPADDING: 75 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -3284,7 +3285,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 75 (192) nInputs 16
+UNPADDING: 76 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -3324,7 +3325,7 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 76 (192) nInputs 16
+UNPADDING: 77 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3365,7 +3366,7 @@ Line buffer outputVec = < -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: fff4 6 (192) nInputs 16
-UNPADDING: 77 (192) nInputs 16
+UNPADDING: 78 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -3406,7 +3407,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: ffff 7 (192) nInputs 16
-UNPADDING: 78 (192) nInputs 16
+UNPADDING: 79 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -3446,7 +3447,7 @@ Line buffer outputVec = < 0 :: -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 79 (192) nInputs 16
+UNPADDING: 80 (192) nInputs 16
 conv0f = 0 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -3486,7 +3487,7 @@ Line buffer outputVec = < -1 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 80 (192) nInputs 16
+UNPADDING: 81 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3526,7 +3527,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 81 (192) nInputs 16
+UNPADDING: 82 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -3566,7 +3567,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 82 (192) nInputs 16
+UNPADDING: 83 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -3606,7 +3607,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 83 (192) nInputs 16
+UNPADDING: 84 (192) nInputs 16
 conv0f = 0 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -3646,7 +3647,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 84 (192) nInputs 16
+UNPADDING: 85 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3686,7 +3687,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 85 (192) nInputs 16
+UNPADDING: 86 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -3726,7 +3727,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 86 (192) nInputs 16
+UNPADDING: 87 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -3766,7 +3767,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 87 (192) nInputs 16
+UNPADDING: 88 (192) nInputs 16
 conv0f = 0 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -3806,7 +3807,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 88 (192) nInputs 16
+UNPADDING: 89 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -3846,7 +3847,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 89 (192) nInputs 16
+UNPADDING: 90 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -3886,7 +3887,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 90 (192) nInputs 16
+UNPADDING: 91 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -3926,7 +3927,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 91 (192) nInputs 16
+UNPADDING: 92 (192) nInputs 16
 conv0f = 0 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -3966,7 +3967,7 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: -2 :: 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 92 (192) nInputs 16
+UNPADDING: 93 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4006,7 +4007,7 @@ Line buffer outputVec = < -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 93 (192) nInputs 16
+UNPADDING: 94 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -4046,7 +4047,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 94 (192) nInputs 16
+UNPADDING: 95 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -4086,7 +4087,7 @@ Line buffer outputVec = < 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 95 (192) nInputs 16
+UNPADDING: 96 (192) nInputs 16
 conv0f = 0 c = 1 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -4126,7 +4127,7 @@ Line buffer outputVec = < -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 96 (192) nInputs 16
+UNPADDING: 97 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4166,7 +4167,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 97 (192) nInputs 16
+UNPADDING: 98 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -4206,7 +4207,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 98 (192) nInputs 16
+UNPADDING: 99 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 2
 ifmapEn = 1
 ofmapEn = 0
@@ -4246,7 +4247,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 99 (192) nInputs 16
+UNPADDING: 100 (192) nInputs 16
 conv0f = 0 c = 1 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -4286,7 +4287,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 100 (192) nInputs 16
+UNPADDING: 101 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4326,7 +4327,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 101 (192) nInputs 16
+UNPADDING: 102 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 1
 ifmapEn = 1
 ofmapEn = 0
@@ -4366,7 +4367,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 102 (192) nInputs 16
+UNPADDING: 103 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 2
 ifmapEn = 1
 ofmapEn = 1
@@ -4406,7 +4407,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 103 (192) nInputs 16
+UNPADDING: 104 (192) nInputs 16
 conv0f = 0 c = 1 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -4446,7 +4447,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 104 (192) nInputs 16
+UNPADDING: 105 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4487,7 +4488,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 10000 8 (192) nInputs 16
-UNPADDING: 105 (192) nInputs 16
+UNPADDING: 106 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -4528,7 +4529,7 @@ Line buffer outputVec = < 0 :: 0 :: 2 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 30002 9 (192) nInputs 16
-UNPADDING: 106 (192) nInputs 16
+UNPADDING: 107 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -4568,7 +4569,7 @@ Line buffer outputVec = < 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 107 (192) nInputs 16
+UNPADDING: 108 (192) nInputs 16
 conv0f = 0 c = 1 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -4608,7 +4609,7 @@ Line buffer outputVec = < 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 108 (192) nInputs 16
+UNPADDING: 109 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4649,7 +4650,7 @@ Line buffer outputVec = < -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 6fffe 10 (192) nInputs 16
-UNPADDING: 109 (192) nInputs 16
+UNPADDING: 110 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -4690,7 +4691,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 2fffa 11 (192) nInputs 16
-UNPADDING: 110 (192) nInputs 16
+UNPADDING: 111 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -4730,7 +4731,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 111 (192) nInputs 16
+UNPADDING: 112 (192) nInputs 16
 conv0f = 1 c = 0 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -4770,7 +4771,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 112 (192) nInputs 16
+UNPADDING: 113 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4810,7 +4811,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 113 (192) nInputs 16
+UNPADDING: 114 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -4850,7 +4851,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 114 (192) nInputs 16
+UNPADDING: 115 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -4890,7 +4891,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 115 (192) nInputs 16
+UNPADDING: 116 (192) nInputs 16
 conv0f = 1 c = 0 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -4930,7 +4931,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 116 (192) nInputs 16
+UNPADDING: 117 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -4970,7 +4971,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 117 (192) nInputs 16
+UNPADDING: 118 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5010,7 +5011,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: -2 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 118 (192) nInputs 16
+UNPADDING: 119 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -5050,7 +5051,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 119 (192) nInputs 16
+UNPADDING: 120 (192) nInputs 16
 conv0f = 1 c = 0 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -5090,7 +5091,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 120 (192) nInputs 16
+UNPADDING: 121 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -5130,7 +5131,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 121 (192) nInputs 16
+UNPADDING: 122 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5170,7 +5171,7 @@ Line buffer outputVec = < 0 :: 0 :: -1 :: 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :: 0 
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 122 (192) nInputs 16
+UNPADDING: 123 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -5210,7 +5211,7 @@ Line buffer outputVec = < 0 :: -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: -
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 123 (192) nInputs 16
+UNPADDING: 124 (192) nInputs 16
 conv0f = 1 c = 0 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -5250,7 +5251,7 @@ Line buffer outputVec = < -1 :: -2 :: 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: -2 :: 
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 124 (192) nInputs 16
+UNPADDING: 125 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -5290,7 +5291,7 @@ Line buffer outputVec = < -2 :: 0 :: 0 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 125 (192) nInputs 16
+UNPADDING: 126 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5330,7 +5331,7 @@ Line buffer outputVec = < 0 :: 0 :: -2 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 126 (192) nInputs 16
+UNPADDING: 127 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -5370,7 +5371,7 @@ Line buffer outputVec = < 0 :: -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 3
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 127 (192) nInputs 16
+UNPADDING: 128 (192) nInputs 16
 conv0f = 1 c = 1 h = 0 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -5410,7 +5411,7 @@ Line buffer outputVec = < -2 :: 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 128 (192) nInputs 16
+UNPADDING: 129 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -5450,7 +5451,7 @@ Line buffer outputVec = < 1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 1 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 129 (192) nInputs 16
+UNPADDING: 130 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5490,7 +5491,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 130 (192) nInputs 16
+UNPADDING: 131 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 2
 ifmapEn = 0
 ofmapEn = 0
@@ -5530,7 +5531,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 131 (192) nInputs 16
+UNPADDING: 132 (192) nInputs 16
 conv0f = 1 c = 1 h = 1 w = 3
 ifmapEn = 0
 ofmapEn = 0
@@ -5570,7 +5571,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 132 (192) nInputs 16
+UNPADDING: 133 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -5610,7 +5611,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 133 (192) nInputs 16
+UNPADDING: 134 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5650,7 +5651,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 0 :: 2 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 134 (192) nInputs 16
+UNPADDING: 135 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -5690,7 +5691,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 135 (192) nInputs 16
+UNPADDING: 136 (192) nInputs 16
 conv0f = 1 c = 1 h = 2 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -5730,7 +5731,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 136 (192) nInputs 16
+UNPADDING: 137 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 0
 ifmapEn = 0
 ofmapEn = 0
@@ -5771,7 +5772,7 @@ Line buffer outputVec = < 0 :: 0 :: 0 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: 8 12 (192) nInputs 16
-UNPADDING: 137 (192) nInputs 16
+UNPADDING: 138 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 1
 ifmapEn = 0
 ofmapEn = 0
@@ -5812,7 +5813,7 @@ Line buffer outputVec = < 0 :: 0 :: 2 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 ::
 [ConvLayerOfmapBuffer] actual addr    = 0
 [ConvLayerOfmapBuffer] latency        = 3
 PADDING: a 13 (192) nInputs 16
-UNPADDING: 138 (192) nInputs 16
+UNPADDING: 139 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 2
 ifmapEn = 0
 ofmapEn = 1
@@ -5852,7 +5853,7 @@ Line buffer outputVec = < 0 :: 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 1
 [ConvLayerOfmapBuffer] actual addr    = 1
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 139 (192) nInputs 16
+UNPADDING: 140 (192) nInputs 16
 conv0f = 1 c = 1 h = 3 w = 3
 ifmapEn = 0
 ofmapEn = 1
@@ -5892,109 +5893,108 @@ Line buffer outputVec = < 2 :: -1 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: 0 :
 [ConvLayerOfmapBuffer] actual writeEn = 0
 [ConvLayerOfmapBuffer] actual addr    = 2
 [ConvLayerOfmapBuffer] latency        = 3
-UNPADDING: 140 (192) nInputs 16
-PADDING: 6 14 (192) nInputs 16
 UNPADDING: 141 (192) nInputs 16
-PADDING: fffa 15 (192) nInputs 16
+PADDING: 6 14 (192) nInputs 16
 UNPADDING: 142 (192) nInputs 16
-PADDING: fffa 16 (192) nInputs 16
+PADDING: fffa 15 (192) nInputs 16
 UNPADDING: 143 (192) nInputs 16
-PADDING: fffa 17 (192) nInputs 16
+PADDING: fffa 16 (192) nInputs 16
 UNPADDING: 144 (192) nInputs 16
-PADDING: fffa 18 (192) nInputs 16
+PADDING: fffa 17 (192) nInputs 16
 UNPADDING: 145 (192) nInputs 16
-PADDING: fffa 19 (192) nInputs 16
+PADDING: fffa 18 (192) nInputs 16
 UNPADDING: 146 (192) nInputs 16
-PADDING: fffa 20 (192) nInputs 16
+PADDING: fffa 19 (192) nInputs 16
 UNPADDING: 147 (192) nInputs 16
-PADDING: fffa 21 (192) nInputs 16
+PADDING: fffa 20 (192) nInputs 16
 UNPADDING: 148 (192) nInputs 16
-PADDING: fffa 22 (192) nInputs 16
+PADDING: fffa 21 (192) nInputs 16
 UNPADDING: 149 (192) nInputs 16
-PADDING: fffa 23 (192) nInputs 16
+PADDING: fffa 22 (192) nInputs 16
 UNPADDING: 150 (192) nInputs 16
-PADDING: fffa 24 (192) nInputs 16
+PADDING: fffa 23 (192) nInputs 16
 UNPADDING: 151 (192) nInputs 16
-PADDING: fffa 25 (192) nInputs 16
+PADDING: fffa 24 (192) nInputs 16
 UNPADDING: 152 (192) nInputs 16
-PADDING: fffa 26 (192) nInputs 16
+PADDING: fffa 25 (192) nInputs 16
 UNPADDING: 153 (192) nInputs 16
-PADDING: fffa 27 (192) nInputs 16
+PADDING: fffa 26 (192) nInputs 16
 UNPADDING: 154 (192) nInputs 16
-PADDING: fffa 28 (192) nInputs 16
+PADDING: fffa 27 (192) nInputs 16
 UNPADDING: 155 (192) nInputs 16
-PADDING: fffa 29 (192) nInputs 16
+PADDING: fffa 28 (192) nInputs 16
 UNPADDING: 156 (192) nInputs 16
-PADDING: fffa 30 (192) nInputs 16
+PADDING: fffa 29 (192) nInputs 16
 UNPADDING: 157 (192) nInputs 16
-PADDING: fffa 31 (192) nInputs 16
+PADDING: fffa 30 (192) nInputs 16
 UNPADDING: 158 (192) nInputs 16
-PADDING: fffa 32 (192) nInputs 16
+PADDING: fffa 31 (192) nInputs 16
 UNPADDING: 159 (192) nInputs 16
-PADDING: fffa 33 (192) nInputs 16
+PADDING: fffa 32 (192) nInputs 16
 UNPADDING: 160 (192) nInputs 16
-PADDING: fffa 34 (192) nInputs 16
+PADDING: fffa 33 (192) nInputs 16
 UNPADDING: 161 (192) nInputs 16
-PADDING: fffa 35 (192) nInputs 16
+PADDING: fffa 34 (192) nInputs 16
 UNPADDING: 162 (192) nInputs 16
-PADDING: fffa 36 (192) nInputs 16
+PADDING: fffa 35 (192) nInputs 16
 UNPADDING: 163 (192) nInputs 16
-PADDING: fffa 37 (192) nInputs 16
+PADDING: fffa 36 (192) nInputs 16
 UNPADDING: 164 (192) nInputs 16
-PADDING: fffa 38 (192) nInputs 16
+PADDING: fffa 37 (192) nInputs 16
 UNPADDING: 165 (192) nInputs 16
-PADDING: fffa 39 (192) nInputs 16
+PADDING: fffa 38 (192) nInputs 16
 UNPADDING: 166 (192) nInputs 16
-PADDING: fffa 40 (192) nInputs 16
+PADDING: fffa 39 (192) nInputs 16
 UNPADDING: 167 (192) nInputs 16
-PADDING: fffa 41 (192) nInputs 16
+PADDING: fffa 40 (192) nInputs 16
 UNPADDING: 168 (192) nInputs 16
-PADDING: fffa 42 (192) nInputs 16
+PADDING: fffa 41 (192) nInputs 16
 UNPADDING: 169 (192) nInputs 16
-PADDING: fffa 43 (192) nInputs 16
+PADDING: fffa 42 (192) nInputs 16
 UNPADDING: 170 (192) nInputs 16
-PADDING: fffa 44 (192) nInputs 16
+PADDING: fffa 43 (192) nInputs 16
 UNPADDING: 171 (192) nInputs 16
-PADDING: fffa 45 (192) nInputs 16
+PADDING: fffa 44 (192) nInputs 16
 UNPADDING: 172 (192) nInputs 16
-PADDING: fffa 46 (192) nInputs 16
+PADDING: fffa 45 (192) nInputs 16
 UNPADDING: 173 (192) nInputs 16
-PADDING: fffa 47 (192) nInputs 16
+PADDING: fffa 46 (192) nInputs 16
 UNPADDING: 174 (192) nInputs 16
-PADDING: fffa 48 (192) nInputs 16
+PADDING: fffa 47 (192) nInputs 16
 UNPADDING: 175 (192) nInputs 16
-PADDING: fffa 49 (192) nInputs 16
+PADDING: fffa 48 (192) nInputs 16
 UNPADDING: 176 (192) nInputs 16
-PADDING: fffa 50 (192) nInputs 16
+PADDING: fffa 49 (192) nInputs 16
 UNPADDING: 177 (192) nInputs 16
-PADDING: fffa 51 (192) nInputs 16
+PADDING: fffa 50 (192) nInputs 16
 UNPADDING: 178 (192) nInputs 16
-PADDING: fffa 52 (192) nInputs 16
+PADDING: fffa 51 (192) nInputs 16
 UNPADDING: 179 (192) nInputs 16
-PADDING: fffa 53 (192) nInputs 16
+PADDING: fffa 52 (192) nInputs 16
 UNPADDING: 180 (192) nInputs 16
-PADDING: fffa 54 (192) nInputs 16
+PADDING: fffa 53 (192) nInputs 16
 UNPADDING: 181 (192) nInputs 16
-PADDING: fffa 55 (192) nInputs 16
+PADDING: fffa 54 (192) nInputs 16
 UNPADDING: 182 (192) nInputs 16
-PADDING: fffa 56 (192) nInputs 16
+PADDING: fffa 55 (192) nInputs 16
 UNPADDING: 183 (192) nInputs 16
-PADDING: fffa 57 (192) nInputs 16
+PADDING: fffa 56 (192) nInputs 16
 UNPADDING: 184 (192) nInputs 16
-PADDING: fffa 58 (192) nInputs 16
+PADDING: fffa 57 (192) nInputs 16
 UNPADDING: 185 (192) nInputs 16
-PADDING: fffa 59 (192) nInputs 16
+PADDING: fffa 58 (192) nInputs 16
 UNPADDING: 186 (192) nInputs 16
-PADDING: fffa 60 (192) nInputs 16
+PADDING: fffa 59 (192) nInputs 16
 UNPADDING: 187 (192) nInputs 16
-PADDING: fffa 61 (192) nInputs 16
+PADDING: fffa 60 (192) nInputs 16
 UNPADDING: 188 (192) nInputs 16
-PADDING: fffa 62 (192) nInputs 16
+PADDING: fffa 61 (192) nInputs 16
 UNPADDING: 189 (192) nInputs 16
-PADDING: fffa 63 (192) nInputs 16
+PADDING: fffa 62 (192) nInputs 16
 UNPADDING: 190 (192) nInputs 16
-PADDING: fffa 64 (192) nInputs 16
+PADDING: fffa 63 (192) nInputs 16
 UNPADDING: 191 (192) nInputs 16
+PADDING: fffa 64 (192) nInputs 16
 PADDING: fffa 65 (192) nInputs 16
 PADDING: fffa 66 (192) nInputs 16
 PADDING: fffa 67 (192) nInputs 16
@@ -6124,9 +6124,9 @@ PADDING: fffa 190 (192) nInputs 16
 PADDING: fffa 191 (192) nInputs 16
 make stopsim
 make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible'
-maxcompilersim -n rz3515l -cLIMA stop
-Terminating MaxelerOS daemon (PID 444010)...
+maxcompilersim -n rz3515m -cLIMA stop
+Terminating MaxelerOS daemon (PID 37097)...
 MaxelerOS daemon killed
-Terminating simulated system (PID 443958)...
+Terminating simulated system (PID 37089)...
 Simulated system killed
 make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/single_conv_non_divisible'

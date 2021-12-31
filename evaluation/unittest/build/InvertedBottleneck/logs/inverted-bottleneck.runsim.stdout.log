@@ -4,7 +4,7 @@ Using maxj batch compiler.
 jar: /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/ecj.jar
 MAXAPPJCP=.:/mnt/ccnas2/bdp/rz3515/projects/deacon/src:/mnt/ccnas2/bdp/rz3515/projects/deacon/test:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar \
 	MAXAPPPKG=InvertedBottleneck MAXSOURCEDIRS=../../src:/mnt/ccnas2/bdp/rz3515/projects/deacon/src \
-	maxJavaRun -v -m 16384 InvertedbottleneckManager \
+	maxJavaRun -v -m 8192 InvertedbottleneckManager \
 	DFEModel=MAIA maxFileName=Invertedbottleneck target='DFE_SIM' enableMPCX=false \
 	FREQ=350 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt 
 ]0; maxJavaRun: InvertedbottleneckManager DFEModel=MAIA maxFileName=Invertedbottleneck target=DFE_SIM enableMPCX=false FREQ=350 DEBUG=true COEFF_FILE=/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt maxJavaRun : Execute Java program with Maxeler environment
@@ -33,178 +33,178 @@ Execution classpath : /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/MaxCompiler.jar
                       /mnt/ccnas2/bdp/rz3515/projects/deacon/test:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max4Platform.jar:
                       /vol/cc/opt/maxeler/maxcompiler-2021.1/lib/Max5Platform.jar
-JVM memory limit    : 16384 MB
+JVM memory limit    : 8192 MB
 ----------------------------------------------------------
 
-Wed 19:18: MaxCompiler version: 2021.1
-Wed 19:18: Build "Invertedbottleneck" start time: Wed Dec 29 19:18:27 GMT 2021
-Wed 19:18: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
-Wed 19:18: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG
-Wed 19:18: Detailed build log available in "_build.log"
-Wed 19:18: 
-Wed 19:18: ENGINE BUILD PARAMETERS
-Wed 19:18: 	              Build name: Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG                                                                         
-Wed 19:18: 	             maxFileName: Invertedbottleneck                                                                                                   
-Wed 19:18: 	                  target: DFE_SIM                                                                                                              
-Wed 19:18: 	                DFEModel: MAIA                                                                                                                 
-Wed 19:18: 	              enableMPCX: false                                                                                                                
-Wed 19:18: 	                bitWidth: 32                                                                                                                   
-Wed 19:18: 	                     WBW: 32                                                                                                                   
-Wed 19:18: 	                   DTYPE: fixed                                                                                                                
-Wed 19:18: 	           NUM_FRAC_BITS: 8                                                                                                                    
-Wed 19:18: 	                      PF: 1                                                                                                                    
-Wed 19:18: 	                      PC: 1                                                                                                                    
-Wed 19:18: 	                      PK: 1                                                                                                                    
-Wed 19:18: 	                       H: 1                                                                                                                    
-Wed 19:18: 	                       W: 1                                                                                                                    
-Wed 19:18: 	                       C: 1                                                                                                                    
-Wed 19:18: 	                       F: 1                                                                                                                    
-Wed 19:18: 	                       K: 1                                                                                                                    
-Wed 19:18: 	                     PAD: 0                                                                                                                    
-Wed 19:18: 	                       S: 1                                                                                                                    
-Wed 19:18: 	                     SEQ: 0                                                                                                                    
-Wed 19:18: 	                    FREQ: 350                                                                                                                  
-Wed 19:18: 	                USE_DRAM: false                                                                                                                
-Wed 19:18: 	                 USE_BNN: false                                                                                                                
-Wed 19:18: 	            USE_WINOGRAD: false                                                                                                                
-Wed 19:18: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                
-Wed 19:18: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                    
-Wed 19:18: 	                   DEBUG: true                                                                                                                 
-Wed 19:18: 	           COEFF_ON_CHIP: false                                                                                                                
-Wed 19:18: 	              INIT_COEFF: false                                                                                                                
-Wed 19:18: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt
-Wed 19:18: Generating kernel conv0 ...
-Wed 19:18: Instantiating kernel "conv0"
-Wed 19:18: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: coeffOnChip = true
-Wed 19:18: Input height = 2, output height = 2, pad = 0
-Wed 19:18: Counter H = 2 W = 2
-Wed 19:18: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: Ifmap buffer configuration 8 x 1
-Wed 19:18: loop = false
-Wed 19:18: ROM created for conv0 of depth 8 and type {DFEVectorType: 1 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@76ed1b7c
-Wed 19:18: Building the CORE arithmetic unit for "conv0" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 1
-Wed 19:18: CORE coefficient vector size: 1
-Wed 19:18: CORE ofmap vector size: 1
-Wed 19:18: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
-Wed 19:18: Connecting to output: ofmap
-Wed 19:18: Connecting to output: ofmap_1
-Wed 19:18: Compiling kernel "conv0"
-Wed 19:18: 
-Wed 19:18: Generating kernel conv1 ...
-Wed 19:18: Instantiating kernel "conv1"
-Wed 19:18: T = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: coeffOnChip = true
-Wed 19:18: Input height = 2, output height = 2, pad = 1
-Wed 19:18: Counter H = 4 W = 4
-Wed 19:18: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
-Wed 19:18: Building line buffer for "conv1" ...
-Wed 19:18: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
-Wed 19:18: Line buffer input vector size: 1, output vector size: 9.
-Wed 19:18: Number of separated line buffers: 1
-Wed 19:18: Initialising line buffer kernel with 3 x 4 x 1
-Wed 19:18: Size of line buffer output: 3
-Wed 19:18: Number of line buffer output chunks: 3
-Wed 19:18: Connecting outputs from chunk (#000) ...
-Wed 19:18: Connecting outputs from chunk (#001) ...
-Wed 19:18: Connecting outputs from chunk (#002) ...
-Wed 19:18: Depthwise coeff ROM depth = 4
-Wed 19:18: ROM created for conv1_dw of depth 4 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4fbda97b
-Wed 19:18: Building the CORE arithmetic unit for "conv1_dw" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 9
-Wed 19:18: CORE coefficient vector size: 9
-Wed 19:18: CORE ofmap vector size: 1
-Wed 19:18: Ifmap buffer configuration 16 x 1
-Wed 19:18: loop = false
-Wed 19:18: Pointwise coeff ROM depth = 8
-Wed 19:18: ROM created for conv1_pw of depth 8 and type {DFEVectorType: 1 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@2783717b
-Wed 19:18: Building the CORE arithmetic unit for "conv1_pw" ...
-Wed 19:18: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
-Wed 19:18: CORE ifmap vector size: 1
-Wed 19:18: CORE coefficient vector size: 1
-Wed 19:18: CORE ofmap vector size: 1
-Wed 19:18: Residual buffer depth = 4
-Wed 19:18: [ConvLayerOfmapBuffer] depth =     8 addr_bits =     3
-Wed 19:18: Connecting to output: ofmap
-Wed 19:18: Compiling kernel "conv1"
-Wed 19:18: 
-Wed 19:18: Generating padding kernels for DRAM access
-Wed 19:18: Instantiating kernel "ifmap_unpad"
-Wed 19:18: Compiling kernel "ifmap_unpad"
-Wed 19:18: 
-Wed 19:18: Instantiating kernel "ofmap_pad"
-Wed 19:18: Compiling kernel "ofmap_pad"
-Wed 19:18: 
-Wed 19:18: Setting up stream connections for conv0
-Wed 19:18: Setting up stream connections for conv1
-Wed 19:18: Connecting ifmap <== conv0: ofmap
-Wed 19:18: DRAM will be used to build the design
-Wed 19:18: Setup streams for kernel "conv0"
-Wed 19:18: # cycles:       32
-Wed 19:18: # ifmap stream: 8
-Wed 19:18: # ofmap stream: 16
-Wed 19:18: coeff vec size: 1
-Wed 19:18: coeff stream bit width: 16
-Wed 19:18: coeff stream chunk size: 1
-Wed 19:18: Setup streams for kernel "conv1"
-Wed 19:18: # cycles:       128
-Wed 19:18: # ifmap stream: 16
-Wed 19:18: # ofmap stream: 8
-Wed 19:18: coeff vec size: 9
-Wed 19:18: coeff stream bit width: 144
-Wed 19:18: coeff stream chunk size: 9
-Wed 19:18: Running back-end simulation build (3 phases)
-Wed 19:18: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
-Wed 19:18: (2/3) - Compile Simulation Modules (SimCompilePass)
-Wed 19:18: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
-Wed 19:18: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max (MD5Sum: 629cbcef01a066f0656b8017b80536bb)
-Wed 19:18: Build completed: Wed Dec 29 19:18:45 GMT 2021 (took 17 secs)
+Fri 20:48: MaxCompiler version: 2021.1
+Fri 20:48: Build "Invertedbottleneck" start time: Fri Dec 31 20:48:27 GMT 2021
+Fri 20:48: Main build process running as user rz3515 on host cccad5.doc.ic.ac.uk
+Fri 20:48: Build location: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG
+Fri 20:48: Detailed build log available in "_build.log"
+Fri 20:48: 
+Fri 20:48: ENGINE BUILD PARAMETERS
+Fri 20:48: 	              Build name: Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG                                                                         
+Fri 20:48: 	             maxFileName: Invertedbottleneck                                                                                                   
+Fri 20:48: 	                  target: DFE_SIM                                                                                                              
+Fri 20:48: 	                DFEModel: MAIA                                                                                                                 
+Fri 20:48: 	              enableMPCX: false                                                                                                                
+Fri 20:48: 	                bitWidth: 32                                                                                                                   
+Fri 20:48: 	                     WBW: 32                                                                                                                   
+Fri 20:48: 	                   DTYPE: fixed                                                                                                                
+Fri 20:48: 	           NUM_FRAC_BITS: 8                                                                                                                    
+Fri 20:48: 	                      PF: 1                                                                                                                    
+Fri 20:48: 	                      PC: 1                                                                                                                    
+Fri 20:48: 	                      PK: 1                                                                                                                    
+Fri 20:48: 	                       H: 1                                                                                                                    
+Fri 20:48: 	                       W: 1                                                                                                                    
+Fri 20:48: 	                       C: 1                                                                                                                    
+Fri 20:48: 	                       F: 1                                                                                                                    
+Fri 20:48: 	                       K: 1                                                                                                                    
+Fri 20:48: 	                     PAD: 0                                                                                                                    
+Fri 20:48: 	                       S: 1                                                                                                                    
+Fri 20:48: 	                     SEQ: 0                                                                                                                    
+Fri 20:48: 	                    FREQ: 350                                                                                                                  
+Fri 20:48: 	                USE_DRAM: false                                                                                                                
+Fri 20:48: 	                 USE_BNN: false                                                                                                                
+Fri 20:48: 	            USE_WINOGRAD: false                                                                                                                
+Fri 20:48: 	WINOGRAD_WEIGHTS_OFFLINE: false                                                                                                                
+Fri 20:48: 	   NUM_COEFF_FIFO_SPLITS: 1                                                                                                                    
+Fri 20:48: 	                   DEBUG: true                                                                                                                 
+Fri 20:48: 	           COEFF_ON_CHIP: false                                                                                                                
+Fri 20:48: 	              INIT_COEFF: false                                                                                                                
+Fri 20:48: 	              COEFF_FILE: /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt
+Fri 20:48: Generating kernel conv0 ...
+Fri 20:48: Instantiating kernel "conv0"
+Fri 20:48: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: coeffOnChip = true
+Fri 20:48: Input height = 2, output height = 2, pad = 0
+Fri 20:48: Counter H = 2 W = 2
+Fri 20:48: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: Ifmap buffer configuration 8 x 1
+Fri 20:48: loop = false
+Fri 20:48: ROM created for conv0 of depth 8 and type {DFEVectorType: 1 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@76ed1b7c
+Fri 20:48: Building the CORE arithmetic unit for "conv0" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 1
+Fri 20:48: CORE coefficient vector size: 1
+Fri 20:48: CORE ofmap vector size: 1
+Fri 20:48: [ConvLayerOfmapBuffer] depth =     4 addr_bits =     2
+Fri 20:48: Connecting to output: ofmap
+Fri 20:48: Connecting to output: ofmap_1
+Fri 20:48: Compiling kernel "conv0"
+Fri 20:48: 
+Fri 20:48: Generating kernel conv1 ...
+Fri 20:48: Instantiating kernel "conv1"
+Fri 20:48: T = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: coeffOnChip = true
+Fri 20:48: Input height = 2, output height = 2, pad = 1
+Fri 20:48: Counter H = 4 W = 4
+Fri 20:48: oh is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: ow is dfeFix(32, 0, TWOSCOMPLEMENT)
+Fri 20:48: Building line buffer for "conv1" ...
+Fri 20:48: Line buffer shape 3 x 2, produces 1 number of 3 x 3 tiles per cycle
+Fri 20:48: Line buffer input vector size: 1, output vector size: 9.
+Fri 20:48: Number of separated line buffers: 1
+Fri 20:48: Initialising line buffer kernel with 3 x 4 x 1
+Fri 20:48: Size of line buffer output: 3
+Fri 20:48: Number of line buffer output chunks: 3
+Fri 20:48: Connecting outputs from chunk (#000) ...
+Fri 20:48: Connecting outputs from chunk (#001) ...
+Fri 20:48: Connecting outputs from chunk (#002) ...
+Fri 20:48: Depthwise coeff ROM depth = 4
+Fri 20:48: ROM created for conv1_dw of depth 4 and type {DFEVectorType: 9 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@4566d049
+Fri 20:48: Building the CORE arithmetic unit for "conv1_dw" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 9
+Fri 20:48: CORE coefficient vector size: 9
+Fri 20:48: CORE ofmap vector size: 1
+Fri 20:48: Ifmap buffer configuration 16 x 1
+Fri 20:48: loop = false
+Fri 20:48: Pointwise coeff ROM depth = 8
+Fri 20:48: ROM created for conv1_pw of depth 8 and type {DFEVectorType: 1 x dfeFix(16, 0, TWOSCOMPLEMENT)}: com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory@7fe7c640
+Fri 20:48: Building the CORE arithmetic unit for "conv1_pw" ...
+Fri 20:48: WT = dfeFix(16, 0, TWOSCOMPLEMENT)
+Fri 20:48: CORE ifmap vector size: 1
+Fri 20:48: CORE coefficient vector size: 1
+Fri 20:48: CORE ofmap vector size: 1
+Fri 20:48: Residual buffer depth = 4
+Fri 20:48: [ConvLayerOfmapBuffer] depth =     8 addr_bits =     3
+Fri 20:48: Connecting to output: ofmap
+Fri 20:48: Compiling kernel "conv1"
+Fri 20:48: 
+Fri 20:48: Generating padding kernels for DRAM access
+Fri 20:48: Instantiating kernel "ifmap_unpad"
+Fri 20:48: Compiling kernel "ifmap_unpad"
+Fri 20:48: 
+Fri 20:48: Instantiating kernel "ofmap_pad"
+Fri 20:48: Compiling kernel "ofmap_pad"
+Fri 20:48: 
+Fri 20:48: Setting up stream connections for conv0
+Fri 20:48: Setting up stream connections for conv1
+Fri 20:48: Connecting ifmap <== conv0: ofmap
+Fri 20:48: DRAM will be used to build the design
+Fri 20:48: Setup streams for kernel "conv0"
+Fri 20:48: # cycles:       32
+Fri 20:48: # ifmap stream: 8
+Fri 20:48: # ofmap stream: 16
+Fri 20:48: coeff vec size: 1
+Fri 20:48: coeff stream bit width: 16
+Fri 20:48: coeff stream chunk size: 1
+Fri 20:48: Setup streams for kernel "conv1"
+Fri 20:48: # cycles:       128
+Fri 20:48: # ifmap stream: 16
+Fri 20:48: # ofmap stream: 8
+Fri 20:48: coeff vec size: 9
+Fri 20:48: coeff stream bit width: 144
+Fri 20:48: coeff stream chunk size: 9
+Fri 20:48: Running back-end simulation build (3 phases)
+Fri 20:48: (1/3) - Prepare MaxFile Data (GenerateMaxFileDataFile)
+Fri 20:48: (2/3) - Compile Simulation Modules (SimCompilePass)
+Fri 20:48: (3/3) - Generate MaxFile (AddSimObjectToMaxFilePass)
+Fri 20:48: MaxFile: /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max (MD5Sum: 4af74e74b0a62dc2e81c801cd11fde3b)
+Fri 20:48: Build completed: Fri Dec 31 20:48:39 GMT 2021 (took 11 secs)
 cp /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.h /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Maxfiles.h
 sliccompile /mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max Invertedbottleneck_FREQ_350_DBG_sim.o
 Processing maxfile for MAX5_LIMA_SIM from '/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max'.
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_6404473970046557038/cobject/max_5348513786121369564.c -o /tmp/sliccompile_6404473970046557038/cobject/max_5348513786121369564.c.o 
-/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_526028008531859302.o 
-ld -r /tmp/sliccompile_6404473970046557038/cobject/max_5348513786121369564.c.o max_526028008531859302.o -o Invertedbottleneck_FREQ_350_DBG_sim.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/dev/null" -DSLIC_NO_DESTRUCTORS -c /tmp/sliccompile_1434355592360522502/cobject/max_7429171366377755900.c -o /tmp/sliccompile_1434355592360522502/cobject/max_7429171366377755900.c.o 
+/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/clang/bin/start.sh clang -fgnu89-inline -pipe -O0 -std=gnu99 -Wall -Werror -frandom-seed=foo -Wno-unused-variable -Wno-unused-function -fPIC -I /vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -DMAXFILE_INC="/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results/Invertedbottleneck.max" -DSLIC_NO_DESTRUCTORS -c /vol/cc/opt/maxeler/maxcompiler-2021.1/src/slicinterface/MaxFileInit.c -o max_9046372288087479725.o 
+ld -r /tmp/sliccompile_1434355592360522502/cobject/max_7429171366377755900.c.o max_9046372288087479725.o -o Invertedbottleneck_FREQ_350_DBG_sim.o 
 Copying .max file C object into '/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck'
 g++ ../../src/InvertedBottleneck/InvertedbottleneckCpuCode.cpp -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -I/mnt/ccnas2/bdp/rz3515/maxcompiler_builds/Invertedbottleneck_MAIA_DFE_SIM_FREQ_350_DBG/results -D__SIM__ -DDESIGN_NAME=Invertedbottleneck -c -o Invertedbottleneck_FREQ_350_DBG_simc.o
 g++ -fopenmp -lrt -D_GLIBCXX_USE_CXX11_ABI=0 -O3 -std=c++11  -Wall -I/mnt/ccnas2/bdp/rz3515/cccad/opt/include -I/usr/local/include -I../src -I../src/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/runtime/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include -I/vol/cc/opt/maxeler/maxcompiler-2021.1/include/slic -I/lib/maxeleros-sim/include -I/mnt/ccnas2/bdp/rz3515/projects/deacon/lib/dfe-snippets/include -D_XOPEN_SOURCE=600 -DDESIGN_  -DTRACE  -g -o Invertedbottleneck_FREQ_350_DBG_sim Invertedbottleneck_FREQ_350_DBG_sim.o Invertedbottleneck_FREQ_350_DBG_simc.o -L/mnt/ccnas2/bdp/rz3515/cccad/opt/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib -L/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib -L/lib/maxeleros-sim/lib -L./ -lmaxeleros -lglog -lgflags -lslic -lm -lpthread -lcurl
-maxcompilersim -n rz3515g -cLIMA -d1 restart
+maxcompilersim -n rz3515h -cLIMA -d1 restart
 
-Simulated system 'rz3515g' started:
+Simulated system 'rz3515h' started:
     Board:                   MAX5C (default: 48GB RAM)
     RAM size for simulation: 51539607552 bytes.
     Temporary RAM file in    /tmp/. (Use option -k to preserve it.)
-    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515g-cccad5.log
-    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515g-cccad5_daemon.log
+    Simulation log:          /homes/rz3515/.maxcompilersim/rz3515h-cccad5.log
+    Daemon log:              /homes/rz3515/.maxcompilersim/rz3515h-cccad5_daemon.log
 
 Simulated devices available:
-    rz3515g0:rz3515g
+    rz3515h0:rz3515h
 
 To use simulated devices you need to set the environment variables
 LD_PRELOAD and MAXELEROSDIR. As LD_PRELOAD must not contain spaces,
 you might need to set LD_LIBRARY_PATH in addition (see the MaxCompiler
 tutorial for details).  Also, ensure that you add the correct simulated
-system name (namely "rz3515g") to your SLiC configuration. The following
+system name (namely "rz3515h") to your SLiC configuration. The following
 examples assume there are no spaces in LD_PRELOAD or SLIC_CONF.
 Example for BASH:
     export MAXELEROSDIR=$MAXCOMPILERDIR/lib/maxeleros-sim
     export LD_PRELOAD=$MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515g"
+    export SLIC_CONF="$SLIC_CONF;use_simulation=rz3515h"
 Example for CSH:
     setenv MAXELEROSDIR $MAXCOMPILERDIR/lib/maxeleros-sim
     setenv LD_PRELOAD $MAXELEROSDIR/lib/libmaxeleros.so:$LD_PRELOAD
-    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515g"
+    setenv SLIC_CONF "$SLIC_CONF;use_simulation=rz3515h"
 
-SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515g" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Invertedbottleneck_FREQ_350_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt -g
+SLIC_CONF+="default_maxdebug_mode=MAX_DEBUG_ALWAYS;" SLIC_CONF+="use_simulation=rz3515h" LD_PRELOAD=/vol/cc/opt/maxeler/maxcompiler-2021.1/lib/maxeleros-sim/lib/libmaxeleros.so ./Invertedbottleneck_FREQ_350_DBG_sim -n 2 -f /mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck/data/data-inverted-bottleneck.txt -g
 f = 0 c = 0 oh = 0 ow = 0 kh = 0 kw = 0: input =  -2.000000 weight =  -1.000000
 output[0] =   0.000000 +   2.000000 =   2.000000
 f = 0 c = 1 oh = 0 ow = 0 kh = 0 kw = 0: input =  -1.000000 weight =   2.000000
@@ -13135,9 +13135,9 @@ PADDING: fff1 190 (192) nInputs 16
 PADDING: fff1 191 (192) nInputs 16
 make stopsim
 make[1]: Entering directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck'
-maxcompilersim -n rz3515g -cLIMA stop
-Terminating MaxelerOS daemon (PID 445599)...
+maxcompilersim -n rz3515h -cLIMA stop
+Terminating MaxelerOS daemon (PID 38184)...
 MaxelerOS daemon killed
-Terminating simulated system (PID 445588)...
+Terminating simulated system (PID 38176)...
 Simulated system killed
 make[1]: Leaving directory `/mnt/ccnas2/bdp/rz3515/projects/deacon/evaluation/unittest/build/InvertedBottleneck'

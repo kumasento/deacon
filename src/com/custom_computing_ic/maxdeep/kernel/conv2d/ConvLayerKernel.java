@@ -179,7 +179,7 @@ public class ConvLayerKernel extends BaseConvLayerKernel {
    */
   public DFEVector<DFEVar> initAndReadCoeff(int i, ConvLayerParameters cp) {
     int depth = cp.getCoeffNumVec(i);
-    DFEVar coeffAddr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(depth)));
+    DFEVar coeffAddr = getCoeffFMemAddr(dfeUInt(MathUtils.bitsToAddress(Math.max(2, depth))));
     debug("[initAndReadCoeff] stream %d: addr (" + coeffAddr.getType() + ") = %KObj%\n", i,
         coeffAddr);
     return getROM(cp, getCoeffKey(i), depth, cp.getCoeffVecT(i, WT), i).read(coeffAddr);
